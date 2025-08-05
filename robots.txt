@@ -1,0 +1,98 @@
+# robots.txt para Tours Astronómicos Atacama
+# https://toursastronomicosatacama.cl/robots.txt
+
+User-agent: *
+Allow: /
+
+# Permitir acceso a todos los archivos principales
+Allow: /index.html
+Allow: /styles.css
+Allow: /script.js
+Allow: /manifest.json
+
+# Permitir acceso a imágenes y recursos
+Allow: /images/
+Allow: /icons/
+Allow: /assets/
+
+# Bloquear archivos sensibles o innecesarios
+Disallow: /admin/
+Disallow: /private/
+Disallow: /temp/
+Disallow: /.git/
+Disallow: /node_modules/
+Disallow: /config/
+Disallow: /*.log
+Disallow: /backup/
+Disallow: /test/
+Disallow: /dev/
+
+# Bloquear archivos de configuración
+Disallow: /netlify.toml
+Disallow: /.netlify/
+Disallow: /package.json
+Disallow: /package-lock.json
+Disallow: /README.md
+Disallow: /.gitignore
+Disallow: /.env*
+
+# Permitir solo bots legítimos para ciertos directorios
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+# Bloquear bots maliciosos conocidos
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+# Configuración para sitemap
+Sitemap: https://toursastronomicosatacama.cl/sitemap.xml
+
+# Directrices adicionales para crawling
+Crawl-delay: 1
+
+# Permitir acceso a archivos importantes para SEO
+Allow: /favicon.ico
+Allow: /apple-touch-icon.png
+Allow: /browserconfig.xml
+
+# Comentarios:
+# - Este archivo debe estar en la raíz del dominio
+# - Actualizar la URL del sitemap cuando esté disponible
+# - Monitorear en Google Search Console para errores
+# - Revisar periódicamente los User-agents bloqueados

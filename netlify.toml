@@ -1,0 +1,166 @@
+# Netlify Configuration for Tours Astronómicos Atacama
+# This file configures the build settings and deployment options
+
+[build]
+  # Directory that contains the built site
+  publish = "."
+  
+  # Default build command (not needed for static sites)
+  # command = "npm run build"
+
+# Headers for better security and performance
+[[headers]]
+  # Apply headers to all pages
+  for = "/*"
+  [headers.values]
+    # Security headers
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    
+    # Performance headers
+    Cache-Control = "public, max-age=3600"
+    
+    # PWA headers
+    Service-Worker-Allowed = "/"
+
+# Cache static assets longer
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+    Content-Type = "text/css"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+    Content-Type = "application/javascript"
+
+[[headers]]
+  for = "*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+    Content-Type = "image/png"
+
+[[headers]]
+  for = "*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+    Content-Type = "image/jpeg"
+
+[[headers]]
+  for = "*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+    Content-Type = "image/webp"
+
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+    Content-Type = "application/manifest+json"
+
+# Redirect rules for better SEO and user experience
+[[redirects]]
+  from = "/home"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+
+# Redirect old tour URLs (if migrating from existing site)
+[[redirects]]
+  from = "/tours/*"
+  to = "/#tours"
+  status = 301
+
+[[redirects]]
+  from = "/reservas/*"
+  to = "/#reservas"
+  status = 301
+
+[[redirects]]
+  from = "/contacto/*"
+  to = "/#contacto"
+  status = 301
+
+# Handle 404s with custom page (optional - will fallback to index.html for SPA)
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
+
+# Environment variables (example - set these in Netlify dashboard)
+[build.environment]
+  NODE_VERSION = "18"
+
+# Plugin configuration
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+  
+  [plugins.inputs.thresholds]
+    performance = 0.8
+    accessibility = 0.9
+    best-practices = 0.8
+    seo = 0.9
+    
+[[plugins]]
+  package = "netlify-plugin-minify-html"
+  
+  [plugins.inputs]
+    contexts = [
+      'production'
+    ]
+
+# Form processing configuration
+[build.processing]
+  skip_processing = false
+[build.processing.css]
+  bundle = true
+  minify = true
+[build.processing.js]
+  bundle = true
+  minify = true
+[build.processing.html]
+  pretty_urls = true
+[build.processing.images]
+  compress = true
+
+# Functions configuration (if needed in the future)
+[functions]
+  directory = "functions/"
+  node_bundler = "esbuild"
+
+# Context-specific settings
+[context.production]
+  command = "echo 'Production build complete'"
+  [context.production.environment]
+    ENVIRONMENT = "production"
+
+[context.deploy-preview]
+  command = "echo 'Preview build complete'"
+  [context.deploy-preview.environment]
+    ENVIRONMENT = "preview"
+
+[context.branch-deploy]
+  command = "echo 'Branch build complete'"
+  [context.branch-deploy.environment]
+    ENVIRONMENT = "staging"
+
+# Edge functions configuration (if needed)
+[[edge_functions]]
+  function = "geolocation"
+  path = "/api/location"
+
+# Dev server configuration
+[dev]
+  command = "python -m http.server 8080"
+  port = 8080
+  publish = "."
+  autoLaunch = false

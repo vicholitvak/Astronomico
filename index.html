@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tours Astronómicos en San Pedro de Atacama | Observación de Estrellas en el Desierto</title>
+    <meta name="description" content="Únete a nuestros tours guiados para ver el cielo estrellado más claro del mundo. Reservas fáciles y experiencias inolvidables en Atacama, Chile.">
+    <meta name="keywords" content="tours astronómicos San Pedro de Atacama, observación estrellas Atacama, astro turismo Chile, cielo nocturno desierto Atacama">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Tours Astronómicos en San Pedro de Atacama">
+    <meta property="og:description" content="Descubre el cielo más puro del mundo con nuestros tours guiados">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://toursastronomicosatacama.cl">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="header" role="banner">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <a href="#inicio">
+                        <i class="fas fa-star"></i>
+                        Tours Astronómicos Atacama
+                    </a>
+                </div>
+                
+                <!-- Language Toggle -->
+                <div class="language-toggle">
+                    <button id="lang-toggle" class="lang-btn">
+                        <i class="fas fa-globe"></i>
+                        <span id="current-lang">ES</span>
+                    </button>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="#inicio" class="nav-link">Inicio</a></li>
+                    <li class="nav-item"><a href="#nosotros" class="nav-link">Sobre Nosotros</a></li>
+                    <li class="nav-item"><a href="#tours" class="nav-link">Tours</a></li>
+                    <li class="nav-item"><a href="#testimonios" class="nav-link">Testimonios</a></li>
+                    <li class="nav-item"><a href="#reservas" class="nav-link">Reservas</a></li>
+                    <li class="nav-item"><a href="#contacto" class="nav-link">Contacto</a></li>
+                    <li class="nav-item">
+                        <a href="#reservas" class="cta-button">Reserva Ahora</a>
+                    </li>
+                </ul>
+                
+                <!-- Mobile Menu Toggle -->
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero" role="main">
+        <div class="hero-background">
+            <!-- Background image will be set via CSS -->
+        </div>
+        <div class="hero-content">
+            <div class="container">
+                <h1 class="hero-title">Descubre el Cielo Más Puro del Mundo en San Pedro de Atacama</h1>
+                <p class="hero-subtitle">Tours astronómicos guiados por expertos: observación de estrellas, constelaciones y fenómenos celestes.</p>
+                <div class="hero-buttons">
+                    <a href="#reservas" class="btn btn-primary">Reserva Tu Tour</a>
+                    <a href="#tours" class="btn btn-secondary">Ver Tours</a>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="nosotros" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2>Sobre Nosotros</h2>
+                <p class="section-subtitle">Expertos en astronomía del desierto más seco del mundo</p>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Somos guías certificados con años de experiencia en astronomía en el desierto de Atacama, el lugar con los cielos más claros del planeta. Ofrecemos tours personalizados y educativos para todas las edades.</p>
+                    
+                    <div class="features">
+                        <div class="feature">
+                            <i class="fas fa-certificate"></i>
+                            <h4>Guías Certificados</h4>
+                            <p>Profesionales con formación astronómica</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-telescope"></i>
+                            <h4>Equipos Profesionales</h4>
+                            <p>Telescopios de alta calidad para observación</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-star"></i>
+                            <h4>Cielos Únicos</h4>
+                            <p>300+ noches despejadas al año</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1446776877081-d282a0f896e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Guía astronómico en el desierto de Atacama" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tours Section -->
+    <section id="tours" class="tours">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nuestros Tours Astronómicos</h2>
+                <p class="section-subtitle">Experiencias únicas bajo el cielo más claro del mundo</p>
+            </div>
+            
+            <div class="tours-grid">
+                <!-- Tour 1: Basic -->
+                <div class="tour-card">
+                    <div class="tour-image">
+                        <img src="https://images.unsplash.com/photo-1502134249126-9f3755a50d78?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Tour nocturno básico observación estrellas" loading="lazy">
+                        <div class="tour-price">$35.000</div>
+                    </div>
+                    <div class="tour-content">
+                        <h3>Tour Nocturno Básico</h3>
+                        <p>Perfecto para principiantes. Observación a simple vista de constelaciones principales, Via Láctea y planetas visibles.</p>
+                        
+                        <div class="tour-details">
+                            <div class="detail">
+                                <i class="fas fa-clock"></i>
+                                <span>2.5 horas</span>
+                            </div>
+                            <div class="detail">
+                                <i class="fas fa-users"></i>
+                                <span>Max 12 personas</span>
+                            </div>
+                        </div>
+                        
+                        <div class="tour-includes">
+                            <h4>Incluye:</h4>
+                            <ul>
+                                <li><i class="fas fa-check"></i> Transporte desde/hacia hotel</li>
+                                <li><i class="fas fa-check"></i> Guía astronómico certificado</li>
+                                <li><i class="fas fa-check"></i> Bebidas calientes y snacks</li>
+                                <li><i class="fas fa-check"></i> Láser astronómico</li>
+                            </ul>
+                        </div>
+                        
+                        <a href="#reservas" class="btn btn-primary btn-tour">Reservar Tour</a>
+                    </div>
+                </div>
+                
+                <!-- Tour 2: Advanced -->
+                <div class="tour-card featured">
+                    <div class="featured-badge">Más Popular</div>
+                    <div class="tour-image">
+                        <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Tour con telescopio avanzado" loading="lazy">
+                        <div class="tour-price">$65.000</div>
+                    </div>
+                    <div class="tour-content">
+                        <h3>Tour con Telescopio Avanzado</h3>
+                        <p>Observación detallada con telescopios profesionales. Nebulosas, galaxias, cúmulos estelares y astrofotografía básica.</p>
+                        
+                        <div class="tour-details">
+                            <div class="detail">
+                                <i class="fas fa-clock"></i>
+                                <span>3.5 horas</span>
+                            </div>
+                            <div class="detail">
+                                <i class="fas fa-users"></i>
+                                <span>Max 8 personas</span>
+                            </div>
+                        </div>
+                        
+                        <div class="tour-includes">
+                            <h4>Incluye:</h4>
+                            <ul>
+                                <li><i class="fas fa-check"></i> Todo del tour básico</li>
+                                <li><i class="fas fa-check"></i> Telescopios profesionales</li>
+                                <li><i class="fas fa-check"></i> Sesión de astrofotografía</li>
+                                <li><i class="fas fa-check"></i> Cena astronómica</li>
+                            </ul>
+                        </div>
+                        
+                        <a href="#reservas" class="btn btn-primary btn-tour">Reservar Tour</a>
+                    </div>
+                </div>
+                
+                <!-- Tour 3: Photography -->
+                <div class="tour-card">
+                    <div class="tour-image">
+                        <img src="https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Tour de astrofotografía" loading="lazy">
+                        <div class="tour-price">$85.000</div>
+                    </div>
+                    <div class="tour-content">
+                        <h3>Tour de Astrofotografía</h3>
+                        <p>Aprende técnicas profesionales de astrofotografía. Incluye configuración de cámara y edición básica de imágenes.</p>
+                        
+                        <div class="tour-details">
+                            <div class="detail">
+                                <i class="fas fa-clock"></i>
+                                <span>4 horas</span>
+                            </div>
+                            <div class="detail">
+                                <i class="fas fa-users"></i>
+                                <span>Max 6 personas</span>
+                            </div>
+                        </div>
+                        
+                        <div class="tour-includes">
+                            <h4>Incluye:</h4>
+                            <ul>
+                                <li><i class="fas fa-check"></i> Instructor especializado</li>
+                                <li><i class="fas fa-check"></i> Trípodes y accesorios</li>
+                                <li><i class="fas fa-check"></i> Sesión de edición</li>
+                                <li><i class="fas fa-check"></i> Certificado del curso</li>
+                            </ul>
+                        </div>
+                        
+                        <a href="#reservas" class="btn btn-primary btn-tour">Reservar Tour</a>
+                    </div>
+                </div>
+                
+                <!-- Tour 4: Private -->
+                <div class="tour-card">
+                    <div class="tour-image">
+                        <img src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Tour privado VIP" loading="lazy">
+                        <div class="tour-price">$150.000</div>
+                    </div>
+                    <div class="tour-content">
+                        <h3>Tour Privado VIP</h3>
+                        <p>Experiencia exclusiva personalizada. Ideal para parejas, familias o grupos pequeños que buscan privacidad total.</p>
+                        
+                        <div class="tour-details">
+                            <div class="detail">
+                                <i class="fas fa-clock"></i>
+                                <span>4+ horas</span>
+                            </div>
+                            <div class="detail">
+                                <i class="fas fa-users"></i>
+                                <span>1-4 personas</span>
+                            </div>
+                        </div>
+                        
+                        <div class="tour-includes">
+                            <h4>Incluye:</h4>
+                            <ul>
+                                <li><i class="fas fa-check"></i> Guía exclusivo</li>
+                                <li><i class="fas fa-check"></i> Ubicación personalizada</li>
+                                <li><i class="fas fa-check"></i> Cena gourmet</li>
+                                <li><i class="fas fa-check"></i> Recuerdos del tour</li>
+                            </ul>
+                        </div>
+                        
+                        <a href="#reservas" class="btn btn-primary btn-tour">Reservar Tour</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonios" class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2>Lo que Dicen Nuestros Clientes</h2>
+                <p class="section-subtitle">Experiencias reales de viajeros satisfechos</p>
+            </div>
+            
+            <div class="testimonials-slider">
+                <div class="testimonial-card active">
+                    <div class="testimonial-content">
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <blockquote>
+                            "¡Increíble experiencia! El cielo es mágico y nuestro guía Carlos fue excepcional. Nunca había visto la Vía Láctea tan claramente. Sin duda volveríamos."
+                        </blockquote>
+                        <div class="testimonial-author">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Juan Pérez" loading="lazy">
+                            <div class="author-info">
+                                <h4>Juan Pérez</h4>
+                                <span>Santiago, Chile</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <blockquote>
+                            "Amazing experience! The desert night sky is breathtaking. Our guide spoke perfect English and was very knowledgeable. Highly recommended!"
+                        </blockquote>
+                        <div class="testimonial-author">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b47c?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Sarah Johnson" loading="lazy">
+                            <div class="author-info">
+                                <h4>Sarah Johnson</h4>
+                                <span>New York, USA</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <blockquote>
+                            "El tour de astrofotografía superó todas mis expectativas. Aprendí técnicas increíbles y logré fotos espectaculares. ¡Gracias por la paciencia!"
+                        </blockquote>
+                        <div class="testimonial-author">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Miguel Rodríguez" loading="lazy">
+                            <div class="author-info">
+                                <h4>Miguel Rodríguez</h4>
+                                <span>Buenos Aires, Argentina</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <blockquote>
+                            "Perfekt für Familien! Unsere Kinder waren begeistert und der Guide hat alles kindgerecht erklärt. Eine unvergessliche Nacht!"
+                        </blockquote>
+                        <div class="testimonial-author">
+                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Anna Schmidt" loading="lazy">
+                            <div class="author-info">
+                                <h4>Anna Schmidt</h4>
+                                <span>Berlin, Germany</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Testimonial Navigation -->
+            <div class="testimonial-nav">
+                <button class="nav-dot active" data-slide="0" aria-label="Ver testimonio 1"></button>
+                <button class="nav-dot" data-slide="1" aria-label="Ver testimonio 2"></button>
+                <button class="nav-dot" data-slide="2" aria-label="Ver testimonio 3"></button>
+                <button class="nav-dot" data-slide="3" aria-label="Ver testimonio 4"></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="reservas" class="booking">
+        <div class="container">
+            <div class="section-header">
+                <h2>Reserva Tu Experiencia Astronómica</h2>
+                <p class="section-subtitle">Completa el formulario y te contactaremos para confirmar disponibilidad</p>
+            </div>
+            
+            <div class="booking-content">
+                <div class="booking-form-container">
+                    <form id="booking-form" class="booking-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Nombre Completo *</label>
+                                <input type="text" id="name" name="name" required aria-required="true">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" name="email" required aria-required="true">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone">Teléfono/WhatsApp *</label>
+                                <input type="tel" id="phone" name="phone" required aria-required="true">
+                            </div>
+                            <div class="form-group">
+                                <label for="tour">Tour Seleccionado *</label>
+                                <select id="tour" name="tour" required aria-required="true">
+                                    <option value="">Selecciona un tour</option>
+                                    <option value="basico">Tour Nocturno Básico - $35.000</option>
+                                    <option value="avanzado">Tour con Telescopio Avanzado - $65.000</option>
+                                    <option value="fotografia">Tour de Astrofotografía - $85.000</option>
+                                    <option value="privado">Tour Privado VIP - $150.000</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="date">Fecha Deseada *</label>
+                                <input type="date" id="date" name="date" required aria-required="true" min="">
+                            </div>
+                            <div class="form-group">
+                                <label for="persons">Número de Personas *</label>
+                                <select id="persons" name="persons" required aria-required="true">
+                                    <option value="">Selecciona cantidad</option>
+                                    <option value="1">1 persona</option>
+                                    <option value="2">2 personas</option>
+                                    <option value="3">3 personas</option>
+                                    <option value="4">4 personas</option>
+                                    <option value="5">5 personas</option>
+                                    <option value="6">6 personas</option>
+                                    <option value="7">7 personas</option>
+                                    <option value="8">8 personas</option>
+                                    <option value="9+">Más de 8 personas</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Mensaje Adicional</label>
+                            <textarea id="message" name="message" rows="4" placeholder="¿Alguna pregunta o requerimiento especial?"></textarea>
+                        </div>
+                        
+                        <div class="form-group checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="terms" name="terms" required aria-required="true">
+                                <span class="checkmark"></span>
+                                Acepto los <a href="#" target="_blank">términos y condiciones</a> y <a href="#" target="_blank">política de privacidad</a>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-submit">
+                            <i class="fas fa-paper-plane"></i>
+                            Enviar Reserva
+                        </button>
+                        
+                        <div class="form-success" id="form-success">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>¡Reserva Enviada!</h3>
+                            <p>Te contactaremos dentro de 24 horas para confirmar disponibilidad y detalles del pago.</p>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="booking-info">
+                    <div class="info-card">
+                        <i class="fas fa-clock"></i>
+                        <h4>Horarios</h4>
+                        <p>Tours nocturnos desde 20:00 hrs<br>Duración: 2.5 - 4+ horas</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h4>Disponibilidad</h4>
+                        <p>Todos los días del año, excepto 3 dias antes y después de luna llena<br>Sujeto a condiciones climáticas</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h4>Punto de Encuentro</h4>
+                        <p>Recogida en hoteles de San Pedro de Atacama incluida</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-credit-card"></i>
+                        <h4>Formas de Pago</h4>
+                        <p>Efectivo, Transferencia, PayPal<br>50% anticipo - 50% al inicio del tour</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2>Contacto y Ubicación</h2>
+                <p class="section-subtitle">Estamos a 10km al sur de San Pedro en la oscuridad absoluta del desierto de Atacama</p>
+            </div>
+            
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Dirección</h4>
+                            <p>Calle Caracoles 123<br>San Pedro de Atacama, Chile</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Teléfono</h4>
+                            <p><a href="tel:+56955123456">+56 9 3513 4669</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p><a href="mailto:vicente.litvak@gmail.com">vicente.litvak@gmail.com</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <div>
+                            <h4>WhatsApp</h4>
+                            <p><a href="https://wa.me/56935134669" target="_blank">+56 9 3513 4669</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="social-links">
+                        <h4>Síguenos</h4>
+                        <div class="social-icons">
+                            <a href="#" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                            <a href="#" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" target="_blank" aria-label="TripAdvisor"><i class="fab fa-tripadvisor"></i></a>
+                            <a href="#" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-map">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.8890525328354!2d-68.20028768502085!3d-22.911434484260326!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x96ac0919447d2e07%3A0x6b8f1c3c9c2f8c5d!2sSan%20Pedro%20de%20Atacama%2C%20Chile!5e0!3m2!1sen!2scl!4v1643723458123!5m2!1sen!2scl" 
+                        width="100%" 
+                        height="400" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Ubicación Tours Astronómicos Atacama en San Pedro de Atacama">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-star"></i>
+                        Tours Astronómicos Atacama
+                    </div>
+                    <p>Descubre el universo en el cielo más claro del mundo. Experiencias astronómicas inolvidables en San Pedro de Atacama.</p>
+                    <div class="footer-social">
+                        <a href="#" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" target="_blank" aria-label="TripAdvisor"><i class="fab fa-tripadvisor"></i></a>
+                        <a href="#" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Tours</h4>
+                    <ul>
+                        <li><a href="#tours">Tour Nocturno Básico</a></li>
+                        <li><a href="#tours">Tour con Telescopio</a></li>
+                        <li><a href="#tours">Tour de Astrofotografía</a></li>
+                        <li><a href="#tours">Tour Privado VIP</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Información</h4>
+                    <ul>
+                        <li><a href="#nosotros">Sobre Nosotros</a></li>
+                        <li><a href="#testimonios">Testimonios</a></li>
+                        <li><a href="#contacto">Contacto</a></li>
+                        <li><a href="#">Preguntas Frecuentes</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Política de Cancelación</a></li>
+                        <li><a href="#">Política de Reembolso</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Tours Astronómicos Atacama. Todos los derechos reservados.</p>
+                <a href="#inicio" class="back-to-top" aria-label="Volver arriba">
+                    <i class="fas fa-chevron-up"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float Button -->
+    <div class="whatsapp-float">
+        <a href="https://wa.me/56935134669?text=Hola!%20Me%20interesa%20información%20sobre%20los%20tours%20astronómicos" target="_blank" aria-label="Contactar por WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+        <div class="whatsapp-tooltip">¿Tienes preguntas? ¡Escríbenos!</div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
