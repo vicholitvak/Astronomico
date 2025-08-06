@@ -21,7 +21,7 @@ Para que las reservas se agreguen automáticamente a tu Google Calendar personal
    - Nombre de la aplicación: "Atacama NightSky Tours"
    - Email de soporte del usuario: vicente.litvak@gmail.com
    - Logotipo de la aplicación: (opcional)
-   - Dominios autorizados: tu dominio del sitio web
+   - Dominios autorizados: atacamadarksky.cl
    - Email de contacto del desarrollador: vicente.litvak@gmail.com
 
 ### 4. Crear credenciales
@@ -31,8 +31,8 @@ Para que las reservas se agreguen automáticamente a tu Google Calendar personal
 4. Configura:
    - Nombre: "Atacama NightSky Web Client"
    - Orígenes de JavaScript autorizados: 
-     - http://localhost (para desarrollo)
-     - https://tu-dominio.com (para producción)
+     - https://atacamadarksky.cl
+     - https://www.atacamadarksky.cl
    - URIs de redirección autorizados: (mismos que arriba)
 
 ### 5. Crear API Key

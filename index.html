@@ -392,9 +392,14 @@
             
             <div class="booking-content">
                 <div class="booking-form-container">
-                    <form id="booking-form" class="booking-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+                    <form id="booking-form" class="booking-form" name="booking" method="POST" data-netlify="true" netlify-honeypot="bot-field">
                         
                         <!-- Calendar Section with FullCalendar -->
+                        <!-- Hidden honeypot field for spam protection -->
+                        <div style="display: none;">
+                            <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+                        </div>
+                        
                         <div class="form-group calendar-section">
                             <label for="calendar">Selecciona Fecha y Hora *</label>
                             <div class="calendar-description">
@@ -1092,8 +1097,8 @@
     <!-- Google Calendar Integration -->
     <script>
         // Google Calendar API Configuration
-        const GOOGLE_CLIENT_ID = 'astrophotography-001'; // Reemplazar con tu Client ID
-        const GOOGLE_API_KEY = 'AIzaSyD1-kWnLi0Qcp5dI-TQgY4ADKWtl2mjTSU'; // Reemplazar con tu API Key
+        const GOOGLE_CLIENT_ID = 'TU_CLIENT_ID_AQUI'; // Reemplazar con tu Client ID real
+        const GOOGLE_API_KEY = 'TU_API_KEY_AQUI'; // Reemplazar con tu API Key real
         const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
         const SCOPES = 'https://www.googleapis.com/auth/calendar';
         const CALENDAR_ID = 'vicente.litvak@gmail.com'; // Tu email de Google Calendar
@@ -1154,7 +1159,7 @@ ${reservationData.moonPhase || 'Condiciones óptimas para observación'}
 ⏰ HORARIO Y DURACIÓN:
 ${reservationData.tourType === 'private' ? '🎯 Tour Privado - Duración: 3-4 horas' : '👥 Tour Regular - Duración: 3 horas'}
 
-🔗 SITIO WEB: https://tu-sitio-web.com
+🔗 SITIO WEB: https://atacamadarksky.cl
 📞 CONTACTO EMERGENCIA: +56 9 3513 4669`,
                     
                     'start': {
