@@ -285,7 +285,11 @@ p {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)),
+    background: linear-gradient(135deg, 
+                rgba(10, 10, 10, 0.9) 0%, 
+                rgba(26, 26, 46, 0.85) 35%, 
+                rgba(22, 33, 62, 0.8) 65%,
+                rgba(0, 212, 255, 0.2) 100%),
                 url('images/hero1.jpg');
     background-size: cover;
     background-position: center;
@@ -425,7 +429,7 @@ section {
 
 /* ===== TOURS SECTION ===== */
 .tours {
-    background: var(--bg-tertiary);
+    background: linear-gradient(180deg, var(--bg-tertiary) 0%, rgba(22, 33, 62, 0.8) 100%);
 }
 
 .tours-grid {
@@ -2136,7 +2140,10 @@ blockquote {
 
 /* ===== TELESCOPE SECTION ===== */
 .telescope {
-    background: var(--bg-secondary);
+    background: linear-gradient(180deg, 
+                rgba(26, 26, 46, 0.95) 0%, 
+                rgba(22, 33, 62, 0.9) 50%,
+                rgba(16, 33, 62, 0.95) 100%);
     padding: var(--spacing-xxl) 0;
 }
 
@@ -2289,6 +2296,7 @@ blockquote {
     border-radius: var(--border-radius-lg);
     padding: var(--spacing-md);
     box-shadow: var(--shadow-lg);
+    overflow: hidden;
 }
 
 .close-modal {
@@ -2308,10 +2316,14 @@ blockquote {
 }
 
 #modalImage {
+    width: 100%;
+    height: auto;
     max-width: 100%;
-    max-height: 80vh;
+    max-height: 70vh;
     object-fit: contain;
     border-radius: var(--border-radius);
+    display: block;
+    margin: 0 auto;
 }
 
 .modal-nav {
@@ -2373,6 +2385,12 @@ blockquote {
     .modal-content {
         padding: var(--spacing-sm);
         margin: var(--spacing-sm);
+        max-width: 95vw;
+        max-height: 85vh;
+    }
+    
+    #modalImage {
+        max-height: 60vh;
     }
     
     .nav-btn {
