@@ -1040,13 +1040,24 @@ function initTelescopeGallery() {
     const prevBtn = document.getElementById('prevImage');
     const nextBtn = document.getElementById('nextImage');
     
+    // Carousel elements
+    const carouselTrack = document.getElementById('carouselTrack');
+    const carouselPrev = document.getElementById('carouselPrev');
+    const carouselNext = document.getElementById('carouselNext');
+    const indicators = document.querySelectorAll('.indicator');
+    
     console.log('Gallery items found:', galleryItems.length);
     console.log('Modal found:', modal ? 'Yes' : 'No');
+    console.log('Carousel elements found:', carouselTrack ? 'Yes' : 'No');
     
     if (galleryItems.length === 0) {
         console.warn('No gallery items found - telescope gallery not initialized');
         return;
     }
+    
+    // Carousel variables
+    let currentSlide = 0;
+    const totalSlides = 2; // We have 2 slides
     
     let currentImageIndex = 0;
     const imagesSources = [];
@@ -1176,6 +1187,54 @@ function initTelescopeGallery() {
         
         startX = null;
     });
+    
+    // ===== CAROUSEL FUNCTIONALITY =====
+    function updateCarousel() {
+        if (carouselTrack) {
+            const translateX = -currentSlide * 50; // Each slide is 50% width
+            carouselTrack.style.transform = `translateX(${translateX}%)`;
+            
+            // Update indicators
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentSlide);
+            });
+            
+            console.log('Carousel updated to slide:', currentSlide);
+        }
+    }
+    
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % totalSlides;
+        updateCarousel();
+    }
+    
+    function prevSlide() {
+        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+        updateCarousel();
+    }
+    
+    // Carousel event listeners
+    if (carouselNext) {
+        carouselNext.addEventListener('click', nextSlide);
+    }
+    
+    if (carouselPrev) {
+        carouselPrev.addEventListener('click', prevSlide);
+    }
+    
+    // Indicator clicks
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => {
+            currentSlide = index;
+            updateCarousel();
+        });
+    });
+    
+    // Auto-slide every 8 seconds
+    setInterval(nextSlide, 8000);
+    
+    // Initialize carousel
+    updateCarousel();
 }
 
 // ===== SERVICE WORKER REGISTRATION (for PWA capabilities) =====

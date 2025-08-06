@@ -2277,6 +2277,84 @@ blockquote {
     font-size: 2rem;
 }
 
+/* Carousel Styles */
+.gallery-carousel {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--border-radius-lg);
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease;
+    width: 200%; /* 2 slides = 200% */
+}
+
+.carousel-slide {
+    width: 50%; /* Each slide takes 50% of the track */
+    flex-shrink: 0;
+}
+
+.carousel-slide.active .gallery-grid {
+    opacity: 1;
+}
+
+.carousel-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 212, 255, 0.8);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-control:hover {
+    background: var(--primary-color);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: var(--glow-primary);
+}
+
+.carousel-control.prev {
+    left: 15px;
+}
+
+.carousel-control.next {
+    right: 15px;
+}
+
+.carousel-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: var(--spacing-md);
+}
+
+.indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.indicator.active,
+.indicator:hover {
+    background: var(--primary-color);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
 /* Gallery Modal */
 .gallery-modal {
     display: none;
@@ -2374,6 +2452,12 @@ blockquote {
     .gallery-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+    
+    .carousel-control {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
 }
 
 @media (max-width: 768px) {
@@ -2415,6 +2499,20 @@ blockquote {
     
     .telescope {
         padding: var(--spacing-lg) 0;
+    }
+    
+    .carousel-control {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+    
+    .carousel-control.prev {
+        left: 10px;
+    }
+    
+    .carousel-control.next {
+        right: 10px;
     }
 }
 
