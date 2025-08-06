@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initSmoothScrolling();
     initScrollEffects();
     initDatePicker();
+    initQuickBooking();
     initAnimations();
 });
 
@@ -452,218 +453,325 @@ function initScrollEffects() {
     }
 }
 
-// ===== INTERACTIVE CALENDAR =====
+// ===== FULLCALENDAR WITH MOON PHASES =====
 function initDatePicker() {
-    const calendarContainer = document.querySelector('.calendar-container');
-    if (!calendarContainer) return;
+    const fullCalendarEl = document.getElementById('fullcalendar');
+    if (!fullCalendarEl) return;
 
-    const monthYearEl = document.getElementById('month-year');
-    const calendarDaysEl = document.getElementById('calendar-days');
-    const prevMonthBtn = document.getElementById('prev-month');
-    const nextMonthBtn = document.getElementById('next-month');
-    const dateInput = document.getElementById('date');
-    const selectedDateDisplay = document.getElementById('selected-date-display');
-
-    let currentDate = new Date();
-    let selectedDate = null;
-
-    const months = [
-        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-    ];
-
-    // Calculate moon phases for availability
-    function getFullMoonDates(year, month) {
-        // Full moon dates for 2024-2025 (approximate)
-        const knownFullMoons = [
-            new Date(2024, 0, 25),   // Jan 25, 2024
-            new Date(2024, 1, 24),   // Feb 24, 2024
-            new Date(2024, 2, 25),   // Mar 25, 2024
-            new Date(2024, 3, 23),   // Apr 23, 2024
-            new Date(2024, 4, 23),   // May 23, 2024
-            new Date(2024, 5, 22),   // Jun 22, 2024
-            new Date(2024, 6, 21),   // Jul 21, 2024
-            new Date(2024, 7, 19),   // Aug 19, 2024
-            new Date(2024, 8, 18),   // Sep 18, 2024
-            new Date(2024, 9, 17),   // Oct 17, 2024
-            new Date(2024, 10, 15),  // Nov 15, 2024
-            new Date(2024, 11, 15),  // Dec 15, 2024
-            new Date(2025, 0, 13),   // Jan 13, 2025
-            new Date(2025, 1, 12),   // Feb 12, 2025
-            new Date(2025, 2, 14),   // Mar 14, 2025
-            new Date(2025, 3, 13),   // Apr 13, 2025
-            new Date(2025, 4, 12),   // May 12, 2025
-            new Date(2025, 5, 11),   // Jun 11, 2025
-            new Date(2025, 6, 10),   // Jul 10, 2025
-            new Date(2025, 7, 9),    // Aug 9, 2025
-            new Date(2025, 8, 7),    // Sep 7, 2025
-            new Date(2025, 9, 7),    // Oct 7, 2025
-            new Date(2025, 10, 5),   // Nov 5, 2025
-            new Date(2025, 11, 4)    // Dec 4, 2025
-        ];
+    // Moon phase calculation algorithm
+    function getMoonPhase(date) {
+        // Base new moon: January 6, 2000, 18:14 UTC
+        const baseNewMoon = new Date(2000, 0, 6, 18, 14);
+        const lunarCycle = 29.53058867; // days
         
-        const unavailableDates = [];
-        const startOfMonth = new Date(year, month, 1);
-        const endOfMonth = new Date(year, month + 1, 0);
+        const daysDifference = (date - baseNewMoon) / (1000 * 60 * 60 * 24);
+        const cyclePosition = daysDifference % lunarCycle;
+        const normalizedPosition = (cyclePosition + lunarCycle) % lunarCycle;
         
-        knownFullMoons.forEach(fullMoonDate => {
-            // Check if full moon is in current month or affects current month
-            for (let i = -3; i <= 3; i++) {
-                const unavailableDate = new Date(fullMoonDate);
-                unavailableDate.setDate(fullMoonDate.getDate() + i);
-                
-                if (unavailableDate >= startOfMonth && unavailableDate <= endOfMonth) {
-                    unavailableDates.push(unavailableDate.getDate());
-                }
-            }
-        });
+        // Calculate phase (0-7, representing 8 main phases)
+        const phaseNumber = Math.round(normalizedPosition / lunarCycle * 8) % 8;
         
-        return [...new Set(unavailableDates)]; // Remove duplicates
+        const phases = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
+        const phaseNames = ['Nueva', 'Creciente', 'Cuarto Creciente', 'Gibosa Creciente', 'Llena', 'Gibosa Menguante', 'Cuarto Menguante', 'Menguante'];
+        
+        return {
+            icon: phases[phaseNumber],
+            name: phaseNames[phaseNumber],
+            isFullMoon: phaseNumber === 4, // Full moon
+            isNearFullMoon: phaseNumber >= 3 && phaseNumber <= 5 // 3 days around full moon
+        };
     }
 
-    function getFullMoonDaysInMonth(year, month) {
-        const knownFullMoons = [
-            new Date(2024, 0, 25), new Date(2024, 1, 24), new Date(2024, 2, 25), new Date(2024, 3, 23),
-            new Date(2024, 4, 23), new Date(2024, 5, 22), new Date(2024, 6, 21), new Date(2024, 7, 19),
-            new Date(2024, 8, 18), new Date(2024, 9, 17), new Date(2024, 10, 15), new Date(2024, 11, 15),
-            new Date(2025, 0, 13), new Date(2025, 1, 12), new Date(2025, 2, 14), new Date(2025, 3, 13),
-            new Date(2025, 4, 12), new Date(2025, 5, 11), new Date(2025, 6, 10), new Date(2025, 7, 9),
-            new Date(2025, 8, 7), new Date(2025, 9, 7), new Date(2025, 10, 5), new Date(2025, 11, 4)
-        ];
-        
-        const fullMoonDays = [];
-        const startOfMonth = new Date(year, month, 1);
-        const endOfMonth = new Date(year, month + 1, 0);
-        
-        knownFullMoons.forEach(fullMoonDate => {
-            if (fullMoonDate >= startOfMonth && fullMoonDate <= endOfMonth) {
-                fullMoonDays.push(fullMoonDate.getDate());
-            }
-        });
-        
-        return fullMoonDays;
-    }
-
-    function isDateUnavailable(date) {
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth();
-        const fullMoonDates = getFullMoonDates(year, month);
-        return fullMoonDates.includes(date);
-    }
-
-    function renderCalendar() {
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth();
-        
-        monthYearEl.textContent = `${months[month]} ${year}`;
-        
-        const firstDayOfMonth = new Date(year, month, 1);
-        const lastDayOfMonth = new Date(year, month + 1, 0);
-        const firstDayWeekday = firstDayOfMonth.getDay();
-        const daysInMonth = lastDayOfMonth.getDate();
-        
+    // Check if date is available for tours (not during full moon ±3 days)
+    function isDateAvailable(date) {
+        const moonPhase = getMoonPhase(date);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
+        date.setHours(0, 0, 0, 0);
         
-        let calendarHTML = '';
+        // Not available if in the past or near full moon
+        return date >= today && !moonPhase.isNearFullMoon;
+    }
+
+    // Generate tour events for available dates
+    function generateTourEvents() {
+        const events = [];
+        const today = new Date();
+        const endDate = new Date();
+        endDate.setMonth(endDate.getMonth() + 12); // Generate events for next 12 months
         
-        // Previous month's trailing days
-        const prevMonth = new Date(year, month - 1, 0);
-        for (let i = firstDayWeekday - 1; i >= 0; i--) {
-            const day = prevMonth.getDate() - i;
-            calendarHTML += `<div class="calendar-day other-month">${day}</div>`;
-        }
+        const tourTimes = ['20:00', '20:30', '21:00', '21:30', '22:00'];
         
-        // Get full moon days for moon icons
-        const fullMoonDays = getFullMoonDaysInMonth(year, month);
-        
-        // Current month's days
-        for (let day = 1; day <= daysInMonth; day++) {
-            const dayDate = new Date(year, month, day);
-            dayDate.setHours(0, 0, 0, 0);
-            
-            let classes = ['calendar-day'];
-            let dayContent = day;
-            
-            if (dayDate < today) {
-                classes.push('past');
-            } else if (isDateUnavailable(day)) {
-                classes.push('unavailable');
-            } else {
-                classes.push('available');
-            }
-            
-            if (dayDate.getTime() === today.getTime()) {
-                classes.push('today');
-            }
-            
-            if (selectedDate && dayDate.getTime() === selectedDate.getTime()) {
-                classes.push('selected');
-            }
-            
-            // Add moon icon for full moon days
-            if (fullMoonDays.includes(day)) {
-                dayContent = `<span class="day-number">${day}</span><span class="moon-icon">🌕</span>`;
-            }
-            
-            calendarHTML += `<div class="${classes.join(' ')}" data-date="${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}">${dayContent}</div>`;
-        }
-        
-        // Next month's leading days
-        const totalCells = calendarHTML.split('calendar-day').length - 1;
-        const remainingCells = 42 - totalCells; // 6 rows × 7 days
-        for (let day = 1; day <= remainingCells && totalCells < 42; day++) {
-            calendarHTML += `<div class="calendar-day other-month">${day}</div>`;
-        }
-        
-        calendarDaysEl.innerHTML = calendarHTML;
-        
-        // Add click listeners to available days
-        document.querySelectorAll('.calendar-day.available').forEach(dayEl => {
-            dayEl.addEventListener('click', function() {
-                const dateStr = this.getAttribute('data-date');
-                if (dateStr) {
-                    selectedDate = new Date(dateStr);
-                    dateInput.value = dateStr;
+        for (let date = new Date(today); date <= endDate; date.setDate(date.getDate() + 1)) {
+            if (isDateAvailable(new Date(date))) {
+                tourTimes.forEach(time => {
+                    const eventDate = new Date(date);
+                    const [hours, minutes] = time.split(':');
+                    eventDate.setHours(parseInt(hours), parseInt(minutes));
                     
-                    // Update display
-                    const options = { 
-                        weekday: 'long', 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                    };
-                    selectedDateDisplay.textContent = `Fecha seleccionada: ${selectedDate.toLocaleDateString('es-ES', options)}`;
-                    selectedDateDisplay.classList.add('has-date');
-                    
-                    // Re-render to show selection
-                    renderCalendar();
-                }
+                    events.push({
+                        title: `Tour ${time}`,
+                        start: eventDate.toISOString(),
+                        classNames: ['tour-available'],
+                        extendedProps: {
+                            tourTime: time,
+                            available: true
+                        }
+                    });
+                });
+            }
+        }
+        
+        return events;
+    }
+
+    // Initialize FullCalendar
+    const calendar = new FullCalendar.Calendar(fullCalendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'es',
+        firstDay: 1, // Monday
+        height: 'auto',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,listWeek'
+        },
+        buttonText: {
+            today: 'Hoy',
+            month: 'Mes',
+            list: 'Lista'
+        },
+        events: generateTourEvents(),
+        
+        // Custom day cell rendering with moon phases
+        dayCellDidMount: function(info) {
+            const moonPhase = getMoonPhase(info.date);
+            
+            // Add moon phase icon
+            const moonIcon = document.createElement('div');
+            moonIcon.className = 'moon-phase';
+            moonIcon.textContent = moonPhase.icon;
+            moonIcon.title = `Luna ${moonPhase.name}`;
+            info.el.appendChild(moonIcon);
+            
+            // Style unavailable days
+            if (!isDateAvailable(info.date)) {
+                info.el.classList.add('unavailable-day');
+            }
+        },
+        
+        // Handle date/event clicks
+        dateClick: function(info) {
+            if (!isDateAvailable(info.date)) {
+                alert('Esta fecha no está disponible para tours debido a la luna llena. Por favor selecciona otra fecha.');
+                return;
+            }
+            
+            showTimeSelection(info.date);
+        },
+        
+        eventClick: function(info) {
+            const date = info.event.start;
+            const time = info.event.extendedProps.tourTime;
+            selectDateTime(date, time);
+        },
+        
+        // Responsive settings
+        windowResizeDelay: 100
+    });
+
+    // Show time selection modal/dropdown
+    function showTimeSelection(date) {
+        const availableTimes = ['20:00', '20:30', '21:00', '21:30', '22:00'];
+        const selectedDateDisplay = document.getElementById('selected-date-display');
+        
+        const dateStr = date.toLocaleDateString('es-ES', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        // Create time selection interface
+        const timeButtons = availableTimes.map(time => 
+            `<button type="button" class="time-option" data-time="${time}">${time} hrs</button>`
+        ).join('');
+        
+        selectedDateDisplay.innerHTML = `
+            <div class="date-selection">
+                <h5>📅 ${dateStr}</h5>
+                <p>Selecciona el horario de tu tour:</p>
+                <div class="time-options">
+                    ${timeButtons}
+                </div>
+            </div>
+        `;
+        selectedDateDisplay.classList.add('has-date');
+        
+        // Add event listeners to time buttons
+        document.querySelectorAll('.time-option').forEach(button => {
+            button.addEventListener('click', function() {
+                const time = this.getAttribute('data-time');
+                selectDateTime(date, time);
             });
         });
     }
-
-    // Navigation event listeners
-    prevMonthBtn.addEventListener('click', function() {
-        currentDate.setMonth(currentDate.getMonth() - 1);
-        renderCalendar();
-    });
-
-    nextMonthBtn.addEventListener('click', function() {
-        currentDate.setMonth(currentDate.getMonth() + 1);
-        renderCalendar();
-    });
-
-    // Initialize calendar
-    renderCalendar();
     
-    // Set minimum date to tomorrow
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    if (currentDate < tomorrow) {
-        currentDate = new Date(tomorrow);
-        renderCalendar();
+    // Select final date and time
+    function selectDateTime(date, time) {
+        const selectedDateInput = document.getElementById('selected-date');
+        const selectedTimeInput = document.getElementById('selected-time');
+        const selectedDateDisplay = document.getElementById('selected-date-display');
+        
+        const dateStr = date.toISOString().split('T')[0];
+        selectedDateInput.value = dateStr;
+        selectedTimeInput.value = time;
+        
+        const displayDate = date.toLocaleDateString('es-ES', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        selectedDateDisplay.innerHTML = `
+            <div class="selected-datetime">
+                <i class="fas fa-check-circle"></i>
+                <h5>¡Fecha y hora seleccionadas!</h5>
+                <p><strong>📅 ${displayDate}</strong></p>
+                <p><strong>🕐 ${time} hrs</strong></p>
+                <small>Puedes cambiar la selección haciendo clic en otra fecha</small>
+            </div>
+        `;
+        selectedDateDisplay.classList.add('has-date');
     }
+    
+    // Render the calendar
+    calendar.render();
+    
+    // Store calendar reference globally for potential updates
+    window.astronomyCalendar = calendar;
+}
+
+// ===== QUICK BOOKING OPTIONS =====
+function initQuickBooking() {
+    const calendlyOption = document.getElementById('calendly-option');
+    
+    if (calendlyOption) {
+        calendlyOption.addEventListener('click', function() {
+            // Replace with your actual Calendly URL
+            const calendlyUrl = 'https://calendly.com/tu-usuario/tour-astronomico'; // Cambiar por tu URL real
+            
+            // Open Calendly in a new window/tab
+            window.open(calendlyUrl, '_blank', 'width=800,height=700');
+            
+            // Alternatively, you can embed Calendly inline:
+            // showCalendlyModal();
+        });
+    }
+}
+
+// Optional: Calendly inline modal
+function showCalendlyModal() {
+    // Create modal backdrop
+    const modal = document.createElement('div');
+    modal.className = 'calendly-modal';
+    modal.innerHTML = `
+        <div class="calendly-modal-content">
+            <div class="calendly-header">
+                <h3>Reserva tu Tour Astronómico</h3>
+                <button class="calendly-close" aria-label="Cerrar">×</button>
+            </div>
+            <div class="calendly-embed">
+                <iframe src="https://calendly.com/tu-usuario/tour-astronomico" 
+                        width="100%" height="500" frameborder="0" 
+                        title="Reservar Tour Astronómico">
+                </iframe>
+            </div>
+            <div class="calendly-footer">
+                <p>¿Problemas con la reserva? <a href="https://wa.me/56935134669" target="_blank">Contáctanos por WhatsApp</a></p>
+            </div>
+        </div>
+    `;
+    
+    // Add styles for modal
+    const style = document.createElement('style');
+    style.textContent = `
+        .calendly-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: var(--spacing-sm);
+        }
+        
+        .calendly-modal-content {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-lg);
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: hidden;
+            border: 1px solid var(--primary-color);
+        }
+        
+        .calendly-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--primary-color);
+        }
+        
+        .calendly-close {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        
+        .calendly-embed {
+            height: 500px;
+        }
+        
+        .calendly-footer {
+            padding: var(--spacing-sm);
+            text-align: center;
+            background: var(--bg-tertiary);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .calendly-footer a {
+            color: var(--primary-color);
+        }
+    `;
+    
+    document.head.appendChild(style);
+    document.body.appendChild(modal);
+    
+    // Close modal functionality
+    const closeBtn = modal.querySelector('.calendly-close');
+    closeBtn.addEventListener('click', () => {
+        document.body.removeChild(modal);
+        document.head.removeChild(style);
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+            document.head.removeChild(style);
+        }
+    });
 }
 
 // ===== ANIMATIONS =====

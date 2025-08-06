@@ -656,17 +656,123 @@ blockquote {
     background: var(--bg-secondary);
 }
 
-/* Calendar Styles */
+/* ===== FULLCALENDAR STYLES ===== */
 .calendar-section {
     margin-bottom: var(--spacing-lg);
 }
 
-.calendar-container {
+.calendar-description {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-sm);
+    margin: var(--spacing-sm) 0;
+}
+
+.calendar-description p {
+    margin: 0;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+}
+
+#calendar-container {
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 215, 0, 0.2);
+    border: 1px solid rgba(0, 212, 255, 0.2);
     border-radius: var(--border-radius);
     padding: var(--spacing-md);
-    margin-top: var(--spacing-sm);
+    margin: var(--spacing-sm) 0;
+}
+
+/* FullCalendar Dark Theme Customization */
+#fullcalendar {
+    --fc-border-color: rgba(0, 212, 255, 0.2);
+    --fc-button-bg-color: var(--primary-color);
+    --fc-button-border-color: var(--primary-color);
+    --fc-button-hover-bg-color: var(--secondary-color);
+    --fc-button-active-bg-color: var(--secondary-color);
+    --fc-today-bg-color: rgba(0, 212, 255, 0.1);
+    --fc-event-bg-color: var(--primary-color);
+    --fc-event-border-color: var(--primary-color);
+}
+
+.fc {
+    color: var(--text-primary);
+}
+
+.fc-theme-standard .fc-scrollgrid {
+    border-color: var(--fc-border-color);
+}
+
+.fc-theme-standard td, .fc-theme-standard th {
+    border-color: var(--fc-border-color);
+}
+
+.fc-button {
+    background-color: var(--fc-button-bg-color) !important;
+    border-color: var(--fc-button-border-color) !important;
+    color: var(--bg-primary) !important;
+    font-weight: var(--font-weight-medium);
+}
+
+.fc-button:hover {
+    background-color: var(--fc-button-hover-bg-color) !important;
+    border-color: var(--fc-button-hover-bg-color) !important;
+}
+
+.fc-button:focus, .fc-button:active {
+    background-color: var(--fc-button-active-bg-color) !important;
+    border-color: var(--fc-button-active-bg-color) !important;
+    box-shadow: var(--glow-secondary) !important;
+}
+
+.fc-day-today {
+    background-color: var(--fc-today-bg-color) !important;
+}
+
+.fc-daygrid-day-number {
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.fc-col-header-cell {
+    background-color: rgba(0, 212, 255, 0.05);
+}
+
+.fc-day-past {
+    background-color: rgba(255, 255, 255, 0.02);
+    opacity: 0.6;
+}
+
+.fc-daygrid-event {
+    background-color: var(--fc-event-bg-color) !important;
+    border-color: var(--fc-event-border-color) !important;
+    color: var(--bg-primary) !important;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+/* Moon Phase Icons in Calendar */
+.fc-daygrid-day {
+    position: relative;
+}
+
+.moon-phase {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 12px;
+    line-height: 1;
+    z-index: 1;
+}
+
+.unavailable-day {
+    background-color: rgba(255, 107, 107, 0.1) !important;
+    cursor: not-allowed !important;
+}
+
+.unavailable-day .fc-daygrid-day-number {
+    color: var(--text-muted) !important;
+    text-decoration: line-through;
 }
 
 .calendar-header {
@@ -865,6 +971,112 @@ blockquote {
     background: rgba(76, 175, 80, 0.1);
     border-color: rgba(76, 175, 80, 0.3);
     color: #4CAF50;
+}
+
+/* Quick Booking Options */
+.quick-booking-section {
+    margin: var(--spacing-lg) 0;
+    padding: var(--spacing-md);
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.1);
+    border-radius: var(--border-radius);
+    text-align: center;
+}
+
+.quick-booking-section h4 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-sm);
+}
+
+.quick-options {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.quick-option {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.quick-option:hover {
+    background: var(--primary-color);
+    color: var(--bg-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--glow-primary);
+}
+
+.moon-legend {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+}
+
+/* Date and Time Selection Styles */
+.date-selection, .selected-datetime {
+    text-align: center;
+    padding: var(--spacing-md);
+}
+
+.date-selection h5, .selected-datetime h5 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-sm);
+}
+
+.time-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    justify-content: center;
+    margin-top: var(--spacing-sm);
+}
+
+.time-option {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    color: var(--primary-color);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: 0.9rem;
+}
+
+.time-option:hover {
+    background: var(--primary-color);
+    color: var(--bg-primary);
+    transform: translateY(-1px);
+}
+
+.selected-datetime {
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid #4CAF50;
+    border-radius: var(--border-radius);
+}
+
+.selected-datetime i {
+    color: #4CAF50;
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+.selected-datetime p {
+    margin-bottom: var(--spacing-xs);
+}
+
+.selected-datetime small {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
 }
 
 .booking-content {

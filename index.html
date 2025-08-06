@@ -24,6 +24,9 @@
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet">
+    
     <!-- Stylesheet -->
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -398,53 +401,53 @@
                             </div>
                         </div>
                         
-                        <!-- Calendar Section -->
+                        <!-- Calendar Section with FullCalendar -->
                         <div class="form-group calendar-section">
-                            <label for="date">Selecciona la Fecha *</label>
-                            <div class="calendar-container">
-                                <div class="calendar-header">
-                                    <button type="button" class="calendar-nav" id="prev-month" aria-label="Mes anterior">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </button>
-                                    <div class="calendar-month-year" id="month-year"></div>
-                                    <button type="button" class="calendar-nav" id="next-month" aria-label="Mes siguiente">
-                                        <i class="fas fa-chevron-right"></i>
-                                    </button>
+                            <label for="calendar">Selecciona Fecha y Hora *</label>
+                            <div class="calendar-description">
+                                <p><strong>🌕 Fases Lunares:</strong> Los tours no están disponibles 3 días antes y después de luna llena para mejor visibilidad estelar.</p>
+                            </div>
+                            
+                            <div id="calendar-container">
+                                <div id="fullcalendar"></div>
+                            </div>
+                            
+                            <div class="calendar-legend">
+                                <div class="legend-item">
+                                    <span class="legend-dot available"></span>
+                                    <span>Disponible para reserva</span>
                                 </div>
-                                <div class="calendar-grid">
-                                    <div class="calendar-weekdays">
-                                        <div class="weekday">Dom</div>
-                                        <div class="weekday">Lun</div>
-                                        <div class="weekday">Mar</div>
-                                        <div class="weekday">Mié</div>
-                                        <div class="weekday">Jue</div>
-                                        <div class="weekday">Vie</div>
-                                        <div class="weekday">Sáb</div>
-                                    </div>
-                                    <div class="calendar-days" id="calendar-days"></div>
+                                <div class="legend-item">
+                                    <span class="legend-dot unavailable"></span>
+                                    <span>No disponible (luna llena)</span>
                                 </div>
-                                <div class="calendar-legend">
-                                    <div class="legend-item">
-                                        <span class="legend-dot available"></span>
-                                        <span>Disponible</span>
-                                    </div>
-                                    <div class="legend-item">
-                                        <span class="legend-dot unavailable">🌕</span>
-                                        <span>No disponible (Luna llena ±3 días)</span>
-                                    </div>
-                                    <div class="legend-item">
-                                        <span class="legend-dot selected"></span>
-                                        <span>Seleccionado</span>
-                                    </div>
-                                    <div class="legend-item">
-                                        <span class="legend-dot today">📅</span>
-                                        <span>Hoy</span>
-                                    </div>
+                                <div class="legend-item">
+                                    <span class="moon-legend">🌑🌒🌓🌔🌕🌖🌗🌘</span>
+                                    <span>Fases lunares</span>
                                 </div>
                             </div>
-                            <input type="hidden" id="date" name="date" required aria-required="true">
+                            
+                            <!-- Selected Date Display -->
                             <div class="selected-date-display" id="selected-date-display">
-                                Selecciona una fecha en el calendario
+                                Haz clic en una fecha disponible para continuar
+                            </div>
+                            
+                            <input type="hidden" id="selected-date" name="date" required>
+                            <input type="hidden" id="selected-time" name="time" required>
+                        </div>
+                        
+                        <!-- Quick Booking Options -->
+                        <div class="quick-booking-section">
+                            <h4>¿Prefieres una reserva más rápida?</h4>
+                            <div class="quick-options">
+                                <a href="https://wa.me/56935134669?text=Hola!%20Me%20interesa%20reservar%20un%20tour%20astronómico%20con%20Atacama%20NightSky" target="_blank" class="quick-option">
+                                    <i class="fab fa-whatsapp"></i>
+                                    <span>WhatsApp Directo</span>
+                                </a>
+                                <button type="button" class="quick-option" id="calendly-option">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <span>Calendly Online</span>
+                                </button>
                             </div>
                         </div>
                         
@@ -667,6 +670,9 @@
         <div class="whatsapp-tooltip">¿Tienes preguntas? ¡Escríbenos!</div>
     </div>
 
+    <!-- FullCalendar JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.js"></script>
+    
     <!-- JavaScript -->
     <script src="script.js"></script>
 </body>
