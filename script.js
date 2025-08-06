@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initDatePicker();
     initQuickBooking();
     initAnimations();
+    initTelescopeGallery();
 });
 
 // ===== NAVIGATION FUNCTIONALITY =====
@@ -87,7 +88,7 @@ function initLanguageToggle() {
             'Inicio': 'Inicio',
             'Sobre Nosotros': 'Sobre Nosotros',
             'Tours': 'Tours',
-            'Testimonios': 'Testimonios',
+            'Telescopio': 'Telescopio',
             'Reservas': 'Reservas',
             'Contacto': 'Contacto',
             'Reserva Ahora': 'Reserva Ahora',
@@ -100,7 +101,7 @@ function initLanguageToggle() {
             'Inicio': 'Home',
             'Sobre Nosotros': 'About Us',
             'Tours': 'Tours',
-            'Testimonios': 'Testimonials',
+            'Telescopio': 'Telescope',
             'Reservas': 'Bookings',
             'Contacto': 'Contact',
             'Reserva Ahora': 'Book Now',
@@ -113,7 +114,7 @@ function initLanguageToggle() {
             'Inicio': 'Início',
             'Sobre Nosotros': 'Sobre Nós',
             'Tours': 'Tours',
-            'Testimonios': 'Depoimentos',
+            'Telescopio': 'Telescópio',
             'Reservas': 'Reservas',
             'Contacto': 'Contato',
             'Reserva Ahora': 'Reserve Agora',
@@ -1029,6 +1030,135 @@ window.addEventListener('load', function() {
     }
 });
 
+// ===== TELESCOPE GALLERY =====
+function initTelescopeGallery() {
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    const modal = document.getElementById('galleryModal');
+    const modalImage = document.getElementById('modalImage');
+    const closeModal = document.querySelector('.close-modal');
+    const prevBtn = document.getElementById('prevImage');
+    const nextBtn = document.getElementById('nextImage');
+    
+    let currentImageIndex = 0;
+    const imagesSources = [];
+    
+    // Collect all image sources
+    galleryItems.forEach((item, index) => {
+        const img = item.querySelector('img');
+        imagesSources.push(img.src);
+        
+        // Add click event to open modal
+        item.addEventListener('click', () => {
+            currentImageIndex = index;
+            showModal();
+        });
+        
+        // Add keyboard support
+        item.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                currentImageIndex = index;
+                showModal();
+            }
+        });
+        
+        // Make items focusable
+        item.setAttribute('tabindex', '0');
+        item.setAttribute('role', 'button');
+        item.setAttribute('aria-label', `Ver imagen ${index + 1} del telescopio`);
+    });
+    
+    function showModal() {
+        modal.classList.add('active');
+        modalImage.src = imagesSources[currentImageIndex];
+        modalImage.alt = `Imagen ${currentImageIndex + 1} del telescopio Unistellar`;
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        
+        // Focus the modal for screen readers
+        modal.focus();
+    }
+    
+    function hideModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+    
+    function showPreviousImage() {
+        currentImageIndex = currentImageIndex > 0 ? currentImageIndex - 1 : imagesSources.length - 1;
+        modalImage.src = imagesSources[currentImageIndex];
+        modalImage.alt = `Imagen ${currentImageIndex + 1} del telescopio Unistellar`;
+    }
+    
+    function showNextImage() {
+        currentImageIndex = currentImageIndex < imagesSources.length - 1 ? currentImageIndex + 1 : 0;
+        modalImage.src = imagesSources[currentImageIndex];
+        modalImage.alt = `Imagen ${currentImageIndex + 1} del telescopio Unistellar`;
+    }
+    
+    // Modal event listeners
+    if (closeModal) {
+        closeModal.addEventListener('click', hideModal);
+    }
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', showPreviousImage);
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', showNextImage);
+    }
+    
+    // Close modal when clicking outside the image
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            hideModal();
+        }
+    });
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (modal.classList.contains('active')) {
+            switch(e.key) {
+                case 'Escape':
+                    hideModal();
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    showPreviousImage();
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    showNextImage();
+                    break;
+            }
+        }
+    });
+    
+    // Touch/swipe support for mobile
+    let startX = null;
+    
+    modalImage.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+    });
+    
+    modalImage.addEventListener('touchend', (e) => {
+        if (!startX) return;
+        
+        const endX = e.changedTouches[0].clientX;
+        const diffX = startX - endX;
+        
+        if (Math.abs(diffX) > 50) { // Minimum swipe distance
+            if (diffX > 0) {
+                showNextImage(); // Swipe left - next image
+            } else {
+                showPreviousImage(); // Swipe right - previous image
+            }
+        }
+        
+        startX = null;
+    });
+}
+
 // ===== SERVICE WORKER REGISTRATION (for PWA capabilities) =====
 if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
     window.addEventListener('load', function() {
@@ -1050,6 +1180,7 @@ if (typeof module !== 'undefined' && module.exports) {
         initTestimonialSlider,
         initBookingForm,
         initSmoothScrolling,
+        initTelescopeGallery,
         debounce,
         throttle
     };
