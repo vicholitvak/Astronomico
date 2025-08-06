@@ -452,37 +452,165 @@ function initScrollEffects() {
     }
 }
 
-// ===== DATE PICKER ENHANCEMENT =====
+// ===== INTERACTIVE CALENDAR =====
 function initDatePicker() {
-    const dateInput = document.getElementById('date');
-    if (!dateInput) return;
+    const calendarContainer = document.querySelector('.calendar-container');
+    if (!calendarContainer) return;
 
-    // Disable past dates and weekends if needed
-    dateInput.addEventListener('input', function() {
-        const selectedDate = new Date(this.value);
+    const monthYearEl = document.getElementById('month-year');
+    const calendarDaysEl = document.getElementById('calendar-days');
+    const prevMonthBtn = document.getElementById('prev-month');
+    const nextMonthBtn = document.getElementById('next-month');
+    const dateInput = document.getElementById('date');
+    const selectedDateDisplay = document.getElementById('selected-date-display');
+
+    let currentDate = new Date();
+    let selectedDate = null;
+
+    const months = [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+
+    // Calculate moon phases for availability
+    function getFullMoonDates(year, month) {
+        // Simplified full moon calculation - in production, use a proper lunar calendar API
+        const fullMoonDates = [];
+        const baseFullMoon = new Date(2024, 0, 25); // January 25, 2024 was a full moon
+        const lunarCycle = 29.53; // days
+        
+        const startOfMonth = new Date(year, month, 1);
+        const endOfMonth = new Date(year, month + 1, 0);
+        
+        let currentFullMoon = new Date(baseFullMoon);
+        while (currentFullMoon < endOfMonth) {
+            if (currentFullMoon >= startOfMonth && currentFullMoon <= endOfMonth) {
+                // Add 3 days before and after full moon as unavailable
+                for (let i = -3; i <= 3; i++) {
+                    const unavailableDate = new Date(currentFullMoon);
+                    unavailableDate.setDate(unavailableDate.getDate() + i);
+                    if (unavailableDate >= startOfMonth && unavailableDate <= endOfMonth) {
+                        fullMoonDates.push(unavailableDate.getDate());
+                    }
+                }
+            }
+            currentFullMoon.setDate(currentFullMoon.getDate() + lunarCycle);
+        }
+        
+        return fullMoonDates;
+    }
+
+    function isDateUnavailable(date) {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        const fullMoonDates = getFullMoonDates(year, month);
+        return fullMoonDates.includes(date);
+    }
+
+    function renderCalendar() {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        
+        monthYearEl.textContent = `${months[month]} ${year}`;
+        
+        const firstDayOfMonth = new Date(year, month, 1);
+        const lastDayOfMonth = new Date(year, month + 1, 0);
+        const firstDayWeekday = firstDayOfMonth.getDay();
+        const daysInMonth = lastDayOfMonth.getDate();
+        
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-
-        if (selectedDate < today) {
-            this.value = '';
-            alert('Por favor selecciona una fecha futura');
+        
+        let calendarHTML = '';
+        
+        // Previous month's trailing days
+        const prevMonth = new Date(year, month - 1, 0);
+        for (let i = firstDayWeekday - 1; i >= 0; i--) {
+            const day = prevMonth.getDate() - i;
+            calendarHTML += `<div class="calendar-day other-month">${day}</div>`;
         }
+        
+        // Current month's days
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayDate = new Date(year, month, day);
+            dayDate.setHours(0, 0, 0, 0);
+            
+            let classes = ['calendar-day'];
+            
+            if (dayDate < today) {
+                classes.push('past');
+            } else if (isDateUnavailable(day)) {
+                classes.push('unavailable');
+            } else {
+                classes.push('available');
+            }
+            
+            if (dayDate.getTime() === today.getTime()) {
+                classes.push('today');
+            }
+            
+            if (selectedDate && dayDate.getTime() === selectedDate.getTime()) {
+                classes.push('selected');
+            }
+            
+            calendarHTML += `<div class="${classes.join(' ')}" data-date="${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}">${day}</div>`;
+        }
+        
+        // Next month's leading days
+        const totalCells = calendarHTML.split('calendar-day').length - 1;
+        const remainingCells = 42 - totalCells; // 6 rows × 7 days
+        for (let day = 1; day <= remainingCells && totalCells < 42; day++) {
+            calendarHTML += `<div class="calendar-day other-month">${day}</div>`;
+        }
+        
+        calendarDaysEl.innerHTML = calendarHTML;
+        
+        // Add click listeners to available days
+        document.querySelectorAll('.calendar-day.available').forEach(dayEl => {
+            dayEl.addEventListener('click', function() {
+                const dateStr = this.getAttribute('data-date');
+                if (dateStr) {
+                    selectedDate = new Date(dateStr);
+                    dateInput.value = dateStr;
+                    
+                    // Update display
+                    const options = { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    };
+                    selectedDateDisplay.textContent = `Fecha seleccionada: ${selectedDate.toLocaleDateString('es-ES', options)}`;
+                    selectedDateDisplay.classList.add('has-date');
+                    
+                    // Re-render to show selection
+                    renderCalendar();
+                }
+            });
+        });
+    }
+
+    // Navigation event listeners
+    prevMonthBtn.addEventListener('click', function() {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
     });
 
-    // Add calendar icon click functionality
-    const dateGroup = dateInput.closest('.form-group');
-    const calendarIcon = document.createElement('i');
-    calendarIcon.className = 'fas fa-calendar-alt date-icon';
-    calendarIcon.style.position = 'absolute';
-    calendarIcon.style.right = '12px';
-    calendarIcon.style.top = '50%';
-    calendarIcon.style.transform = 'translateY(-50%)';
-    calendarIcon.style.color = 'var(--primary-color)';
-    calendarIcon.style.cursor = 'pointer';
-    calendarIcon.style.pointerEvents = 'none';
+    nextMonthBtn.addEventListener('click', function() {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+    });
 
-    dateGroup.style.position = 'relative';
-    dateGroup.appendChild(calendarIcon);
+    // Initialize calendar
+    renderCalendar();
+    
+    // Set minimum date to tomorrow
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    if (currentDate < tomorrow) {
+        currentDate = new Date(tomorrow);
+        renderCalendar();
+    }
 }
 
 // ===== ANIMATIONS =====
