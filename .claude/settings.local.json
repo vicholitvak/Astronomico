@@ -4,7 +4,9 @@
       "Bash(git remote add:*)",
       "Bash(git branch:*)",
       "Bash(gh:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git remote remove:*)",
+      "Bash(git push:*)"
     ],
     "deny": []
   }

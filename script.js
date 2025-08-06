@@ -474,30 +474,74 @@ function initDatePicker() {
 
     // Calculate moon phases for availability
     function getFullMoonDates(year, month) {
-        // Simplified full moon calculation - in production, use a proper lunar calendar API
-        const fullMoonDates = [];
-        const baseFullMoon = new Date(2024, 0, 25); // January 25, 2024 was a full moon
-        const lunarCycle = 29.53; // days
+        // Full moon dates for 2024-2025 (approximate)
+        const knownFullMoons = [
+            new Date(2024, 0, 25),   // Jan 25, 2024
+            new Date(2024, 1, 24),   // Feb 24, 2024
+            new Date(2024, 2, 25),   // Mar 25, 2024
+            new Date(2024, 3, 23),   // Apr 23, 2024
+            new Date(2024, 4, 23),   // May 23, 2024
+            new Date(2024, 5, 22),   // Jun 22, 2024
+            new Date(2024, 6, 21),   // Jul 21, 2024
+            new Date(2024, 7, 19),   // Aug 19, 2024
+            new Date(2024, 8, 18),   // Sep 18, 2024
+            new Date(2024, 9, 17),   // Oct 17, 2024
+            new Date(2024, 10, 15),  // Nov 15, 2024
+            new Date(2024, 11, 15),  // Dec 15, 2024
+            new Date(2025, 0, 13),   // Jan 13, 2025
+            new Date(2025, 1, 12),   // Feb 12, 2025
+            new Date(2025, 2, 14),   // Mar 14, 2025
+            new Date(2025, 3, 13),   // Apr 13, 2025
+            new Date(2025, 4, 12),   // May 12, 2025
+            new Date(2025, 5, 11),   // Jun 11, 2025
+            new Date(2025, 6, 10),   // Jul 10, 2025
+            new Date(2025, 7, 9),    // Aug 9, 2025
+            new Date(2025, 8, 7),    // Sep 7, 2025
+            new Date(2025, 9, 7),    // Oct 7, 2025
+            new Date(2025, 10, 5),   // Nov 5, 2025
+            new Date(2025, 11, 4)    // Dec 4, 2025
+        ];
         
+        const unavailableDates = [];
         const startOfMonth = new Date(year, month, 1);
         const endOfMonth = new Date(year, month + 1, 0);
         
-        let currentFullMoon = new Date(baseFullMoon);
-        while (currentFullMoon < endOfMonth) {
-            if (currentFullMoon >= startOfMonth && currentFullMoon <= endOfMonth) {
-                // Add 3 days before and after full moon as unavailable
-                for (let i = -3; i <= 3; i++) {
-                    const unavailableDate = new Date(currentFullMoon);
-                    unavailableDate.setDate(unavailableDate.getDate() + i);
-                    if (unavailableDate >= startOfMonth && unavailableDate <= endOfMonth) {
-                        fullMoonDates.push(unavailableDate.getDate());
-                    }
+        knownFullMoons.forEach(fullMoonDate => {
+            // Check if full moon is in current month or affects current month
+            for (let i = -3; i <= 3; i++) {
+                const unavailableDate = new Date(fullMoonDate);
+                unavailableDate.setDate(fullMoonDate.getDate() + i);
+                
+                if (unavailableDate >= startOfMonth && unavailableDate <= endOfMonth) {
+                    unavailableDates.push(unavailableDate.getDate());
                 }
             }
-            currentFullMoon.setDate(currentFullMoon.getDate() + lunarCycle);
-        }
+        });
         
-        return fullMoonDates;
+        return [...new Set(unavailableDates)]; // Remove duplicates
+    }
+
+    function getFullMoonDaysInMonth(year, month) {
+        const knownFullMoons = [
+            new Date(2024, 0, 25), new Date(2024, 1, 24), new Date(2024, 2, 25), new Date(2024, 3, 23),
+            new Date(2024, 4, 23), new Date(2024, 5, 22), new Date(2024, 6, 21), new Date(2024, 7, 19),
+            new Date(2024, 8, 18), new Date(2024, 9, 17), new Date(2024, 10, 15), new Date(2024, 11, 15),
+            new Date(2025, 0, 13), new Date(2025, 1, 12), new Date(2025, 2, 14), new Date(2025, 3, 13),
+            new Date(2025, 4, 12), new Date(2025, 5, 11), new Date(2025, 6, 10), new Date(2025, 7, 9),
+            new Date(2025, 8, 7), new Date(2025, 9, 7), new Date(2025, 10, 5), new Date(2025, 11, 4)
+        ];
+        
+        const fullMoonDays = [];
+        const startOfMonth = new Date(year, month, 1);
+        const endOfMonth = new Date(year, month + 1, 0);
+        
+        knownFullMoons.forEach(fullMoonDate => {
+            if (fullMoonDate >= startOfMonth && fullMoonDate <= endOfMonth) {
+                fullMoonDays.push(fullMoonDate.getDate());
+            }
+        });
+        
+        return fullMoonDays;
     }
 
     function isDateUnavailable(date) {
@@ -530,12 +574,16 @@ function initDatePicker() {
             calendarHTML += `<div class="calendar-day other-month">${day}</div>`;
         }
         
+        // Get full moon days for moon icons
+        const fullMoonDays = getFullMoonDaysInMonth(year, month);
+        
         // Current month's days
         for (let day = 1; day <= daysInMonth; day++) {
             const dayDate = new Date(year, month, day);
             dayDate.setHours(0, 0, 0, 0);
             
             let classes = ['calendar-day'];
+            let dayContent = day;
             
             if (dayDate < today) {
                 classes.push('past');
@@ -553,7 +601,12 @@ function initDatePicker() {
                 classes.push('selected');
             }
             
-            calendarHTML += `<div class="${classes.join(' ')}" data-date="${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}">${day}</div>`;
+            // Add moon icon for full moon days
+            if (fullMoonDays.includes(day)) {
+                dayContent = `<span class="day-number">${day}</span><span class="moon-icon">🌕</span>`;
+            }
+            
+            calendarHTML += `<div class="${classes.join(' ')}" data-date="${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}">${dayContent}</div>`;
         }
         
         // Next month's leading days
