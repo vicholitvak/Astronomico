@@ -1,5 +1,5 @@
-# robots.txt para Tours Astronómicos Atacama
-# https://toursastronomicosatacama.cl/robots.txt
+# robots.txt para Atacama NightSky
+# https://atacamadarksky.cl/robots.txt
 
 User-agent: *
 Allow: /
@@ -81,7 +81,7 @@ User-agent: BLEXBot
 Disallow: /
 
 # Configuración para sitemap
-Sitemap: https://toursastronomicosatacama.cl/sitemap.xml
+Sitemap: https://atacamadarksky.cl/sitemap.xml
 
 # Directrices adicionales para crawling
 Crawl-delay: 1
