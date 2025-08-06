@@ -108,14 +108,73 @@ function initLanguageToggle() {
             'hero-subtitle': 'Expert-guided astronomical tours: star gazing, constellations and celestial phenomena.',
             'btn-reserve': 'Book Your Tour',
             'btn-see-tours': 'See Tours'
+        },
+        pt: {
+            'Inicio': 'Início',
+            'Sobre Nosotros': 'Sobre Nós',
+            'Tours': 'Tours',
+            'Testimonios': 'Depoimentos',
+            'Reservas': 'Reservas',
+            'Contacto': 'Contato',
+            'Reserva Ahora': 'Reserve Agora',
+            'hero-title': 'Descubra o Céu Mais Puro do Mundo em San Pedro de Atacama',
+            'hero-subtitle': 'Tours astronômicos guiados por especialistas: observação de estrelas, constelações e fenômenos celestiais.',
+            'btn-reserve': 'Reserve Seu Tour',
+            'btn-see-tours': 'Ver Tours'
         }
     };
 
     let currentLang = 'es';
+    const langDropdown = document.getElementById('lang-dropdown');
+    const langOptions = document.querySelectorAll('.lang-option');
 
-    langToggle.addEventListener('click', function() {
-        currentLang = currentLang === 'es' ? 'en' : 'es';
-        currentLangSpan.textContent = currentLang.toUpperCase();
+    // Language mapping for flags and display
+    const languageMap = {
+        'es': { flag: '🇪🇸', name: 'ES' },
+        'en': { flag: '🇺🇸', name: 'EN' }, 
+        'pt': { flag: '🇧🇷', name: 'PT' }
+    };
+
+    // Toggle dropdown
+    langToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        langDropdown.classList.toggle('show');
+        updateActiveOption();
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function() {
+        langDropdown.classList.remove('show');
+    });
+
+    // Handle language selection
+    langOptions.forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const selectedLang = this.getAttribute('data-lang');
+            
+            if (selectedLang !== currentLang) {
+                setLanguage(selectedLang);
+            }
+            
+            langDropdown.classList.remove('show');
+        });
+    });
+
+    // Update active option styling
+    function updateActiveOption() {
+        langOptions.forEach(option => {
+            option.classList.remove('active');
+            if (option.getAttribute('data-lang') === currentLang) {
+                option.classList.add('active');
+            }
+        });
+    }
+
+    // Set language function
+    function setLanguage(lang) {
+        currentLang = lang;
+        currentLangSpan.textContent = languageMap[lang].name;
         
         // Update navigation texts
         Object.keys(translations[currentLang]).forEach(key => {
@@ -136,14 +195,28 @@ function initLanguageToggle() {
         if (btnReserve) btnReserve.textContent = translations[currentLang]['btn-reserve'];
         if (btnSee) btnSee.textContent = translations[currentLang]['btn-see-tours'];
 
+        // Update calendar language if it exists
+        updateCalendarLanguage(lang);
+
         // Store language preference
         localStorage.setItem('preferred-language', currentLang);
-    });
+        
+        // Update active option
+        updateActiveOption();
+    }
 
     // Load saved language preference
     const savedLang = localStorage.getItem('preferred-language');
-    if (savedLang && savedLang !== 'es') {
-        langToggle.click();
+    if (savedLang && translations[savedLang]) {
+        setLanguage(savedLang);
+    }
+
+    // Update calendar language function
+    function updateCalendarLanguage(lang) {
+        // This will be called when calendar exists
+        if (typeof renderCalendar === 'function') {
+            renderCalendar();
+        }
     }
 }
 
@@ -343,7 +416,7 @@ function initBookingForm() {
         }
     });
 
-    function submitForm() {
+    async function submitForm() {
         const submitButton = form.querySelector('.btn-submit');
         const originalText = submitButton.innerHTML;
         
@@ -351,8 +424,22 @@ function initBookingForm() {
         submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
         submitButton.disabled = true;
 
-        // Simulate form submission (replace with actual form submission)
-        setTimeout(() => {
+        try {
+            // Preparar datos del formulario
+            const formData = new FormData(form);
+            
+            // Procesar reserva con Google Calendar
+            if (typeof processBookingWithCalendar === 'function') {
+                await processBookingWithCalendar(formData);
+            } else {
+                // Fallback si Google Calendar no está disponible
+                showBookingSuccessWithWarning({
+                    date: formData.get('date'),
+                    time: formData.get('time'),
+                    persons: formData.get('persons')
+                }, 'Google Calendar API no disponible', localStorage.getItem('preferred-language') || 'es');
+            }
+            
             // Hide form and show success message
             form.style.display = 'none';
             formSuccess.classList.add('show');
@@ -360,15 +447,25 @@ function initBookingForm() {
             // Scroll to success message
             formSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
             
-            // Reset form after 5 seconds (for demo purposes)
+            // Reset form after 10 seconds
             setTimeout(() => {
                 form.reset();
                 form.style.display = 'block';
                 formSuccess.classList.remove('show');
                 submitButton.innerHTML = originalText;
                 submitButton.disabled = false;
-            }, 5000);
-        }, 2000);
+            }, 10000);
+            
+        } catch (error) {
+            console.error('Error processing booking:', error);
+            
+            // Show error message
+            alert('Hubo un error procesando tu reserva. Por favor inténtalo de nuevo o contáctanos directamente por WhatsApp.');
+            
+            // Restore button
+            submitButton.innerHTML = originalText;
+            submitButton.disabled = false;
+        }
     }
 
     // Auto-fill current date + 1 day as minimum

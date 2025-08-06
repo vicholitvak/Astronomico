@@ -1122,10 +1122,66 @@ blockquote {
     padding: var(--spacing-sm);
     border: 1px solid rgba(255, 215, 0, 0.2);
     border-radius: var(--border-radius);
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-primary);
+    background: #2a2a2a;
+    color: #fff;
     font-size: 1rem;
     transition: all var(--transition-fast);
+}
+
+.form-group select option {
+    background: #2a2a2a;
+    color: #fff;
+    padding: var(--spacing-xs);
+}
+
+/* Estilos para alertas de disponibilidad */
+.availability-warning {
+    margin-top: var(--spacing-xs);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.9rem;
+    animation: slideInWarning 0.3s ease-out;
+}
+
+.availability-warning.last-spots {
+    background: rgba(255, 165, 0, 0.1);
+    border: 1px solid rgba(255, 165, 0, 0.3);
+    color: #FFA500;
+}
+
+.availability-warning.full {
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    color: #FF6B6B;
+}
+
+.availability-warning.private {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: #00D4FF;
+}
+
+.availability-warning i {
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.availability-warning .warning-text {
+    line-height: 1.4;
+}
+
+@keyframes slideInWarning {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .form-group input:focus,

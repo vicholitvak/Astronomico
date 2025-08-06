@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- FullCalendar CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet">
     
     <!-- Stylesheet -->
     <link rel="stylesheet" href="styles.css">
@@ -44,10 +44,27 @@
                 
                 <!-- Language Toggle -->
                 <div class="language-toggle">
-                    <button id="lang-toggle" class="lang-btn">
-                        <i class="fas fa-globe"></i>
-                        <span id="current-lang">ES</span>
-                    </button>
+                    <div class="lang-selector">
+                        <button id="lang-toggle" class="lang-btn">
+                            <i class="fas fa-globe"></i>
+                            <span id="current-lang">ES</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="lang-dropdown" id="lang-dropdown">
+                            <div class="lang-option" data-lang="es">
+                                <span class="flag">🇪🇸</span>
+                                <span>Español</span>
+                            </div>
+                            <div class="lang-option" data-lang="en">
+                                <span class="flag">🇺🇸</span>
+                                <span>English</span>
+                            </div>
+                            <div class="lang-option" data-lang="pt">
+                                <span class="flag">🇧🇷</span>
+                                <span>Português</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Desktop Menu -->
@@ -145,7 +162,7 @@
                     <div class="featured-badge">Más Popular</div>
                     <div class="tour-image">
                         <img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Tour astronómico completo con telescopio Unistellar" loading="lazy">
-                        <div class="tour-price">$75.000</div>
+                        <div class="tour-price">$30.000</div>
                     </div>
                     <div class="tour-content">
                         <h3>Tour Astronómico Completo</h3>
@@ -186,7 +203,7 @@
                     </div>
                     <div class="tour-content">
                         <h3>Tour de Astrofotografía Especializado</h3>
-                        <p>Aprende técnicas profesionales de astrofotografía con equipos especializados. Incluye configuración de cámara, técnicas avanzadas y edición básica.</p>
+                        <p>Aprende técnicas profesionales de astrofotografía con equipos especializados en distintas locaciones alrrededor de San Pedro de Atacama que parecen de otro planeta. Incluye configuración de cámara, técnicas avanzadas y edición básica.</p>
                         
                         <div class="tour-details">
                             <div class="detail">
@@ -203,11 +220,11 @@
                             <h4>Incluye:</h4>
                             <ul>
                                 <li><i class="fas fa-check"></i> Instructor especializado</li>
-                                <li><i class="fas fa-check"></i> Equipos profesionales</li>
+                                <li><i class="fas fa-check"></i> Transporte en camioneta</li>
                                 <li><i class="fas fa-check"></i> Trípodes y accesorios</li>
                                 <li><i class="fas fa-check"></i> Sesión de edición</li>
-                                <li><i class="fas fa-check"></i> Cóctel fotográfico</li>
-                                <li><i class="fas fa-check"></i> Certificado del taller</li>
+                                
+        
                             </ul>
                         </div>
                         
@@ -242,8 +259,8 @@
                                 <li><i class="fas fa-check"></i> Guía astronómico exclusivo</li>
                                 <li><i class="fas fa-check"></i> Ubicación privada personalizada</li>
                                 <li><i class="fas fa-check"></i> Telescopio Unistellar dedicado</li>
-                                <li><i class="fas fa-check"></i> Cena gourmet bajo las estrellas</li>
-                                <li><i class="fas fa-check"></i> Sesión fotográfica profesional</li>
+        
+                                <li><i class="fas fa-check"></i> Sesión fotográfica en locaciones únicas</li>
                                 <li><i class="fas fa-check"></i> Recuerdos personalizados</li>
                             </ul>
                         </div>
@@ -336,6 +353,8 @@
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
+
+                            
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
                         </div>
@@ -374,32 +393,6 @@
             <div class="booking-content">
                 <div class="booking-form-container">
                     <form id="booking-form" class="booking-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="name">Nombre Completo *</label>
-                                <input type="text" id="name" name="name" required aria-required="true">
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Email *</label>
-                                <input type="email" id="email" name="email" required aria-required="true">
-                            </div>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="phone">Teléfono/WhatsApp *</label>
-                                <input type="tel" id="phone" name="phone" required aria-required="true">
-                            </div>
-                            <div class="form-group">
-                                <label for="tour">Tour Seleccionado *</label>
-                                <select id="tour" name="tour" required aria-required="true">
-                                    <option value="">Selecciona un tour</option>
-                                    <option value="completo">Tour Astronómico Completo - $75.000</option>
-                                    <option value="astrofotografia">Tour de Astrofotografía Especializado - $120.000</option>
-                                    <option value="privado">Tour Privado VIP - $200.000</option>
-                                </select>
-                            </div>
-                        </div>
                         
                         <!-- Calendar Section with FullCalendar -->
                         <div class="form-group calendar-section">
@@ -436,19 +429,9 @@
                             <input type="hidden" id="selected-time" name="time" required>
                         </div>
                         
-                        <!-- Quick Booking Options -->
-                        <div class="quick-booking-section">
-                            <h4>¿Prefieres una reserva más rápida?</h4>
-                            <div class="quick-options">
-                                <a href="https://wa.me/56935134669?text=Hola!%20Me%20interesa%20reservar%20un%20tour%20astronómico%20con%20Atacama%20NightSky" target="_blank" class="quick-option">
-                                    <i class="fab fa-whatsapp"></i>
-                                    <span>WhatsApp Directo</span>
-                                </a>
-                                <button type="button" class="quick-option" id="calendly-option">
-                                    <i class="fas fa-calendar-check"></i>
-                                    <span>Calendly Online</span>
-                                </button>
-                            </div>
+                        <!-- Datos de la reserva -->
+                        <div class="form-section">
+                            <h4>Datos de tu Reserva</h4>
                         </div>
                         
                         <div class="form-row">
@@ -464,20 +447,58 @@
                                     <option value="6">6 personas</option>
                                     <option value="7">7 personas</option>
                                     <option value="8">8 personas</option>
-                                    <option value="9+">Más de 8 personas</option>
+                                    <option value="9">9 personas</option>
+                                    <option value="10">10 personas</option>
+                                    <option value="11">11 personas</option>
+                                    <option value="12">12 personas</option>
+                                    <option value="13">13 personas</option>
+                                    <option value="14">14 personas</option>
+                                    <option value="15">15 personas</option>
+                                    <option value="16">16 personas</option>
+                                    <option value="16+">Más de 16 personas (contactar)</option>
+                                </select>
+                                <div id="availability-warning" class="availability-warning" style="display: none;">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span class="warning-text"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="tour-type">Tipo de Tour *</label>
+                                <select id="tour-type" name="tour-type" required>
+                                    <option value="">Selecciona tipo de tour</option>
+                                    <option value="regular">Tour Regular (Grupo)</option>
+                                    <option value="private">Tour Privado (Solo tu grupo)</option>
+                                    <option value="astrophoto">Tour Astrofotográfico (Especializado)</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="time">Horario Preferido</label>
-                                <select id="time" name="time">
-                                    <option value="">Selecciona horario</option>
-                                    <option value="20:00">20:00 hrs</option>
-                                    <option value="20:30">20:30 hrs</option>
-                                    <option value="21:00">21:00 hrs</option>
-                                    <option value="21:30">21:30 hrs</option>
-                                    <option value="22:00">22:00 hrs</option>
+                                <label for="time">Horario del Tour *</label>
+                                <select id="time" name="time" required>
+                                    <option value="">Primero selecciona tipo de tour</option>
                                 </select>
+                                <small class="time-info" style="color: #ccc; font-size: 0.8rem; margin-top: 0.5rem; display: block;"></small>
                             </div>
+                        </div>
+                        
+                        <!-- Información de contacto -->
+                        <div class="form-section">
+                            <h4>Información de Contacto</h4>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Nombre Completo *</label>
+                                <input type="text" id="name" name="name" required aria-required="true" placeholder="Tu nombre completo">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" name="email" required aria-required="true" placeholder="tu@email.com">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Teléfono/WhatsApp *</label>
+                            <input type="tel" id="phone" name="phone" required aria-required="true" placeholder="+56 9 1234 5678">
                         </div>
                         
                         <div class="form-group">
@@ -671,277 +692,1559 @@
     </div>
 
     <!-- FullCalendar JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.js"></script>
+    
+    <!-- Google APIs -->
+    <script src="https://apis.google.com/js/api.js"></script>
     
     <!-- JavaScript -->
     <script src="script.js"></script>
-    
-    <!-- Inline Calendar Script -->
+
+    <!-- Calendario personalizado con fases lunares -->
     <script>
-        // Algoritmo para calcular la fase lunar
+        // Algoritmo preciso basado en porcentaje de iluminación lunar
         function getMoonPhase(date) {
-            const cycleLength = 29.53058867; // Ciclo lunar en días
-            const knownNewMoon = new Date('2025-01-01T00:00:00Z'); // Fecha de referencia luna nueva
-            const diff = (date - knownNewMoon) / (1000 * 60 * 60 * 24);
-            const phase = ((diff % cycleLength) + cycleLength) % cycleLength / cycleLength;
+            // Referencia astronómica precisa: Luna nueva del 6 de enero 2000, 18:14 UTC
+            const referenceNewMoon = new Date('2000-01-06T18:14:00Z');
+            const lunarCycle = 29.530588853; // Período sinódico lunar en días
             
-            const phases = [
-                { name: 'Luna Nueva', emoji: '🌑', available: true },
-                { name: 'Creciente', emoji: '🌒', available: true },
-                { name: 'Cuarto Creciente', emoji: '🌓', available: true },
-                { name: 'Gibosa Creciente', emoji: '🌔', available: false },
-                { name: 'Luna Llena', emoji: '🌕', available: false },
-                { name: 'Gibosa Menguante', emoji: '🌖', available: false },
-                { name: 'Cuarto Menguante', emoji: '🌗', available: true },
-                { name: 'Menguante', emoji: '🌘', available: true }
-            ];
+            // Calcular días desde la referencia
+            const daysSinceReference = (date - referenceNewMoon) / (1000 * 60 * 60 * 24);
             
-            const index = Math.floor(phase * 8) % 8;
-            return phases[index];
+            // Obtener la fase actual en el ciclo (0 = luna nueva, 0.5 = luna llena)
+            const phase = (daysSinceReference / lunarCycle) % 1;
+            const normalizedPhase = phase < 0 ? phase + 1 : phase;
+            
+            // Calcular porcentaje de iluminación
+            // La iluminación va de 0% (luna nueva) a 100% (luna llena) y vuelta a 0%
+            let illumination;
+            if (normalizedPhase <= 0.5) {
+                // Fase creciente: de 0% a 100%
+                illumination = normalizedPhase * 2 * 100;
+            } else {
+                // Fase menguante: de 100% a 0%
+                illumination = (2 - normalizedPhase * 2) * 100;
+            }
+            
+            // Redondear a 1 decimal
+            illumination = Math.round(illumination * 10) / 10;
+            
+            // Determinar disponibilidad basada en iluminación y fase
+            // Bloquear solo en fase creciente cuando iluminación > 75%
+            // En fase menguante, la luna sale tarde y no interfiere con los tours
+            let isNearFullMoon = false;
+            
+            if (normalizedPhase <= 0.5) {
+                // Fase creciente: bloquear si iluminación > 75%
+                isNearFullMoon = illumination > 75;
+            } else {
+                // Fase menguante: solo bloquear si iluminación > 90% (muy cerca de luna llena)
+                isNearFullMoon = illumination > 90;
+            }
+            
+            // Calcular días desde la luna llena más cercana (para información)
+            let daysFromFullMoon;
+            if (normalizedPhase <= 0.5) {
+                daysFromFullMoon = (0.5 - normalizedPhase) * lunarCycle;
+            } else {
+                daysFromFullMoon = (normalizedPhase - 0.5) * lunarCycle;
+            }
+            
+            // Determinar la fase lunar para el emoji y nombre
+            let phaseIndex, phaseName, emoji;
+            
+            if (illumination < 1) {
+                phaseIndex = 0; phaseName = 'Nueva'; emoji = '🌑';
+            } else if (illumination < 25) {
+                phaseIndex = normalizedPhase < 0.5 ? 1 : 7;
+                phaseName = normalizedPhase < 0.5 ? 'Creciente' : 'Menguante';
+                emoji = normalizedPhase < 0.5 ? '🌒' : '🌘';
+            } else if (illumination < 45) {
+                phaseIndex = normalizedPhase < 0.5 ? 2 : 6;
+                phaseName = normalizedPhase < 0.5 ? 'Cuarto Creciente' : 'Cuarto Menguante';
+                emoji = normalizedPhase < 0.5 ? '🌓' : '🌗';
+            } else if (illumination < 95) {
+                phaseIndex = normalizedPhase < 0.5 ? 3 : 5;
+                phaseName = normalizedPhase < 0.5 ? 'Gibosa Creciente' : 'Gibosa Menguante';
+                emoji = normalizedPhase < 0.5 ? '🌔' : '🌖';
+            } else {
+                phaseIndex = 4; phaseName = 'Llena'; emoji = '🌕';
+            }
+            
+            return {
+                emoji: emoji,
+                name: phaseName,
+                illumination: illumination,
+                isNearFullMoon: isNearFullMoon,
+                daysFromFull: Math.round(daysFromFullMoon * 10) / 10,
+                phase: normalizedPhase,
+                isFullMoon: illumination > 95,
+                isNewMoon: illumination < 5
+            };
+        }
+
+        // Verificar disponibilidad de fecha
+        function isDateAvailable(date) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const checkDate = new Date(date);
+            checkDate.setHours(0, 0, 0, 0);
+            
+            // No disponible si es en el pasado
+            if (checkDate < today) return false;
+            
+            const moonPhase = getMoonPhase(checkDate);
+            // Disponible solo si NO está cerca de luna llena
+            return !moonPhase.isNearFullMoon;
+        }
+
+        // Variables globales del calendario
+        let currentDate = new Date();
+        let selectedDate = null;
+
+        // Función para obtener textos del calendario traducidos
+        function getCalendarText(key, lang) {
+            const texts = {
+                es: {
+                    available: 'Disponible - Condiciones óptimas',
+                    unavailable: 'No disponible - Luna muy brillante',
+                    info: '🌒 Creciente: bloqueado si >75% iluminación | 🌖 Menguante: bloqueado si >90% iluminación',
+                    dateSelected: 'Fecha Seleccionada',
+                    excellentConditions: 'Condiciones excelentes para observación estelar',
+                    notAvailableTitle: 'Fecha no disponible para tours.',
+                    crescentBright: 'La luna creciente está muy brillante',
+                    almostFull: 'La luna está casi llena',
+                    selectOther: 'Selecciona otra fecha con menos iluminación lunar.',
+                    availableOptimal: 'Disponible - Condiciones óptimas',
+                    crescentBlocked: 'No disponible - Luna creciente muy brillante (>75%)',
+                    fullBlocked: 'No disponible - Luna casi llena (>90%)'
+                },
+                en: {
+                    available: 'Available - Optimal conditions',
+                    unavailable: 'Not available - Moon too bright',
+                    info: '🌒 Waxing: blocked if >75% illumination | 🌖 Waning: blocked if >90% illumination',
+                    dateSelected: 'Date Selected',
+                    excellentConditions: 'Excellent conditions for stargazing',
+                    notAvailableTitle: 'Date not available for tours.',
+                    crescentBright: 'The waxing moon is very bright',
+                    almostFull: 'The moon is almost full',
+                    selectOther: 'Please select another date with less lunar illumination.',
+                    availableOptimal: 'Available - Optimal conditions',
+                    crescentBlocked: 'Not available - Waxing moon too bright (>75%)',
+                    fullBlocked: 'Not available - Moon almost full (>90%)'
+                },
+                pt: {
+                    available: 'Disponível - Condições ótimas',
+                    unavailable: 'Não disponível - Lua muito brilhante',
+                    info: '🌒 Crescente: bloqueado se >75% iluminação | 🌖 Minguante: bloqueado se >90% iluminação',
+                    dateSelected: 'Data Selecionada',
+                    excellentConditions: 'Condições excelentes para observação estelar',
+                    notAvailableTitle: 'Data não disponível para tours.',
+                    crescentBright: 'A lua crescente está muito brilhante',
+                    almostFull: 'A lua está quase cheia',
+                    selectOther: 'Selecione outra data com menos iluminação lunar.',
+                    availableOptimal: 'Disponível - Condições ótimas',
+                    crescentBlocked: 'Não disponível - Lua crescente muito brilhante (>75%)',
+                    fullBlocked: 'Não disponível - Lua quase cheia (>90%)'
+                }
+            };
+            
+            return texts[lang] && texts[lang][key] ? texts[lang][key] : texts['es'][key];
         }
 
         // Inicializar calendario cuando el DOM esté listo
-        window.addEventListener('load', function() {
-            console.log('Iniciando calendario...');
-            
+        document.addEventListener('DOMContentLoaded', function() {
+            createCustomCalendar();
+        });
+
+        // Crear calendario personalizado
+        function createCustomCalendar() {
             const calendarEl = document.getElementById('fullcalendar');
             if (!calendarEl) {
-                console.error('No se encontró el elemento del calendario');
+                console.error('Elemento #fullcalendar no encontrado');
                 return;
             }
+
+            renderCalendar();
+        }
+
+        // Renderizar calendario
+        function renderCalendar() {
+            const calendarEl = document.getElementById('fullcalendar');
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
             
-            console.log('Elemento calendario encontrado:', calendarEl);
+            // Get current language for calendar
+            const currentLang = localStorage.getItem('preferred-language') || 'es';
             
-            // Intentar cargar FullCalendar con timeout
-            setTimeout(function() {
-                if (typeof FullCalendar === 'undefined') {
-                    console.log('FullCalendar no disponible, usando calendario de respaldo');
-                    createSimpleCalendar(calendarEl);
-                    return;
-                }
+            const monthNames = {
+                es: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                en: ['January', 'February', 'March', 'April', 'May', 'June',
+                     'July', 'August', 'September', 'October', 'November', 'December'],
+                pt: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+            };
             
-            // Generar eventos de tours disponibles
-            const events = [];
-            const today = new Date();
-            const endDate = new Date();
-            endDate.setMonth(endDate.getMonth() + 3); // 3 meses de eventos
+            const daysOfWeek = {
+                es: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+                en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                pt: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
+            };
             
-            for (let date = new Date(today); date <= endDate; date.setDate(date.getDate() + 1)) {
-                const moon = getMoonPhase(date);
-                if (moon.available) {
-                    events.push({
-                        title: 'Tour Disponible',
-                        date: date.toISOString().split('T')[0],
-                        color: '#00D4FF',
-                        textColor: '#000'
-                    });
-                }
-            }
+            // Primer día del mes y último día
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
             
-            // Verificar que FullCalendar esté cargado
-            if (typeof FullCalendar === 'undefined') {
-                console.error('FullCalendar no está cargado');
-                calendarEl.innerHTML = '<p style="color: red;">Error: El calendario no pudo cargarse. Por favor recarga la página.</p>';
-                return;
-            }
+            // Día de la semana del primer día (0=Domingo, 1=Lunes, etc.)
+            let startDay = firstDay.getDay();
+            startDay = startDay === 0 ? 6 : startDay - 1; // Convertir para empezar en Lunes
             
-            console.log('FullCalendar cargado correctamente');
-            
-            // Configurar FullCalendar
-            try {
-                const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                locale: 'es',
-                firstDay: 1,
-                height: 'auto',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,listWeek'
-                },
-                buttonText: {
-                    today: 'Hoy',
-                    month: 'Mes',
-                    week: 'Semana',
-                    list: 'Lista'
-                },
-                events: events,
-                
-                // Agregar fases lunares a cada día
-                dayCellContent: function(info) {
-                    const moon = getMoonPhase(info.date);
-                    return {
-                        html: `<div style="position: relative;">
-                                <span class="fc-daygrid-day-number">${info.dayNumberText}</span>
-                                <span class="moon-phase" title="${moon.name}" style="position: absolute; top: 2px; right: 2px; font-size: 12px;">
-                                    ${moon.emoji}
-                                </span>
-                               </div>`
-                    };
-                },
-                
-                // Click en fecha
-                dateClick: function(info) {
-                    const moon = getMoonPhase(info.date);
-                    const selectedDateDisplay = document.getElementById('selected-date-display');
+            let calendarHTML = `
+                <div class="custom-calendar">
+                    <div class="calendar-header">
+                        <button class="nav-btn" onclick="changeMonth(-1)">‹</button>
+                        <h3>${monthNames[currentLang][month]} ${year}</h3>
+                        <button class="nav-btn" onclick="changeMonth(1)">›</button>
+                    </div>
                     
-                    if (!moon.available) {
-                        alert(`No hay tours disponibles el ${info.dateStr} debido a ${moon.name}. Por favor selecciona otra fecha.`);
-                        return;
-                    }
+                    <div class="calendar-weekdays">
+                        ${daysOfWeek[currentLang].map(day => `<div class="weekday">${day}</div>`).join('')}
+                    </div>
                     
-                    // Actualizar display de fecha seleccionada
-                    const dateStr = info.date.toLocaleDateString('es-ES', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
-                    
-                    if (selectedDateDisplay) {
-                        selectedDateDisplay.innerHTML = `
-                            <div style="padding: 1rem; background: rgba(0, 212, 255, 0.1); border-radius: 8px;">
-                                <i class="fas fa-check-circle" style="color: #00D4FF;"></i>
-                                <p><strong>Fecha seleccionada:</strong> ${dateStr}</p>
-                                <p><strong>Fase lunar:</strong> ${moon.emoji} ${moon.name}</p>
-                                <p style="color: #4CAF50;">✓ Disponible para reserva</p>
-                            </div>
-                        `;
-                        document.getElementById('selected-date').value = info.dateStr;
-                    }
-                },
-                
-                // Click en evento
-                eventClick: function(info) {
-                    const dateStr = info.event.start.toLocaleDateString('es-ES', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
-                    
-                    if (confirm(`¿Deseas reservar el tour para ${dateStr}?`)) {
-                        // Aquí puedes redirigir a WhatsApp o abrir formulario
-                        window.location.href = `https://wa.me/56935134669?text=Hola!%20Me%20interesa%20reservar%20el%20tour%20del%20${info.event.startStr}`;
-                    }
-                }
-            });
-            
-                // Renderizar calendario
-                calendar.render();
-                console.log('Calendario renderizado exitosamente');
-                
-            } catch (error) {
-                console.error('Error al crear el calendario:', error);
-                // Calendario de respaldo simple
-                createSimpleCalendar(calendarEl);
-            }
-            }, 100); // Fin del setTimeout
-        });
-        
-        // Calendario de respaldo simple si FullCalendar falla
-        function createSimpleCalendar(container) {
-            console.log('Creando calendario de respaldo...');
-            
-            const today = new Date();
-            const currentMonth = today.getMonth();
-            const currentYear = today.getFullYear();
-            
-            const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                              'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-            
-            let html = `
-                <div style="padding: 20px; background: rgba(0, 212, 255, 0.05); border-radius: 8px;">
-                    <h3 style="color: #00D4FF; margin-bottom: 20px;">
-                        ${monthNames[currentMonth]} ${currentYear}
-                    </h3>
-                    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
+                    <div class="calendar-days">
             `;
             
-            // Días de la semana
-            const weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-            weekDays.forEach(day => {
-                html += `<div style="color: #00D4FF; font-weight: bold;">${day}</div>`;
-            });
-            
-            // Días del mes
-            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-            
-            // Espacios vacíos antes del primer día
-            const startPadding = firstDay === 0 ? 6 : firstDay - 1;
-            for (let i = 0; i < startPadding; i++) {
-                html += '<div></div>';
+            // Días vacíos al inicio
+            for (let i = 0; i < startDay; i++) {
+                calendarHTML += '<div class="calendar-day empty"></div>';
             }
             
-            // Días del mes con fases lunares
+            // Días del mes
             for (let day = 1; day <= daysInMonth; day++) {
-                const date = new Date(currentYear, currentMonth, day);
-                const moon = getMoonPhase(date);
-                const isToday = day === today.getDate();
-                const isPast = date < today;
+                const date = new Date(year, month, day);
+                const moonPhase = getMoonPhase(date);
+                const isAvailable = isDateAvailable(date);
+                const isCurrentDay = isToday(date);
+                const isSelected = selectedDate && isSameDay(date, selectedDate);
                 
-                let style = 'padding: 10px; border-radius: 4px; cursor: pointer;';
-                if (isPast) {
-                    style += 'opacity: 0.5; cursor: not-allowed;';
-                } else if (!moon.available) {
-                    style += 'background: rgba(255, 107, 107, 0.2); color: #FF6B6B;';
+                let dayClass = 'calendar-day';
+                if (!isAvailable) dayClass += ' unavailable';
+                if (isCurrentDay) dayClass += ' today';
+                if (isSelected) dayClass += ' selected';
+                
+                let availabilityText;
+                if (isAvailable) {
+                    availabilityText = getCalendarText('availableOptimal', currentLang);
                 } else {
-                    style += 'background: rgba(0, 212, 255, 0.1); color: #00D4FF;';
-                }
-                if (isToday) {
-                    style += 'border: 2px solid #00D4FF;';
+                    if (moonPhase.phase <= 0.5) {
+                        availabilityText = getCalendarText('crescentBlocked', currentLang);
+                    } else {
+                        availabilityText = getCalendarText('fullBlocked', currentLang);
+                    }
                 }
                 
-                html += `
-                    <div style="${style}" 
-                         onclick="${!isPast && moon.available ? `selectDate('${date.toISOString().split('T')[0]}', '${moon.emoji} ${moon.name}')` : ''}"
-                         title="${moon.emoji} ${moon.name}">
-                        <div>${day}</div>
-                        <div style="font-size: 12px;">${moon.emoji}</div>
+                calendarHTML += `
+                    <div class="${dayClass}" onclick="selectDate(${year}, ${month}, ${day})" 
+                         title="${moonPhase.name} ${moonPhase.emoji} - ${moonPhase.illumination}% iluminación - ${availabilityText}">
+                        <span class="day-number">${day}</span>
+                        <span class="moon-emoji">${moonPhase.emoji}</span>
                     </div>
                 `;
             }
             
-            html += `
+            calendarHTML += `
                     </div>
-                    <p style="color: #00D4FF; margin-top: 20px;">
-                        <strong>Leyenda:</strong> Click en fechas disponibles (sin luna llena) para reservar
-                    </p>
+                    <div class="calendar-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot available"></span>
+                            <span>${getCalendarText('available', currentLang)}</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot unavailable"></span>
+                            <span>${getCalendarText('unavailable', currentLang)}</span>
+                        </div>
+                    </div>
+                    <div class="calendar-info">
+                        <p style="font-size: 0.8rem; color: #ccc; margin: 0.5rem 0; text-align: center;">
+                            ${getCalendarText('info', currentLang)}
+                        </p>
+                    </div>
                 </div>
             `;
             
-            container.innerHTML = html;
+            calendarEl.innerHTML = calendarHTML;
         }
-        
-        // Función para seleccionar fecha en calendario de respaldo
-        function selectDate(dateStr, moonInfo) {
-            const selectedDateDisplay = document.getElementById('selected-date-display');
-            if (selectedDateDisplay) {
-                const date = new Date(dateStr);
-                const formattedDate = date.toLocaleDateString('es-ES', {
+
+        // Cambiar mes
+        function changeMonth(direction) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            renderCalendar();
+        }
+
+        // Seleccionar fecha
+        function selectDate(year, month, day) {
+            const date = new Date(year, month, day);
+            
+            if (!isDateAvailable(date)) {
+                const moonPhase = getMoonPhase(date);
+                const currentLang = localStorage.getItem('preferred-language') || 'es';
+                let reason;
+                if (moonPhase.phase <= 0.5) {
+                    reason = `${getCalendarText('crescentBright', currentLang)} (${moonPhase.illumination}% ${currentLang === 'en' ? 'illumination' : currentLang === 'pt' ? 'iluminação' : 'iluminación'}) ${currentLang === 'en' ? 'and will be visible during the tour, reducing star visibility.' : currentLang === 'pt' ? 'e será visível durante o tour, reduzindo a visibilidade das estrelas.' : 'y será visible durante el tour, reduciendo la visibilidad de las estrellas.'}`;
+                } else {
+                    reason = `${getCalendarText('almostFull', currentLang)} (${moonPhase.illumination}% ${currentLang === 'en' ? 'illumination' : currentLang === 'pt' ? 'iluminação' : 'iluminación'}) ${currentLang === 'en' ? 'and still too bright for optimal observation.' : currentLang === 'pt' ? 'e ainda muito brilhante para observação ótima.' : 'y aún muy brillante para la observación óptima.'}`;
+                }
+                alert(`${getCalendarText('notAvailableTitle', currentLang)}\n\n${currentLang === 'en' ? 'Lunar phase' : currentLang === 'pt' ? 'Fase lunar' : 'Fase lunar'}: ${moonPhase.name} ${moonPhase.emoji}\n${currentLang === 'en' ? 'Illumination' : currentLang === 'pt' ? 'Iluminação' : 'Iluminación'}: ${moonPhase.illumination}%\n\n${reason}\n\n${getCalendarText('selectOther', currentLang)}`);
+                return;
+            }
+            
+            selectedDate = date;
+            renderCalendar();
+            
+            // Actualizar campo de fecha del formulario
+            const dateInput = document.getElementById('selected-date');
+            if (dateInput) {
+                const dateStr = date.toISOString().split('T')[0];
+                dateInput.value = dateStr;
+                
+                // Trigger change event to notify other systems
+                dateInput.dispatchEvent(new Event('change'));
+            }
+            
+            // Update the display element
+            const displayElement = document.getElementById('selected-date-display');
+            if (displayElement) {
+                const currentLang = localStorage.getItem('preferred-language') || 'es';
+                const dateStr = date.toLocaleDateString(currentLang === 'en' ? 'en-US' : currentLang === 'pt' ? 'pt-BR' : 'es-ES', {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
                 });
                 
-                selectedDateDisplay.innerHTML = `
-                    <div style="padding: 1rem; background: rgba(0, 212, 255, 0.1); border-radius: 8px;">
-                        <i class="fas fa-check-circle" style="color: #00D4FF;"></i>
-                        <p><strong>Fecha seleccionada:</strong> ${formattedDate}</p>
-                        <p><strong>Fase lunar:</strong> ${moonInfo}</p>
-                        <p style="color: #4CAF50;">✓ Disponible para reserva</p>
-                        <a href="https://wa.me/56935134669?text=Hola!%20Me%20interesa%20reservar%20el%20tour%20del%20${dateStr}" 
-                           target="_blank" 
-                           style="background: #00D4FF; color: #000; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 10px;">
-                            Reservar por WhatsApp
-                        </a>
+                displayElement.innerHTML = `
+                    <div class="selected-datetime">
+                        <i class="fas fa-check-circle"></i>
+                        <h5>${currentLang === 'en' ? 'Date selected!' : currentLang === 'pt' ? 'Data selecionada!' : '¡Fecha seleccionada!'}</h5>
+                        <p><strong>📅 ${dateStr}</strong></p>
+                        <small>${currentLang === 'en' ? 'Now select tour type and time below' : currentLang === 'pt' ? 'Agora selecione o tipo de tour e horário abaixo' : 'Ahora selecciona el tipo de tour y horario abajo'}</small>
                     </div>
                 `;
-                document.getElementById('selected-date').value = dateStr;
+                displayElement.classList.add('has-date');
             }
+            
+            // Mostrar confirmación
+            showDateConfirmation(date);
+        }
+
+        // Mostrar confirmación de fecha seleccionada
+        function showDateConfirmation(date) {
+            const moonPhase = getMoonPhase(date);
+            const currentLang = localStorage.getItem('preferred-language') || 'es';
+            
+            let locale = 'es-ES';
+            if (currentLang === 'en') locale = 'en-US';
+            if (currentLang === 'pt') locale = 'pt-BR';
+            
+            const dateStr = date.toLocaleDateString(locale, {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            let confirmDiv = document.getElementById('date-confirmation');
+            if (!confirmDiv) {
+                confirmDiv = document.createElement('div');
+                confirmDiv.id = 'date-confirmation';
+                confirmDiv.className = 'date-confirmation';
+                document.getElementById('fullcalendar').parentNode.appendChild(confirmDiv);
+            }
+            
+            const illuminationLabel = currentLang === 'en' ? 'illumination' : currentLang === 'pt' ? 'iluminação' : 'iluminación';
+            
+            confirmDiv.innerHTML = `
+                <div class="confirmation-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h4>${getCalendarText('dateSelected', currentLang)}</h4>
+                <p><strong>📅 ${dateStr}</strong></p>
+                <p>${moonPhase.emoji} ${moonPhase.name} - ${moonPhase.illumination}% ${illuminationLabel}</p>
+                <p class="conditions">${getCalendarText('excellentConditions', currentLang)}</p>
+            `;
+        }
+
+        // Funciones auxiliares
+        function isToday(date) {
+            const today = new Date();
+            return isSameDay(date, today);
+        }
+
+        function isSameDay(date1, date2) {
+            return date1.getDate() === date2.getDate() &&
+                   date1.getMonth() === date2.getMonth() &&
+                   date1.getFullYear() === date2.getFullYear();
         }
     </script>
+
+    <!-- Google Calendar Integration -->
+    <script>
+        // Google Calendar API Configuration
+        const GOOGLE_CLIENT_ID = 'astrophotography-001'; // Reemplazar con tu Client ID
+        const GOOGLE_API_KEY = 'AIzaSyD1-kWnLi0Qcp5dI-TQgY4ADKWtl2mjTSU'; // Reemplazar con tu API Key
+        const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
+        const SCOPES = 'https://www.googleapis.com/auth/calendar';
+        const CALENDAR_ID = 'vicente.litvak@gmail.com'; // Tu email de Google Calendar
+
+        let gapi;
+        let googleCalendarReady = false;
+
+        // Inicializar Google API cuando se carga la página
+        function initializeGoogleAPI() {
+            gapi.load('api:auth2', async () => {
+                try {
+                    await gapi.api.init({
+                        apiKey: GOOGLE_API_KEY,
+                        clientId: GOOGLE_CLIENT_ID,
+                        discoveryDocs: [DISCOVERY_DOC],
+                        scope: SCOPES
+                    });
+                    
+                    googleCalendarReady = true;
+                    console.log('Google Calendar API initialized successfully');
+                } catch (error) {
+                    console.error('Error initializing Google Calendar API:', error);
+                }
+            });
+        }
+
+        // Función para crear evento en Google Calendar
+        async function createCalendarEvent(reservationData) {
+            if (!googleCalendarReady) {
+                console.warn('Google Calendar API not ready');
+                return false;
+            }
+
+            try {
+                // Verificar si el usuario está autenticado
+                const authInstance = gapi.auth2.getAuthInstance();
+                if (!authInstance.isSignedIn.get()) {
+                    // Solicitar autorización
+                    await authInstance.signIn();
+                }
+
+                // Crear objeto del evento
+                const tourTypeText = reservationData.tourType === 'private' ? 'PRIVADO' : 'REGULAR';
+                const event = {
+                    'summary': `Tour ${tourTypeText} - ${reservationData.persons} ${reservationData.persons === '1' ? 'persona' : 'personas'}`,
+                    'description': `Tour Astronómico Atacama NightSky
+                    
+📊 DETALLES DE LA RESERVA:
+🎯 Tipo: Tour ${tourTypeText}
+👥 Pasajeros: ${reservationData.persons}
+📧 Contacto: ${reservationData.name} (${reservationData.email})
+📱 Teléfono: ${reservationData.phone || 'No proporcionado'}
+💬 Comentarios: ${reservationData.comments || 'Ninguno'}
+
+🌙 CONDICIONES LUNARES:
+${reservationData.moonPhase || 'Condiciones óptimas para observación'}
+
+⏰ HORARIO Y DURACIÓN:
+${reservationData.tourType === 'private' ? '🎯 Tour Privado - Duración: 3-4 horas' : '👥 Tour Regular - Duración: 3 horas'}
+
+🔗 SITIO WEB: https://tu-sitio-web.com
+📞 CONTACTO EMERGENCIA: +56 9 3513 4669`,
+                    
+                    'start': {
+                        'dateTime': reservationData.startDateTime,
+                        'timeZone': 'America/Santiago'
+                    },
+                    'end': {
+                        'dateTime': reservationData.endDateTime,
+                        'timeZone': 'America/Santiago'
+                    },
+                    'location': 'San Pedro de Atacama, Chile',
+                    'attendees': [
+                        {
+                            'email': reservationData.email,
+                            'displayName': reservationData.name
+                        }
+                    ],
+                    'reminders': {
+                        'useDefault': false,
+                        'overrides': [
+                            {'method': 'email', 'minutes': 24 * 60}, // 1 día antes
+                            {'method': 'popup', 'minutes': 60}       // 1 hora antes
+                        ]
+                    }
+                };
+
+                // Crear el evento
+                const response = await gapi.client.calendar.events.insert({
+                    'calendarId': CALENDAR_ID,
+                    'resource': event
+                });
+
+                console.log('Evento creado exitosamente:', response);
+                return {
+                    success: true,
+                    eventId: response.result.id,
+                    eventLink: response.result.htmlLink
+                };
+
+            } catch (error) {
+                console.error('Error creando evento en Google Calendar:', error);
+                return {
+                    success: false,
+                    error: error.message
+                };
+            }
+        }
+
+        // Función para procesar la reserva y crear evento
+        async function processBookingWithCalendar(formData) {
+            const currentLang = localStorage.getItem('preferred-language') || 'es';
+            
+            // Preparar datos de la reserva
+            const reservationData = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                persons: formData.get('persons'),
+                tourType: formData.get('tour-type'),
+                date: formData.get('date'),
+                time: formData.get('time'),
+                comments: formData.get('comments'),
+                startDateTime: `${formData.get('date')}T${formData.get('time')}:00`,
+                endDateTime: calculateEndTime(formData.get('date'), formData.get('time'), formData.get('tour-type')),
+                moonPhase: getMoonPhaseForDate(formData.get('date'))
+            };
+
+            // Intentar crear evento en Google Calendar
+            const calendarResult = await createCalendarEvent(reservationData);
+            
+            if (calendarResult.success) {
+                // Mostrar mensaje de éxito con información del calendario
+                showBookingSuccess(reservationData, calendarResult, currentLang);
+            } else {
+                // Mostrar mensaje de éxito pero con advertencia sobre el calendario
+                showBookingSuccessWithWarning(reservationData, calendarResult.error, currentLang);
+            }
+        }
+
+        // Función auxiliar para calcular hora de fin según tipo de tour
+        function calculateEndTime(date, startTime, tourType) {
+            const [hours, minutes] = startTime.split(':');
+            const startHour = parseInt(hours);
+            
+            // Tours privados duran 4 horas, tours regulares 3 horas
+            const duration = tourType === 'private' ? 4 : 3;
+            const endHour = startHour + duration;
+            
+            return `${date}T${endHour.toString().padStart(2, '0')}:${minutes}:00`;
+        }
+
+        // Función auxiliar para obtener fase lunar de una fecha
+        function getMoonPhaseForDate(dateStr) {
+            const date = new Date(dateStr);
+            const moonPhase = getMoonPhase(date);
+            return `${moonPhase.name} ${moonPhase.emoji} - ${moonPhase.illumination}% iluminación`;
+        }
+
+        // Mostrar mensaje de éxito con calendario
+        function showBookingSuccess(reservation, calendar, lang) {
+            const messages = {
+                es: {
+                    title: '¡Reserva Confirmada!',
+                    calendar: 'Evento agregado a Google Calendar',
+                    details: 'Detalles de tu reserva:',
+                    date: 'Fecha',
+                    time: 'Hora', 
+                    persons: 'Personas',
+                    contact: 'Te contactaremos pronto para confirmar detalles.'
+                },
+                en: {
+                    title: 'Booking Confirmed!',
+                    calendar: 'Event added to Google Calendar',
+                    details: 'Your booking details:',
+                    date: 'Date',
+                    time: 'Time',
+                    persons: 'Persons',
+                    contact: 'We will contact you soon to confirm details.'
+                },
+                pt: {
+                    title: 'Reserva Confirmada!',
+                    calendar: 'Evento adicionado ao Google Calendar',
+                    details: 'Detalhes da sua reserva:',
+                    date: 'Data',
+                    time: 'Hora',
+                    persons: 'Pessoas',
+                    contact: 'Entraremos em contato em breve para confirmar detalhes.'
+                }
+            };
+
+            const msg = messages[lang] || messages['es'];
+            
+            const tourTypeText = reservation.tourType === 'private' ? 
+                (lang === 'en' ? 'Private Tour' : lang === 'pt' ? 'Tour Privado' : 'Tour Privado') :
+                (lang === 'en' ? 'Regular Tour' : lang === 'pt' ? 'Tour Regular' : 'Tour Regular');
+
+            alert(`${msg.title}
+            
+✅ ${msg.calendar}
+
+${msg.details}
+🎯 ${lang === 'en' ? 'Type' : lang === 'pt' ? 'Tipo' : 'Tipo'}: ${tourTypeText}
+📅 ${msg.date}: ${reservation.date}
+🕐 ${msg.time}: ${reservation.time}
+👥 ${msg.persons}: ${reservation.persons}
+
+${msg.contact}`);
+        }
+
+        // Mostrar mensaje con advertencia sobre calendario
+        function showBookingSuccessWithWarning(reservation, error, lang) {
+            const messages = {
+                es: {
+                    title: '✅ ¡Reserva Enviada Correctamente!',
+                    success: 'Tu reserva ha sido recibida y procesada.',
+                    calendarNote: 'Nota: Google Calendar automático no está disponible en modo de desarrollo local.',
+                    instructions: 'En producción, las reservas se agregan automáticamente a nuestro calendario.',
+                    manual: 'Datos de tu reserva:',
+                    contact: '📞 Te contactaremos dentro de 24 horas para confirmar todos los detalles.',
+                    whatsapp: '¿Tienes preguntas? Escríbenos por WhatsApp: +56 9 3513 4669'
+                },
+                en: {
+                    title: '✅ Booking Sent Successfully!',
+                    success: 'Your booking has been received and processed.',
+                    calendarNote: 'Note: Automatic Google Calendar is not available in local development mode.',
+                    instructions: 'In production, bookings are automatically added to our calendar.',
+                    manual: 'Your booking details:',
+                    contact: '📞 We will contact you within 24 hours to confirm all details.',
+                    whatsapp: 'Have questions? Write us on WhatsApp: +56 9 3513 4669'
+                },
+                pt: {
+                    title: '✅ Reserva Enviada com Sucesso!',
+                    success: 'Sua reserva foi recebida e processada.',
+                    calendarNote: 'Nota: Google Calendar automático não está disponível no modo de desenvolvimento local.',
+                    instructions: 'Em produção, as reservas são automaticamente adicionadas ao nosso calendário.',
+                    manual: 'Detalhes da sua reserva:',
+                    contact: '📞 Entraremos em contato em 24 horas para confirmar todos os detalhes.',
+                    whatsapp: 'Tem dúvidas? Escreva-nos no WhatsApp: +56 9 3513 4669'
+                }
+            };
+
+            const msg = messages[lang] || messages['es'];
+
+            // Create a more user-friendly modal instead of alert
+            const modal = document.createElement('div');
+            modal.className = 'booking-success-modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>${msg.title}</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="success-message">${msg.success}</p>
+                        
+                        <div class="booking-details">
+                            <h4>${msg.manual}</h4>
+                            <div class="detail-row">
+                                <span class="label">📅 Fecha:</span>
+                                <span class="value">${reservation.date}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">⏰ Hora:</span>
+                                <span class="value">${reservation.time}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="label">👥 Personas:</span>
+                                <span class="value">${reservation.persons}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="calendar-info">
+                            <p class="note">${msg.calendarNote}</p>
+                            <p class="instructions">${msg.instructions}</p>
+                        </div>
+                        
+                        <div class="contact-info">
+                            <p class="contact">${msg.contact}</p>
+                            <p class="whatsapp">${msg.whatsapp}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Add styles for the modal
+            const style = document.createElement('style');
+            style.textContent = `
+                .booking-success-modal {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 10000;
+                    padding: 1rem;
+                }
+                .booking-success-modal .modal-content {
+                    background: #1a1a1a;
+                    border: 2px solid #00D4FF;
+                    border-radius: 12px;
+                    max-width: 500px;
+                    width: 100%;
+                    max-height: 90vh;
+                    overflow-y: auto;
+                }
+                .booking-success-modal .modal-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 1rem 1.5rem;
+                    background: #2a2a2a;
+                    border-bottom: 1px solid #00D4FF;
+                }
+                .booking-success-modal h3 {
+                    color: #00D4FF;
+                    margin: 0;
+                    font-size: 1.3rem;
+                }
+                .booking-success-modal .close-modal {
+                    background: none;
+                    border: none;
+                    color: #fff;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    padding: 0;
+                    line-height: 1;
+                }
+                .booking-success-modal .modal-body {
+                    padding: 1.5rem;
+                    color: #fff;
+                }
+                .booking-success-modal .success-message {
+                    color: #4CAF50;
+                    font-weight: bold;
+                    margin-bottom: 1.5rem;
+                    text-align: center;
+                    font-size: 1.1rem;
+                }
+                .booking-success-modal .booking-details {
+                    background: #333;
+                    border-radius: 8px;
+                    padding: 1rem;
+                    margin-bottom: 1rem;
+                }
+                .booking-success-modal .booking-details h4 {
+                    color: #00D4FF;
+                    margin-bottom: 0.75rem;
+                    font-size: 1rem;
+                }
+                .booking-success-modal .detail-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 0.5rem 0;
+                    border-bottom: 1px solid #555;
+                }
+                .booking-success-modal .detail-row:last-child {
+                    border-bottom: none;
+                }
+                .booking-success-modal .label {
+                    font-weight: bold;
+                    color: #ccc;
+                }
+                .booking-success-modal .value {
+                    color: #00D4FF;
+                    font-weight: bold;
+                }
+                .booking-success-modal .calendar-info {
+                    background: rgba(255, 165, 0, 0.1);
+                    border-left: 4px solid #FFA500;
+                    padding: 1rem;
+                    margin-bottom: 1rem;
+                    border-radius: 4px;
+                }
+                .booking-success-modal .note {
+                    color: #FFA500;
+                    font-weight: bold;
+                    margin-bottom: 0.5rem;
+                    font-size: 0.9rem;
+                }
+                .booking-success-modal .instructions {
+                    color: #ccc;
+                    font-size: 0.9rem;
+                    margin: 0;
+                }
+                .booking-success-modal .contact-info {
+                    background: rgba(0, 212, 255, 0.1);
+                    border-radius: 8px;
+                    padding: 1rem;
+                    text-align: center;
+                }
+                .booking-success-modal .contact {
+                    color: #00D4FF;
+                    font-weight: bold;
+                    margin-bottom: 0.5rem;
+                }
+                .booking-success-modal .whatsapp {
+                    color: #4CAF50;
+                    font-size: 0.9rem;
+                    margin: 0;
+                }
+            `;
+
+            document.head.appendChild(style);
+            document.body.appendChild(modal);
+
+            // Close modal functionality
+            const closeBtn = modal.querySelector('.close-modal');
+            closeBtn.addEventListener('click', () => {
+                document.body.removeChild(modal);
+                document.head.removeChild(style);
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                    document.head.removeChild(style);
+                }
+            });
+        }
+
+        // Inicializar Google API cuando se carga la página
+        if (typeof gapi !== 'undefined') {
+            initializeGoogleAPI();
+        }
+    </script>
+
+    <!-- Sistema de horarios dinámicos por temporada y tipo de tour -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tourTypeSelect = document.getElementById('tour-type');
+            const timeSelect = document.getElementById('time');
+            const timeInfo = document.querySelector('.time-info');
+
+            if (!tourTypeSelect || !timeSelect) return;
+
+            // Función para determinar la temporada basada en el cambio de horario de Chile
+            function getCurrentSeason() {
+                const currentDate = new Date();
+                const month = currentDate.getMonth() + 1; // 1-12
+                const day = currentDate.getDate();
+                
+                // Horario de invierno en Chile: primer domingo de abril a primer domingo de septiembre
+                // Horario de verano en Chile: primer domingo de septiembre a primer domingo de abril
+                // Simplificado: abril-agosto = invierno, septiembre-marzo = verano
+                if (month >= 4 && month <= 8) {
+                    return 'invierno';
+                } else {
+                    return 'verano';
+                }
+            }
+
+            // Configuración de horarios
+            function getTourSchedules() {
+                const season = getCurrentSeason();
+                const currentLang = localStorage.getItem('preferred-language') || 'es';
+                
+                const schedules = {
+                    regular: {
+                        invierno: {
+                            times: ['19:30'],
+                            info: {
+                                es: 'Tour regular de invierno - Inicio: 19:30 hrs (Duración: 3 horas)',
+                                en: 'Winter regular tour - Start: 7:30 PM (Duration: 3 hours)',
+                                pt: 'Tour regular de inverno - Início: 19:30 (Duração: 3 horas)'
+                            }
+                        },
+                        verano: {
+                            times: ['20:30'],
+                            info: {
+                                es: 'Tour regular de verano - Inicio: 20:30 hrs (Duración: 3 horas)',
+                                en: 'Summer regular tour - Start: 8:30 PM (Duration: 3 hours)', 
+                                pt: 'Tour regular de verão - Início: 20:30 (Duração: 3 horas)'
+                            }
+                        }
+                    },
+                    private: {
+                        invierno: {
+                            times: ['flexible'],
+                            info: {
+                                es: 'Tour privado - Horario flexible según tus preferencias (Duración: 3-4 horas)',
+                                en: 'Private tour - Flexible schedule according to your preferences (Duration: 3-4 hours)',
+                                pt: 'Tour privado - Horário flexível conforme suas preferências (Duração: 3-4 horas)'
+                            }
+                        },
+                        verano: {
+                            times: ['flexible'],
+                            info: {
+                                es: 'Tour privado - Horario flexible según tus preferencias (Duración: 3-4 horas)',
+                                en: 'Private tour - Flexible schedule according to your preferences (Duration: 3-4 hours)',
+                                pt: 'Tour privado - Horário flexível conforme suas preferências (Duração: 3-4 horas)'
+                            }
+                        }
+                    },
+                    astrophoto: {
+                        invierno: {
+                            times: ['22:30'],
+                            info: {
+                                es: 'Tour astrofotográfico especializado - Inicio: 22:30 hrs (Duración: 4-5 horas). Incluye técnicas de fotografía nocturna y equipo especializado.',
+                                en: 'Specialized astrophotography tour - Start: 10:30 PM (Duration: 4-5 hours). Includes night photography techniques and specialized equipment.',
+                                pt: 'Tour astrofotográfico especializado - Início: 22:30 (Duração: 4-5 horas). Inclui técnicas de fotografia noturna e equipamento especializado.'
+                            }
+                        },
+                        verano: {
+                            times: ['23:30'],
+                            info: {
+                                es: 'Tour astrofotográfico especializado - Inicio: 23:30 hrs (Duración: 4-5 horas). Incluye técnicas de fotografía nocturna y equipo especializado.',
+                                en: 'Specialized astrophotography tour - Start: 11:30 PM (Duration: 4-5 hours). Includes night photography techniques and specialized equipment.',
+                                pt: 'Tour astrofotográfico especializado - Início: 23:30 (Duração: 4-5 horas). Inclui técnicas de fotografia noturna e equipamento especializado.'
+                            }
+                        }
+                    }
+                };
+
+                return schedules;
+            }
+
+            // Actualizar horarios cuando se cambia el tipo de tour
+            tourTypeSelect.addEventListener('change', function() {
+                const tourType = this.value;
+                const schedules = getTourSchedules();
+                const season = getCurrentSeason();
+                const currentLang = localStorage.getItem('preferred-language') || 'es';
+
+                // Limpiar opciones anteriores
+                timeSelect.innerHTML = '';
+
+                if (!tourType) {
+                    timeSelect.innerHTML = '<option value="">Primero selecciona tipo de tour</option>';
+                    timeInfo.textContent = '';
+                    return;
+                }
+
+                // Agregar opción por defecto
+                const defaultText = {
+                    es: 'Selecciona horario',
+                    en: 'Select time',
+                    pt: 'Selecione horário'
+                };
+                timeSelect.innerHTML = `<option value="">${defaultText[currentLang] || defaultText['es']}</option>`;
+
+                // Obtener horarios para el tipo de tour y temporada actual
+                const tourSchedule = schedules[tourType] && schedules[tourType][season];
+                
+                if (tourSchedule) {
+                    // Agregar horarios disponibles
+                    tourSchedule.times.forEach(time => {
+                        const option = document.createElement('option');
+                        option.value = time;
+                        if (time === 'flexible') {
+                            const flexibleText = {
+                                es: 'Horario a coordinar',
+                                en: 'Schedule to coordinate', 
+                                pt: 'Horário a coordenar'
+                            };
+                            option.textContent = flexibleText[currentLang] || flexibleText['es'];
+                        } else {
+                            option.textContent = `${time} hrs`;
+                        }
+                        timeSelect.appendChild(option);
+                    });
+
+                    // Mostrar información sobre el horario
+                    const info = tourSchedule.info[currentLang] || tourSchedule.info['es'];
+                    timeInfo.textContent = info;
+                    
+                    // If only one time option, select it automatically
+                    if (tourSchedule.times.length === 1) {
+                        timeSelect.value = tourSchedule.times[0];
+                        updateSelectedTime(tourSchedule.times[0]);
+                    }
+                } else {
+                    timeInfo.textContent = 'Horarios no disponibles para esta configuración';
+                }
+            });
+
+            // Actualizar horarios cuando se cambia el idioma
+            function updateScheduleLanguage() {
+                const tourType = tourTypeSelect.value;
+                if (tourType) {
+                    // Trigger change event to refresh schedule info
+                    tourTypeSelect.dispatchEvent(new Event('change'));
+                }
+            }
+
+            // Function to update the hidden time field
+            function updateSelectedTime(time) {
+                const selectedTimeInput = document.getElementById('selected-time');
+                if (selectedTimeInput) {
+                    selectedTimeInput.value = time;
+                    selectedTimeInput.dispatchEvent(new Event('change'));
+                }
+            }
+            
+            // Listen for time selection changes
+            timeSelect.addEventListener('change', function() {
+                const selectedTime = this.value;
+                if (selectedTime) {
+                    updateSelectedTime(selectedTime);
+                }
+            });
+
+            // Escuchar cambios de idioma
+            const langOptions = document.querySelectorAll('.lang-option');
+            langOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    setTimeout(updateScheduleLanguage, 100);
+                });
+            });
+        });
+    </script>
+
+    <!-- Sistema de control de disponibilidad y alertas -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const personsSelect = document.getElementById('persons');
+            const tourTypeSelect = document.getElementById('tour-type');
+            const availabilityWarning = document.getElementById('availability-warning');
+            const warningText = availabilityWarning.querySelector('.warning-text');
+
+            // Sistema simulado de reservas (en producción sería desde una base de datos)
+            // Formato: { fecha: { regular: ocupados, private: ocupados } }
+            let reservations = {};
+
+            // Obtener idioma actual
+            function getCurrentLang() {
+                return localStorage.getItem('preferred-language') || 'es';
+            }
+
+            // Mensajes de alerta por idioma
+            const messages = {
+                es: {
+                    lastSpots: '¡Últimos cupos disponibles!',
+                    spotsLeft: 'quedan solo',
+                    spots: 'cupos',
+                    hurryUp: 'Reserva ahora antes de que se agoten',
+                    full: 'Sin cupos disponibles para esta fecha',
+                    private: 'Tour privado - Sin límite de participantes'
+                },
+                en: {
+                    lastSpots: 'Last spots available!',
+                    spotsLeft: 'only',
+                    spots: 'spots left',
+                    hurryUp: 'Book now before they sell out',
+                    full: 'No spots available for this date',
+                    private: 'Private tour - No participant limit'
+                },
+                pt: {
+                    lastSpots: 'Últimas vagas disponíveis!',
+                    spotsLeft: 'restam apenas',
+                    spots: 'vagas',
+                    hurryUp: 'Reserve agora antes que esgote',
+                    full: 'Sem vagas disponíveis para esta data',
+                    private: 'Tour privado - Sem limite de participantes'
+                }
+            };
+
+            // Función para obtener ocupación de una fecha
+            function getOccupancy(date, tourType) {
+                const dateStr = typeof date === 'string' ? date : date.toISOString().split('T')[0];
+                if (!reservations[dateStr]) {
+                    reservations[dateStr] = { regular: 0, private: 0 };
+                }
+                return reservations[dateStr][tourType] || 0;
+            }
+
+            // Función para simular reservas existentes (en producción vendría del servidor)
+            function simulateExistingReservations() {
+                const today = new Date();
+                for (let i = 1; i <= 30; i++) {
+                    const date = new Date(today);
+                    date.setDate(today.getDate() + i);
+                    const dateStr = date.toISOString().split('T')[0];
+                    
+                    // Simular ocupación aleatoria pero realista
+                    const randomOccupancy = Math.floor(Math.random() * 16);
+                    const astrophotoOccupancy = Math.floor(Math.random() * 8);
+                    reservations[dateStr] = {
+                        regular: randomOccupancy,
+                        private: Math.floor(Math.random() * 3), // Tours privados menos frecuentes
+                        astrophoto: astrophotoOccupancy
+                    };
+                }
+            }
+
+            // Función para verificar disponibilidad y mostrar alertas
+            function checkAvailabilityAndShowWarning() {
+                const selectedDate = document.getElementById('selected-date').value;
+                const tourType = tourTypeSelect.value;
+                const persons = parseInt(personsSelect.value) || 0;
+
+                if (!selectedDate || !tourType || !persons) {
+                    availabilityWarning.style.display = 'none';
+                    return;
+                }
+
+                const currentLang = getCurrentLang();
+                const msg = messages[currentLang];
+
+                if (tourType === 'private') {
+                    // Tours privados no tienen límite
+                    availabilityWarning.style.display = 'block';
+                    availabilityWarning.className = 'availability-warning private';
+                    warningText.textContent = msg.private;
+                    return;
+                }
+
+                if (tourType === 'astrophoto') {
+                    // Tours astrofotográficos tienen límite de 8 personas (más especializado)
+                    const occupied = getOccupancy(selectedDate, 'astrophoto');
+                    const maxCapacity = 8;
+                    const available = maxCapacity - occupied;
+                    const remaining = available - persons;
+
+                    availabilityWarning.style.display = 'block';
+
+                    if (remaining < 0) {
+                        availabilityWarning.className = 'availability-warning full';
+                        warningText.textContent = msg.full;
+                    } else if (remaining <= 2 && remaining >= 0) {
+                        availabilityWarning.className = 'availability-warning last-spots';
+                        warningText.innerHTML = `
+                            <strong>${msg.lastSpots}</strong><br>
+                            ${msg.spotsLeft} ${remaining} ${msg.spots}. ${msg.hurryUp}!
+                        `;
+                    } else {
+                        availabilityWarning.style.display = 'none';
+                    }
+
+                    updatePersonsOptions(available, 8);
+                    return;
+                }
+
+                // Para tours regulares
+                const occupied = getOccupancy(selectedDate, 'regular');
+                const maxCapacity = 16;
+                const available = maxCapacity - occupied;
+                const remaining = available - persons;
+
+                availabilityWarning.style.display = 'block';
+
+                if (remaining < 0) {
+                    // Sin cupos suficientes
+                    availabilityWarning.className = 'availability-warning full';
+                    warningText.textContent = msg.full;
+                } else if (remaining <= 3 && remaining >= 0) {
+                    // Últimos cupos
+                    availabilityWarning.className = 'availability-warning last-spots';
+                    warningText.innerHTML = `
+                        <strong>${msg.lastSpots}</strong><br>
+                        ${msg.spotsLeft} ${remaining} ${msg.spots}. ${msg.hurryUp}!
+                    `;
+                } else {
+                    // Suficientes cupos
+                    availabilityWarning.style.display = 'none';
+                }
+
+                // Actualizar opciones del selector de personas basado en disponibilidad
+                updatePersonsOptions(available, 16);
+            }
+
+            // Actualizar opciones disponibles en el selector de personas
+            function updatePersonsOptions(available, maxCapacity = 16) {
+                const currentValue = personsSelect.value;
+                const options = personsSelect.querySelectorAll('option');
+                
+                options.forEach(option => {
+                    const value = parseInt(option.value);
+                    if (value && value > available && value <= maxCapacity) {
+                        option.style.display = 'none';
+                        option.disabled = true;
+                    } else if (value && value <= maxCapacity) {
+                        option.style.display = 'block';
+                        option.disabled = false;
+                    } else if (value && value > maxCapacity) {
+                        // Ocultar opciones que exceden el máximo del tipo de tour
+                        option.style.display = 'none';
+                        option.disabled = true;
+                    }
+                });
+
+                // Si la selección actual no está disponible, limpiar
+                if (parseInt(currentValue) > available) {
+                    personsSelect.value = '';
+                }
+            }
+
+            // Event listeners
+            personsSelect.addEventListener('change', checkAvailabilityAndShowWarning);
+            tourTypeSelect.addEventListener('change', checkAvailabilityAndShowWarning);
+
+            // Escuchar cambios en la fecha seleccionada
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
+                        checkAvailabilityAndShowWarning();
+                    }
+                });
+            });
+
+            const selectedDateInput = document.getElementById('selected-date');
+            if (selectedDateInput) {
+                observer.observe(selectedDateInput, {
+                    attributes: true,
+                    attributeFilter: ['value']
+                });
+            }
+
+            // Inicializar simulación de reservas
+            simulateExistingReservations();
+        });
+    </script>
+
+    <!-- Estilos para el calendario personalizado -->
+    <style>
+        .custom-calendar {
+            background: #1a1a1a;
+            border: 1px solid #00D4FF;
+            border-radius: 8px;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #2a2a2a;
+            border-bottom: 1px solid #00D4FF;
+        }
+        
+        .calendar-header h3 {
+            margin: 0;
+            color: #00D4FF;
+            font-size: 1.2rem;
+        }
+        
+        .nav-btn {
+            background: #00D4FF;
+            color: #000;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            background: #00B4D8;
+            transform: scale(1.1);
+        }
+        
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background: #333;
+        }
+        
+        .weekday {
+            padding: 0.75rem;
+            text-align: center;
+            color: #00D4FF;
+            font-weight: bold;
+            font-size: 0.9rem;
+            border-right: 1px solid #555;
+        }
+        
+        .weekday:last-child {
+            border-right: none;
+        }
+        
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #555;
+        }
+        
+        .calendar-day {
+            background: #1a1a1a;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+        }
+        
+        .calendar-day:hover {
+            background: #2a2a2a;
+            transform: scale(1.05);
+        }
+        
+        .calendar-day.empty {
+            cursor: default;
+            opacity: 0;
+        }
+        
+        .calendar-day.today {
+            background: rgba(0, 212, 255, 0.2);
+            border: 2px solid #00D4FF;
+        }
+        
+        .calendar-day.selected {
+            background: #00D4FF;
+            color: #000;
+        }
+        
+        .calendar-day.unavailable {
+            background: rgba(255, 0, 0, 0.1);
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .calendar-day.unavailable:hover {
+            transform: none;
+            background: rgba(255, 0, 0, 0.1);
+        }
+        
+        .day-number {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 0.25rem;
+        }
+        
+        .calendar-day.selected .day-number {
+            color: #000;
+        }
+        
+        .moon-emoji {
+            font-size: 0.8rem;
+            line-height: 1;
+        }
+        
+        .calendar-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem;
+            background: #2a2a2a;
+            border-top: 1px solid #555;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .legend-dot.available {
+            background: #4CAF50;
+        }
+        
+        .legend-dot.unavailable {
+            background: rgba(255, 0, 0, 0.6);
+        }
+        
+        .date-confirmation {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #1a1a1a;
+            border: 1px solid #00D4FF;
+            border-radius: 8px;
+            text-align: center;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .confirmation-icon {
+            color: #4CAF50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .confirmation-icon i {
+            font-size: 1.5rem;
+        }
+        
+        .date-confirmation h4 {
+            color: #00D4FF;
+            margin: 0.5rem 0;
+        }
+        
+        .date-confirmation p {
+            margin: 0.25rem 0;
+            color: #fff;
+        }
+        
+        .date-confirmation .conditions {
+            font-size: 0.9rem;
+            color: #ccc;
+            margin-top: 0.5rem;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Estilos para el selector de idiomas */
+        .lang-selector {
+            position: relative;
+        }
+        
+        .lang-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            border: 1px solid #00D4FF;
+            color: #00D4FF;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .lang-btn:hover {
+            background: #00D4FF;
+            color: #000;
+        }
+        
+        .lang-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #1a1a1a;
+            border: 2px solid #00D4FF;
+            border-radius: 8px;
+            min-width: 160px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            margin-top: 0.5rem;
+            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
+        }
+        
+        .lang-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .lang-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #fff;
+            font-weight: 500;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+        }
+        
+        .lang-option:last-child {
+            border-bottom: none;
+        }
+        
+        .lang-option:hover {
+            background: rgba(0, 212, 255, 0.1);
+            color: #00D4FF;
+            transform: translateX(2px);
+        }
+        
+        .lang-option:first-child {
+            border-radius: 6px 6px 0 0;
+        }
+        
+        .lang-option:last-child {
+            border-radius: 0 0 6px 6px;
+        }
+        
+        .lang-option.active {
+            background: #00D4FF;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        .lang-option.active:hover {
+            background: #00B4D8;
+            transform: none;
+        }
+        
+        .flag {
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .calendar-day {
+                min-height: 50px;
+                padding: 0.25rem;
+            }
+            
+            .day-number {
+                font-size: 0.9rem;
+            }
+            
+            .moon-emoji {
+                font-size: 0.7rem;
+            }
+            
+            .calendar-header h3 {
+                font-size: 1rem;
+            }
+            
+            .nav-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+            }
+            
+            .calendar-legend {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: center;
+            }
+            
+            .lang-dropdown {
+                right: -20px;
+            }
+            
+            .lang-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
 </body>
 </html>
