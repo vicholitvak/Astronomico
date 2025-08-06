@@ -419,10 +419,16 @@ section {
     margin-bottom: var(--spacing-xs);
 }
 
+.about-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .about-image img {
-    width: 100%;
+    width: 80%;
     height: auto;
-    max-height: 600px;
+    max-height: 480px;
     object-fit: contain;
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-lg);
