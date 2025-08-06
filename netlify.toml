@@ -20,8 +20,8 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=()"
     
-    # Performance headers
-    Cache-Control = "public, max-age=3600"
+    # Performance headers - Reduced cache for testing
+    Cache-Control = "public, max-age=60, must-revalidate"
     
     # PWA headers
     Service-Worker-Allowed = "/"
