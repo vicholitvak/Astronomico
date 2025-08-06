@@ -286,7 +286,7 @@ p {
     right: 0;
     bottom: 0;
     background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)),
-                url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+                url('images/hero1.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -1132,6 +1132,62 @@ blockquote {
     background: #2a2a2a;
     color: #fff;
     padding: var(--spacing-xs);
+}
+
+/* Mini galería de ejemplos astrofotográficos */
+.astrophoto-examples {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: rgba(0, 212, 255, 0.05);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.astrophoto-examples h4 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-sm);
+    font-size: 0.9rem;
+}
+
+.examples-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-sm);
+}
+
+.example-img {
+    text-align: center;
+}
+
+.example-img img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    border: 2px solid rgba(0, 212, 255, 0.3);
+    transition: all var(--transition-fast);
+}
+
+.example-img img:hover {
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+}
+
+.example-caption {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .examples-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .example-img img {
+        height: 120px;
+    }
 }
 
 /* Estilos para alertas de disponibilidad */
