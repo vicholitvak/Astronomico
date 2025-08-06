@@ -1032,12 +1032,21 @@ window.addEventListener('load', function() {
 
 // ===== TELESCOPE GALLERY =====
 function initTelescopeGallery() {
+    console.log('Initializing telescope gallery...');
     const galleryItems = document.querySelectorAll('.gallery-item');
     const modal = document.getElementById('galleryModal');
     const modalImage = document.getElementById('modalImage');
     const closeModal = document.querySelector('.close-modal');
     const prevBtn = document.getElementById('prevImage');
     const nextBtn = document.getElementById('nextImage');
+    
+    console.log('Gallery items found:', galleryItems.length);
+    console.log('Modal found:', modal ? 'Yes' : 'No');
+    
+    if (galleryItems.length === 0) {
+        console.warn('No gallery items found - telescope gallery not initialized');
+        return;
+    }
     
     let currentImageIndex = 0;
     const imagesSources = [];
@@ -1049,6 +1058,7 @@ function initTelescopeGallery() {
         
         // Add click event to open modal
         item.addEventListener('click', () => {
+            console.log('Gallery item clicked, index:', index);
             currentImageIndex = index;
             showModal();
         });
@@ -1069,6 +1079,14 @@ function initTelescopeGallery() {
     });
     
     function showModal() {
+        console.log('showModal called, currentImageIndex:', currentImageIndex);
+        console.log('Image source:', imagesSources[currentImageIndex]);
+        
+        if (!modal || !modalImage) {
+            console.error('Modal or modalImage not found');
+            return;
+        }
+        
         modal.classList.add('active');
         modalImage.src = imagesSources[currentImageIndex];
         modalImage.alt = `Imagen ${currentImageIndex + 1} del telescopio Unistellar`;
@@ -1076,6 +1094,7 @@ function initTelescopeGallery() {
         
         // Focus the modal for screen readers
         modal.focus();
+        console.log('Modal opened');
     }
     
     function hideModal() {
