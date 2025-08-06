@@ -1,5 +1,38 @@
 // ===== TOURS ASTRONÓMICOS ATACAMA - JAVASCRIPT =====
-// Main JavaScript functionality for astronomical tours website
+// Main JavaScript functionality for astronomical tours website - v5.5
+
+// ===== TYPEWRITER EFFECT =====
+function initTypewriter() {
+    const textElement = document.getElementById('typewriter-text');
+    const cursorElement = document.getElementById('cursor');
+    const text = 'Atacama Dark Skies - El Cielo Más Puro del Mundo en San Pedro de Atacama';
+    
+    console.log('✍️ Starting typewriter...');
+    console.log('Text element:', textElement);
+    console.log('Cursor element:', cursorElement);
+    
+    if (!textElement) {
+        console.error('❌ Typewriter text element not found!');
+        return;
+    }
+    
+    let index = 0;
+    textElement.textContent = ''; // Clear any existing text
+    
+    function typeChar() {
+        if (index < text.length) {
+            textElement.textContent += text.charAt(index);
+            index++;
+            setTimeout(typeChar, 60);
+        } else {
+            setTimeout(() => {
+                if (cursorElement) cursorElement.style.display = 'none';
+            }, 2000);
+        }
+    }
+    
+    setTimeout(typeChar, 800);
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize all components
@@ -12,7 +45,12 @@ document.addEventListener('DOMContentLoaded', function() {
     initDatePicker();
     initQuickBooking();
     initAnimations();
-    initTelescopeGallery();
+    initTypewriter();
+    
+    // Initialize telescope gallery with a slight delay to ensure DOM is ready
+    setTimeout(() => {
+        initTelescopeGallery();
+    }, 100);
 });
 
 // ===== NAVIGATION FUNCTIONALITY =====
@@ -85,43 +123,195 @@ function initLanguageToggle() {
     
     const translations = {
         es: {
+            // Navigation
             'Inicio': 'Inicio',
-            'Sobre Nosotros': 'Sobre Nosotros',
+            'Sobre Nosotros': 'Sobre Nosotros', 
             'Tours': 'Tours',
             'Telescopio': 'Telescopio',
             'Reservas': 'Reservas',
             'Contacto': 'Contacto',
             'Reserva Ahora': 'Reserva Ahora',
-            'hero-title': 'Descubre A Dark Sky - El Cielo Más Puro del Mundo en San Pedro de Atacama',
-            'hero-subtitle': 'Tours astronómicos guiados por expertos: observación de estrellas, constelaciones y fenómenos celestes.',
+            
+            // Hero Section
+            'hero-title': ['Atacama Dark Skies', 'El Cielo Más Puro del Mundo', 'en San Pedro de Atacama'],
+            'hero-subtitle': 'Tours astronómicos guiados por expertos: observación de estrellas, constelaciones y fenómenos celestes del espacio profundo.',
             'btn-reserve': 'Reserva Tu Tour',
-            'btn-see-tours': 'Ver Tours'
+            'btn-see-tours': 'Ver Tours',
+            
+            // Features Section
+            'Cielos Únicos': 'Cielos Únicos',
+            'Guías Expertos': 'Guías Expertos',
+            'Ubicación Perfecta': 'Ubicación Perfecta',
+            'Equipos Profesionales': 'Equipos Profesionales',
+            
+            // Tours
+            'Nuestros Tours Astronómicos': 'Nuestros Tours Astronómicos',
+            'Experiencias únicas bajo el cielo más claro del mundo': 'Experiencias únicas bajo el cielo más claro del mundo',
+            'Tour Astronómico Completo': 'Tour Astronómico Completo',
+            'Tour Privado': 'Tour Privado', 
+            'Tour Fotográfico': 'Tour Fotográfico',
+            'Viajes de Estudio': 'Viajes de Estudio',
+            'Eventos Corporativos': 'Eventos Corporativos',
+            'Reservar Tour': 'Reservar Tour',
+            'Solicitar Cotización': 'Solicitar Cotización',
+            'Más Popular': 'Más Popular',
+            
+            // Tour descriptions
+            'Experiencia completa: observación a ojo desnudo con puntero láser, telescopio inteligente Unistellar eVscope, cóctel bajo las estrellas y sesión de fotos.': 'Experiencia completa: observación a ojo desnudo con puntero láser, telescopio inteligente Unistellar eVscope, cóctel bajo las estrellas y sesión de fotos.',
+            'Experiencia personalizada para grupos pequeños. Itinerario flexible adaptado a tus intereses específicos en astronomía.': 'Experiencia personalizada para grupos pequeños. Itinerario flexible adaptado a tus intereses específicos en astronomía.',
+            'Especializado en astrofotografía con equipos profesionales. Aprende técnicas avanzadas y captura imágenes espectaculares del cosmos.': 'Especializado en astrofotografía con equipos profesionales. Aprende técnicas avanzadas y captura imágenes espectaculares del cosmos.',
+            'Programas educativos especializados para colegios, universidades e institutos. Contenido adaptado según nivel académico con material didáctico incluido.': 'Programas educativos especializados para colegios, universidades e institutos. Contenido adaptado según nivel académico con material didáctico incluido.',
+            'Team building bajo las estrellas. Fortalece vínculos empresariales con experiencias astronómicas únicas diseñadas para fortalecer equipos.': 'Team building bajo las estrellas. Fortalece vínculos empresariales con experiencias astronómicas únicas diseñadas para fortalecer equipos.',
+            
+            // Includes
+            'Incluye:': 'Incluye:',
+            
+            // Telescope Section
+            'Nuestro Telescopio Unistellar eVscope': 'Nuestro Telescopio Unistellar eVscope',
+            'Galería del Espacio Profundo': 'Galería del Espacio Profundo',
+            
+            // Booking Form
+            'Reserva Tu Experiencia Astronómica': 'Reserva Tu Experiencia Astronómica',
+            'Selecciona tu tour': 'Selecciona tu tour',
+            'Nombre completo': 'Nombre completo',
+            'Email': 'Email',
+            'Teléfono': 'Teléfono',
+            'Número de personas': 'Número de personas',
+            'Comentarios adicionales': 'Comentarios adicionales',
+            'Enviar Reserva': 'Enviar Reserva',
+            
+            // Footer
+            'Síguenos': 'Síguenos',
+            'Enlaces Rápidos': 'Enlaces Rápidos',
+            'Información de Contacto': 'Información de Contacto'
         },
+        
         en: {
+            // Navigation
             'Inicio': 'Home',
             'Sobre Nosotros': 'About Us',
-            'Tours': 'Tours',
+            'Tours': 'Tours', 
             'Telescopio': 'Telescope',
             'Reservas': 'Bookings',
             'Contacto': 'Contact',
             'Reserva Ahora': 'Book Now',
-            'hero-title': 'Discover A Dark Sky - The Purest Sky in the World in San Pedro de Atacama',
-            'hero-subtitle': 'Expert-guided astronomical tours: star gazing, constellations and celestial phenomena.',
+            
+            // Hero Section
+            'hero-title': ['Atacama Dark Skies', 'The Purest Sky in the World', 'in San Pedro de Atacama'],
+            'hero-subtitle': 'Expert-guided astronomical tours: star gazing, constellations and deep space phenomena.',
             'btn-reserve': 'Book Your Tour',
-            'btn-see-tours': 'See Tours'
+            'btn-see-tours': 'See Tours',
+            
+            // Features Section
+            'Cielos Únicos': 'Unique Skies',
+            'Guías Expertos': 'Expert Guides', 
+            'Ubicación Perfecta': 'Perfect Location',
+            'Equipos Profesionales': 'Professional Equipment',
+            
+            // Tours
+            'Nuestros Tours Astronómicos': 'Our Astronomical Tours',
+            'Experiencias únicas bajo el cielo más claro del mundo': 'Unique experiences under the clearest sky in the world',
+            'Tour Astronómico Completo': 'Complete Astronomical Tour',
+            'Tour Privado': 'Private Tour',
+            'Tour Fotográfico': 'Photography Tour',
+            'Viajes de Estudio': 'Study Trips',
+            'Eventos Corporativos': 'Corporate Events',
+            'Reservar Tour': 'Book Tour',
+            'Solicitar Cotización': 'Request Quote',
+            'Más Popular': 'Most Popular',
+            
+            // Tour descriptions
+            'Experiencia completa: observación a ojo desnudo con puntero láser, telescopio inteligente Unistellar eVscope, cóctel bajo las estrellas y sesión de fotos.': 'Complete experience: naked-eye observation with laser pointer, Unistellar eVscope smart telescope, cocktails under the stars and photo session.',
+            'Experiencia personalizada para grupos pequeños. Itinerario flexible adaptado a tus intereses específicos en astronomía.': 'Personalized experience for small groups. Flexible itinerary adapted to your specific interests in astronomy.',
+            'Especializado en astrofotografía con equipos profesionales. Aprende técnicas avanzadas y captura imágenes espectaculares del cosmos.': 'Specialized in astrophotography with professional equipment. Learn advanced techniques and capture spectacular images of the cosmos.',
+            'Programas educativos especializados para colegios, universidades e institutos. Contenido adaptado según nivel académico con material didáctico incluido.': 'Specialized educational programs for schools, universities and institutes. Content adapted to academic level with didactic material included.',
+            'Team building bajo las estrellas. Fortalece vínculos empresariales con experiencias astronómicas únicas diseñadas para fortalecer equipos.': 'Team building under the stars. Strengthen business bonds with unique astronomical experiences designed to strengthen teams.',
+            
+            // Includes
+            'Incluye:': 'Includes:',
+            
+            // Telescope Section
+            'Nuestro Telescopio Unistellar eVscope': 'Our Unistellar eVscope Telescope',
+            'Galería del Espacio Profundo': 'Deep Space Gallery',
+            
+            // Booking Form
+            'Reserva Tu Experiencia Astronómica': 'Book Your Astronomical Experience',
+            'Selecciona tu tour': 'Select your tour',
+            'Nombre completo': 'Full name',
+            'Email': 'Email',
+            'Teléfono': 'Phone',
+            'Número de personas': 'Number of people',
+            'Comentarios adicionales': 'Additional comments',
+            'Enviar Reserva': 'Send Booking',
+            
+            // Footer
+            'Síguenos': 'Follow Us',
+            'Enlaces Rápidos': 'Quick Links',
+            'Información de Contacto': 'Contact Information'
         },
+        
         pt: {
+            // Navigation
             'Inicio': 'Início',
             'Sobre Nosotros': 'Sobre Nós',
             'Tours': 'Tours',
-            'Telescopio': 'Telescópio',
+            'Telescopio': 'Telescópio', 
             'Reservas': 'Reservas',
             'Contacto': 'Contato',
             'Reserva Ahora': 'Reserve Agora',
-            'hero-title': 'Descubra A Dark Sky - O Céu Mais Puro do Mundo em San Pedro de Atacama',
-            'hero-subtitle': 'Tours astronômicos guiados por especialistas: observação de estrelas, constelações e fenômenos celestiais.',
+            
+            // Hero Section
+            'hero-title': ['Atacama Dark Skies', 'O Céu Mais Puro do Mundo', 'em San Pedro de Atacama'],
+            'hero-subtitle': 'Tours astronômicos guiados por especialistas: observação de estrelas, constelações e fenômenos do espaço profundo.',
             'btn-reserve': 'Reserve Seu Tour',
-            'btn-see-tours': 'Ver Tours'
+            'btn-see-tours': 'Ver Tours',
+            
+            // Features Section
+            'Cielos Únicos': 'Céus Únicos',
+            'Guías Expertos': 'Guias Especialistas',
+            'Ubicación Perfecta': 'Localização Perfeita', 
+            'Equipos Profesionales': 'Equipamentos Profissionais',
+            
+            // Tours
+            'Nuestros Tours Astronómicos': 'Nossos Tours Astronômicos',
+            'Experiencias únicas bajo el cielo más claro del mundo': 'Experiências únicas sob o céu mais claro do mundo',
+            'Tour Astronómico Completo': 'Tour Astronômico Completo',
+            'Tour Privado': 'Tour Privado',
+            'Tour Fotográfico': 'Tour Fotográfico',
+            'Viajes de Estudio': 'Viagens de Estudo',
+            'Eventos Corporativos': 'Eventos Corporativos',
+            'Reservar Tour': 'Reservar Tour',
+            'Solicitar Cotización': 'Solicitar Orçamento',
+            'Más Popular': 'Mais Popular',
+            
+            // Tour descriptions
+            'Experiencia completa: observación a ojo desnudo con puntero láser, telescopio inteligente Unistellar eVscope, cóctel bajo las estrellas y sesión de fotos.': 'Experiência completa: observação a olho nu com ponteiro laser, telescópio inteligente Unistellar eVscope, coquetel sob as estrelas e sessão de fotos.',
+            'Experiencia personalizada para grupos pequeños. Itinerario flexible adaptado a tus intereses específicos en astronomía.': 'Experiência personalizada para pequenos grupos. Itinerário flexível adaptado aos seus interesses específicos em astronomia.',
+            'Especializado en astrofotografía con equipos profesionales. Aprende técnicas avanzadas y captura imágenes espectaculares del cosmos.': 'Especializado em astrofotografia com equipamentos profissionais. Aprenda técnicas avançadas e capture imagens espetaculares do cosmos.',
+            'Programas educativos especializados para colegios, universidades e institutos. Contenido adaptado según nivel académico con material didáctico incluido.': 'Programas educacionais especializados para escolas, universidades e institutos. Conteúdo adaptado ao nível acadêmico com material didático incluído.',
+            'Team building bajo las estrellas. Fortalece vínculos empresariales con experiencias astronómicas únicas diseñadas para fortalecer equipos.': 'Team building sob as estrelas. Fortaleça vínculos empresariais com experiências astronômicas únicas projetadas para fortalecer equipes.',
+            
+            // Includes
+            'Incluye:': 'Inclui:',
+            
+            // Telescope Section
+            'Nuestro Telescopio Unistellar eVscope': 'Nosso Telescópio Unistellar eVscope',
+            'Galería del Espacio Profundo': 'Galeria do Espaço Profundo',
+            
+            // Booking Form
+            'Reserva Tu Experiencia Astronómica': 'Reserve Sua Experiência Astronômica',
+            'Selecciona tu tour': 'Selecione seu tour',
+            'Nombre completo': 'Nome completo',
+            'Email': 'Email',
+            'Teléfono': 'Telefone',
+            'Número de personas': 'Número de pessoas',
+            'Comentarios adicionales': 'Comentários adicionais',
+            'Enviar Reserva': 'Enviar Reserva',
+            
+            // Footer
+            'Síguenos': 'Siga-nos',
+            'Enlaces Rápidos': 'Links Rápidos',
+            'Información de Contacto': 'Informações de Contato'
         }
     };
 
@@ -184,6 +374,109 @@ function initLanguageToggle() {
                 el.textContent = translations[currentLang][key];
             });
         });
+        
+        // Update common elements by text matching
+        function translateElementsContaining(textToFind, translationKey) {
+            const allElements = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, a, span, button, label');
+            allElements.forEach(el => {
+                const elementText = el.textContent.trim();
+                if ((elementText === textToFind || elementText.includes(textToFind)) && translations[currentLang][translationKey]) {
+                    // For exact matches or partial matches (for longer descriptions)
+                    if (elementText === textToFind || elementText.length > 100) {
+                        el.textContent = translations[currentLang][translationKey];
+                    }
+                }
+            });
+        }
+        
+        // Special function for tour descriptions
+        function translateTourDescriptions() {
+            // Tour descriptions by selector
+            const tourDescriptions = [
+                {
+                    selector: '.tour-card:nth-child(1) .tour-content p',
+                    key: 'Experiencia completa: observación a ojo desnudo con puntero láser, telescopio inteligente Unistellar eVscope, cóctel bajo las estrellas y sesión de fotos.'
+                },
+                {
+                    selector: '.tour-card:nth-child(2) .tour-content p',
+                    key: 'Experiencia personalizada para grupos pequeños. Itinerario flexible adaptado a tus intereses específicos en astronomía.'
+                },
+                {
+                    selector: '.tour-card:nth-child(3) .tour-content p',
+                    key: 'Especializado en astrofotografía con equipos profesionales. Aprende técnicas avanzadas y captura imágenes espectaculares del cosmos.'
+                },
+                {
+                    selector: '.tour-card:nth-child(4) .tour-content p',
+                    key: 'Programas educativos especializados para colegios, universidades e institutos. Contenido adaptado según nivel académico con material didáctico incluido.'
+                },
+                {
+                    selector: '.tour-card:nth-child(5) .tour-content p',
+                    key: 'Team building bajo las estrellas. Fortalece vínculos empresariales con experiencias astronómicas únicas diseñadas para fortalecer equipos.'
+                }
+            ];
+            
+            tourDescriptions.forEach(desc => {
+                const element = document.querySelector(desc.selector);
+                if (element && translations[currentLang][desc.key]) {
+                    element.textContent = translations[currentLang][desc.key];
+                }
+            });
+        }
+        
+        // Apply translations to common elements
+        const elementsToTranslate = [
+            ['Cielos Únicos', 'Cielos Únicos'],
+            ['Guías Expertos', 'Guías Expertos'],
+            ['Ubicación Perfecta', 'Ubicación Perfecta'], 
+            ['Equipos Profesionales', 'Equipos Profesionales'],
+            ['Nuestros Tours Astronómicos', 'Nuestros Tours Astronómicos'],
+            ['Experiencias únicas bajo el cielo más claro del mundo', 'Experiencias únicas bajo el cielo más claro del mundo'],
+            ['Tour Astronómico Completo', 'Tour Astronómico Completo'],
+            ['Tour Privado', 'Tour Privado'],
+            ['Tour Fotográfico', 'Tour Fotográfico'],
+            ['Viajes de Estudio', 'Viajes de Estudio'],
+            ['Eventos Corporativos', 'Eventos Corporativos'],
+            ['Reservar Tour', 'Reservar Tour'],
+            ['Solicitar Cotización', 'Solicitar Cotización'],
+            ['Más Popular', 'Más Popular'],
+            ['Experiencia completa: observación a ojo desnudo con puntero láser, telescopio inteligente Unistellar eVscope, cóctel bajo las estrellas y sesión de fotos.', 'Experiencia completa: observación a ojo desnudo con puntero láser, telescopio inteligente Unistellar eVscope, cóctel bajo las estrellas y sesión de fotos.'],
+            ['Experiencia personalizada para grupos pequeños. Itinerario flexible adaptado a tus intereses específicos en astronomía.', 'Experiencia personalizada para grupos pequeños. Itinerario flexible adaptado a tus intereses específicos en astronomía.'],
+            ['Especializado en astrofotografía con equipos profesionales. Aprende técnicas avanzadas y captura imágenes espectaculares del cosmos.', 'Especializado en astrofotografía con equipos profesionales. Aprende técnicas avanzadas y captura imágenes espectaculares del cosmos.'],
+            ['Programas educativos especializados para colegios, universidades e institutos. Contenido adaptado según nivel académico con material didáctico incluido.', 'Programas educativos especializados para colegios, universidades e institutos. Contenido adaptado según nivel académico con material didáctico incluido.'],
+            ['Team building bajo las estrellas. Fortalece vínculos empresariales con experiencias astronómicas únicas diseñadas para fortalecer equipos.', 'Team building bajo las estrellas. Fortalece vínculos empresariales con experiencias astronómicas únicas diseñadas para fortalecer equipos.'],
+            ['Incluye:', 'Incluye:'],
+            ['Nuestro Telescopio Unistellar eVscope', 'Nuestro Telescopio Unistellar eVscope'],
+            ['Galería del Espacio Profundo', 'Galería del Espacio Profundo'],
+            ['Reserva Tu Experiencia Astronómica', 'Reserva Tu Experiencia Astronómica'],
+            ['Selecciona tu tour', 'Selecciona tu tour'],
+            ['Nombre completo', 'Nombre completo'],
+            ['Email', 'Email'],
+            ['Teléfono', 'Teléfono'],
+            ['Número de personas', 'Número de personas'],
+            ['Comentarios adicionales', 'Comentarios adicionales'],
+            ['Enviar Reserva', 'Enviar Reserva'],
+            ['Síguenos', 'Síguenos'],
+            ['Enlaces Rápidos', 'Enlaces Rápidos'],
+            ['Información de Contacto', 'Información de Contacto']
+        ];
+        
+        elementsToTranslate.forEach(([text, key]) => {
+            translateElementsContaining(text, key);
+        });
+        
+        // Translate tour descriptions specifically
+        translateTourDescriptions();
+        
+        // Translate section headers
+        const sectionHeader = document.querySelector('#tours .section-header h2');
+        const sectionSubtitle = document.querySelector('#tours .section-header .section-subtitle');
+        
+        if (sectionHeader && translations[currentLang]['Nuestros Tours Astronómicos']) {
+            sectionHeader.textContent = translations[currentLang]['Nuestros Tours Astronómicos'];
+        }
+        if (sectionSubtitle && translations[currentLang]['Experiencias únicas bajo el cielo más claro del mundo']) {
+            sectionSubtitle.textContent = translations[currentLang]['Experiencias únicas bajo el cielo más claro del mundo'];
+        }
 
         // Update specific elements
         const heroTitle = document.querySelector('.hero-title');
@@ -191,7 +484,31 @@ function initLanguageToggle() {
         const btnReserve = document.querySelector('.hero-buttons .btn-primary');
         const btnSee = document.querySelector('.hero-buttons .btn-secondary');
 
-        if (heroTitle) heroTitle.textContent = translations[currentLang]['hero-title'];
+        // Update hero title lines with letter structure
+        if (heroTitle) {
+            const titleLines = translations[currentLang]['hero-title'];
+            const titleLineElements = heroTitle.querySelectorAll('.title-line');
+            
+            if (titleLines && Array.isArray(titleLines)) {
+                titleLineElements.forEach((lineElement, index) => {
+                    if (titleLines[index]) {
+                        const text = titleLines[index];
+                        lineElement.innerHTML = '';
+                        
+                        // Recreate letter structure for gradient
+                        text.split('').forEach((char) => {
+                            const span = document.createElement('span');
+                            span.textContent = char === ' ' ? '\u00A0' : char;
+                            span.style.display = 'inline-block';
+                            span.style.opacity = '1';
+                            span.style.transform = 'translateY(0)';
+                            lineElement.appendChild(span);
+                        });
+                    }
+                });
+            }
+        }
+        
         if (heroSubtitle) heroSubtitle.textContent = translations[currentLang]['hero-subtitle'];
         if (btnReserve) btnReserve.textContent = translations[currentLang]['btn-reserve'];
         if (btnSee) btnSee.textContent = translations[currentLang]['btn-see-tours'];
@@ -1032,239 +1349,218 @@ window.addEventListener('load', function() {
 
 // ===== TELESCOPE GALLERY =====
 function initTelescopeGallery() {
-    console.log('Initializing telescope gallery...');
-    const galleryItems = document.querySelectorAll('.gallery-item');
-    const modal = document.getElementById('galleryModal');
-    const modalImage = document.getElementById('modalImage');
-    const closeModal = document.querySelector('.close-modal');
-    const prevBtn = document.getElementById('prevImage');
-    const nextBtn = document.getElementById('nextImage');
+    console.log('🔭 Initializing telescope gallery...');
     
-    // Carousel elements
+    // Setup global functions for carousel
+    window.currentTelescopeSlide = 0;
+    window.totalTelescopeSlides = 2;
+    
+    window.updateTelescopeCarousel = function() {
+        const track = document.getElementById('carouselTrack');
+        const indicators = document.querySelectorAll('.indicator');
+        
+        if (track) {
+            const translateX = -window.currentTelescopeSlide * 50;
+            track.style.transform = `translateX(${translateX}%)`;
+            console.log('🎠 Moved to slide:', window.currentTelescopeSlide);
+        }
+        
+        indicators.forEach((indicator, index) => {
+            indicator.classList.toggle('active', index === window.currentTelescopeSlide);
+        });
+    };
+    
+    window.telescopeCarouselNext = function() {
+        console.log('➡️ Next slide clicked - INLINE');
+        window.currentTelescopeSlide = (window.currentTelescopeSlide + 1) % window.totalTelescopeSlides;
+        window.updateTelescopeCarousel();
+    };
+    
+    window.telescopeCarouselPrev = function() {
+        console.log('⬅️ Previous slide clicked - INLINE');
+        window.currentTelescopeSlide = (window.currentTelescopeSlide - 1 + window.totalTelescopeSlides) % window.totalTelescopeSlides;
+        window.updateTelescopeCarousel();
+    };
+    
+    // Setup global functions for modal
+    window.openGalleryModal = function(imageSrc) {
+        console.log('🔍 Opening modal with image:', imageSrc);
+        const modal = document.getElementById('galleryModal');
+        const modalImage = document.getElementById('modalImage');
+        
+        if (modal && modalImage) {
+            modalImage.src = imageSrc;
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+    };
+    
+    window.closeGalleryModal = function() {
+        console.log('❌ Closing modal');
+        const modal = document.getElementById('galleryModal');
+        
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    };
+    
+    // Add keyboard support for closing modal
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            window.closeGalleryModal();
+        }
+    });
+    
+    // Wait for all elements to be ready
+    setTimeout(() => {
+        setupCarousel();
+        setupModal();
+        window.updateTelescopeCarousel(); // Initialize
+    }, 200);
+}
+
+function setupCarousel() {
     const carouselTrack = document.getElementById('carouselTrack');
     const carouselPrev = document.getElementById('carouselPrev');
     const carouselNext = document.getElementById('carouselNext');
     const indicators = document.querySelectorAll('.indicator');
     
-    console.log('Gallery items found:', galleryItems.length);
-    console.log('Modal found:', modal ? 'Yes' : 'No');
-    console.log('Carousel elements found:', carouselTrack ? 'Yes' : 'No');
+    console.log('🎠 Setting up carousel...');
+    console.log('Track:', carouselTrack ? '✅' : '❌');
+    console.log('Prev button:', carouselPrev ? '✅' : '❌');
+    console.log('Next button:', carouselNext ? '✅' : '❌');
+    console.log('Indicators:', indicators.length);
     
-    if (galleryItems.length === 0) {
-        console.warn('No gallery items found - telescope gallery not initialized');
+    if (!carouselTrack) {
+        console.error('❌ Carousel track not found!');
         return;
     }
     
-    // Carousel variables
     let currentSlide = 0;
-    const totalSlides = 2; // We have 2 slides
+    const totalSlides = 2;
     
-    let currentImageIndex = 0;
-    const imagesSources = [];
-    
-    // Collect all image sources
-    galleryItems.forEach((item, index) => {
-        const img = item.querySelector('img');
-        imagesSources.push(img.src);
-        
-        // Add click event to open modal
-        item.addEventListener('click', () => {
-            console.log('Gallery item clicked, index:', index);
-            currentImageIndex = index;
-            showModal();
-        });
-        
-        // Add keyboard support
-        item.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                currentImageIndex = index;
-                showModal();
-            }
-        });
-        
-        // Make items focusable
-        item.setAttribute('tabindex', '0');
-        item.setAttribute('role', 'button');
-        item.setAttribute('aria-label', `Ver imagen ${index + 1} del telescopio`);
-    });
-    
-    function showModal() {
-        console.log('showModal called, currentImageIndex:', currentImageIndex);
-        console.log('Image source:', imagesSources[currentImageIndex]);
-        
-        if (!modal || !modalImage) {
-            console.error('Modal or modalImage not found');
-            return;
-        }
-        
-        modal.classList.add('active');
-        modalImage.src = imagesSources[currentImageIndex];
-        modalImage.alt = `Imagen ${currentImageIndex + 1} del telescopio Unistellar`;
-        document.body.style.overflow = 'hidden'; // Prevent background scrolling
-        
-        // Focus the modal for screen readers
-        modal.focus();
-        console.log('Modal opened');
-    }
-    
-    function hideModal() {
-        modal.classList.remove('active');
-        document.body.style.overflow = ''; // Restore scrolling
-    }
-    
-    function showPreviousImage() {
-        currentImageIndex = currentImageIndex > 0 ? currentImageIndex - 1 : imagesSources.length - 1;
-        modalImage.src = imagesSources[currentImageIndex];
-        modalImage.alt = `Imagen ${currentImageIndex + 1} del telescopio Unistellar`;
-    }
-    
-    function showNextImage() {
-        currentImageIndex = currentImageIndex < imagesSources.length - 1 ? currentImageIndex + 1 : 0;
-        modalImage.src = imagesSources[currentImageIndex];
-        modalImage.alt = `Imagen ${currentImageIndex + 1} del telescopio Unistellar`;
-    }
-    
-    // Modal event listeners
-    if (closeModal) {
-        closeModal.addEventListener('click', hideModal);
-        console.log('Close modal listener added');
-    } else {
-        console.warn('Close modal button not found');
-    }
-    
-    if (prevBtn) {
-        prevBtn.addEventListener('click', showPreviousImage);
-        console.log('Previous image button listener added');
-    } else {
-        console.warn('Previous image button not found');
-    }
-    
-    if (nextBtn) {
-        nextBtn.addEventListener('click', showNextImage);
-        console.log('Next image button listener added');
-    } else {
-        console.warn('Next image button not found');
-    }
-    
-    // Close modal when clicking outside the image
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            hideModal();
-        }
-    });
-    
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-        if (modal.classList.contains('active')) {
-            switch(e.key) {
-                case 'Escape':
-                    hideModal();
-                    break;
-                case 'ArrowLeft':
-                    e.preventDefault();
-                    showPreviousImage();
-                    break;
-                case 'ArrowRight':
-                    e.preventDefault();
-                    showNextImage();
-                    break;
-            }
-        }
-    });
-    
-    // Touch/swipe support for mobile
-    let startX = null;
-    
-    modalImage.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-    });
-    
-    modalImage.addEventListener('touchend', (e) => {
-        if (!startX) return;
-        
-        const endX = e.changedTouches[0].clientX;
-        const diffX = startX - endX;
-        
-        if (Math.abs(diffX) > 50) { // Minimum swipe distance
-            if (diffX > 0) {
-                showNextImage(); // Swipe left - next image
-            } else {
-                showPreviousImage(); // Swipe right - previous image
-            }
-        }
-        
-        startX = null;
-    });
-    
-    // ===== CAROUSEL FUNCTIONALITY =====
     function updateCarousel() {
-        if (carouselTrack) {
-            const translateX = -currentSlide * 50; // Each slide is 50% width
-            carouselTrack.style.transform = `translateX(${translateX}%)`;
-            
-            // Update indicators
-            indicators.forEach((indicator, index) => {
+        const translateX = -currentSlide * 50;
+        carouselTrack.style.transform = `translateX(${translateX}%)`;
+        console.log('🎠 Carousel moved to slide:', currentSlide);
+        
+        // Update indicators
+        indicators.forEach((indicator, index) => {
+            if (indicator) {
                 indicator.classList.toggle('active', index === currentSlide);
-            });
-            
-            console.log('Carousel updated to slide:', currentSlide);
-        }
+            }
+        });
     }
     
     function nextSlide() {
+        console.log('➡️ Next slide clicked');
         currentSlide = (currentSlide + 1) % totalSlides;
         updateCarousel();
     }
     
     function prevSlide() {
+        console.log('⬅️ Previous slide clicked');
         currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
         updateCarousel();
     }
     
-    // Carousel event listeners
+    // Add event listeners
     if (carouselNext) {
-        carouselNext.addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log('Next button clicked');
-            nextSlide();
-        });
-        console.log('Next button listener added');
-    } else {
-        console.warn('Next button not found');
+        carouselNext.onclick = nextSlide;
+        console.log('✅ Next button click handler added');
     }
     
     if (carouselPrev) {
-        carouselPrev.addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log('Previous button clicked');
-            prevSlide();
-        });
-        console.log('Previous button listener added');
-    } else {
-        console.warn('Previous button not found');
+        carouselPrev.onclick = prevSlide;
+        console.log('✅ Previous button click handler added');
     }
     
     // Indicator clicks
-    if (indicators.length > 0) {
-        indicators.forEach((indicator, index) => {
-            indicator.addEventListener('click', () => {
-                console.log('Indicator clicked:', index);
+    indicators.forEach((indicator, index) => {
+        if (indicator) {
+            indicator.onclick = () => {
+                console.log('🔘 Indicator', index, 'clicked');
                 currentSlide = index;
                 updateCarousel();
-            });
-        });
-        console.log('Indicator listeners added:', indicators.length);
-    } else {
-        console.warn('No indicators found');
+            };
+        }
+    });
+    
+    // Initialize
+    updateCarousel();
+    console.log('🎠 Carousel initialized successfully');
+}
+
+function setupModal() {
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    const modal = document.getElementById('galleryModal');
+    const modalImage = document.getElementById('modalImage');
+    const closeModal = document.querySelector('.close-modal');
+    
+    console.log('🔍 Setting up modal...');
+    console.log('Gallery items:', galleryItems.length);
+    console.log('Modal:', modal ? '✅' : '❌');
+    console.log('Modal image:', modalImage ? '✅' : '❌');
+    console.log('Close button:', closeModal ? '✅' : '❌');
+    
+    if (!modal || !modalImage || galleryItems.length === 0) {
+        console.error('❌ Modal elements not found!');
+        return;
     }
     
-    // Auto-slide every 8 seconds
-    setInterval(nextSlide, 8000);
+    let currentImageIndex = 0;
+    const imagesSources = [];
     
-    // Initialize carousel
-    updateCarousel();
+    // Collect image sources
+    galleryItems.forEach((item, index) => {
+        const img = item.querySelector('img');
+        if (img) {
+            imagesSources.push(img.src);
+            
+            // Add click event
+            item.onclick = () => {
+                console.log('🖼️ Image', index, 'clicked');
+                currentImageIndex = index;
+                showModal();
+            };
+        }
+    });
+    
+    function showModal() {
+        console.log('🔍 Opening modal for image:', currentImageIndex);
+        modal.classList.add('active');
+        modalImage.src = imagesSources[currentImageIndex];
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function hideModal() {
+        console.log('❌ Closing modal');
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    // Close modal events
+    if (closeModal) {
+        closeModal.onclick = hideModal;
+    }
+    
+    modal.onclick = (e) => {
+        if (e.target === modal) {
+            hideModal();
+        }
+    };
+    
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+        if (modal.classList.contains('active') && e.key === 'Escape') {
+            hideModal();
+        }
+    });
+    
+    console.log('🔍 Modal initialized with', imagesSources.length, 'images');
 }
+
 
 // ===== SERVICE WORKER REGISTRATION (for PWA capabilities) =====
 if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
@@ -1279,6 +1575,8 @@ if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
     });
 }
 
+// Function moved to the top of the file
+
 // ===== EXPORT FOR TESTING =====
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
@@ -1288,6 +1586,7 @@ if (typeof module !== 'undefined' && module.exports) {
         initBookingForm,
         initSmoothScrolling,
         initTelescopeGallery,
+        initTypewriter,
         debounce,
         throttle
     };

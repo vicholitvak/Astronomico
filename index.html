@@ -33,7 +33,7 @@
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet">
     
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="styles.css?v=3.0">
+    <link rel="stylesheet" href="styles.css?v=5.5">
 </head>
 <body>
     <!-- Header Navigation -->
@@ -42,8 +42,7 @@
             <div class="nav-container">
                 <div class="nav-logo">
                     <a href="#inicio">
-                        <i class="fas fa-star"></i>
-                        Atacama NightSky
+                        <img src="images/Nightskylogo.jpg" alt="Atacama NightSky Logo" class="logo-img">
                     </a>
                 </div>
                 
@@ -74,14 +73,14 @@
                 
                 <!-- Desktop Menu -->
                 <ul class="nav-menu">
-                    <li class="nav-item"><a href="#inicio" class="nav-link">Inicio</a></li>
-                    <li class="nav-item"><a href="#nosotros" class="nav-link">Sobre Nosotros</a></li>
-                    <li class="nav-item"><a href="#tours" class="nav-link">Tours</a></li>
-                    <li class="nav-item"><a href="#telescopio" class="nav-link">Telescopio</a></li>
-                    <li class="nav-item"><a href="#reservas" class="nav-link">Reservas</a></li>
-                    <li class="nav-item"><a href="#contacto" class="nav-link">Contacto</a></li>
+                    <li class="nav-item"><a href="#inicio" class="nav-link" data-translate="Inicio">Inicio</a></li>
+                    <li class="nav-item"><a href="#nosotros" class="nav-link" data-translate="Sobre Nosotros">Sobre Nosotros</a></li>
+                    <li class="nav-item"><a href="#tours" class="nav-link" data-translate="Tours">Tours</a></li>
+                    <li class="nav-item"><a href="#telescopio" class="nav-link" data-translate="Telescopio">Telescopio</a></li>
+                    <li class="nav-item"><a href="#reservas" class="nav-link" data-translate="Reservas">Reservas</a></li>
+                    <li class="nav-item"><a href="#contacto" class="nav-link" data-translate="Contacto">Contacto</a></li>
                     <li class="nav-item">
-                        <a href="#reservas" class="cta-button">Reserva Ahora</a>
+                        <a href="#reservas" class="cta-button" data-translate="Reserva Ahora">Reserva Ahora</a>
                     </li>
                 </ul>
                 
@@ -102,7 +101,74 @@
         </div>
         <div class="hero-content">
             <div class="container">
-                <h1 class="hero-title">Atacama Dark Skies - El Cielo Más Puro del Mundo en San Pedro de Atacama</h1>
+                <h1 class="hero-title">
+                    <div class="title-line" id="line1">Atacama Dark Skies</div>
+                    <div class="title-line" id="line2">El Cielo Más Puro del Mundo</div>
+                    <div class="title-line" id="line3">en San Pedro de Atacama</div>
+                </h1>
+                
+                <script>
+                // Letter by letter animation with enhanced effects
+                document.addEventListener('DOMContentLoaded', () => {
+                    const lines = ['line1', 'line2', 'line3'];
+                    let totalDelay = 0;
+                    
+                    lines.forEach((lineId, lineIndex) => {
+                        const lineElement = document.getElementById(lineId);
+                        if (!lineElement) return;
+                        
+                        const text = lineElement.textContent;
+                        lineElement.innerHTML = '';
+                        lineElement.style.textAlign = 'center';
+                        
+                        // Create spans for each word to maintain proper spacing
+                        const words = text.split(' ');
+                        words.forEach((word, wordIndex) => {
+                            if (wordIndex > 0) {
+                                // Add space between words
+                                const spaceSpan = document.createElement('span');
+                                spaceSpan.innerHTML = '&nbsp;';
+                                spaceSpan.style.display = 'inline-block';
+                                lineElement.appendChild(spaceSpan);
+                            }
+                            
+                            // Create span container for word
+                            const wordSpan = document.createElement('span');
+                            wordSpan.style.display = 'inline-block';
+                            wordSpan.style.whiteSpace = 'nowrap';
+                            
+                            // Create spans for each letter in the word
+                            word.split('').forEach((char, charIndex) => {
+                                const letterSpan = document.createElement('span');
+                                letterSpan.textContent = char;
+                                letterSpan.style.display = 'inline-block';
+                                letterSpan.style.opacity = '0';
+                                letterSpan.style.transform = 'translateY(30px) scale(0.8)';
+                                letterSpan.style.transition = 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                                letterSpan.style.filter = 'blur(2px)';
+                                
+                                wordSpan.appendChild(letterSpan);
+                                
+                                // Calculate delay for this letter
+                                const letterIndex = wordIndex === 0 ? charIndex : 
+                                    words.slice(0, wordIndex).join('').length + wordIndex + charIndex;
+                                
+                                // Animate each letter
+                                setTimeout(() => {
+                                    letterSpan.style.opacity = '1';
+                                    letterSpan.style.transform = 'translateY(0) scale(1)';
+                                    letterSpan.style.filter = 'blur(0px)';
+                                }, totalDelay + (letterIndex * 80) + 800);
+                            });
+                            
+                            lineElement.appendChild(wordSpan);
+                        });
+                        
+                        // Update delay for next line
+                        totalDelay += (text.length * 80) + 400;
+                    });
+                });
+                </script>
                 <p class="hero-subtitle">Tours astronómicos guiados por expertos: observación de estrellas, constelaciones y fenómenos celestes del espacio profundo.</p>
                 <div class="hero-buttons">
                     <a href="#reservas" class="btn btn-primary">Reserva Tu Tour</a>
@@ -119,24 +185,26 @@
     <section id="nosotros" class="about">
         <div class="container">
             <div class="section-header">
-                <h2>Sobre Mi</h2>
-                <p class="section-subtitle">Vicente Litvak </p>
+                <h2>Vicente Litvak</h2>
+                <p class="section-subtitle">Sobre mi</p>
             </div>
             
             <div class="about-content">
                 <div class="about-text">
-                    <p>Soy un apasionado guía astronómico certificado con años 7 de experiencia en guiado astronomíco en el desierto de Atacama, el lugar con los cielos más claros del planeta. Ofrecemos tours personalizados y educativos para todas las edades.</p>
+                    <p>Soy un apasionado guía astronómico certificado con 7 años de experiencia en guiado astronomíco en el desierto de Atacama, el lugar con los cielos más claros del planeta. Ofrecemos tours personalizados y educativos para todas las edades.</p>
                     
                     <div class="features">
                         <div class="feature">
                             <i class="fas fa-certificate"></i>
-                            <h4>Guías Certificados</h4>
-                            <p>Profesionales con formación astronómica</p>
+                            <h4>Guía Certificado</h4>
+                            <p>Guía astronómico Sernatur</p>
+                            <p>Certificado escuela de Astronomía UA</p>
                         </div>
                         <div class="feature">
                             <i class="fas fa-telescope"></i>
-                            <h4>Equipos Profesionales</h4>
-                            <p>Telescopios de alta calidad para observación</p>
+                            <h4>Equipo Profesional</h4>
+                            <p>Telescopio Unistellar de alta calidad para observación</p>
+                            <p>Cámara fotográfica Sony A7c con lente Sony GM 14mm</p>
                         </div>
                         <div class="feature">
                             <i class="fas fa-star"></i>
@@ -176,11 +244,11 @@
                         <div class="tour-details">
                             <div class="detail">
                                 <i class="fas fa-clock"></i>
-                                <span>4 horas</span>
+                                <span>2.5 horas</span>
                             </div>
                             <div class="detail">
                                 <i class="fas fa-users"></i>
-                                <span>Max 8 personas</span>
+                                <span>Max 16 personas</span>
                             </div>
                         </div>
                         
@@ -287,7 +355,7 @@
                         <div class="tour-details">
                             <div class="detail">
                                 <i class="fas fa-clock"></i>
-                                <span>3 horas</span>
+                                <span>2.5 horas</span>
                             </div>
                             <div class="detail">
                                 <i class="fas fa-users"></i>
@@ -306,7 +374,7 @@
                             </ul>
                         </div>
                         
-                        <a href="#reservas" class="btn btn-primary btn-tour">Solicitar Cotización</a>
+                        <a href="https://wa.me/56950558761?text=Hola!%20Me%20interesa%20cotizar%20un%20*Viaje%20de%20Estudio*%20astronómico%20para%20mi%20grupo.%20¿Podrían%20enviarme%20información%20detallada%20sobre%20disponibilidad,%20precios%20y%20opciones%20educativas?" target="_blank" class="btn btn-primary btn-tour">Solicitar Cotización</a>
                     </div>
                 </div>
                 
@@ -343,7 +411,7 @@
                             </ul>
                         </div>
                         
-                        <a href="#reservas" class="btn btn-primary btn-tour">Solicitar Cotización</a>
+                        <a href="https://wa.me/56950558761?text=Hola!%20Me%20interesa%20cotizar%20un%20*Evento%20Corporativo*%20astronómico%20para%20mi%20empresa.%20¿Podrían%20enviarme%20información%20sobre%20disponibilidad,%20precios%20y%20opciones%20de%20team%20building?" target="_blank" class="btn btn-primary btn-tour">Solicitar Cotización</a>
                     </div>
                 </div>
             </div>
@@ -356,7 +424,7 @@
     <section id="telescopio" class="telescope">
         <div class="container">
             <div class="section-header">
-                <h2>Nuestro Telescopio Unistellar eVscope</h2>
+                <h2>Nuestro Telescopio Unistellar eVscope 2</h2>
                 <p class="section-subtitle">Tecnología revolucionaria que captura la belleza del espacio profundo en tiempo real</p>
             </div>
             
@@ -364,13 +432,13 @@
                 <div class="telescope-info">
                     <div class="telescope-features">
                         <h3>Tecnología de Vanguardia</h3>
-                        <p>El telescopio Unistellar eVscope utiliza tecnología patentada de "Enhanced Vision" que permite observar y fotografiar objetos del espacio profundo que normalmente son invisibles al ojo humano.</p>
+                        <p>El telescopio Unistellar eVscope 2 utiliza tecnología patentada de "Enhanced Vision" que permite observar y fotografiar objetos del espacio profundo a color que normalmente son invisibles al ojo humano.</p>
                         
                         <div class="features-grid">
                             <div class="feature-item">
                                 <i class="fas fa-eye"></i>
                                 <h4>Enhanced Vision</h4>
-                                <p>Acumula luz automáticamente para revelar nebulosas, galaxias y cúmulos estelares</p>
+                                <p>Acumula luz automáticamente para revelar nebulosas, galaxias y cúmulos estelares a color</p>
                             </div>
                             <div class="feature-item">
                                 <i class="fas fa-camera"></i>
@@ -395,6 +463,18 @@
                     <h3>Galería del Espacio Profundo</h3>
                     <p>Estas son fotografías reales capturadas con nuestro telescopio Unistellar durante nuestros tours</p>
                     
+                    <script>
+                        function abrirImagen(src) {
+                            console.log('🔍 Abriendo:', src);
+                            const modal = document.getElementById('galleryModal');
+                            const img = document.getElementById('modalImage');
+                            if(modal && img) {
+                                img.src = src;
+                                modal.style.display = 'flex';
+                            }
+                        }
+                    </script>
+                    
                     <div class="gallery-container">
                         <!-- Gallery Carousel -->
                         <div class="gallery-carousel" id="telescopeCarousel">
@@ -402,37 +482,37 @@
                                 <!-- Slide 1 -->
                                 <div class="carousel-slide active">
                                     <div class="gallery-grid">
-                                        <div class="gallery-item" data-image="images/eVscope2-20250418-015040.jpg">
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250418-015040.jpg')">
                                             <img src="images/eVscope2-20250418-015040.jpg" alt="Objeto del espacio profundo capturado con eVscope" loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" data-image="images/eVscope2-20250520-005028.jpg">
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250520-005028.jpg')">
                                             <img src="images/eVscope2-20250520-005028.jpg" alt="Nebulosa capturada con telescopio Unistellar" loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" data-image="images/eVscope2-20250525-021351.jpg">
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250525-021351.jpg')">
                                             <img src="images/eVscope2-20250525-021351.jpg" alt="Galaxia fotografiada con eVscope2" loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" data-image="images/eVscope2-20250629-012206.jpg">
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250629-012206.jpg')">
                                             <img src="images/eVscope2-20250629-012206.jpg" alt="Cúmulo estelar capturado durante tour astronómico" loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" data-image="images/eVscope2-20250629-013307.jpg">
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250629-013307.jpg')">
                                             <img src="images/eVscope2-20250629-013307.jpg" alt="Objeto celeste fotografiado con telescopio Unistellar" loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" data-image="images/eVscope2-20250629-013312.jpg">
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250629-013312.jpg')">
                                             <img src="images/eVscope2-20250629-013312.jpg" alt="Astrofotografía del espacio profundo con eVscope" loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
@@ -444,31 +524,31 @@
                                 <!-- Slide 2 -->
                                 <div class="carousel-slide">
                                     <div class="gallery-grid">
-                                        <div class="gallery-item" data-image="images/eVscope2-20250719-001348.jpg">
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250719-001348.jpg')">
                                             <img src="images/eVscope2-20250719-001348.jpg" alt="Nebulosa del Anillo capturada con eVscope" loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" data-image="images/eVscope2-20250803-004143.jpg">
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-004143.jpg')">
                                             <img src="images/eVscope2-20250803-004143.jpg" alt="Galaxia espiral fotografiada con telescopio Unistellar" loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" data-image="images/eVscope2-20250803-004145.jpg">
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-004145.jpg')">
                                             <img src="images/eVscope2-20250803-004145.jpg" alt="Cúmulo globular del espacio profundo" loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" data-image="images/eVscope2-20250803-032904.jpg">
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-032904.jpg')">
                                             <img src="images/eVscope2-20250803-032904.jpg" alt="Nebulosa planetaria capturada en Atacama" loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" data-image="images/eVscope2-20250803-034840.jpg">
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-034840.jpg')">
                                             <img src="images/eVscope2-20250803-034840.jpg" alt="Galaxia lejana observada con eVscope2" loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
@@ -479,10 +559,18 @@
                             </div>
                             
                             <!-- Carousel Controls -->
-                            <button class="carousel-control prev" id="carouselPrev">
+                            <button class="carousel-control prev" id="carouselPrev" onclick="
+                                console.log('⬅️ PREV CLICKED!'); 
+                                const track = document.getElementById('carouselTrack');
+                                if(track) track.style.transform = 'translateX(0%)';
+                            ">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
-                            <button class="carousel-control next" id="carouselNext">
+                            <button class="carousel-control next" id="carouselNext" onclick="
+                                console.log('➡️ NEXT CLICKED!'); 
+                                const track = document.getElementById('carouselTrack');
+                                if(track) track.style.transform = 'translateX(-50%)';
+                            ">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                             
@@ -494,9 +582,12 @@
                         </div>
                         
                         <!-- Gallery Modal -->
-                        <div id="galleryModal" class="gallery-modal">
-                            <div class="modal-content">
-                                <span class="close-modal">&times;</span>
+                        <div id="galleryModal" class="gallery-modal" onclick="window.closeGalleryModal()">
+                            <div class="modal-content" onclick="event.stopPropagation()">
+                                <span class="close-modal" onclick="
+                                    console.log('❌ CLOSE CLICKED!');
+                                    document.getElementById('galleryModal').style.display = 'none';
+                                ">&times;</span>
                                 <img id="modalImage" src="" alt="Imagen ampliada del telescopio">
                                 <div class="modal-nav">
                                     <button id="prevImage" class="nav-btn prev-btn">
@@ -768,8 +859,7 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <div class="footer-logo">
-                        <i class="fas fa-star"></i>
-                        Atacama NightSky
+                        <img src="images/Nightskylogo.jpg" alt="Atacama NightSky Logo" class="footer-logo-img">
                     </div>
                     <p>Descubre el universo en el cielo más claro del mundo. Experiencias astronómicas inolvidables en San Pedro de Atacama.</p>
                     <div class="footer-social">
@@ -835,7 +925,7 @@
     <script src="https://apis.google.com/js/api.js" defer></script>
     
     <!-- JavaScript -->
-    <script src="script.js?v=3.0" defer></script>
+    <script src="script.js?v=5.3"></script>
 
     <!-- Calendario personalizado con fases lunares -->
     <script>
