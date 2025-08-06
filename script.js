@@ -1128,14 +1128,23 @@ function initTelescopeGallery() {
     // Modal event listeners
     if (closeModal) {
         closeModal.addEventListener('click', hideModal);
+        console.log('Close modal listener added');
+    } else {
+        console.warn('Close modal button not found');
     }
     
     if (prevBtn) {
         prevBtn.addEventListener('click', showPreviousImage);
+        console.log('Previous image button listener added');
+    } else {
+        console.warn('Previous image button not found');
     }
     
     if (nextBtn) {
         nextBtn.addEventListener('click', showNextImage);
+        console.log('Next image button listener added');
+    } else {
+        console.warn('Next image button not found');
     }
     
     // Close modal when clicking outside the image
@@ -1215,20 +1224,40 @@ function initTelescopeGallery() {
     
     // Carousel event listeners
     if (carouselNext) {
-        carouselNext.addEventListener('click', nextSlide);
+        carouselNext.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Next button clicked');
+            nextSlide();
+        });
+        console.log('Next button listener added');
+    } else {
+        console.warn('Next button not found');
     }
     
     if (carouselPrev) {
-        carouselPrev.addEventListener('click', prevSlide);
+        carouselPrev.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Previous button clicked');
+            prevSlide();
+        });
+        console.log('Previous button listener added');
+    } else {
+        console.warn('Previous button not found');
     }
     
     // Indicator clicks
-    indicators.forEach((indicator, index) => {
-        indicator.addEventListener('click', () => {
-            currentSlide = index;
-            updateCarousel();
+    if (indicators.length > 0) {
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                console.log('Indicator clicked:', index);
+                currentSlide = index;
+                updateCarousel();
+            });
         });
-    });
+        console.log('Indicator listeners added:', indicators.length);
+    } else {
+        console.warn('No indicators found');
+    }
     
     // Auto-slide every 8 seconds
     setInterval(nextSlide, 8000);
