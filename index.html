@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- FullCalendar CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css" rel="stylesheet">
     
     <!-- Stylesheet -->
     <link rel="stylesheet" href="styles.css">
@@ -671,9 +671,140 @@
     </div>
 
     <!-- FullCalendar JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.js"></script>
     
     <!-- JavaScript -->
     <script src="script.js"></script>
+    
+    <!-- Inline Calendar Script -->
+    <script>
+        // Algoritmo para calcular la fase lunar
+        function getMoonPhase(date) {
+            const cycleLength = 29.53058867; // Ciclo lunar en días
+            const knownNewMoon = new Date('2025-01-01T00:00:00Z'); // Fecha de referencia luna nueva
+            const diff = (date - knownNewMoon) / (1000 * 60 * 60 * 24);
+            const phase = ((diff % cycleLength) + cycleLength) % cycleLength / cycleLength;
+            
+            const phases = [
+                { name: 'Luna Nueva', emoji: '🌑', available: true },
+                { name: 'Creciente', emoji: '🌒', available: true },
+                { name: 'Cuarto Creciente', emoji: '🌓', available: true },
+                { name: 'Gibosa Creciente', emoji: '🌔', available: false },
+                { name: 'Luna Llena', emoji: '🌕', available: false },
+                { name: 'Gibosa Menguante', emoji: '🌖', available: false },
+                { name: 'Cuarto Menguante', emoji: '🌗', available: true },
+                { name: 'Menguante', emoji: '🌘', available: true }
+            ];
+            
+            const index = Math.floor(phase * 8) % 8;
+            return phases[index];
+        }
+
+        // Inicializar calendario cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('fullcalendar');
+            if (!calendarEl) return;
+            
+            // Generar eventos de tours disponibles
+            const events = [];
+            const today = new Date();
+            const endDate = new Date();
+            endDate.setMonth(endDate.getMonth() + 3); // 3 meses de eventos
+            
+            for (let date = new Date(today); date <= endDate; date.setDate(date.getDate() + 1)) {
+                const moon = getMoonPhase(date);
+                if (moon.available) {
+                    events.push({
+                        title: 'Tour Disponible',
+                        date: date.toISOString().split('T')[0],
+                        color: '#00D4FF',
+                        textColor: '#000'
+                    });
+                }
+            }
+            
+            // Configurar FullCalendar
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'es',
+                firstDay: 1,
+                height: 'auto',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,listWeek'
+                },
+                buttonText: {
+                    today: 'Hoy',
+                    month: 'Mes',
+                    week: 'Semana',
+                    list: 'Lista'
+                },
+                events: events,
+                
+                // Agregar fases lunares a cada día
+                dayCellContent: function(info) {
+                    const moon = getMoonPhase(info.date);
+                    return {
+                        html: `<div style="position: relative;">
+                                <span class="fc-daygrid-day-number">${info.dayNumberText}</span>
+                                <span class="moon-phase" title="${moon.name}" style="position: absolute; top: 2px; right: 2px; font-size: 12px;">
+                                    ${moon.emoji}
+                                </span>
+                               </div>`
+                    };
+                },
+                
+                // Click en fecha
+                dateClick: function(info) {
+                    const moon = getMoonPhase(info.date);
+                    const selectedDateDisplay = document.getElementById('selected-date-display');
+                    
+                    if (!moon.available) {
+                        alert(`No hay tours disponibles el ${info.dateStr} debido a ${moon.name}. Por favor selecciona otra fecha.`);
+                        return;
+                    }
+                    
+                    // Actualizar display de fecha seleccionada
+                    const dateStr = info.date.toLocaleDateString('es-ES', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    
+                    if (selectedDateDisplay) {
+                        selectedDateDisplay.innerHTML = `
+                            <div style="padding: 1rem; background: rgba(0, 212, 255, 0.1); border-radius: 8px;">
+                                <i class="fas fa-check-circle" style="color: #00D4FF;"></i>
+                                <p><strong>Fecha seleccionada:</strong> ${dateStr}</p>
+                                <p><strong>Fase lunar:</strong> ${moon.emoji} ${moon.name}</p>
+                                <p style="color: #4CAF50;">✓ Disponible para reserva</p>
+                            </div>
+                        `;
+                        document.getElementById('selected-date').value = info.dateStr;
+                    }
+                },
+                
+                // Click en evento
+                eventClick: function(info) {
+                    const dateStr = info.event.start.toLocaleDateString('es-ES', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    
+                    if (confirm(`¿Deseas reservar el tour para ${dateStr}?`)) {
+                        // Aquí puedes redirigir a WhatsApp o abrir formulario
+                        window.location.href = `https://wa.me/56935134669?text=Hola!%20Me%20interesa%20reservar%20el%20tour%20del%20${info.event.startStr}`;
+                    }
+                }
+            });
+            
+            // Renderizar calendario
+            calendar.render();
+        });
+    </script>
 </body>
 </html>

@@ -454,9 +454,10 @@ function initScrollEffects() {
 }
 
 // ===== FULLCALENDAR WITH MOON PHASES =====
+// Nota: El calendario ahora se inicializa inline en index.html para mejor compatibilidad
 function initDatePicker() {
-    const fullCalendarEl = document.getElementById('fullcalendar');
-    if (!fullCalendarEl) return;
+    // El calendario se maneja en el script inline del HTML
+    return;
 
     // Moon phase calculation algorithm
     function getMoonPhase(date) {

@@ -693,6 +693,8 @@ blockquote {
     --fc-today-bg-color: rgba(0, 212, 255, 0.1);
     --fc-event-bg-color: var(--primary-color);
     --fc-event-border-color: var(--primary-color);
+    --fc-page-bg-color: transparent;
+    --fc-neutral-bg-color: rgba(255, 255, 255, 0.05);
 }
 
 .fc {
