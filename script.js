@@ -91,7 +91,7 @@ function initLanguageToggle() {
             'Reservas': 'Reservas',
             'Contacto': 'Contacto',
             'Reserva Ahora': 'Reserva Ahora',
-            'hero-title': 'Descubre el Cielo Más Puro del Mundo en San Pedro de Atacama',
+            'hero-title': 'Descubre A Dark Sky - El Cielo Más Puro del Mundo en San Pedro de Atacama',
             'hero-subtitle': 'Tours astronómicos guiados por expertos: observación de estrellas, constelaciones y fenómenos celestes.',
             'btn-reserve': 'Reserva Tu Tour',
             'btn-see-tours': 'Ver Tours'
@@ -104,7 +104,7 @@ function initLanguageToggle() {
             'Reservas': 'Bookings',
             'Contacto': 'Contact',
             'Reserva Ahora': 'Book Now',
-            'hero-title': 'Discover the Purest Sky in the World in San Pedro de Atacama',
+            'hero-title': 'Discover A Dark Sky - The Purest Sky in the World in San Pedro de Atacama',
             'hero-subtitle': 'Expert-guided astronomical tours: star gazing, constellations and celestial phenomena.',
             'btn-reserve': 'Book Your Tour',
             'btn-see-tours': 'See Tours'
@@ -117,7 +117,7 @@ function initLanguageToggle() {
             'Reservas': 'Reservas',
             'Contacto': 'Contato',
             'Reserva Ahora': 'Reserve Agora',
-            'hero-title': 'Descubra o Céu Mais Puro do Mundo em San Pedro de Atacama',
+            'hero-title': 'Descubra A Dark Sky - O Céu Mais Puro do Mundo em San Pedro de Atacama',
             'hero-subtitle': 'Tours astronômicos guiados por especialistas: observação de estrelas, constelações e fenômenos celestiais.',
             'btn-reserve': 'Reserve Seu Tour',
             'btn-see-tours': 'Ver Tours'
