@@ -701,9 +701,24 @@
         }
 
         // Inicializar calendario cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('load', function() {
+            console.log('Iniciando calendario...');
+            
             const calendarEl = document.getElementById('fullcalendar');
-            if (!calendarEl) return;
+            if (!calendarEl) {
+                console.error('No se encontró el elemento del calendario');
+                return;
+            }
+            
+            console.log('Elemento calendario encontrado:', calendarEl);
+            
+            // Intentar cargar FullCalendar con timeout
+            setTimeout(function() {
+                if (typeof FullCalendar === 'undefined') {
+                    console.log('FullCalendar no disponible, usando calendario de respaldo');
+                    createSimpleCalendar(calendarEl);
+                    return;
+                }
             
             // Generar eventos de tours disponibles
             const events = [];
@@ -723,8 +738,18 @@
                 }
             }
             
+            // Verificar que FullCalendar esté cargado
+            if (typeof FullCalendar === 'undefined') {
+                console.error('FullCalendar no está cargado');
+                calendarEl.innerHTML = '<p style="color: red;">Error: El calendario no pudo cargarse. Por favor recarga la página.</p>';
+                return;
+            }
+            
+            console.log('FullCalendar cargado correctamente');
+            
             // Configurar FullCalendar
-            const calendar = new FullCalendar.Calendar(calendarEl, {
+            try {
+                const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 locale: 'es',
                 firstDay: 1,
@@ -802,9 +827,121 @@
                 }
             });
             
-            // Renderizar calendario
-            calendar.render();
+                // Renderizar calendario
+                calendar.render();
+                console.log('Calendario renderizado exitosamente');
+                
+            } catch (error) {
+                console.error('Error al crear el calendario:', error);
+                // Calendario de respaldo simple
+                createSimpleCalendar(calendarEl);
+            }
+            }, 100); // Fin del setTimeout
         });
+        
+        // Calendario de respaldo simple si FullCalendar falla
+        function createSimpleCalendar(container) {
+            console.log('Creando calendario de respaldo...');
+            
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+            
+            const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                              'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            
+            let html = `
+                <div style="padding: 20px; background: rgba(0, 212, 255, 0.05); border-radius: 8px;">
+                    <h3 style="color: #00D4FF; margin-bottom: 20px;">
+                        ${monthNames[currentMonth]} ${currentYear}
+                    </h3>
+                    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center;">
+            `;
+            
+            // Días de la semana
+            const weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+            weekDays.forEach(day => {
+                html += `<div style="color: #00D4FF; font-weight: bold;">${day}</div>`;
+            });
+            
+            // Días del mes
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            // Espacios vacíos antes del primer día
+            const startPadding = firstDay === 0 ? 6 : firstDay - 1;
+            for (let i = 0; i < startPadding; i++) {
+                html += '<div></div>';
+            }
+            
+            // Días del mes con fases lunares
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(currentYear, currentMonth, day);
+                const moon = getMoonPhase(date);
+                const isToday = day === today.getDate();
+                const isPast = date < today;
+                
+                let style = 'padding: 10px; border-radius: 4px; cursor: pointer;';
+                if (isPast) {
+                    style += 'opacity: 0.5; cursor: not-allowed;';
+                } else if (!moon.available) {
+                    style += 'background: rgba(255, 107, 107, 0.2); color: #FF6B6B;';
+                } else {
+                    style += 'background: rgba(0, 212, 255, 0.1); color: #00D4FF;';
+                }
+                if (isToday) {
+                    style += 'border: 2px solid #00D4FF;';
+                }
+                
+                html += `
+                    <div style="${style}" 
+                         onclick="${!isPast && moon.available ? `selectDate('${date.toISOString().split('T')[0]}', '${moon.emoji} ${moon.name}')` : ''}"
+                         title="${moon.emoji} ${moon.name}">
+                        <div>${day}</div>
+                        <div style="font-size: 12px;">${moon.emoji}</div>
+                    </div>
+                `;
+            }
+            
+            html += `
+                    </div>
+                    <p style="color: #00D4FF; margin-top: 20px;">
+                        <strong>Leyenda:</strong> Click en fechas disponibles (sin luna llena) para reservar
+                    </p>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+        
+        // Función para seleccionar fecha en calendario de respaldo
+        function selectDate(dateStr, moonInfo) {
+            const selectedDateDisplay = document.getElementById('selected-date-display');
+            if (selectedDateDisplay) {
+                const date = new Date(dateStr);
+                const formattedDate = date.toLocaleDateString('es-ES', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                selectedDateDisplay.innerHTML = `
+                    <div style="padding: 1rem; background: rgba(0, 212, 255, 0.1); border-radius: 8px;">
+                        <i class="fas fa-check-circle" style="color: #00D4FF;"></i>
+                        <p><strong>Fecha seleccionada:</strong> ${formattedDate}</p>
+                        <p><strong>Fase lunar:</strong> ${moonInfo}</p>
+                        <p style="color: #4CAF50;">✓ Disponible para reserva</p>
+                        <a href="https://wa.me/56935134669?text=Hola!%20Me%20interesa%20reservar%20el%20tour%20del%20${dateStr}" 
+                           target="_blank" 
+                           style="background: #00D4FF; color: #000; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-block; margin-top: 10px;">
+                            Reservar por WhatsApp
+                        </a>
+                    </div>
+                `;
+                document.getElementById('selected-date').value = dateStr;
+            }
+        }
     </script>
 </body>
 </html>
