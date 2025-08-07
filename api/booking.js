@@ -2,9 +2,12 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Use service key for backend operations (bypasses RLS)
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY;
+console.log('Using Supabase key type:', process.env.SUPABASE_SERVICE_KEY ? 'SERVICE_KEY' : 'ANON_KEY');
+
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY
+  supabaseKey
 );
 
 export default async function handler(req, res) {
