@@ -922,7 +922,7 @@ blockquote {
 .calendar-days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 1px;
+    gap: 0px;
     width: 100%;
 }
 
@@ -2164,7 +2164,7 @@ blockquote {
         -webkit-overflow-scrolling: touch;
         width: 100%;
         margin: 0;
-        padding: 4px;
+        padding: 2px;
     }
     
     #fullcalendar {
@@ -2240,9 +2240,9 @@ blockquote {
     }
     
     .calendar-day {
-        min-height: 30px;
-        font-size: 0.7rem;
-        padding: 2px;
+        min-height: 28px;
+        font-size: 0.65rem;
+        padding: 1px;
     }
     
     .calendar-legend {
@@ -2657,12 +2657,9 @@ blockquote {
         width: 100%;
         max-width: 350px;
         margin: 0 auto;
-        display: none !important; /* Force hide all by default */
+        display: block !important; /* Mostrar todas las imágenes */
         position: relative;
-    }
-    
-    .telescope .gallery-carousel .gallery-item.mobile-active {
-        display: block !important; /* Force show only active one */
+        margin-bottom: var(--spacing-sm);
     }
     
     .telescope .gallery-carousel .gallery-item img {

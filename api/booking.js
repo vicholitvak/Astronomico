@@ -24,9 +24,26 @@ export default async function handler(req, res) {
       message
     } = req.body;
 
-    // Validate required fields
-    if (!date || !persons || !tourType || !time || !name || !email || !phone) {
+    // Validate required fields (time is now auto-assigned)
+    if (!date || !persons || !tourType || !name || !email || !phone) {
       return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    // Auto-assign time based on tour type and season
+    let assignedTime = '21:00'; // Default time
+    const currentMonth = new Date().getMonth() + 1;
+    const isSummer = currentMonth < 4 || currentMonth > 8; // Sep-Mar
+    
+    switch(tourType) {
+      case 'regular':
+        assignedTime = isSummer ? '21:30' : '20:30';
+        break;
+      case 'private':
+        assignedTime = 'flexible';
+        break;
+      case 'astrophoto':
+        assignedTime = isSummer ? '21:00' : '20:00';
+        break;
     }
 
     // Generate booking ID
@@ -41,7 +58,7 @@ export default async function handler(req, res) {
           date,
           persons: parseInt(persons),
           tour_type: tourType,
-          time,
+          time: assignedTime,
           name,
           email,
           phone,
@@ -64,7 +81,7 @@ export default async function handler(req, res) {
       date,
       persons,
       tourType,
-      time,
+      time: assignedTime,
       name,
       phone
     });
@@ -77,14 +94,14 @@ export default async function handler(req, res) {
       date,
       persons,
       tourType,
-      time
+      time: assignedTime
     });
 
     // Add to Google Calendar (optional)
     await addToGoogleCalendar({
       bookingId,
       date,
-      time,
+      time: assignedTime,
       persons,
       tourType,
       name,

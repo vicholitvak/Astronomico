@@ -418,10 +418,7 @@
                         </div>
                         
                         <div class="form-group calendar-section">
-                            <label for="calendar">Selecciona Fecha y Hora *</label>
-                            <div class="calendar-description">
-                                <p><strong>🌕 Fases Lunares:</strong> Los tours no están disponibles 3 días antes y después de luna llena para mejor visibilidad estelar.</p>
-                            </div>
+                            <label for="calendar">Selecciona Fecha *</label>
                             
                             <div id="calendar-container">
                                 <div id="fullcalendar"></div>
@@ -448,7 +445,6 @@
                             </div>
                             
                             <input type="hidden" id="selected-date" name="date" required>
-                            <input type="hidden" id="selected-time" name="time" required>
                         </div>
                         
                         <!-- Datos de la reserva -->
@@ -492,13 +488,6 @@
                                     <option value="private">Tour Privado (Solo tu grupo)</option>
                                     <option value="astrophoto">Tour Astrofotográfico (Especializado)</option>
                                 </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="time">Horario del Tour *</label>
-                                <select id="time" name="time" required>
-                                    <option value="">Primero selecciona tipo de tour</option>
-                                </select>
-                                <small class="time-info" style="color: #ccc; font-size: 0.8rem; margin-top: 0.5rem; display: block;"></small>
                             </div>
                         </div>
                         
@@ -1226,7 +1215,7 @@
                         <i class="fas fa-check-circle"></i>
                         <h5>${currentLang === 'en' ? 'Date selected!' : currentLang === 'pt' ? 'Data selecionada!' : '¡Fecha seleccionada!'}</h5>
                         <p><strong>📅 ${dateStr}</strong></p>
-                        <small>${currentLang === 'en' ? 'Now select tour type and time below' : currentLang === 'pt' ? 'Agora selecione o tipo de tour e horário abaixo' : 'Ahora selecciona el tipo de tour y horario abajo'}</small>
+                        <small>${currentLang === 'en' ? 'Now select tour type below' : currentLang === 'pt' ? 'Agora selecione o tipo de tour abaixo' : 'Ahora selecciona el tipo de tour abajo'}</small>
                     </div>
                 `;
                 displayElement.classList.add('has-date');
@@ -1422,12 +1411,12 @@ ${reservationData.tourType === 'private' ? '🎯 Tour Privado - Duración: 3-4 h
             // Intentar crear evento en Google Calendar
             const calendarResult = await createCalendarEvent(reservationData);
             
-            if (calendarResult.success) {
-                // Mostrar mensaje de éxito con información del calendario
-                showBookingSuccess(reservationData, calendarResult, currentLang);
+            // Redirect to confirmation page
+            if (reservationData.bookingId) {
+                window.location.href = `confirmacion.html?id=${encodeURIComponent(reservationData.bookingId)}`;
             } else {
-                // Mostrar mensaje de éxito pero con advertencia sobre el calendario
-                showBookingSuccessWithWarning(reservationData, calendarResult.error, currentLang);
+                // Fallback if no booking ID
+                alert('¡Reserva exitosa! Te contactaremos pronto para confirmar los detalles.');
             }
         }
 
@@ -1721,6 +1710,66 @@ ${msg.contact}`);
         if (typeof gapi !== 'undefined') {
             initializeGoogleAPI();
         }
+        
+        // Manejar envío del formulario de reservas
+        const bookingForm = document.getElementById('booking-form');
+        if (bookingForm) {
+            bookingForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Obtener datos del formulario
+                const formData = new FormData(bookingForm);
+                const bookingData = {
+                    date: formData.get('date'),
+                    persons: formData.get('persons'),
+                    tourType: formData.get('tour-type'),
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    phone: formData.get('phone'),
+                    message: formData.get('message') || ''
+                };
+                
+                // Validar datos requeridos
+                if (!bookingData.date || !bookingData.persons || !bookingData.tourType || !bookingData.name || !bookingData.email || !bookingData.phone) {
+                    alert('Por favor completa todos los campos obligatorios');
+                    return;
+                }
+                
+                // Mostrar loading en el botón
+                const submitBtn = bookingForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Enviando...';
+                
+                try {
+                    // Enviar a la API
+                    const response = await fetch('/api/booking', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(bookingData)
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok && result.success) {
+                        // Redirect a página de confirmación
+                        window.location.href = `confirmacion.html?id=${encodeURIComponent(result.bookingId)}`;
+                    } else {
+                        throw new Error(result.error || 'Error al procesar la reserva');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error al enviar la reserva. Por favor intenta nuevamente.');
+                    
+                    // Restaurar botón
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                }
+            });
+        }
     </script>
 
     <!-- Sistema de horarios dinámicos por temporada y tipo de tour -->
@@ -1881,14 +1930,6 @@ ${msg.contact}`);
                 }
             }
 
-            // Function to update the hidden time field
-            function updateSelectedTime(time) {
-                const selectedTimeInput = document.getElementById('selected-time');
-                if (selectedTimeInput) {
-                    selectedTimeInput.value = time;
-                    selectedTimeInput.dispatchEvent(new Event('change'));
-                }
-            }
             
             // Listen for time selection changes
             timeSelect.addEventListener('change', function() {

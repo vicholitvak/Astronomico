@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva Confirmada - Atacama NightSky</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/jpeg" href="images/Nightskylogo.jpg">
+    <style>
+        .confirmation-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            padding: 2rem;
+        }
+        
+        .confirmation-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.1);
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            color: #00D4FF;
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .confirmation-title {
+            color: #00D4FF;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .booking-id {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00D4FF;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            font-family: monospace;
+            font-size: 1.5rem;
+            color: #00D4FF;
+            font-weight: bold;
+        }
+        
+        .confirmation-text {
+            color: #ffffff;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        
+        .next-steps {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+        
+        .next-steps h3 {
+            color: #00D4FF;
+            margin-bottom: 1rem;
+        }
+        
+        .next-steps ol {
+            color: #ffffff;
+            padding-left: 1.5rem;
+        }
+        
+        .next-steps li {
+            margin-bottom: 0.8rem;
+            line-height: 1.5;
+        }
+        
+        .contact-info {
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .contact-info h4 {
+            color: #00D4FF;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        
+        .contact-btn {
+            background: #00D4FF;
+            color: #0a0a0a;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .contact-btn:hover {
+            background: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+        }
+        
+        .back-home {
+            margin-top: 2rem;
+        }
+        
+        .back-home a {
+            color: #00D4FF;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: opacity 0.3s ease;
+        }
+        
+        .back-home a:hover {
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .confirmation-card {
+                padding: 2rem;
+                margin: 1rem;
+            }
+            
+            .confirmation-title {
+                font-size: 2rem;
+            }
+            
+            .booking-id {
+                font-size: 1.2rem;
+                padding: 1rem;
+            }
+            
+            .contact-links {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-container">
+        <div class="confirmation-card">
+            <div class="success-icon">✅</div>
+            
+            <h1 class="confirmation-title">¡Reserva Confirmada!</h1>
+            
+            <p class="confirmation-text">
+                Tu reserva ha sido procesada exitosamente. Tu ID de reserva es:
+            </p>
+            
+            <div class="booking-id" id="bookingId">
+                Cargando ID...
+            </div>
+            
+            <div class="next-steps">
+                <h3>📋 Próximos Pasos:</h3>
+                <ol>
+                    <li><strong>Revisa tu email</strong> - Te hemos enviado la confirmación con todos los detalles</li>
+                    <li><strong>Verifica tu carpeta de spam</strong> - A veces los emails pueden llegar ahí</li>
+                    <li><strong>Te contactaremos en 24 horas</strong> - Para confirmar disponibilidad y coordinar detalles</li>
+                    <li><strong>Prepárate para una experiencia única</strong> - ¡Los cielos más claros del mundo te esperan!</li>
+                </ol>
+            </div>
+            
+            <div class="contact-info">
+                <h4>💬 ¿Tienes preguntas?</h4>
+                <p style="color: #ffffff; margin-bottom: 1rem;">
+                    Contáctanos directamente por cualquier consulta
+                </p>
+                <div class="contact-links">
+                    <a href="https://wa.me/56935134669" target="_blank" class="contact-btn">
+                        📱 WhatsApp
+                    </a>
+                    <a href="mailto:vicente.litvak@gmail.com" class="contact-btn">
+                        📧 Email
+                    </a>
+                </div>
+            </div>
+            
+            <div class="back-home">
+                <a href="/" onclick="window.history.back(); return false;">← Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Get booking ID from URL parameters
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookingId = urlParams.get('id');
+            
+            if (bookingId) {
+                document.getElementById('bookingId').textContent = bookingId;
+            } else {
+                document.getElementById('bookingId').textContent = 'ID no disponible';
+            }
+        });
+    </script>
+</body>
+</html>
