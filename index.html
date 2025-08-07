@@ -101,37 +101,11 @@
         </div>
         <div class="hero-content">
             <div class="container">
-                <h1 class="hero-title" id="hero-title-animated">Atacama Dark Skies - El Cielo Más Puro del Mundo en San Pedro de Atacama</h1>
-                
-                <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const titleElement = document.getElementById('hero-title-animated');
-                    const text = 'Atacama Dark Skies - El Cielo Más Puro del Mundo en San Pedro de Atacama';
-                    
-                    // Clear existing content
-                    titleElement.innerHTML = '';
-                    titleElement.style.whiteSpace = 'normal';
-                    titleElement.style.display = 'block';
-                    
-                    // Split text into individual letters and wrap each in a span
-                    text.split('').forEach((char, index) => {
-                        const span = document.createElement('span');
-                        span.textContent = char === ' ' ? '\u00A0' : char; // Non-breaking space
-                        span.style.opacity = '0';
-                        span.style.transform = 'translateY(20px)';
-                        span.style.transition = 'all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-                        span.style.display = 'inline-block';
-                        span.style.whiteSpace = 'nowrap';
-                        titleElement.appendChild(span);
-                        
-                        // Animate each letter with a delay
-                        setTimeout(() => {
-                            span.style.opacity = '1';
-                            span.style.transform = 'translateY(0)';
-                        }, index * 50 + 1000); // Start after 1 second, 50ms between letters
-                    });
-                });
-                </script>
+                <h1 class="hero-title" id="hero-title-animated">
+                    <span class="title-line title-line-1">Atacama Dark Skies</span>
+                    <span class="title-line title-line-2">El cielo más puro del mundo</span>
+                    <span class="title-line title-line-3">En San Pedro de Atacama</span>
+                </h1>
                 <p class="hero-subtitle">Tours astronómicos guiados por expertos: observación de estrellas, constelaciones y fenómenos celestes del espacio profundo.</p>
                 <div class="hero-buttons">
                     <a href="#reservas" class="btn btn-primary">Reserva Tu Tour</a>
