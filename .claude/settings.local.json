@@ -18,7 +18,8 @@
       "Bash(vercel:*)",
       "WebFetch(domain:atacama-nightsky-9bkvzwv7w-vicholitvaks-projects.vercel.app)",
       "WebFetch(domain:atacama-nightsky-fjshjgugw-vicholitvaks-projects.vercel.app)",
-      "WebFetch(domain:atacama-nightsky-ojzme9mrs-vicholitvaks-projects.vercel.app)"
+      "WebFetch(domain:atacama-nightsky-ojzme9mrs-vicholitvaks-projects.vercel.app)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }

@@ -542,6 +542,12 @@ function initLanguageToggle() {
 function initTestimonialSlider() {
     const testimonialCards = document.querySelectorAll('.testimonial-card');
     const navDots = document.querySelectorAll('.nav-dot');
+    
+    // Exit if no testimonials found
+    if (testimonialCards.length === 0 || navDots.length === 0) {
+        return;
+    }
+    
     let currentSlide = 0;
     let slideInterval;
 
@@ -596,14 +602,16 @@ function initTestimonialSlider() {
     let startX = 0;
     let endX = 0;
 
-    testimonialsSection.addEventListener('touchstart', function(e) {
-        startX = e.touches[0].clientX;
-    });
+    if (testimonialsSection) {
+        testimonialsSection.addEventListener('touchstart', function(e) {
+            startX = e.touches[0].clientX;
+        });
 
-    testimonialsSection.addEventListener('touchend', function(e) {
-        endX = e.changedTouches[0].clientX;
-        handleSwipe();
-    });
+        testimonialsSection.addEventListener('touchend', function(e) {
+            endX = e.changedTouches[0].clientX;
+            handleSwipe();
+        });
+    }
 
     function handleSwipe() {
         const threshold = 50;
