@@ -39,3 +39,4 @@ build/
 
 # Cache de Netlify
 .netlify/
+.vercel

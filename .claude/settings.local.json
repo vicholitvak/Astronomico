@@ -11,7 +11,12 @@
       "Bash(npm install)",
       "Bash(vercel dev:*)",
       "Bash(grep:*)",
-      "Bash(vercel logs:*)"
+      "Bash(vercel logs:*)",
+      "Bash(vercel ls:*)",
+      "Bash(vercel link:*)",
+      "Bash(vercel list:*)",
+      "Bash(vercel:*)",
+      "WebFetch(domain:atacama-nightsky-9bkvzwv7w-vicholitvaks-projects.vercel.app)"
     ],
     "deny": []
   }
