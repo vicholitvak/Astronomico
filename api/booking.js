@@ -13,6 +13,8 @@ export default async function handler(req, res) {
   }
 
   try {
+    console.log('Received booking request:', req.body);
+    
     const {
       date,
       persons,
@@ -26,8 +28,11 @@ export default async function handler(req, res) {
 
     // Validate required fields (time is now auto-assigned)
     if (!date || !persons || !tourType || !name || !email || !phone) {
+      console.log('Validation failed - missing fields:', { date, persons, tourType, name, email, phone });
       return res.status(400).json({ error: 'Missing required fields' });
     }
+    
+    console.log('Validation passed, proceeding with booking creation');
     
     // Auto-assign time based on tour type and season
     let assignedTime = '21:00'; // Default time
@@ -50,6 +55,8 @@ export default async function handler(req, res) {
     const bookingId = `ATK-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
 
     // Save to database
+    console.log('Attempting to save booking to database:', { bookingId, date, persons, tourType, assignedTime, name, email, phone });
+    
     const { data: booking, error: dbError } = await supabase
       .from('bookings')
       .insert([
@@ -72,41 +79,64 @@ export default async function handler(req, res) {
 
     if (dbError) {
       console.error('Database error:', dbError);
-      return res.status(500).json({ error: 'Database error' });
+      return res.status(500).json({ error: 'Database error', details: dbError.message });
+    }
+    
+    console.log('Database save successful:', booking);
+
+    // Send WhatsApp notification to you (non-blocking)
+    try {
+      console.log('Sending WhatsApp notification...');
+      await sendWhatsAppNotification({
+        bookingId,
+        date,
+        persons,
+        tourType,
+        time: assignedTime,
+        name,
+        phone
+      });
+      console.log('WhatsApp notification sent successfully');
+    } catch (error) {
+      console.error('WhatsApp notification failed:', error);
+      // Continue processing - don't fail the entire booking
     }
 
-    // Send WhatsApp notification to you
-    await sendWhatsAppNotification({
-      bookingId,
-      date,
-      persons,
-      tourType,
-      time: assignedTime,
-      name,
-      phone
-    });
+    // Send confirmation email to customer (non-blocking)
+    try {
+      console.log('Sending confirmation email...');
+      await sendConfirmationEmail({
+        bookingId,
+        name,
+        email,
+        date,
+        persons,
+        tourType,
+        time: assignedTime
+      });
+      console.log('Confirmation email sent successfully');
+    } catch (error) {
+      console.error('Email sending failed:', error);
+      // Continue processing - don't fail the entire booking
+    }
 
-    // Send confirmation email to customer
-    await sendConfirmationEmail({
-      bookingId,
-      name,
-      email,
-      date,
-      persons,
-      tourType,
-      time: assignedTime
-    });
-
-    // Add to Google Calendar (optional)
-    await addToGoogleCalendar({
-      bookingId,
-      date,
-      time: assignedTime,
-      persons,
-      tourType,
-      name,
-      phone
-    });
+    // Add to Google Calendar (non-blocking)
+    try {
+      console.log('Adding to Google Calendar...');
+      await addToGoogleCalendar({
+        bookingId,
+        date,
+        time: assignedTime,
+        persons,
+        tourType,
+        name,
+        phone
+      });
+      console.log('Google Calendar event created successfully');
+    } catch (error) {
+      console.error('Google Calendar integration failed:', error);
+      // Continue processing - don't fail the entire booking
+    }
 
     return res.status(200).json({
       success: true,
