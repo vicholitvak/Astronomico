@@ -33,7 +33,7 @@
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet">
     
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="styles.css?v=5.5">
+    <link rel="stylesheet" href="styles.css?v=4.0">
 </head>
 <body>
     <!-- Header Navigation -->
@@ -73,14 +73,14 @@
                 
                 <!-- Desktop Menu -->
                 <ul class="nav-menu">
-                    <li class="nav-item"><a href="#inicio" class="nav-link" data-translate="Inicio">Inicio</a></li>
-                    <li class="nav-item"><a href="#nosotros" class="nav-link" data-translate="Sobre Nosotros">Sobre Nosotros</a></li>
-                    <li class="nav-item"><a href="#tours" class="nav-link" data-translate="Tours">Tours</a></li>
-                    <li class="nav-item"><a href="#telescopio" class="nav-link" data-translate="Telescopio">Telescopio</a></li>
-                    <li class="nav-item"><a href="#reservas" class="nav-link" data-translate="Reservas">Reservas</a></li>
-                    <li class="nav-item"><a href="#contacto" class="nav-link" data-translate="Contacto">Contacto</a></li>
+                    <li class="nav-item"><a href="#inicio" class="nav-link">Inicio</a></li>
+                    <li class="nav-item"><a href="#nosotros" class="nav-link">Sobre Nosotros</a></li>
+                    <li class="nav-item"><a href="#tours" class="nav-link">Tours</a></li>
+                    <li class="nav-item"><a href="#telescopio" class="nav-link">Telescopio</a></li>
+                    <li class="nav-item"><a href="#reservas" class="nav-link">Reservas</a></li>
+                    <li class="nav-item"><a href="#contacto" class="nav-link">Contacto</a></li>
                     <li class="nav-item">
-                        <a href="#reservas" class="cta-button" data-translate="Reserva Ahora">Reserva Ahora</a>
+                        <a href="#reservas" class="cta-button">Reserva Ahora</a>
                     </li>
                 </ul>
                 
@@ -101,71 +101,31 @@
         </div>
         <div class="hero-content">
             <div class="container">
-                <h1 class="hero-title">
-                    <div class="title-line" id="line1">Atacama Dark Skies</div>
-                    <div class="title-line" id="line2">El Cielo Más Puro del Mundo</div>
-                    <div class="title-line" id="line3">en San Pedro de Atacama</div>
-                </h1>
+                <h1 class="hero-title" id="hero-title-animated"></h1>
                 
                 <script>
-                // Letter by letter animation with enhanced effects
-                document.addEventListener('DOMContentLoaded', () => {
-                    const lines = ['line1', 'line2', 'line3'];
-                    let totalDelay = 0;
+                document.addEventListener('DOMContentLoaded', function() {
+                    const titleElement = document.getElementById('hero-title-animated');
+                    const text = 'Atacama Dark Skies - El Cielo Más Puro del Mundo en San Pedro de Atacama';
                     
-                    lines.forEach((lineId, lineIndex) => {
-                        const lineElement = document.getElementById(lineId);
-                        if (!lineElement) return;
+                    // Clear existing content
+                    titleElement.innerHTML = '';
+                    
+                    // Split text into individual letters and wrap each in a span
+                    text.split('').forEach((char, index) => {
+                        const span = document.createElement('span');
+                        span.textContent = char === ' ' ? '\u00A0' : char; // Non-breaking space
+                        span.style.opacity = '0';
+                        span.style.transform = 'translateY(20px)';
+                        span.style.transition = 'all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                        span.style.display = 'inline-block';
+                        titleElement.appendChild(span);
                         
-                        const text = lineElement.textContent;
-                        lineElement.innerHTML = '';
-                        lineElement.style.textAlign = 'center';
-                        
-                        // Create spans for each word to maintain proper spacing
-                        const words = text.split(' ');
-                        words.forEach((word, wordIndex) => {
-                            if (wordIndex > 0) {
-                                // Add space between words
-                                const spaceSpan = document.createElement('span');
-                                spaceSpan.innerHTML = '&nbsp;';
-                                spaceSpan.style.display = 'inline-block';
-                                lineElement.appendChild(spaceSpan);
-                            }
-                            
-                            // Create span container for word
-                            const wordSpan = document.createElement('span');
-                            wordSpan.style.display = 'inline-block';
-                            wordSpan.style.whiteSpace = 'nowrap';
-                            
-                            // Create spans for each letter in the word
-                            word.split('').forEach((char, charIndex) => {
-                                const letterSpan = document.createElement('span');
-                                letterSpan.textContent = char;
-                                letterSpan.style.display = 'inline-block';
-                                letterSpan.style.opacity = '0';
-                                letterSpan.style.transform = 'translateY(30px) scale(0.8)';
-                                letterSpan.style.transition = 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                                letterSpan.style.filter = 'blur(2px)';
-                                
-                                wordSpan.appendChild(letterSpan);
-                                
-                                // Calculate delay for this letter
-                                const letterIndex = wordIndex === 0 ? charIndex : 
-                                    words.slice(0, wordIndex).join('').length + wordIndex + charIndex;
-                                
-                                // Animate each letter
-                                setTimeout(() => {
-                                    letterSpan.style.opacity = '1';
-                                    letterSpan.style.transform = 'translateY(0) scale(1)';
-                                    letterSpan.style.filter = 'blur(0px)';
-                                }, totalDelay + (letterIndex * 80) + 800);
-                            });
-                            
-                            lineElement.appendChild(wordSpan);
-                        });
-                        
-                        // Update delay for next line
-                        totalDelay += (text.length * 80) + 400;
+                        // Animate each letter with a delay
+                        setTimeout(() => {
+                            span.style.opacity = '1';
+                            span.style.transform = 'translateY(0)';
+                        }, index * 50 + 1000); // Start after 1 second, 50ms between letters
                     });
                 });
                 </script>
@@ -189,11 +149,6 @@
                 <p class="section-subtitle">Sobre mi</p>
             </div>
             
-            <div class="about-content">
-                <div class="about-text">
-                    <p>Soy un apasionado guía astronómico certificado con 7 años de experiencia en guiado astronomíco en el desierto de Atacama, el lugar con los cielos más claros del planeta. Ofrecemos tours personalizados y educativos para todas las edades.</p>
-                    
-                </div>
                 
                 <div class="about-image">
                     <img src="images/me2.jpg" alt="Guía astronómico en el desierto de Atacama con equipos profesionales" loading="lazy">
@@ -218,9 +173,9 @@
                         <img src="images/regular3-2.jpg" alt="Tour astronómico regular con telescopio profesional" loading="lazy">
                     </div>
                     <div class="tour-content">
-                        <h3>Tour Astronómico Completo</h3>
+                        <h3>Tour Astronómico Regular</h3>
                         <div class="tour-price">$30.000</div>
-                        <p>Experiencia completa: observación a ojo desnudo con puntero láser, telescopio inteligente Unistellar eVscope, cóctel bajo las estrellas y sesión de fotos.</p>
+                        <p>Observación a ojo desnudo con puntero láser, charla sobre el universo, observación por telescopio inteligente, cóctel bajo las estrellas y sesión de fotos.</p>
                         
                         <div class="tour-details">
                             <div class="detail">
@@ -399,122 +354,7 @@
         </div>
     </section>
 
-    <!-- Booking Section -->
-    <section id="reservas" class="booking">
-        <div class="container">
-            <div class="section-header">
-                <h2>Reserva Tu Experiencia Astronómica</h2>
-                <p class="section-subtitle">Completa el formulario y te contactaremos para confirmar disponibilidad</p>
-            </div>
-            
-            <div class="booking-content">
-                <div class="booking-form-container">
-                    <form id="booking-form" class="booking-form" name="booking" method="POST" data-netlify="true" netlify-honeypot="bot-field">
-                        
-                        <!-- Calendar Section with FullCalendar -->
-                        <!-- Hidden honeypot field for spam protection -->
-                        <div style="display: none;">
-                            <label>Don't fill this out if you're human: <input name="bot-field" /></label>
-                        </div>
-                        
-                        <div class="form-group calendar-section">
-                            <label for="calendar">Selecciona Fecha *</label>
-                            
-                            <div id="calendar-container">
-                                <div id="fullcalendar"></div>
-                            </div>
-                            
-                            
-                            
-                            <input type="hidden" id="selected-date" name="date" required>
-                        </div>
-                        
-                        <!-- Datos de la reserva -->
-                        <div class="form-section">
-                            <h4>Datos de tu Reserva</h4>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="persons">Número de Personas *</label>
-                                <select id="persons" name="persons" required aria-required="true">
-                                    <option value="">Selecciona cantidad</option>
-                                    <option value="1">1 persona</option>
-                                    <option value="2">2 personas</option>
-                                    <option value="3">3 personas</option>
-                                    <option value="4">4 personas</option>
-                                    <option value="5">5 personas</option>
-                                    <option value="6">6 personas</option>
-                                    <option value="7">7 personas</option>
-                                    <option value="8">8 personas</option>
-                                    <option value="9">9 personas</option>
-                                    <option value="10">10 personas</option>
-                                    <option value="11">11 personas</option>
-                                    <option value="12">12 personas</option>
-                                    <option value="13">13 personas</option>
-                                    <option value="14">14 personas</option>
-                                    <option value="15">15 personas</option>
-                                    <option value="16">16 personas</option>
-                                    <option value="16+">Más de 16 personas (contactar)</option>
-                                </select>
-                                <div id="availability-warning" class="availability-warning" style="display: none;">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                    <span class="warning-text"></span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="tour-type">Tipo de Tour *</label>
-                                <select id="tour-type" name="tour-type" required>
-                                    <option value="">Selecciona tipo de tour</option>
-                                    <option value="regular">Tour Regular (Grupo)</option>
-                                    <option value="private">Tour Privado (Solo tu grupo)</option>
-                                    <option value="astrophoto">Tour Astrofotográfico (Especializado)</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <!-- Información de contacto -->
-                        <div class="form-section">
-                            <h4>Información de Contacto</h4>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="name">Nombre Completo *</label>
-                                <input type="text" id="name" name="name" required aria-required="true" placeholder="Tu nombre completo">
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Email *</label>
-                                <input type="email" id="email" name="email" required aria-required="true" placeholder="tu@email.com">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="phone">Teléfono/WhatsApp *</label>
-                            <input type="tel" id="phone" name="phone" required aria-required="true" placeholder="+56 9 1234 5678">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="message">Mensaje Adicional</label>
-                            <textarea id="message" name="message" rows="4" placeholder="¿Alguna pregunta o requerimiento especial?"></textarea>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary btn-submit">
-                            <i class="fas fa-paper-plane"></i>
-                            Enviar Reserva
-                        </button>
-                        
-                        <div class="form-success" id="form-success">
-                            <i class="fas fa-check-circle"></i>
-                            <h3>¡Reserva Enviada!</h3>
-                            <p>Te contactaremos dentro de 24 horas para confirmar disponibilidad y detalles del pago.</p>
-                        </div>
-                    </form>
-                </div>
-                
-            </div>
-        </div>
-    </section>
+
 
     <!-- Telescope Section -->
     <section id="telescopio" class="telescope">
@@ -655,10 +495,18 @@
                             </div>
                             
                             <!-- Carousel Controls -->
-                            <button class="carousel-control prev" id="carouselPrev" onclick="window.telescopeCarouselPrev()">
+                            <button class="carousel-control prev" id="carouselPrev" onclick="
+                                console.log('⬅️ PREV CLICKED!'); 
+                                const track = document.getElementById('carouselTrack');
+                                if(track) track.style.transform = 'translateX(0%)';
+                            ">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
-                            <button class="carousel-control next" id="carouselNext" onclick="window.telescopeCarouselNext()">
+                            <button class="carousel-control next" id="carouselNext" onclick="
+                                console.log('➡️ NEXT CLICKED!'); 
+                                const track = document.getElementById('carouselTrack');
+                                if(track) track.style.transform = 'translateX(-50%)';
+                            ">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                             
@@ -687,6 +535,185 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="reservas" class="booking">
+        <div class="container">
+            <div class="section-header">
+                <h2>Reserva Tu Experiencia Astronómica</h2>
+                <p class="section-subtitle">Completa el formulario y te contactaremos para confirmar disponibilidad</p>
+            </div>
+            
+            <div class="booking-content">
+                <div class="booking-form-container">
+                    <form id="booking-form" class="booking-form" name="booking" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+                        
+                        <!-- Calendar Section with FullCalendar -->
+                        <!-- Hidden honeypot field for spam protection -->
+                        <div style="display: none;">
+                            <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+                        </div>
+                        
+                        <div class="form-group calendar-section">
+                            <label for="calendar">Selecciona Fecha y Hora *</label>
+                            <div class="calendar-description">
+                                <p><strong>🌕 Fases Lunares:</strong> Los tours no están disponibles 3 días antes y después de luna llena para mejor visibilidad estelar.</p>
+                            </div>
+                            
+                            <div id="calendar-container">
+                                <div id="fullcalendar"></div>
+                            </div>
+                            
+                            <div class="calendar-legend">
+                                <div class="legend-item">
+                                    <span class="legend-dot available"></span>
+                                    <span>Disponible para reserva</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-dot unavailable"></span>
+                                    <span>No disponible (luna llena)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="moon-legend">🌑🌒🌓🌔🌕🌖🌗🌘</span>
+                                    <span>Fases lunares</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Selected Date Display -->
+                            <div class="selected-date-display" id="selected-date-display">
+                                Haz clic en una fecha disponible para continuar
+                            </div>
+                            
+                            <input type="hidden" id="selected-date" name="date" required>
+                            <input type="hidden" id="selected-time" name="time" required>
+                        </div>
+                        
+                        <!-- Datos de la reserva -->
+                        <div class="form-section">
+                            <h4>Datos de tu Reserva</h4>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="persons">Número de Personas *</label>
+                                <select id="persons" name="persons" required aria-required="true">
+                                    <option value="">Selecciona cantidad</option>
+                                    <option value="1">1 persona</option>
+                                    <option value="2">2 personas</option>
+                                    <option value="3">3 personas</option>
+                                    <option value="4">4 personas</option>
+                                    <option value="5">5 personas</option>
+                                    <option value="6">6 personas</option>
+                                    <option value="7">7 personas</option>
+                                    <option value="8">8 personas</option>
+                                    <option value="9">9 personas</option>
+                                    <option value="10">10 personas</option>
+                                    <option value="11">11 personas</option>
+                                    <option value="12">12 personas</option>
+                                    <option value="13">13 personas</option>
+                                    <option value="14">14 personas</option>
+                                    <option value="15">15 personas</option>
+                                    <option value="16">16 personas</option>
+                                    <option value="16+">Más de 16 personas (contactar)</option>
+                                </select>
+                                <div id="availability-warning" class="availability-warning" style="display: none;">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span class="warning-text"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="tour-type">Tipo de Tour *</label>
+                                <select id="tour-type" name="tour-type" required>
+                                    <option value="">Selecciona tipo de tour</option>
+                                    <option value="regular">Tour Regular (Grupo)</option>
+                                    <option value="private">Tour Privado (Solo tu grupo)</option>
+                                    <option value="astrophoto">Tour Astrofotográfico (Especializado)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="time">Horario del Tour *</label>
+                                <select id="time" name="time" required>
+                                    <option value="">Primero selecciona tipo de tour</option>
+                                </select>
+                                <small class="time-info" style="color: #ccc; font-size: 0.8rem; margin-top: 0.5rem; display: block;"></small>
+                            </div>
+                        </div>
+                        
+                        <!-- Información de contacto -->
+                        <div class="form-section">
+                            <h4>Información de Contacto</h4>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Nombre Completo *</label>
+                                <input type="text" id="name" name="name" required aria-required="true" placeholder="Tu nombre completo">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" name="email" required aria-required="true" placeholder="tu@email.com">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Teléfono/WhatsApp *</label>
+                            <input type="tel" id="phone" name="phone" required aria-required="true" placeholder="+56 9 1234 5678">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Mensaje Adicional</label>
+                            <textarea id="message" name="message" rows="4" placeholder="¿Alguna pregunta o requerimiento especial?"></textarea>
+                        </div>
+                        
+                        <div class="form-group checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="terms" name="terms" required aria-required="true">
+                                <span class="checkmark"></span>
+                                Acepto los <a href="#" target="_blank">términos y condiciones</a> y <a href="#" target="_blank">política de privacidad</a>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-submit">
+                            <i class="fas fa-paper-plane"></i>
+                            Enviar Reserva
+                        </button>
+                        
+                        <div class="form-success" id="form-success">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>¡Reserva Enviada!</h3>
+                            <p>Te contactaremos dentro de 24 horas para confirmar disponibilidad y detalles del pago.</p>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="booking-info">
+                    <div class="info-card">
+                        <i class="fas fa-clock"></i>
+                        <h4>Horarios</h4>
+                        <p>Tours nocturnos desde 20:00 hrs<br>Duración: 2.5 - 4+ horas</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h4>Disponibilidad</h4>
+                        <p>Todos los días del año, excepto 3 dias antes y después de luna llena<br>Sujeto a condiciones climáticas</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h4>Punto de Encuentro</h4>
+                        <p>Recogida en hoteles de San Pedro de Atacama incluida</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-credit-card"></i>
+                        <h4>Formas de Pago</h4>
+                        <p>Efectivo, Transferencia, PayPal<br>50% anticipo - 50% al inicio del tour</p>
                     </div>
                 </div>
             </div>
@@ -834,7 +861,7 @@
     <script src="https://apis.google.com/js/api.js" defer></script>
     
     <!-- JavaScript -->
-    <script src="script.js?v=5.3"></script>
+    <script src="script.js?v=4.0"></script>
 
     <!-- Calendario personalizado con fases lunares -->
     <script>
@@ -866,15 +893,16 @@
             illumination = Math.round(illumination * 10) / 10;
             
             // Determinar disponibilidad basada en iluminación y fase
-            // Bloquear solo cuando la luna está muy brillante y puede interferir significativamente
+            // Bloquear solo en fase creciente cuando iluminación > 75%
+            // En fase menguante, la luna sale tarde y no interfiere con los tours
             let isNearFullMoon = false;
             
             if (normalizedPhase <= 0.5) {
-                // Fase creciente: bloquear solo si iluminación > 85% (muy cerca de luna llena)
-                isNearFullMoon = illumination > 85;
+                // Fase creciente: bloquear si iluminación > 75%
+                isNearFullMoon = illumination > 75;
             } else {
-                // Fase menguante: bloquear solo si iluminación > 95% (prácticamente luna llena)
-                isNearFullMoon = illumination > 95;
+                // Fase menguante: solo bloquear si iluminación > 90% (muy cerca de luna llena)
+                isNearFullMoon = illumination > 90;
             }
             
             // Calcular días desde la luna llena más cercana (para información)
@@ -1082,14 +1110,24 @@
                 
                 calendarHTML += `
                     <div class="${dayClass}" onclick="selectDate(${year}, ${month}, ${day})" 
-                         title="${availabilityText}">
+                         title="${moonPhase.name} ${moonPhase.emoji} - ${moonPhase.illumination}% iluminación - ${availabilityText}">
                         <span class="day-number">${day}</span>
-                        <span class="moon-icon">${moonPhase.emoji}</span>
+                        <span class="moon-emoji">${moonPhase.emoji}</span>
                     </div>
                 `;
             }
             
             calendarHTML += `
+                    </div>
+                    <div class="calendar-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot available"></span>
+                            <span>${getCalendarText('available', currentLang)}</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot unavailable"></span>
+                            <span>${getCalendarText('unavailable', currentLang)}</span>
+                        </div>
                     </div>
                     <div class="calendar-info">
                         <p style="font-size: 0.8rem; color: #ccc; margin: 0.5rem 0; text-align: center;">
@@ -1138,6 +1176,27 @@
                 dateInput.dispatchEvent(new Event('change'));
             }
             
+            // Update the display element
+            const displayElement = document.getElementById('selected-date-display');
+            if (displayElement) {
+                const currentLang = localStorage.getItem('preferred-language') || 'es';
+                const dateStr = date.toLocaleDateString(currentLang === 'en' ? 'en-US' : currentLang === 'pt' ? 'pt-BR' : 'es-ES', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                displayElement.innerHTML = `
+                    <div class="selected-datetime">
+                        <i class="fas fa-check-circle"></i>
+                        <h5>${currentLang === 'en' ? 'Date selected!' : currentLang === 'pt' ? 'Data selecionada!' : '¡Fecha seleccionada!'}</h5>
+                        <p><strong>📅 ${dateStr}</strong></p>
+                        <small>${currentLang === 'en' ? 'Now select tour type and time below' : currentLang === 'pt' ? 'Agora selecione o tipo de tour e horário abaixo' : 'Ahora selecciona el tipo de tour y horario abajo'}</small>
+                    </div>
+                `;
+                displayElement.classList.add('has-date');
+            }
             
             // Mostrar confirmación
             showDateConfirmation(date);
@@ -1329,12 +1388,12 @@ ${reservationData.tourType === 'private' ? '🎯 Tour Privado - Duración: 3-4 h
             // Intentar crear evento en Google Calendar
             const calendarResult = await createCalendarEvent(reservationData);
             
-            // Redirect to confirmation page
-            if (reservationData.bookingId) {
-                window.location.href = `confirmacion.html?id=${encodeURIComponent(reservationData.bookingId)}`;
+            if (calendarResult.success) {
+                // Mostrar mensaje de éxito con información del calendario
+                showBookingSuccess(reservationData, calendarResult, currentLang);
             } else {
-                // Fallback if no booking ID
-                alert('¡Reserva exitosa! Te contactaremos pronto para confirmar los detalles.');
+                // Mostrar mensaje de éxito pero con advertencia sobre el calendario
+                showBookingSuccessWithWarning(reservationData, calendarResult.error, currentLang);
             }
         }
 
@@ -1628,79 +1687,6 @@ ${msg.contact}`);
         if (typeof gapi !== 'undefined') {
             initializeGoogleAPI();
         }
-        
-        // Manejar envío del formulario de reservas
-        const bookingForm = document.getElementById('booking-form');
-        if (bookingForm) {
-            bookingForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                console.log('Booking form submitted');
-                
-                // Obtener datos del formulario
-                const formData = new FormData(bookingForm);
-                const bookingData = {
-                    date: formData.get('date'),
-                    persons: formData.get('persons'),
-                    tourType: formData.get('tour-type'),
-                    name: formData.get('name'),
-                    email: formData.get('email'),
-                    phone: formData.get('phone'),
-                    message: formData.get('message') || ''
-                };
-                
-                console.log('Form data collected:', bookingData);
-                
-                // Validar datos requeridos
-                if (!bookingData.date || !bookingData.persons || !bookingData.tourType || !bookingData.name || !bookingData.email || !bookingData.phone) {
-                    console.log('Validation failed - missing required fields');
-                    alert('Por favor completa todos los campos obligatorios');
-                    return;
-                }
-                
-                console.log('Client-side validation passed');
-                
-                // Mostrar loading en el botón
-                const submitBtn = bookingForm.querySelector('button[type="submit"]');
-                const originalText = submitBtn.textContent;
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Enviando...';
-                
-                try {
-                    console.log('Sending API request to /api/booking');
-                    
-                    // Enviar a la API
-                    const response = await fetch('/api/booking', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(bookingData)
-                    });
-                    
-                    console.log('API response status:', response.status);
-                    
-                    const result = await response.json();
-                    console.log('API response data:', result);
-                    
-                    if (response.ok && result.success) {
-                        console.log('Booking successful, redirecting to confirmation page');
-                        // Redirect a página de confirmación
-                        window.location.href = `confirmacion.html?id=${encodeURIComponent(result.bookingId)}`;
-                    } else {
-                        console.error('API returned error:', result);
-                        throw new Error(result.error || 'Error al procesar la reserva');
-                    }
-                    
-                } catch (error) {
-                    console.error('Booking submission error:', error);
-                    alert(`Error al enviar la reserva: ${error.message}. Por favor intenta nuevamente.`);
-                    
-                    // Restaurar botón
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = originalText;
-                }
-            });
-        }
     </script>
 
     <!-- Sistema de horarios dinámicos por temporada y tipo de tour -->
@@ -1861,6 +1847,14 @@ ${msg.contact}`);
                 }
             }
 
+            // Function to update the hidden time field
+            function updateSelectedTime(time) {
+                const selectedTimeInput = document.getElementById('selected-time');
+                if (selectedTimeInput) {
+                    selectedTimeInput.value = time;
+                    selectedTimeInput.dispatchEvent(new Event('change'));
+                }
+            }
             
             // Listen for time selection changes
             timeSelect.addEventListener('change', function() {
@@ -2207,14 +2201,6 @@ ${msg.contact}`);
             color: #000;
         }
         
-        .moon-icon {
-            font-size: 12px;
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            opacity: 0.8;
-        }
-        
         .moon-emoji {
             font-size: 0.8rem;
             line-height: 1;
@@ -2237,6 +2223,19 @@ ${msg.contact}`);
             color: #ccc;
         }
         
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .legend-dot.available {
+            background: #4CAF50;
+        }
+        
+        .legend-dot.unavailable {
+            background: rgba(255, 0, 0, 0.6);
+        }
         
         .date-confirmation {
             margin-top: 1rem;
