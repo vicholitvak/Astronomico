@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Booking System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #00D4FF;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            background: #2a2a2a;
+            border: 1px solid #00D4FF;
+            color: #fff;
+            border-radius: 5px;
+        }
+        button {
+            background: linear-gradient(135deg, #00D4FF, #7B68EE);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            background: #4CAF50;
+        }
+        .error {
+            background: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Sistema de Reservas</h1>
+    <form id="testForm">
+        <div class="form-group">
+            <label>Fecha:</label>
+            <input type="date" id="date" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Personas:</label>
+            <select id="persons" required>
+                <option value="2">2 personas</option>
+                <option value="4">4 personas</option>
+                <option value="6">6 personas</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Tipo de Tour:</label>
+            <select id="tourType" required>
+                <option value="regular">Tour Regular</option>
+                <option value="private">Tour Privado</option>
+                <option value="astrophoto">Tour Astrofotográfico</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Horario:</label>
+            <select id="time" required>
+                <option value="21:00">21:00</option>
+                <option value="21:30">21:30</option>
+                <option value="22:00">22:00</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Nombre:</label>
+            <input type="text" id="name" value="Test User" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" id="email" value="test@example.com" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Teléfono:</label>
+            <input type="tel" id="phone" value="+56912345678" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Mensaje:</label>
+            <textarea id="message" rows="3">Test de reserva desde formulario de prueba</textarea>
+        </div>
+        
+        <button type="submit">Enviar Reserva de Prueba</button>
+    </form>
+    
+    <div id="result"></div>
+
+    <script>
+        // Set tomorrow's date as default
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        document.getElementById('date').value = tomorrow.toISOString().split('T')[0];
+
+        document.getElementById('testForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'none';
+            
+            const bookingData = {
+                date: document.getElementById('date').value,
+                persons: document.getElementById('persons').value,
+                tourType: document.getElementById('tourType').value,
+                time: document.getElementById('time').value,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                message: document.getElementById('message').value
+            };
+            
+            console.log('Sending:', bookingData);
+            
+            try {
+                const response = await fetch('/api/booking', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(bookingData)
+                });
+                
+                const result = await response.json();
+                console.log('Response:', result);
+                
+                if (response.ok && result.success) {
+                    resultDiv.className = 'success';
+                    resultDiv.innerHTML = `
+                        <h3>✅ Reserva Exitosa!</h3>
+                        <p>ID: ${result.bookingId}</p>
+                        <p>Revisa la base de datos en Supabase</p>
+                    `;
+                } else {
+                    throw new Error(result.error || 'Error desconocido');
+                }
+            } catch (error) {
+                resultDiv.className = 'error';
+                resultDiv.innerHTML = `
+                    <h3>❌ Error</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+            
+            resultDiv.style.display = 'block';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "atacama-nightsky",
+  "version": "1.0.0",
+  "description": "Astronomical tours website for Atacama Desert",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static site - no build needed'",
+    "start": "echo 'Static site'"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}

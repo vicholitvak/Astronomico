@@ -743,48 +743,191 @@ function initBookingForm() {
         submitButton.disabled = true;
 
         try {
-            // Preparar datos del formulario
-            const formData = new FormData(form);
-            
-            // Procesar reserva con Google Calendar
-            if (typeof processBookingWithCalendar === 'function') {
-                await processBookingWithCalendar(formData);
+            // Collect form data
+            const bookingData = {
+                date: form.querySelector('#date').value,
+                persons: form.querySelector('#persons').value,
+                tourType: form.querySelector('#tour-type').value,
+                time: form.querySelector('#time').value,
+                name: form.querySelector('#name').value,
+                email: form.querySelector('#email').value,
+                phone: form.querySelector('#phone').value,
+                message: form.querySelector('#message').value
+            };
+
+            console.log('📝 Sending booking data:', bookingData);
+
+            // Send to our Vercel API
+            const response = await fetch('/api/booking', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(bookingData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                console.log('✅ Booking successful:', result.bookingId);
+                
+                // Show custom success page
+                showBookingSuccess({
+                    bookingId: result.bookingId,
+                    ...bookingData
+                });
+                
             } else {
-                // Fallback si Google Calendar no está disponible
-                showBookingSuccessWithWarning({
-                    date: formData.get('date'),
-                    time: formData.get('time'),
-                    persons: formData.get('persons')
-                }, 'Google Calendar API no disponible', localStorage.getItem('preferred-language') || 'es');
+                throw new Error(result.error || 'Error procesando la reserva');
             }
             
-            // Hide form and show success message
-            form.style.display = 'none';
-            formSuccess.classList.add('show');
-            
-            // Scroll to success message
-            formSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            
-            // Reset form after 10 seconds
-            setTimeout(() => {
-                form.reset();
-                form.style.display = 'block';
-                formSuccess.classList.remove('show');
-                submitButton.innerHTML = originalText;
-                submitButton.disabled = false;
-            }, 10000);
-            
         } catch (error) {
-            console.error('Error processing booking:', error);
+            console.error('❌ Booking error:', error);
             
             // Show error message
-            alert('Hubo un error procesando tu reserva. Por favor inténtalo de nuevo o contáctanos directamente por WhatsApp.');
+            showBookingError(error.message);
             
             // Restore button
             submitButton.innerHTML = originalText;
             submitButton.disabled = false;
         }
     }
+
+    // Show success message with booking details
+    function showBookingSuccess(booking) {
+        const successHtml = `
+            <div class="booking-success-overlay">
+                <div class="booking-success-modal">
+                    <div class="success-header">
+                        <i class="fas fa-check-circle"></i>
+                        <h2>¡Reserva Confirmada!</h2>
+                        <p>Tu reserva ha sido enviada exitosamente</p>
+                    </div>
+                    
+                    <div class="booking-details">
+                        <h3>Detalles de tu reserva:</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="label">ID de Reserva:</span>
+                                <span class="value">${booking.bookingId}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Fecha:</span>
+                                <span class="value">${formatDate(booking.date)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Horario:</span>
+                                <span class="value">${booking.time}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Personas:</span>
+                                <span class="value">${booking.persons}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Tour:</span>
+                                <span class="value">${formatTourType(booking.tourType)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="next-steps">
+                        <h3>Próximos pasos:</h3>
+                        <ol>
+                            <li>📧 Recibirás un email de confirmación en breves minutos</li>
+                            <li>📱 Te contactaremos dentro de 24 horas para confirmar disponibilidad</li>
+                            <li>💳 Coordinaremos detalles de pago y punto de encuentro</li>
+                            <li>🔔 Te recordaremos 24 horas antes del tour</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="success-actions">
+                        <a href="https://wa.me/56950558761?text=Hola! Tengo una consulta sobre mi reserva ${booking.bookingId}" 
+                           target="_blank" class="btn btn-success">
+                            <i class="fab fa-whatsapp"></i>
+                            Contactar por WhatsApp
+                        </a>
+                        <button onclick="closeBookingSuccess()" class="btn btn-secondary">
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', successHtml);
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Helper functions
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('es-CL', {
+            weekday: 'long',
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric'
+        });
+    }
+
+    function formatTourType(type) {
+        const types = {
+            'regular': 'Tour Regular (Grupo)',
+            'private': 'Tour Privado',
+            'astrophoto': 'Tour Astrofotográfico'
+        };
+        return types[type] || type;
+    }
+
+    function showBookingError(message) {
+        const errorModal = `
+            <div class="booking-error-overlay">
+                <div class="booking-error-modal">
+                    <div class="error-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h2>Error en la Reserva</h2>
+                        <p>${message}</p>
+                    </div>
+                    <div class="error-actions">
+                        <a href="https://wa.me/56950558761?text=Hola! Tuve un problema al hacer una reserva en el sitio web" 
+                           target="_blank" class="btn btn-primary">
+                            <i class="fab fa-whatsapp"></i>
+                            Contactar por WhatsApp
+                        </a>
+                        <button onclick="closeBookingError()" class="btn btn-secondary">
+                            Intentar de Nuevo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', errorModal);
+    }
+
+    // Global functions for closing modals
+    window.closeBookingSuccess = function() {
+        const overlay = document.querySelector('.booking-success-overlay');
+        if (overlay) {
+            overlay.remove();
+            document.body.style.overflow = 'auto';
+            
+            // Reset form
+            form.reset();
+            form.style.display = 'block';
+            formSuccess.classList.remove('show');
+            
+            const submitButton = form.querySelector('.btn-submit');
+            submitButton.innerHTML = originalText;
+            submitButton.disabled = false;
+        }
+    };
+
+    window.closeBookingError = function() {
+        const overlay = document.querySelector('.booking-error-overlay');
+        if (overlay) {
+            overlay.remove();
+        }
+    };
 
     // Auto-fill current date + 1 day as minimum
     const dateInput = document.getElementById('date');
@@ -1364,24 +1507,32 @@ function initTelescopeGallery() {
         const isMobileNow = window.innerWidth <= 768;
         
         if (track) {
+            const allImages = track.querySelectorAll('.gallery-item');
+            
             if (isMobileNow) {
                 // Mobile: Show one image at a time using CSS classes
-                const allImages = track.querySelectorAll('.gallery-item');
                 allImages.forEach((img, index) => {
-                    img.classList.toggle('mobile-active', index === window.currentTelescopeSlide);
+                    img.classList.remove('mobile-active');
+                    if (index === window.currentTelescopeSlide) {
+                        img.classList.add('mobile-active');
+                    }
                 });
                 track.style.transform = 'translateX(0)';
+                
+                // Debug: Log which image should be visible
+                console.log(`📱 Mobile: Showing image ${window.currentTelescopeSlide + 1} of ${allImages.length}`);
+                
             } else {
                 // Desktop: Original carousel behavior - reset mobile classes
-                const allImages = track.querySelectorAll('.gallery-item');
                 allImages.forEach(img => {
                     img.classList.remove('mobile-active');
                     img.style.display = '';
                 });
                 const translateX = -window.currentTelescopeSlide * 50;
                 track.style.transform = `translateX(${translateX}%)`;
+                
+                console.log(`🖥️ Desktop: Slide ${window.currentTelescopeSlide + 1}`);
             }
-            console.log('🎠 Moved to slide:', window.currentTelescopeSlide);
         }
         
         indicators.forEach((indicator, index) => {
@@ -1439,7 +1590,24 @@ function initTelescopeGallery() {
     setTimeout(() => {
         setupCarousel();
         setupModal();
-        window.updateTelescopeCarousel(); // Initialize
+        
+        // Force initial update after elements are ready
+        setTimeout(() => {
+            window.updateTelescopeCarousel(); // Initialize
+            
+            // Force show first image on mobile
+            const isMobileNow = window.innerWidth <= 768;
+            if (isMobileNow) {
+                const track = document.getElementById('carouselTrack');
+                if (track) {
+                    const firstImage = track.querySelector('.gallery-item');
+                    if (firstImage) {
+                        firstImage.classList.add('mobile-active');
+                        console.log('✅ Forced first image visible on mobile');
+                    }
+                }
+            }
+        }, 100);
         
         // Handle window resize for responsive carousel
         window.addEventListener('resize', debounce(() => {
