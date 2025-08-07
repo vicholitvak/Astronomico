@@ -922,7 +922,8 @@ blockquote {
 .calendar-days {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
+    gap: 1px;
+    width: 100%;
 }
 
 .calendar-day {
@@ -2152,7 +2153,7 @@ blockquote {
     
     /* Calendar responsive */
     .calendar-container {
-        padding: var(--spacing-sm);
+        padding: var(--spacing-xs);
         overflow-x: visible;
         width: 100%;
         margin: 0 auto;
@@ -2163,7 +2164,7 @@ blockquote {
         -webkit-overflow-scrolling: touch;
         width: 100%;
         margin: 0;
-        padding: var(--spacing-xs);
+        padding: 4px;
     }
     
     #fullcalendar {
@@ -2179,8 +2180,9 @@ blockquote {
     }
     
     .fc-daygrid-day {
-        min-width: auto;
-        width: 100%;
+        min-width: 30px;
+        width: calc(100% / 7);
+        font-size: 0.65rem;
     }
     
     .fc-toolbar {
@@ -2238,8 +2240,9 @@ blockquote {
     }
     
     .calendar-day {
-        min-height: 35px;
-        font-size: 0.8rem;
+        min-height: 30px;
+        font-size: 0.7rem;
+        padding: 2px;
     }
     
     .calendar-legend {
