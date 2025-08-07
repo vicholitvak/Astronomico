@@ -3,6 +3,7 @@ import { google } from 'googleapis';
 
 export async function addToGoogleCalendar(booking) {
   console.log('Starting Google Calendar integration for booking:', booking.bookingId);
+  console.log('Booking data received:', JSON.stringify(booking, null, 2));
   
   const googleServiceAccountKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
   const googleCalendarId = process.env.GOOGLE_CALENDAR_ID;
@@ -11,13 +12,21 @@ export async function addToGoogleCalendar(booking) {
     console.log('Google Calendar credentials not configured');
     console.log('Has service account key:', !!googleServiceAccountKey);
     console.log('Has calendar ID:', !!googleCalendarId);
+    console.log('Calendar ID value:', googleCalendarId ? 'Set but not shown' : 'Not set');
     return;
   }
   
   try {
     // Parse service account credentials
-    const credentials = JSON.parse(googleServiceAccountKey);
-    console.log('Service account email:', credentials.client_email);
+    let credentials;
+    try {
+      credentials = JSON.parse(googleServiceAccountKey);
+      console.log('Service account email:', credentials.client_email);
+      console.log('Private key exists:', !!credentials.private_key);
+    } catch (parseError) {
+      console.error('Failed to parse service account key:', parseError.message);
+      throw new Error('Invalid service account key format');
+    }
     
     // Create JWT client
     const auth = new google.auth.JWT(
@@ -52,10 +61,16 @@ export async function addToGoogleCalendar(booking) {
     
   } catch (error) {
     console.error('Google Calendar integration error:', error.message);
+    console.error('Error type:', error.constructor.name);
+    console.error('Error stack:', error.stack);
     if (error.response) {
       console.error('API Response:', error.response.data);
     }
-    throw error;
+    if (error.code) {
+      console.error('Error code:', error.code);
+    }
+    // Don't throw, just log - let the booking succeed even if calendar fails
+    return null;
   }
 }
 

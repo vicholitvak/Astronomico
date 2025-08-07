@@ -135,11 +135,14 @@ export default async function handler(req, res) {
         persons,
         tourType,
         name,
-        phone
+        email,  // Add email to the calendar event
+        phone,
+        message
       });
       console.log('Google Calendar event created successfully');
     } catch (error) {
       console.error('Google Calendar integration failed:', error);
+      console.error('Error details:', error.stack);
       // Continue processing - don't fail the entire booking
     }
 

@@ -2483,8 +2483,9 @@ ${msg.contact}`);
                         
                         if (response.ok && result.success) {
                             console.log('Booking successful, redirecting to confirmation page');
-                            // Redirect a página de confirmación
-                            window.location.href = `confirmacion.html?id=${encodeURIComponent(result.bookingId)}`;
+                            // Redirect a página de confirmación con fecha
+                            const tourDate = document.getElementById('tourDate').value;
+                            window.location.href = `confirmacion.html?id=${encodeURIComponent(result.bookingId)}&date=${encodeURIComponent(tourDate)}`;
                         } else {
                             console.error('API returned error:', result);
                             throw new Error(result.error || 'Error al procesar la reserva');

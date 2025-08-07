@@ -172,11 +172,15 @@
             <h1 class="confirmation-title">¡Reserva Confirmada!</h1>
             
             <p class="confirmation-text">
-                Tu reserva ha sido procesada exitosamente. Tu ID de reserva es:
+                Tu reserva ha sido procesada exitosamente.
             </p>
             
             <div class="booking-id" id="bookingId">
                 Cargando ID...
+            </div>
+            
+            <div class="booking-date" id="bookingDate" style="background: rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 1rem; margin: 1rem 0; color: #ffffff; font-size: 1.2rem;">
+                📅 Fecha del tour: <span id="tourDateDisplay" style="color: #00D4FF; font-weight: bold;">Cargando...</span>
             </div>
             
             <div class="next-steps">
@@ -211,15 +215,32 @@
     </div>
     
     <script>
-        // Get booking ID from URL parameters
+        // Get booking ID and date from URL parameters
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const bookingId = urlParams.get('id');
+            const tourDate = urlParams.get('date');
             
+            // Display booking ID
             if (bookingId) {
                 document.getElementById('bookingId').textContent = bookingId;
             } else {
                 document.getElementById('bookingId').textContent = 'ID no disponible';
+            }
+            
+            // Display and format tour date
+            if (tourDate) {
+                const dateObj = new Date(tourDate + 'T00:00:00');
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                };
+                const formattedDate = dateObj.toLocaleDateString('es-CL', options);
+                document.getElementById('tourDateDisplay').textContent = formattedDate;
+            } else {
+                document.getElementById('bookingDate').style.display = 'none';
             }
         });
     </script>
