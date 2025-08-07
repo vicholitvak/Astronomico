@@ -1351,17 +1351,31 @@ window.addEventListener('load', function() {
 function initTelescopeGallery() {
     console.log('🔭 Initializing telescope gallery...');
     
+    // Check if mobile
+    const isMobile = window.innerWidth <= 768;
+    
     // Setup global functions for carousel
     window.currentTelescopeSlide = 0;
-    window.totalTelescopeSlides = 2;
+    window.totalTelescopeSlides = isMobile ? 11 : 2; // 11 individual images on mobile, 2 slides on desktop
     
     window.updateTelescopeCarousel = function() {
         const track = document.getElementById('carouselTrack');
         const indicators = document.querySelectorAll('.indicator');
+        const isMobileNow = window.innerWidth <= 768;
         
         if (track) {
-            const translateX = -window.currentTelescopeSlide * 50;
-            track.style.transform = `translateX(${translateX}%)`;
+            if (isMobileNow) {
+                // Mobile: Show one image at a time
+                const allImages = track.querySelectorAll('.gallery-item');
+                allImages.forEach((img, index) => {
+                    img.style.display = index === window.currentTelescopeSlide ? 'block' : 'none';
+                });
+                track.style.transform = 'translateX(0)';
+            } else {
+                // Desktop: Original carousel behavior
+                const translateX = -window.currentTelescopeSlide * 50;
+                track.style.transform = `translateX(${translateX}%)`;
+            }
             console.log('🎠 Moved to slide:', window.currentTelescopeSlide);
         }
         
@@ -1372,12 +1386,16 @@ function initTelescopeGallery() {
     
     window.telescopeCarouselNext = function() {
         console.log('➡️ Next slide clicked - INLINE');
+        const isMobileNow = window.innerWidth <= 768;
+        window.totalTelescopeSlides = isMobileNow ? 11 : 2;
         window.currentTelescopeSlide = (window.currentTelescopeSlide + 1) % window.totalTelescopeSlides;
         window.updateTelescopeCarousel();
     };
     
     window.telescopeCarouselPrev = function() {
         console.log('⬅️ Previous slide clicked - INLINE');
+        const isMobileNow = window.innerWidth <= 768;
+        window.totalTelescopeSlides = isMobileNow ? 11 : 2;
         window.currentTelescopeSlide = (window.currentTelescopeSlide - 1 + window.totalTelescopeSlides) % window.totalTelescopeSlides;
         window.updateTelescopeCarousel();
     };
@@ -1417,6 +1435,14 @@ function initTelescopeGallery() {
         setupCarousel();
         setupModal();
         window.updateTelescopeCarousel(); // Initialize
+        
+        // Handle window resize for responsive carousel
+        window.addEventListener('resize', debounce(() => {
+            const isMobileNow = window.innerWidth <= 768;
+            window.totalTelescopeSlides = isMobileNow ? 11 : 2;
+            window.currentTelescopeSlide = 0; // Reset to first slide
+            window.updateTelescopeCarousel();
+        }, 250));
     }, 200);
 }
 

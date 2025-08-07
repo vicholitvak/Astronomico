@@ -2141,6 +2141,32 @@ blockquote {
     /* Calendar responsive */
     .calendar-container {
         padding: var(--spacing-sm);
+        overflow-x: auto;
+    }
+    
+    #calendar-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    #fullcalendar {
+        min-width: 300px;
+        font-size: 0.75rem;
+    }
+    
+    .fc-toolbar {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .fc-toolbar-chunk {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .fc-button-group .fc-button {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
     }
     
     .calendar-header {
@@ -2540,8 +2566,28 @@ blockquote {
     }
     
     .gallery-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
         gap: var(--spacing-sm);
+    }
+    
+    /* Mobile carousel for telescope gallery */
+    .gallery-carousel .carousel-slide {
+        display: block;
+    }
+    
+    .gallery-carousel .carousel-slide .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .gallery-carousel .carousel-slide:not(.active) {
+        display: none;
+    }
+    
+    .carousel-indicators {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: var(--spacing-md);
     }
     
     .feature-item {
