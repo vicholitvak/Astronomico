@@ -110,6 +110,8 @@
                     
                     // Clear existing content
                     titleElement.innerHTML = '';
+                    titleElement.style.whiteSpace = 'normal';
+                    titleElement.style.display = 'block';
                     
                     // Split text into individual letters and wrap each in a span
                     text.split('').forEach((char, index) => {
@@ -118,7 +120,8 @@
                         span.style.opacity = '0';
                         span.style.transform = 'translateY(20px)';
                         span.style.transition = 'all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-                        span.style.display = 'inline';
+                        span.style.display = 'inline-block';
+                        span.style.whiteSpace = 'nowrap';
                         titleElement.appendChild(span);
                         
                         // Animate each letter with a delay
