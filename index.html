@@ -74,9 +74,9 @@
                 <!-- Desktop Menu -->
                 <ul class="nav-menu">
                     <li class="nav-item"><a href="#inicio" class="nav-link">Inicio</a></li>
-                    <li class="nav-item"><a href="#nosotros" class="nav-link">Sobre Nosotros</a></li>
                     <li class="nav-item"><a href="#tours" class="nav-link">Tours</a></li>
                     <li class="nav-item"><a href="#telescopio" class="nav-link">Telescopio</a></li>
+                    <li class="nav-item"><a href="#nosotros" class="nav-link">Sobre Mí</a></li>
                     <li class="nav-item"><a href="#reservas" class="nav-link">Reservas</a></li>
                     <li class="nav-item"><a href="#contacto" class="nav-link">Contacto</a></li>
                     <li class="nav-item">
@@ -119,25 +119,6 @@
     </section>
 
     <!-- About Us Section -->
-    <section id="nosotros" class="about">
-        <div class="container">
-            <div class="section-header">
-                <h2>Vicente Litvak</h2>
-                <p class="section-subtitle">Sobre mi</p>
-            </div>
-            
-            <div class="about-content">
-                <div class="about-text">
-                    <p>Con más de 5 años guiando tours astronómicos en el Desierto de Atacama, he tenido el privilegio de compartir con miles de personas la magia de los cielos más puros del mundo.</p>
-                    <p>Mi pasión por la astronomía comenzó desde pequeño, y hoy combino conocimiento científico con tecnología de vanguardia para crear experiencias inolvidables bajo las estrellas.</p>
-                    <p>Utilizo telescopios Unistellar eVscope de última generación que permiten capturar y observar objetos del espacio profundo en tiempo real, transformando cada tour en una ventana hacia el universo.</p>
-                </div>
-                <div class="about-image">
-                    <img src="images/me2.jpg" alt="Guía astronómico en el desierto de Atacama con equipos profesionales" loading="lazy">
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Tours Section -->
     <section id="tours" class="tours">
@@ -337,6 +318,189 @@
     </section>
 
     <!-- Booking Section -->
+
+    <!-- Telescope Section -->
+    <section id="telescopio" class="telescope">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nuestro Telescopio Unistellar eVscope 2</h2>
+                <p class="section-subtitle">Tecnología revolucionaria que captura la belleza del espacio profundo en tiempo real</p>
+            </div>
+            
+            <div class="telescope-content">
+                <div class="telescope-info">
+                    <div class="telescope-features">
+                        <h3>Tecnología de Vanguardia</h3>
+                        <p>El telescopio Unistellar eVscope 2 utiliza tecnología revolucionaria que permite observar objetos del espacio profundo a color que normalmente son invisibles al ojo humano.</p>
+                        
+                    </div>
+                </div>
+                
+                <div class="telescope-gallery">
+                    <h3>Galería del Espacio Profundo</h3>
+                    <p>Estas son fotografías reales capturadas con nuestro telescopio Unistellar durante nuestros tours</p>
+                    
+                    <script>
+                        function abrirImagen(src) {
+                            console.log('🔍 Abriendo:', src);
+                            const modal = document.getElementById('galleryModal');
+                            const img = document.getElementById('modalImage');
+                            if(modal && img) {
+                                img.src = src;
+                                modal.style.display = 'flex';
+                            }
+                        }
+                    </script>
+                    
+                    <div class="gallery-container">
+                        <!-- Gallery Carousel -->
+                        <div class="gallery-carousel" id="telescopeCarousel">
+                            <div class="carousel-track" id="carouselTrack">
+                                <!-- Slide 1 -->
+                                <div class="carousel-slide active">
+                                    <div class="gallery-grid">
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250418-015040.jpg')">
+                                            <img src="images/eVscope2-20250418-015040.jpg" alt="Objeto del espacio profundo capturado con eVscope" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250520-005028.jpg')">
+                                            <img src="images/eVscope2-20250520-005028.jpg" alt="Nebulosa capturada con telescopio Unistellar" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250525-021351.jpg')">
+                                            <img src="images/eVscope2-20250525-021351.jpg" alt="Galaxia fotografiada con eVscope2" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250629-012206.jpg')">
+                                            <img src="images/eVscope2-20250629-012206.jpg" alt="Cúmulo estelar capturado durante tour astronómico" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250629-013307.jpg')">
+                                            <img src="images/eVscope2-20250629-013307.jpg" alt="Objeto celeste fotografiado con telescopio Unistellar" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250629-013312.jpg')">
+                                            <img src="images/eVscope2-20250629-013312.jpg" alt="Astrofotografía del espacio profundo con eVscope" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Slide 2 -->
+                                <div class="carousel-slide">
+                                    <div class="gallery-grid">
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250719-001348.jpg')">
+                                            <img src="images/eVscope2-20250719-001348.jpg" alt="Nebulosa del Anillo capturada con eVscope" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-004143.jpg')">
+                                            <img src="images/eVscope2-20250803-004143.jpg" alt="Galaxia espiral fotografiada con telescopio Unistellar" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-004145.jpg')">
+                                            <img src="images/eVscope2-20250803-004145.jpg" alt="Cúmulo globular del espacio profundo" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-032904.jpg')">
+                                            <img src="images/eVscope2-20250803-032904.jpg" alt="Nebulosa planetaria capturada en Atacama" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Carousel Controls -->
+                            <button class="carousel-control prev" id="carouselPrev" onclick="
+                                console.log('⬅️ PREV CLICKED!'); 
+                                const track = document.getElementById('carouselTrack');
+                                if(track) track.style.transform = 'translateX(0%)';
+                            ">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="carousel-control next" id="carouselNext" onclick="
+                                console.log('➡️ NEXT CLICKED!'); 
+                                const track = document.getElementById('carouselTrack');
+                                if(track) track.style.transform = 'translateX(-50%)';
+                            ">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            
+                            <!-- Carousel Indicators -->
+                            <div class="carousel-indicators">
+                                <button class="indicator active" data-slide="0"></button>
+                                <button class="indicator" data-slide="1"></button>
+                            </div>
+                        </div>
+                        
+                        <!-- Gallery Modal -->
+                        <div id="galleryModal" class="gallery-modal" onclick="window.closeGalleryModal()">
+                            <div class="modal-content" onclick="event.stopPropagation()">
+                                <span class="close-modal" onclick="
+                                    console.log('❌ CLOSE CLICKED!');
+                                    document.getElementById('galleryModal').style.display = 'none';
+                                ">&times;</span>
+                                <img id="modalImage" src="" alt="Imagen ampliada del telescopio">
+                                <div class="modal-nav">
+                                    <button id="prevImage" class="nav-btn prev-btn">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <button id="nextImage" class="nav-btn next-btn">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+
+    <!-- About Us Section -->
+    <section id="nosotros" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2>Vicente Litvak</h2>
+                <p class="section-subtitle">Sobre mi</p>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Con más de 5 años guiando tours astronómicos en el Desierto de Atacama, he tenido el privilegio de compartir con miles de personas la magia de los cielos más puros del mundo.</p>
+                    <p>Mi pasión por la astronomía comenzó desde pequeño, y hoy combino conocimiento científico con tecnología de vanguardia para crear experiencias inolvidables bajo las estrellas.</p>
+                    <p>Utilizo telescopios Unistellar eVscope de última generación que permiten capturar y observar objetos del espacio profundo en tiempo real, transformando cada tour en una ventana hacia el universo.</p>
+                </div>
+                <div class="about-image">
+                    <img src="images/me2.jpg" alt="Guía astronómico en el desierto de Atacama con equipos profesionales" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Booking Section -->
     <section id="reservas" class="booking">
         <div class="container">
             <div class="section-header">
@@ -497,161 +661,6 @@
     </section>
 
     <!-- Telescope Section -->
-    <section id="telescopio" class="telescope">
-        <div class="container">
-            <div class="section-header">
-                <h2>Nuestro Telescopio Unistellar eVscope 2</h2>
-                <p class="section-subtitle">Tecnología revolucionaria que captura la belleza del espacio profundo en tiempo real</p>
-            </div>
-            
-            <div class="telescope-content">
-                <div class="telescope-info">
-                    <div class="telescope-features">
-                        <h3>Tecnología de Vanguardia</h3>
-                        <p>El telescopio Unistellar eVscope 2 utiliza tecnología revolucionaria que permite observar objetos del espacio profundo a color que normalmente son invisibles al ojo humano.</p>
-                        
-                    </div>
-                </div>
-                
-                <div class="telescope-gallery">
-                    <h3>Galería del Espacio Profundo</h3>
-                    <p>Estas son fotografías reales capturadas con nuestro telescopio Unistellar durante nuestros tours</p>
-                    
-                    <script>
-                        function abrirImagen(src) {
-                            console.log('🔍 Abriendo:', src);
-                            const modal = document.getElementById('galleryModal');
-                            const img = document.getElementById('modalImage');
-                            if(modal && img) {
-                                img.src = src;
-                                modal.style.display = 'flex';
-                            }
-                        }
-                    </script>
-                    
-                    <div class="gallery-container">
-                        <!-- Gallery Carousel -->
-                        <div class="gallery-carousel" id="telescopeCarousel">
-                            <div class="carousel-track" id="carouselTrack">
-                                <!-- Slide 1 -->
-                                <div class="carousel-slide active">
-                                    <div class="gallery-grid">
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250418-015040.jpg')">
-                                            <img src="images/eVscope2-20250418-015040.jpg" alt="Objeto del espacio profundo capturado con eVscope" loading="lazy">
-                                            <div class="gallery-overlay">
-                                                <i class="fas fa-search-plus"></i>
-                                            </div>
-                                        </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250520-005028.jpg')">
-                                            <img src="images/eVscope2-20250520-005028.jpg" alt="Nebulosa capturada con telescopio Unistellar" loading="lazy">
-                                            <div class="gallery-overlay">
-                                                <i class="fas fa-search-plus"></i>
-                                            </div>
-                                        </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250525-021351.jpg')">
-                                            <img src="images/eVscope2-20250525-021351.jpg" alt="Galaxia fotografiada con eVscope2" loading="lazy">
-                                            <div class="gallery-overlay">
-                                                <i class="fas fa-search-plus"></i>
-                                            </div>
-                                        </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250629-012206.jpg')">
-                                            <img src="images/eVscope2-20250629-012206.jpg" alt="Cúmulo estelar capturado durante tour astronómico" loading="lazy">
-                                            <div class="gallery-overlay">
-                                                <i class="fas fa-search-plus"></i>
-                                            </div>
-                                        </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250629-013307.jpg')">
-                                            <img src="images/eVscope2-20250629-013307.jpg" alt="Objeto celeste fotografiado con telescopio Unistellar" loading="lazy">
-                                            <div class="gallery-overlay">
-                                                <i class="fas fa-search-plus"></i>
-                                            </div>
-                                        </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250629-013312.jpg')">
-                                            <img src="images/eVscope2-20250629-013312.jpg" alt="Astrofotografía del espacio profundo con eVscope" loading="lazy">
-                                            <div class="gallery-overlay">
-                                                <i class="fas fa-search-plus"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Slide 2 -->
-                                <div class="carousel-slide">
-                                    <div class="gallery-grid">
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250719-001348.jpg')">
-                                            <img src="images/eVscope2-20250719-001348.jpg" alt="Nebulosa del Anillo capturada con eVscope" loading="lazy">
-                                            <div class="gallery-overlay">
-                                                <i class="fas fa-search-plus"></i>
-                                            </div>
-                                        </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-004143.jpg')">
-                                            <img src="images/eVscope2-20250803-004143.jpg" alt="Galaxia espiral fotografiada con telescopio Unistellar" loading="lazy">
-                                            <div class="gallery-overlay">
-                                                <i class="fas fa-search-plus"></i>
-                                            </div>
-                                        </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-004145.jpg')">
-                                            <img src="images/eVscope2-20250803-004145.jpg" alt="Cúmulo globular del espacio profundo" loading="lazy">
-                                            <div class="gallery-overlay">
-                                                <i class="fas fa-search-plus"></i>
-                                            </div>
-                                        </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-032904.jpg')">
-                                            <img src="images/eVscope2-20250803-032904.jpg" alt="Nebulosa planetaria capturada en Atacama" loading="lazy">
-                                            <div class="gallery-overlay">
-                                                <i class="fas fa-search-plus"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Carousel Controls -->
-                            <button class="carousel-control prev" id="carouselPrev" onclick="
-                                console.log('⬅️ PREV CLICKED!'); 
-                                const track = document.getElementById('carouselTrack');
-                                if(track) track.style.transform = 'translateX(0%)';
-                            ">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button class="carousel-control next" id="carouselNext" onclick="
-                                console.log('➡️ NEXT CLICKED!'); 
-                                const track = document.getElementById('carouselTrack');
-                                if(track) track.style.transform = 'translateX(-50%)';
-                            ">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                            
-                            <!-- Carousel Indicators -->
-                            <div class="carousel-indicators">
-                                <button class="indicator active" data-slide="0"></button>
-                                <button class="indicator" data-slide="1"></button>
-                            </div>
-                        </div>
-                        
-                        <!-- Gallery Modal -->
-                        <div id="galleryModal" class="gallery-modal" onclick="window.closeGalleryModal()">
-                            <div class="modal-content" onclick="event.stopPropagation()">
-                                <span class="close-modal" onclick="
-                                    console.log('❌ CLOSE CLICKED!');
-                                    document.getElementById('galleryModal').style.display = 'none';
-                                ">&times;</span>
-                                <img id="modalImage" src="" alt="Imagen ampliada del telescopio">
-                                <div class="modal-nav">
-                                    <button id="prevImage" class="nav-btn prev-btn">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </button>
-                                    <button id="nextImage" class="nav-btn next-btn">
-                                        <i class="fas fa-chevron-right"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Contact Section -->
     <section id="contacto" class="contact">
