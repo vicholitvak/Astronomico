@@ -559,18 +559,10 @@
                             </div>
                             
                             <!-- Carousel Controls -->
-                            <button class="carousel-control prev" id="carouselPrev" onclick="
-                                console.log('⬅️ PREV CLICKED!'); 
-                                const track = document.getElementById('carouselTrack');
-                                if(track) track.style.transform = 'translateX(0%)';
-                            ">
+                            <button class="carousel-control prev" id="carouselPrev" onclick="window.telescopeCarouselPrev()">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
-                            <button class="carousel-control next" id="carouselNext" onclick="
-                                console.log('➡️ NEXT CLICKED!'); 
-                                const track = document.getElementById('carouselTrack');
-                                if(track) track.style.transform = 'translateX(-50%)';
-                            ">
+                            <button class="carousel-control next" id="carouselNext" onclick="window.telescopeCarouselNext()">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                             

@@ -2138,15 +2138,27 @@ blockquote {
         display: none;
     }
     
+    /* Global mobile overflow fixes */
+    body {
+        overflow-x: hidden;
+    }
+    
+    .container {
+        overflow-x: hidden;
+        max-width: 100vw;
+    }
+    
     /* Calendar responsive */
     .calendar-container {
         padding: var(--spacing-sm);
         overflow-x: auto;
+        max-width: calc(100vw - 2rem);
     }
     
     #calendar-container {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        max-width: 100%;
     }
     
     #fullcalendar {
@@ -2570,17 +2582,37 @@ blockquote {
         gap: var(--spacing-sm);
     }
     
-    /* Mobile carousel for telescope gallery */
-    .gallery-carousel .carousel-slide {
+    /* Mobile: Force single image display in telescope gallery */
+    .telescope .gallery-carousel .carousel-track {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        overflow: hidden;
+    }
+    
+    .telescope .gallery-carousel .carousel-slide {
         display: block;
+        width: 100%;
     }
     
-    .gallery-carousel .carousel-slide .gallery-grid {
-        grid-template-columns: 1fr;
+    .telescope .gallery-carousel .gallery-grid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 0;
     }
     
-    .gallery-carousel .carousel-slide:not(.active) {
-        display: none;
+    .telescope .gallery-carousel .gallery-item {
+        width: 100%;
+        max-width: 350px;
+        margin: 0 auto;
+        display: none; /* Hide all by default */
+    }
+    
+    .telescope .gallery-carousel .gallery-item.mobile-active {
+        display: block; /* Show only active one */
     }
     
     .carousel-indicators {
@@ -2588,6 +2620,20 @@ blockquote {
         justify-content: center;
         gap: 8px;
         margin-top: var(--spacing-md);
+        flex-wrap: wrap;
+    }
+    
+    .carousel-indicators .indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(255, 255, 255, 0.3);
+        cursor: pointer;
+    }
+    
+    .carousel-indicators .indicator.active {
+        background: var(--primary-color);
     }
     
     .feature-item {

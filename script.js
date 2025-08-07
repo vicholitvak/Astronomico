@@ -1365,14 +1365,19 @@ function initTelescopeGallery() {
         
         if (track) {
             if (isMobileNow) {
-                // Mobile: Show one image at a time
+                // Mobile: Show one image at a time using CSS classes
                 const allImages = track.querySelectorAll('.gallery-item');
                 allImages.forEach((img, index) => {
-                    img.style.display = index === window.currentTelescopeSlide ? 'block' : 'none';
+                    img.classList.toggle('mobile-active', index === window.currentTelescopeSlide);
                 });
                 track.style.transform = 'translateX(0)';
             } else {
-                // Desktop: Original carousel behavior
+                // Desktop: Original carousel behavior - reset mobile classes
+                const allImages = track.querySelectorAll('.gallery-item');
+                allImages.forEach(img => {
+                    img.classList.remove('mobile-active');
+                    img.style.display = '';
+                });
                 const translateX = -window.currentTelescopeSlide * 50;
                 track.style.transform = `translateX(${translateX}%)`;
             }
