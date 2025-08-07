@@ -556,13 +556,9 @@
             
             <div class="booking-content">
                 <div class="booking-form-container">
-                    <form id="booking-form" class="booking-form" name="booking" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+                    <form id="booking-form" class="booking-form" name="booking">
                         
                         <!-- Calendar Section with FullCalendar -->
-                        <!-- Hidden honeypot field for spam protection -->
-                        <div style="display: none;">
-                            <label>Don't fill this out if you're human: <input name="bot-field" /></label>
-                        </div>
                         
                         <div class="form-group calendar-section">
                             <label for="calendar">Selecciona Fecha y Hora *</label>
@@ -639,13 +635,6 @@
                                     <option value="private">Tour Privado (Solo tu grupo)</option>
                                     <option value="astrophoto">Tour Astrofotográfico (Especializado)</option>
                                 </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="time">Horario del Tour *</label>
-                                <select id="time" name="time" required>
-                                    <option value="">Primero selecciona tipo de tour</option>
-                                </select>
-                                <small class="time-info" style="color: #ccc; font-size: 0.8rem; margin-top: 0.5rem; display: block;"></small>
                             </div>
                         </div>
                         
@@ -2459,5 +2448,89 @@ ${msg.contact}`);
             }
         }
     </style>
+
+    <!-- Booking Form Handler -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Setting up booking form handler...');
+            
+            // Manejar envío del formulario de reservas
+            const bookingForm = document.getElementById('booking-form');
+            if (bookingForm) {
+                console.log('Booking form found, adding event listener');
+                
+                bookingForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    console.log('Booking form submitted');
+                    
+                    // Obtener datos del formulario
+                    const formData = new FormData(bookingForm);
+                    const bookingData = {
+                        date: formData.get('date'),
+                        persons: formData.get('persons'),
+                        tourType: formData.get('tour-type'),
+                        name: formData.get('name'),
+                        email: formData.get('email'),
+                        phone: formData.get('phone'),
+                        message: formData.get('message') || ''
+                    };
+                    
+                    console.log('Form data collected:', bookingData);
+                    
+                    // Validar datos requeridos
+                    if (!bookingData.date || !bookingData.persons || !bookingData.tourType || !bookingData.name || !bookingData.email || !bookingData.phone) {
+                        console.log('Validation failed - missing required fields');
+                        alert('Por favor completa todos los campos obligatorios');
+                        return;
+                    }
+                    
+                    console.log('Client-side validation passed');
+                    
+                    // Mostrar loading en el botón
+                    const submitBtn = bookingForm.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.textContent;
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Enviando...';
+                    
+                    try {
+                        console.log('Sending API request to /api/booking');
+                        
+                        // Enviar a la API
+                        const response = await fetch('/api/booking', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(bookingData)
+                        });
+                        
+                        console.log('API response status:', response.status);
+                        
+                        const result = await response.json();
+                        console.log('API response data:', result);
+                        
+                        if (response.ok && result.success) {
+                            console.log('Booking successful, redirecting to confirmation page');
+                            // Redirect a página de confirmación
+                            window.location.href = `confirmacion.html?id=${encodeURIComponent(result.bookingId)}`;
+                        } else {
+                            console.error('API returned error:', result);
+                            throw new Error(result.error || 'Error al procesar la reserva');
+                        }
+                        
+                    } catch (error) {
+                        console.error('Booking submission error:', error);
+                        alert(`Error al enviar la reserva: ${error.message}. Por favor intenta nuevamente.`);
+                        
+                        // Restaurar botón
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = originalText;
+                    }
+                });
+            } else {
+                console.error('Booking form not found!');
+            }
+        });
+    </script>
 </body>
 </html>
