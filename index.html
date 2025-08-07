@@ -2370,13 +2370,39 @@ ${msg.contact}`);
         }
 
         @media (max-width: 768px) {
+            .calendar-container {
+                width: 100%;
+                max-width: 100%;
+                overflow-x: auto;
+                padding: 0;
+            }
+            
+            .custom-calendar {
+                width: 100%;
+                min-width: 350px;
+            }
+            
+            .calendar-days {
+                grid-template-columns: repeat(7, minmax(45px, 1fr));
+                gap: 1px;
+                width: 100%;
+            }
+            
             .calendar-day {
-                min-height: 50px;
-                padding: 0.25rem;
+                min-height: 45px;
+                padding: 0.2rem;
+                font-size: 0.8rem;
             }
             
             .day-number {
-                font-size: 0.9rem;
+                font-size: 0.8rem;
+                margin-bottom: 0.1rem;
+            }
+            
+            .moon-icon {
+                font-size: 10px;
+                bottom: 1px;
+                right: 1px;
             }
             
             .moon-emoji {
