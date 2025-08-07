@@ -359,7 +359,165 @@
         </div>
     </section>
 
-
+    <!-- Booking Section -->
+    <section id="reservas" class="booking">
+        <div class="container">
+            <div class="section-header">
+                <h2>Reserva Tu Experiencia Astronómica</h2>
+                <p class="section-subtitle">Completa el formulario y te contactaremos para confirmar disponibilidad</p>
+            </div>
+            
+            <div class="booking-content">
+                <div class="booking-form-container">
+                    <form id="booking-form" class="booking-form" name="booking">
+                        
+                        <!-- Calendar Section with FullCalendar -->
+                        
+                        <div class="form-group calendar-section">
+                            <label for="calendar">Selecciona Fecha y Hora *</label>
+                            <div class="calendar-description">
+                                <p><strong>🌕 Fases Lunares:</strong> Los tours no están disponibles 3 días antes y después de luna llena para mejor visibilidad estelar.</p>
+                            </div>
+                            
+                            <div id="calendar-container">
+                                <div id="fullcalendar"></div>
+                            </div>
+                            
+                            <div class="calendar-legend">
+                                <div class="legend-item">
+                                    <span class="legend-dot available"></span>
+                                    <span>Disponible para reserva</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-dot unavailable"></span>
+                                    <span>No disponible (luna llena)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="moon-legend">🌑🌒🌓🌔🌕🌖🌗🌘</span>
+                                    <span>Fases lunares</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Selected Date Display -->
+                            <div class="selected-date-display" id="selected-date-display">
+                                Haz clic en una fecha disponible para continuar
+                            </div>
+                            
+                            <input type="hidden" id="selected-date" name="date" required>
+                            <input type="hidden" id="selected-time" name="time" required>
+                        </div>
+                        
+                        <!-- Datos de la reserva -->
+                        <div class="form-section">
+                            <h4>Datos de tu Reserva</h4>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="persons">Número de Personas *</label>
+                                <select id="persons" name="persons" required aria-required="true">
+                                    <option value="">Selecciona cantidad</option>
+                                    <option value="1">1 persona</option>
+                                    <option value="2">2 personas</option>
+                                    <option value="3">3 personas</option>
+                                    <option value="4">4 personas</option>
+                                    <option value="5">5 personas</option>
+                                    <option value="6">6 personas</option>
+                                    <option value="7">7 personas</option>
+                                    <option value="8">8 personas</option>
+                                    <option value="9">9 personas</option>
+                                    <option value="10">10 personas</option>
+                                    <option value="11">11 personas</option>
+                                    <option value="12">12 personas</option>
+                                    <option value="13">13 personas</option>
+                                    <option value="14">14 personas</option>
+                                    <option value="15">15 personas</option>
+                                    <option value="16">16 personas</option>
+                                    <option value="16+">Más de 16 personas (contactar)</option>
+                                </select>
+                                <div id="availability-warning" class="availability-warning" style="display: none;">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span class="warning-text"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="tour-type">Tipo de Tour *</label>
+                                <select id="tour-type" name="tour-type" required>
+                                    <option value="">Selecciona tipo de tour</option>
+                                    <option value="regular">Tour Regular (Grupo)</option>
+                                    <option value="private">Tour Privado (Solo tu grupo)</option>
+                                    <option value="astrophoto">Tour Astrofotográfico (Especializado)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Información de contacto -->
+                        <div class="form-section">
+                            <h4>Información de Contacto</h4>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Nombre Completo *</label>
+                                <input type="text" id="name" name="name" required aria-required="true" placeholder="Tu nombre completo">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" name="email" required aria-required="true" placeholder="tu@email.com">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Teléfono/WhatsApp *</label>
+                            <input type="tel" id="phone" name="phone" required aria-required="true" placeholder="+56 9 1234 5678">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Mensaje Adicional</label>
+                            <textarea id="message" name="message" rows="4" placeholder="¿Alguna pregunta o requerimiento especial?"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-submit">
+                            <i class="fas fa-paper-plane"></i>
+                            Enviar Reserva
+                        </button>
+                        
+                        <div class="form-success" id="form-success">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>¡Reserva Enviada!</h3>
+                            <p>Te contactaremos dentro de 24 horas para confirmar disponibilidad y detalles del pago.</p>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="booking-info">
+                    <div class="info-card">
+                        <i class="fas fa-clock"></i>
+                        <h4>Horarios</h4>
+                        <p>Tours nocturnos desde 20:00 hrs<br>Duración: 2.5 - 4+ horas</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h4>Disponibilidad</h4>
+                        <p>Todos los días del año, excepto 3 dias antes y después de luna llena<br>Sujeto a condiciones climáticas</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h4>Punto de Encuentro</h4>
+                        <p>Recogida en hoteles de San Pedro de Atacama incluida</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-credit-card"></i>
+                        <h4>Formas de Pago</h4>
+                        <p>Efectivo, Transferencia, PayPal<br>50% anticipo - 50% al inicio del tour</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Telescope Section -->
     <section id="telescopio" class="telescope">
@@ -540,166 +698,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Booking Section -->
-    <section id="reservas" class="booking">
-        <div class="container">
-            <div class="section-header">
-                <h2>Reserva Tu Experiencia Astronómica</h2>
-                <p class="section-subtitle">Completa el formulario y te contactaremos para confirmar disponibilidad</p>
-            </div>
-            
-            <div class="booking-content">
-                <div class="booking-form-container">
-                    <form id="booking-form" class="booking-form" name="booking">
-                        
-                        <!-- Calendar Section with FullCalendar -->
-                        
-                        <div class="form-group calendar-section">
-                            <label for="calendar">Selecciona Fecha y Hora *</label>
-                            <div class="calendar-description">
-                                <p><strong>🌕 Fases Lunares:</strong> Los tours no están disponibles 3 días antes y después de luna llena para mejor visibilidad estelar.</p>
-                            </div>
-                            
-                            <div id="calendar-container">
-                                <div id="fullcalendar"></div>
-                            </div>
-                            
-                            <div class="calendar-legend">
-                                <div class="legend-item">
-                                    <span class="legend-dot available"></span>
-                                    <span>Disponible para reserva</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-dot unavailable"></span>
-                                    <span>No disponible (luna llena)</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="moon-legend">🌑🌒🌓🌔🌕🌖🌗🌘</span>
-                                    <span>Fases lunares</span>
-                                </div>
-                            </div>
-                            
-                            <!-- Selected Date Display -->
-                            <div class="selected-date-display" id="selected-date-display">
-                                Haz clic en una fecha disponible para continuar
-                            </div>
-                            
-                            <input type="hidden" id="selected-date" name="date" required>
-                            <input type="hidden" id="selected-time" name="time" required>
-                        </div>
-                        
-                        <!-- Datos de la reserva -->
-                        <div class="form-section">
-                            <h4>Datos de tu Reserva</h4>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="persons">Número de Personas *</label>
-                                <select id="persons" name="persons" required aria-required="true">
-                                    <option value="">Selecciona cantidad</option>
-                                    <option value="1">1 persona</option>
-                                    <option value="2">2 personas</option>
-                                    <option value="3">3 personas</option>
-                                    <option value="4">4 personas</option>
-                                    <option value="5">5 personas</option>
-                                    <option value="6">6 personas</option>
-                                    <option value="7">7 personas</option>
-                                    <option value="8">8 personas</option>
-                                    <option value="9">9 personas</option>
-                                    <option value="10">10 personas</option>
-                                    <option value="11">11 personas</option>
-                                    <option value="12">12 personas</option>
-                                    <option value="13">13 personas</option>
-                                    <option value="14">14 personas</option>
-                                    <option value="15">15 personas</option>
-                                    <option value="16">16 personas</option>
-                                    <option value="16+">Más de 16 personas (contactar)</option>
-                                </select>
-                                <div id="availability-warning" class="availability-warning" style="display: none;">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                    <span class="warning-text"></span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="tour-type">Tipo de Tour *</label>
-                                <select id="tour-type" name="tour-type" required>
-                                    <option value="">Selecciona tipo de tour</option>
-                                    <option value="regular">Tour Regular (Grupo)</option>
-                                    <option value="private">Tour Privado (Solo tu grupo)</option>
-                                    <option value="astrophoto">Tour Astrofotográfico (Especializado)</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <!-- Información de contacto -->
-                        <div class="form-section">
-                            <h4>Información de Contacto</h4>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="name">Nombre Completo *</label>
-                                <input type="text" id="name" name="name" required aria-required="true" placeholder="Tu nombre completo">
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Email *</label>
-                                <input type="email" id="email" name="email" required aria-required="true" placeholder="tu@email.com">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="phone">Teléfono/WhatsApp *</label>
-                            <input type="tel" id="phone" name="phone" required aria-required="true" placeholder="+56 9 1234 5678">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="message">Mensaje Adicional</label>
-                            <textarea id="message" name="message" rows="4" placeholder="¿Alguna pregunta o requerimiento especial?"></textarea>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary btn-submit">
-                            <i class="fas fa-paper-plane"></i>
-                            Enviar Reserva
-                        </button>
-                        
-                        <div class="form-success" id="form-success">
-                            <i class="fas fa-check-circle"></i>
-                            <h3>¡Reserva Enviada!</h3>
-                            <p>Te contactaremos dentro de 24 horas para confirmar disponibilidad y detalles del pago.</p>
-                        </div>
-                    </form>
-                </div>
-                
-                <div class="booking-info">
-                    <div class="info-card">
-                        <i class="fas fa-clock"></i>
-                        <h4>Horarios</h4>
-                        <p>Tours nocturnos desde 20:00 hrs<br>Duración: 2.5 - 4+ horas</p>
-                    </div>
-                    
-                    <div class="info-card">
-                        <i class="fas fa-calendar-alt"></i>
-                        <h4>Disponibilidad</h4>
-                        <p>Todos los días del año, excepto 3 dias antes y después de luna llena<br>Sujeto a condiciones climáticas</p>
-                    </div>
-                    
-                    <div class="info-card">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <h4>Punto de Encuentro</h4>
-                        <p>Recogida en hoteles de San Pedro de Atacama incluida</p>
-                    </div>
-                    
-                    <div class="info-card">
-                        <i class="fas fa-credit-card"></i>
-                        <h4>Formas de Pago</h4>
-                        <p>Efectivo, Transferencia, PayPal<br>50% anticipo - 50% al inicio del tour</p>
                     </div>
                 </div>
             </div>
