@@ -2153,32 +2153,34 @@ blockquote {
     /* Calendar responsive */
     .calendar-container {
         padding: var(--spacing-sm);
-        overflow-x: auto;
-        max-width: calc(100vw - 2rem);
+        overflow-x: visible;
+        width: 100%;
         margin: 0 auto;
     }
     
     #calendar-container {
-        overflow-x: scroll;
+        overflow-x: visible;
         -webkit-overflow-scrolling: touch;
-        max-width: calc(100vw - 3rem);
+        width: 100%;
         margin: 0;
+        padding: var(--spacing-xs);
     }
     
     #fullcalendar {
-        min-width: 320px;
+        min-width: 100%;
         font-size: 0.7rem;
         width: 100%;
     }
     
     /* Fix calendar table width */
     .fc-scrollgrid {
-        max-width: 100%;
-        overflow-x: auto;
+        width: 100%;
+        overflow-x: visible;
     }
     
     .fc-daygrid-day {
-        min-width: 40px;
+        min-width: auto;
+        width: 100%;
     }
     
     .fc-toolbar {
@@ -2189,11 +2191,37 @@ blockquote {
     .fc-toolbar-chunk {
         display: flex;
         justify-content: center;
+        width: 100%;
+    }
+    
+    .fc-button-group {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
     }
     
     .fc-button-group .fc-button {
         font-size: 0.75rem;
         padding: 0.25rem 0.5rem;
+        margin: 2px;
+    }
+    
+    /* Ajustar el calendario para móviles */
+    .fc .fc-daygrid-body {
+        width: 100% !important;
+    }
+    
+    .fc .fc-scrollgrid-sync-table {
+        width: 100% !important;
+    }
+    
+    .fc-daygrid-day-frame {
+        min-height: 35px;
+    }
+    
+    .fc-daygrid-event {
+        font-size: 0.65rem;
+        padding: 1px;
     }
     
     .calendar-header {

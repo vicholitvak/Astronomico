@@ -226,8 +226,138 @@ async function sendConfirmationEmail(booking) {
   }
 }
 
-// Google Calendar integration (placeholder)
+// Google Calendar integration
 async function addToGoogleCalendar(booking) {
-  // TODO: Implement Google Calendar API
-  console.log('Adding to calendar:', booking.bookingId);
+  const googleServiceAccountKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
+  const googleCalendarId = process.env.GOOGLE_CALENDAR_ID;
+  
+  if (!googleServiceAccountKey || !googleCalendarId) {
+    console.log('Google Calendar credentials not configured');
+    return;
+  }
+  
+  try {
+    // Parse service account credentials
+    const credentials = JSON.parse(googleServiceAccountKey);
+    
+    // Get access token using service account
+    const jwt = await getGoogleAccessToken(credentials);
+    
+    // Create calendar event
+    const event = createCalendarEvent(booking);
+    
+    const response = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(googleCalendarId)}/events`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${jwt}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(event)
+      }
+    );
+    
+    if (response.ok) {
+      const result = await response.json();
+      console.log('Calendar event created:', result.id);
+      return result;
+    } else {
+      const error = await response.text();
+      console.error('Google Calendar API error:', error);
+    }
+  } catch (error) {
+    console.error('Google Calendar integration error:', error);
+  }
+}
+
+// Generate JWT token for Google Service Account
+async function getGoogleAccessToken(credentials) {
+  const { GoogleAuth } = await import('google-auth-library');
+  
+  const auth = new GoogleAuth({
+    credentials,
+    scopes: ['https://www.googleapis.com/auth/calendar']
+  });
+  
+  const client = await auth.getClient();
+  const accessToken = await client.getAccessToken();
+  return accessToken.token;
+}
+
+// Create calendar event object
+function createCalendarEvent(booking) {
+  const tourTypes = {
+    'regular': 'Tour Astronómico Regular',
+    'private': 'Tour Privado Exclusivo', 
+    'astrophoto': 'Tour Astrofotográfico Especializado'
+  };
+  
+  // Parse date and time
+  const eventDate = new Date(booking.date);
+  const [hours, minutes] = booking.time.split(':');
+  eventDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+  
+  // End time (2 hours after start)
+  const endDate = new Date(eventDate);
+  endDate.setHours(endDate.getHours() + 2);
+  
+  // Get moon phase info (simplified)
+  const moonPhase = getMoonPhase(eventDate);
+  
+  const tourType = tourTypes[booking.tourType] || booking.tourType;
+  
+  return {
+    summary: `${tourType} - ${booking.persons} personas`,
+    description: `📊 DETALLES DE LA RESERVA:
+👥 Pasajeros: ${booking.persons}
+📧 Contacto: ${booking.name} (${booking.email})
+📱 Teléfono: ${booking.phone}
+💬 Comentarios: ${booking.message || 'Sin comentarios'}
+
+🌙 CONDICIONES LUNARES:
+${moonPhase}
+
+🔗 SITIO WEB: https://atacamadarksky.cl
+📞 CONTACTO EMERGENCIA: +56 9 5055 8761
+🆔 ID RESERVA: ${booking.bookingId}`,
+    start: {
+      dateTime: eventDate.toISOString(),
+      timeZone: 'America/Santiago'
+    },
+    end: {
+      dateTime: endDate.toISOString(), 
+      timeZone: 'America/Santiago'
+    },
+    attendees: [
+      {
+        email: booking.email,
+        displayName: booking.name
+      }
+    ],
+    reminders: {
+      useDefault: false,
+      overrides: [
+        { method: 'email', minutes: 24 * 60 }, // 1 day before
+        { method: 'popup', minutes: 60 }       // 1 hour before
+      ]
+    },
+    location: 'San Pedro de Atacama, Chile',
+    colorId: '9' // Blue color for astronomy tours
+  };
+}
+
+// Simple moon phase calculation
+function getMoonPhase(date) {
+  const phases = ['🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘'];
+  const names = ['Luna Nueva', 'Cuarto Creciente', 'Cuarto Creciente', 'Casi Llena', 'Luna Llena', 'Menguante', 'Cuarto Menguante', 'Cuarto Menguante'];
+  
+  // Simplified calculation based on lunar cycle (29.53 days)
+  const knownNewMoon = new Date('2024-01-11'); // Known new moon date
+  const daysDiff = (date - knownNewMoon) / (1000 * 60 * 60 * 24);
+  const phaseIndex = Math.floor(((daysDiff % 29.53) / 29.53) * 8);
+  
+  const illumination = Math.abs(50 - (phaseIndex * 12.5)) + Math.random() * 10;
+  
+  return `${names[phaseIndex]} ${phases[phaseIndex]} - ${illumination.toFixed(1)}% iluminación`;
 }

@@ -949,16 +949,15 @@
             illumination = Math.round(illumination * 10) / 10;
             
             // Determinar disponibilidad basada en iluminación y fase
-            // Bloquear solo en fase creciente cuando iluminación > 75%
-            // En fase menguante, la luna sale tarde y no interfiere con los tours
+            // Bloquear solo cuando la luna está muy brillante y puede interferir significativamente
             let isNearFullMoon = false;
             
             if (normalizedPhase <= 0.5) {
-                // Fase creciente: bloquear si iluminación > 75%
-                isNearFullMoon = illumination > 75;
+                // Fase creciente: bloquear solo si iluminación > 85% (muy cerca de luna llena)
+                isNearFullMoon = illumination > 85;
             } else {
-                // Fase menguante: solo bloquear si iluminación > 90% (muy cerca de luna llena)
-                isNearFullMoon = illumination > 90;
+                // Fase menguante: bloquear solo si iluminación > 95% (prácticamente luna llena)
+                isNearFullMoon = illumination > 95;
             }
             
             // Calcular días desde la luna llena más cercana (para información)
