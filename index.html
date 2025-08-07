@@ -424,16 +424,6 @@
                                 <div id="fullcalendar"></div>
                             </div>
                             
-                            <div class="calendar-legend">
-                                <div class="legend-item">
-                                    <span class="legend-dot available"></span>
-                                    <span>Disponible</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-dot unavailable"></span>
-                                    <span>No disponible</span>
-                                </div>
-                            </div>
                             
                             
                             <input type="hidden" id="selected-date" name="date" required>
@@ -507,14 +497,6 @@
                         <div class="form-group">
                             <label for="message">Mensaje Adicional</label>
                             <textarea id="message" name="message" rows="4" placeholder="¿Alguna pregunta o requerimiento especial?"></textarea>
-                        </div>
-                        
-                        <div class="form-group checkbox-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="terms" name="terms" required aria-required="true">
-                                <span class="checkmark"></span>
-                                Acepto los <a href="#" target="_blank">términos y condiciones</a> y <a href="#" target="_blank">política de privacidad</a>
-                            </label>
                         </div>
                         
                         <button type="submit" class="btn btn-primary btn-submit">
@@ -1102,21 +1084,12 @@
                     <div class="${dayClass}" onclick="selectDate(${year}, ${month}, ${day})" 
                          title="${availabilityText}">
                         <span class="day-number">${day}</span>
+                        <span class="moon-icon">${moonPhase.emoji}</span>
                     </div>
                 `;
             }
             
             calendarHTML += `
-                    </div>
-                    <div class="calendar-legend">
-                        <div class="legend-item">
-                            <span class="legend-dot available"></span>
-                            <span>${getCalendarText('available', currentLang)}</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="legend-dot unavailable"></span>
-                            <span>${getCalendarText('unavailable', currentLang)}</span>
-                        </div>
                     </div>
                     <div class="calendar-info">
                         <p style="font-size: 0.8rem; color: #ccc; margin: 0.5rem 0; text-align: center;">
@@ -2234,6 +2207,14 @@ ${msg.contact}`);
             color: #000;
         }
         
+        .moon-icon {
+            font-size: 12px;
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            opacity: 0.8;
+        }
+        
         .moon-emoji {
             font-size: 0.8rem;
             line-height: 1;
@@ -2256,19 +2237,6 @@ ${msg.contact}`);
             color: #ccc;
         }
         
-        .legend-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-        
-        .legend-dot.available {
-            background: #4CAF50;
-        }
-        
-        .legend-dot.unavailable {
-            background: rgba(255, 0, 0, 0.6);
-        }
         
         .date-confirmation {
             margin-top: 1rem;
