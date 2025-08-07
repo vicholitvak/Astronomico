@@ -747,6 +747,15 @@ blockquote {
     margin-bottom: var(--spacing-lg);
 }
 
+@media (max-width: 768px) {
+    .calendar-section {
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
 .calendar-description {
     background: rgba(0, 212, 255, 0.1);
     border: 1px solid rgba(0, 212, 255, 0.2);
@@ -2153,10 +2162,10 @@ blockquote {
     
     /* Calendar responsive */
     .calendar-container {
-        padding: var(--spacing-xs);
+        padding: 0;
         overflow-x: visible;
         width: 100%;
-        margin: 0 auto;
+        margin: 0;
     }
     
     #calendar-container {
@@ -2164,7 +2173,7 @@ blockquote {
         -webkit-overflow-scrolling: touch;
         width: 100%;
         margin: 0;
-        padding: 2px;
+        padding: 0;
     }
     
     #fullcalendar {
@@ -2657,9 +2666,12 @@ blockquote {
         width: 100%;
         max-width: 350px;
         margin: 0 auto;
-        display: block !important; /* Mostrar todas las imágenes */
+        display: none !important; /* Ocultar todas por defecto */
         position: relative;
-        margin-bottom: var(--spacing-sm);
+    }
+    
+    .telescope .gallery-carousel .gallery-item:first-child {
+        display: block !important; /* Mostrar solo la primera */
     }
     
     .telescope .gallery-carousel .gallery-item img {

@@ -427,22 +427,14 @@
                             <div class="calendar-legend">
                                 <div class="legend-item">
                                     <span class="legend-dot available"></span>
-                                    <span>Disponible para reserva</span>
+                                    <span>Disponible</span>
                                 </div>
                                 <div class="legend-item">
                                     <span class="legend-dot unavailable"></span>
-                                    <span>No disponible (luna llena)</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="moon-legend">🌑🌒🌓🌔🌕🌖🌗🌘</span>
-                                    <span>Fases lunares</span>
+                                    <span>No disponible</span>
                                 </div>
                             </div>
                             
-                            <!-- Selected Date Display -->
-                            <div class="selected-date-display" id="selected-date-display">
-                                Haz clic en una fecha disponible para continuar
-                            </div>
                             
                             <input type="hidden" id="selected-date" name="date" required>
                         </div>
@@ -538,31 +530,6 @@
                     </form>
                 </div>
                 
-                <div class="booking-info">
-                    <div class="info-card">
-                        <i class="fas fa-clock"></i>
-                        <h4>Horarios</h4>
-                        <p>Tours nocturnos desde 20:00 hrs<br>Duración: 2.5 - 4+ horas</p>
-                    </div>
-                    
-                    <div class="info-card">
-                        <i class="fas fa-calendar-alt"></i>
-                        <h4>Disponibilidad</h4>
-                        <p>Todos los días del año, excepto 3 dias antes y después de luna llena<br>Sujeto a condiciones climáticas</p>
-                    </div>
-                    
-                    <div class="info-card">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <h4>Punto de Encuentro</h4>
-                        <p>Recogida en hoteles de San Pedro de Atacama incluida</p>
-                    </div>
-                    
-                    <div class="info-card">
-                        <i class="fas fa-credit-card"></i>
-                        <h4>Formas de Pago</h4>
-                        <p>Efectivo, Transferencia, PayPal<br>50% anticipo - 50% al inicio del tour</p>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -1133,9 +1100,8 @@
                 
                 calendarHTML += `
                     <div class="${dayClass}" onclick="selectDate(${year}, ${month}, ${day})" 
-                         title="${moonPhase.name} ${moonPhase.emoji} - ${moonPhase.illumination}% iluminación - ${availabilityText}">
+                         title="${availabilityText}">
                         <span class="day-number">${day}</span>
-                        <span class="moon-emoji">${moonPhase.emoji}</span>
                     </div>
                 `;
             }
@@ -1199,27 +1165,6 @@
                 dateInput.dispatchEvent(new Event('change'));
             }
             
-            // Update the display element
-            const displayElement = document.getElementById('selected-date-display');
-            if (displayElement) {
-                const currentLang = localStorage.getItem('preferred-language') || 'es';
-                const dateStr = date.toLocaleDateString(currentLang === 'en' ? 'en-US' : currentLang === 'pt' ? 'pt-BR' : 'es-ES', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-                
-                displayElement.innerHTML = `
-                    <div class="selected-datetime">
-                        <i class="fas fa-check-circle"></i>
-                        <h5>${currentLang === 'en' ? 'Date selected!' : currentLang === 'pt' ? 'Data selecionada!' : '¡Fecha seleccionada!'}</h5>
-                        <p><strong>📅 ${dateStr}</strong></p>
-                        <small>${currentLang === 'en' ? 'Now select tour type below' : currentLang === 'pt' ? 'Agora selecione o tipo de tour abaixo' : 'Ahora selecciona el tipo de tour abajo'}</small>
-                    </div>
-                `;
-                displayElement.classList.add('has-date');
-            }
             
             // Mostrar confirmación
             showDateConfirmation(date);
