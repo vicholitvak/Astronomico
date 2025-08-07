@@ -1,5 +1,6 @@
 // Vercel Serverless Function for handling bookings
 import { createClient } from '@supabase/supabase-js';
+import { addToGoogleCalendar } from './google-calendar.js';
 
 // Use service key for backend operations (bypasses RLS)
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY;
@@ -277,7 +278,10 @@ async function sendConfirmationEmail(booking) {
   }
 }
 
-// Google Calendar integration
+// Google Calendar integration is now imported from google-calendar.js module
+// The old implementation below has been removed in favor of the improved module
+
+/* OLD IMPLEMENTATION - REMOVED
 async function addToGoogleCalendar(booking) {
   const googleServiceAccountKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
   const googleCalendarId = process.env.GOOGLE_CALENDAR_ID;
@@ -412,3 +416,4 @@ function getMoonPhase(date) {
   
   return `${names[phaseIndex]} ${phases[phaseIndex]} - ${illumination.toFixed(1)}% iluminación`;
 }
+*/

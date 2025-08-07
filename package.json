@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.0",
-    "google-auth-library": "^9.4.0"
+    "google-auth-library": "^9.4.0",
+    "googleapis": "^155.0.0"
   },
   "engines": {
     "node": "22.x"
