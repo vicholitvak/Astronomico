@@ -5,6 +5,10 @@ export async function addToGoogleCalendar(booking) {
   console.log('Starting Google Calendar integration for booking:', booking.bookingId);
   console.log('Booking data received:', JSON.stringify(booking, null, 2));
   
+  // Get total passengers for the day
+  const dayTotal = await getTotalPassengersForDay(booking.date);
+  console.log('Total passengers for', booking.date, ':', dayTotal);
+  
   const googleServiceAccountKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
   const googleCalendarId = process.env.GOOGLE_CALENDAR_ID;
   
@@ -77,8 +81,8 @@ export async function addToGoogleCalendar(booking) {
     // Create calendar instance
     const calendar = google.calendar({ version: 'v3', auth });
     
-    // Create event object
-    const event = createCalendarEvent(booking);
+    // Create event object with day total
+    const event = createCalendarEvent(booking, dayTotal);
     console.log('Creating calendar event:', event.summary);
     
     // Insert event
@@ -107,7 +111,7 @@ export async function addToGoogleCalendar(booking) {
   }
 }
 
-function createCalendarEvent(booking) {
+function createCalendarEvent(booking, dayTotal = null) {
   const tourTypes = {
     'regular': 'Regular',
     'private': 'Privado', 
@@ -157,18 +161,22 @@ function createCalendarEvent(booking) {
   const paxCount = parseInt(booking.persons);
   const paxEmoji = paxCount > 1 ? '👥' : '👤';
   
+  // Include day total if available
+  let title = `${paxEmoji} ${paxCount} | ${tourType} | ${booking.name}`;
+  if (dayTotal && dayTotal > paxCount) {
+    title = `${paxEmoji} ${paxCount} | ${tourType} | ${booking.name} (Día: ${dayTotal} pax)`;
+  }
+  
   return {
-    summary: `${paxEmoji} ${paxCount} | ${tourType} | ${booking.name}`,
-    description: `🎯 TIPO: ${tourType}
-👥 PAX: ${booking.persons}
+    summary: title,
+    description: `🎯 ${tourType} - ${booking.persons} pax
 
-📱 CLIENTE:
-${booking.name}
-${booking.phone}
-${booking.email || 'Sin email'}
-${booking.message ? `\n💬 Nota: ${booking.message}` : ''}
+👤 ${booking.name}
+📞 ${booking.phone}  
+📧 ${booking.email || 'Sin email'}
+${booking.message ? `💬 ${booking.message}` : ''}
 
-🆔 ID: ${booking.bookingId}`,
+🆔 ${booking.bookingId}`,
     location: 'San Pedro de Atacama, Chile',
     start: {
       dateTime: eventDate.toISOString(),
@@ -258,4 +266,36 @@ function getMoonPhaseInfo(date) {
 • Visibilidad: ${visibility}`;
 }
 
-export { createCalendarEvent, getMoonPhaseInfo };
+// Function to get total passengers for a specific date
+async function getTotalPassengersForDay(date) {
+  try {
+    // Import Supabase client
+    const { createClient } = await import('@supabase/supabase-js');
+    
+    const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY;
+    const supabase = createClient(process.env.SUPABASE_URL, supabaseKey);
+    
+    // Query all bookings for the specific date
+    const { data, error } = await supabase
+      .from('bookings')
+      .select('persons')
+      .eq('date', date)
+      .neq('status', 'cancelled'); // Exclude cancelled bookings
+    
+    if (error) {
+      console.error('Error getting day total:', error);
+      return null;
+    }
+    
+    // Sum up all passengers for the day
+    const total = data.reduce((sum, booking) => sum + (booking.persons || 0), 0);
+    console.log(`Total passengers for ${date}:`, total, '(from', data.length, 'bookings)');
+    
+    return total;
+  } catch (error) {
+    console.error('Error in getTotalPassengersForDay:', error);
+    return null;
+  }
+}
+
+export { createCalendarEvent, getMoonPhaseInfo, getTotalPassengersForDay };
