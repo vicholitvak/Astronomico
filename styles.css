@@ -297,16 +297,35 @@ p {
     left: 0;
     right: 0;
     bottom: 0;
+    background: none;
+}
+
+.hero-background::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: linear-gradient(135deg, 
                 rgba(10, 10, 10, 0.9) 0%, 
                 rgba(26, 26, 46, 0.85) 35%, 
                 rgba(22, 33, 62, 0.8) 65%,
-                rgba(0, 212, 255, 0.2) 100%),
-                url('images/hero1.webp'), 
-                url('images/hero1.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+                rgba(0, 212, 255, 0.2) 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.hero-bg-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
 }
 
 .hero-content {
@@ -501,6 +520,12 @@ section {
     font-size: clamp(1rem, 2.5vw, 1.2rem);
     color: var(--text-secondary);
     margin-bottom: 0;
+}
+
+/* Boost first paint by skipping rendering of below-the-fold until scrolled */
+.tours, .telescope, .about, .booking, .contact, .footer {
+    content-visibility: auto;
+    contain-intrinsic-size: 1000px;
 }
 
 /* ===== ABOUT SECTION ===== */

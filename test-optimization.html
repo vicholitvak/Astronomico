@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Optimization Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #0a0a0a; color: white; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #333; border-radius: 8px; }
+        .image-comparison { display: flex; gap: 20px; flex-wrap: wrap; }
+        .image-test { text-align: center; max-width: 400px; }
+        .image-test img { max-width: 100%; height: auto; border-radius: 8px; }
+        .size-info { font-size: 14px; color: #00D4FF; margin-top: 10px; }
+        .hero-test { 
+            height: 300px; 
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('images/hero1.webp'), url('images/hero1.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🖼️ Image Optimization Test Results</h1>
+    
+    <div class="test-section">
+        <h2>✅ WebP Support Test</h2>
+        <div class="image-comparison">
+            <div class="image-test">
+                <h3>Tour Regular (WebP + JPEG fallback)</h3>
+                <picture>
+                    <source srcset="images/regular3-2.webp" type="image/webp">
+                    <img src="images/regular3-2.jpg" alt="Tour regular optimized" loading="lazy">
+                </picture>
+                <div class="size-info">WebP: ~275KB | JPEG: ~506KB</div>
+            </div>
+            
+            <div class="image-test">
+                <h3>Fotografico Tour (WebP + JPEG fallback)</h3>
+                <picture>
+                    <source srcset="images/fotografico.webp" type="image/webp">
+                    <img src="images/fotografico.jpg" alt="Fotografico tour optimized" loading="lazy">
+                </picture>
+                <div class="size-info">WebP: ~289KB | JPEG: ~470KB</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🌌 Hero Background Test (CSS)</h2>
+        <div class="hero-test">
+            WebP Hero Background (1.5MB WebP vs 4.2MB original)
+        </div>
+        <div class="size-info">CSS uses WebP with JPEG fallback: url('images/hero1.webp'), url('images/hero1.jpg')</div>
+    </div>
+
+    <div class="test-section">
+        <h2>👤 Profile Image Test</h2>
+        <div class="image-test">
+            <h3>Profile (WebP + JPEG fallback)</h3>
+            <picture>
+                <source srcset="images/me2.webp" type="image/webp">
+                <img src="images/me2.jpg" alt="Profile optimized" loading="lazy">
+            </picture>
+            <div class="size-info">WebP: 67KB | JPEG: 108KB (vs 361KB original)</div>
+        </div>
+    </div>
+
+    <script>
+        // Test if browser supports WebP
+        function supportsWebP() {
+            return new Promise((resolve) => {
+                const webP = new Image();
+                webP.onload = webP.onerror = () => resolve(webP.height === 2);
+                webP.src = 'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
+            });
+        }
+
+        supportsWebP().then(supported => {
+            document.body.insertAdjacentHTML('afterbegin', 
+                `<div class="test-section">
+                    <h2>${supported ? '✅' : '❌'} Browser WebP Support</h2>
+                    <p>This browser ${supported ? 'SUPPORTS' : 'DOES NOT support'} WebP format.</p>
+                    <p>${supported ? 'You will see the optimized WebP images.' : 'You will see the JPEG fallback images.'}</p>
+                </div>`
+            );
+        });
+
+        // Log image load events
+        document.querySelectorAll('img').forEach(img => {
+            img.onload = () => console.log(`✅ Loaded: ${img.src}`);
+            img.onerror = () => console.log(`❌ Failed: ${img.src}`);
+        });
+    </script>
+</body>
+</html>

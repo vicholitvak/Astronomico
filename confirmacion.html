@@ -230,32 +230,15 @@
             
             // Display and format tour date
             if (tourDate) {
-                console.log('Tour date received:', tourDate);
-                
-                // Try to parse the date
-                let dateObj;
-                if (tourDate.includes('T')) {
-                    // Already has time component
-                    dateObj = new Date(tourDate);
-                } else {
-                    // Add time component to avoid timezone issues
-                    dateObj = new Date(tourDate + 'T12:00:00');
-                }
-                
-                // Check if date is valid
-                if (!isNaN(dateObj.getTime())) {
-                    const options = { 
-                        weekday: 'long', 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                    };
-                    const formattedDate = dateObj.toLocaleDateString('es-CL', options);
-                    document.getElementById('tourDateDisplay').textContent = formattedDate;
-                } else {
-                    console.error('Invalid date format:', tourDate);
-                    document.getElementById('tourDateDisplay').textContent = tourDate; // Show raw date
-                }
+                const dateObj = new Date(tourDate + 'T00:00:00');
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                };
+                const formattedDate = dateObj.toLocaleDateString('es-CL', options);
+                document.getElementById('tourDateDisplay').textContent = formattedDate;
             } else {
                 document.getElementById('bookingDate').style.display = 'none';
             }

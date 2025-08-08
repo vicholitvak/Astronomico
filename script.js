@@ -76,30 +76,18 @@ function initNavigation() {
         });
     });
 
-    // Header scroll effect - optimized to prevent forced reflow
+    // Header scroll effect without layout reads
     let lastScrollY = 0;
     let ticking = false;
-    
+
     function updateHeader() {
         const currentScrollY = window.scrollY;
-        
-        if (currentScrollY > 100) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-
-        // Hide/show header on scroll
-        if (currentScrollY > lastScrollY && currentScrollY > 200) {
-            header.style.transform = 'translateY(-100%)';
-        } else {
-            header.style.transform = 'translateY(0)';
-        }
-        
+        header.classList.toggle('scrolled', currentScrollY > 100);
+        header.style.transform = (currentScrollY > lastScrollY && currentScrollY > 200) ? 'translateY(-100%)' : 'translateY(0)';
         lastScrollY = currentScrollY;
         ticking = false;
     }
-    
+
     window.addEventListener('scroll', function() {
         if (!ticking) {
             requestAnimationFrame(updateHeader);
@@ -107,33 +95,23 @@ function initNavigation() {
         }
     });
 
-    // Highlight active nav item based on scroll position - optimized
+    // Highlight active nav via IntersectionObserver (no forced layout)
     const sections = document.querySelectorAll('section[id]');
-    let navTicking = false;
-    
-    function updateActiveNav() {
-        const scrollPosition = window.scrollY + 200;
-
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.offsetHeight;
-            const sectionId = section.getAttribute('id');
-            const navLink = document.querySelector(`a[href="#${sectionId}"]`);
-
-            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                navLinks.forEach(link => link.classList.remove('active'));
-                if (navLink) navLink.classList.add('active');
+    const navLinkMap = new Map(
+        [...sections].map(s => [s.id, document.querySelector(`a[href="#${s.id}"]`)])
+    );
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const id = entry.target.id;
+            const link = navLinkMap.get(id);
+            if (!link) return;
+            if (entry.isIntersecting) {
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
             }
         });
-        navTicking = false;
-    }
-    
-    window.addEventListener('scroll', function() {
-        if (!navTicking) {
-            requestAnimationFrame(updateActiveNav);
-            navTicking = true;
-        }
-    });
+    }, { rootMargin: '-50% 0px -50% 0px', threshold: 0 });
+    sections.forEach(s => observer.observe(s));
 }
 
 // ===== LANGUAGE TOGGLE =====
@@ -1026,17 +1004,7 @@ function initScrollEffects() {
         observer.observe(el);
     });
 
-    // Parallax effect for hero background (disable on mobile for performance)
-    if (window.innerWidth > 768) {
-        window.addEventListener('scroll', function() {
-            const scrolled = window.scrollY;
-            const heroBackground = document.querySelector('.hero-background');
-            if (heroBackground) {
-                const speed = scrolled * 0.5;
-                heroBackground.style.transform = `translateY(${speed}px)`;
-            }
-        });
-    }
+    // Removed parallax effect to avoid reflow/paint work on scroll
 }
 
 // ===== FULLCALENDAR WITH MOON PHASES =====
