@@ -147,10 +147,12 @@ function createCalendarEvent(booking, dayTotal = null) {
     startTime = '21:00'; // Default for flexible times
   }
   
-  // Create the date with the exact time
+  // Create the date with the exact time in Santiago timezone
   const [hours, minutes] = startTime.split(':');
-  // Month is 0-indexed in JavaScript Date
-  const eventDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hours), parseInt(minutes), 0);
+  
+  // Create date string in Santiago time format for Google Calendar
+  const dateStr = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:00`;
+  const eventDate = new Date(dateStr);
   
   console.log('Event timing details:');
   console.log('- Original date:', booking.date);
