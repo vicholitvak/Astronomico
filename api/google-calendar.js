@@ -109,13 +109,13 @@ export async function addToGoogleCalendar(booking) {
 
 function createCalendarEvent(booking) {
   const tourTypes = {
-    'regular': 'Tour Astronómico Regular',
-    'private': 'Tour Privado VIP', 
-    'astrophoto': 'Tour Astrofotografía'
+    'regular': 'Regular',
+    'private': 'Privado', 
+    'astrophoto': 'Astrofoto'
   };
   
-  // Parse date and handle time
-  const eventDate = new Date(booking.date + 'T00:00:00');
+  // Parse date and set the actual tour time
+  const eventDate = new Date(booking.date);
   
   // Handle flexible time for private tours
   let startTime = booking.time;
@@ -123,7 +123,7 @@ function createCalendarEvent(booking) {
     startTime = '21:00'; // Default for flexible times
   }
   
-  // Set the time
+  // Set the actual tour time (important: use local time for Chile)
   const [hours, minutes] = startTime.split(':');
   eventDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
   
@@ -144,41 +144,22 @@ function createCalendarEvent(booking) {
   // Get moon phase for the date
   const moonInfo = getMoonPhaseInfo(eventDate);
   
+  // Create concise title with total pax count (will aggregate visually in calendar)
+  const paxCount = parseInt(booking.persons);
+  const paxEmoji = paxCount > 1 ? '👥' : '👤';
+  
   return {
-    summary: `🌟 ${tourType} - ${booking.persons} pax - ${booking.name}`,
-    description: `━━━━━━━━━━━━━━━━━━━━━━
-🎯 TOUR ASTRONÓMICO ATACAMA
-━━━━━━━━━━━━━━━━━━━━━━
+    summary: `${paxEmoji} ${paxCount} | ${tourType} | ${booking.name}`,
+    description: `🎯 TIPO: ${tourType}
+👥 PAX: ${booking.persons}
 
-📊 DETALLES DE LA RESERVA:
-• Tipo: ${tourType}
-• Pasajeros: ${booking.persons} personas
-• Hora: ${booking.time}
-• Duración: ${tourDuration} horas
+📱 CLIENTE:
+${booking.name}
+${booking.phone}
+${booking.email || 'Sin email'}
+${booking.message ? `\n💬 Nota: ${booking.message}` : ''}
 
-👤 INFORMACIÓN DEL CLIENTE:
-• Nombre: ${booking.name}
-• Email: ${booking.email || 'No especificado'}
-• Teléfono: ${booking.phone}
-• Mensaje: ${booking.message || 'Sin comentarios adicionales'}
-
-🌙 CONDICIONES ASTRONÓMICAS:
-${moonInfo}
-
-📍 PUNTO DE ENCUENTRO:
-• Recogida en hotel de San Pedro de Atacama
-• Confirmación 24h antes vía WhatsApp
-
-💰 ESTADO DE PAGO:
-• Pendiente de confirmación
-• 50% anticipo requerido
-
-🔗 LINKS IMPORTANTES:
-• Web: https://atacamadarksky.cl
-• WhatsApp: https://wa.me/56950558761
-
-🆔 ID RESERVA: ${booking.bookingId}
-━━━━━━━━━━━━━━━━━━━━━━`,
+🆔 ID: ${booking.bookingId}`,
     location: 'San Pedro de Atacama, Chile',
     start: {
       dateTime: eventDate.toISOString(),
@@ -203,11 +184,11 @@ ${moonInfo}
 }
 
 function getEventColor(tourType) {
-  // Google Calendar color IDs
+  // Google Calendar color IDs for easy visual identification
   const colors = {
-    'regular': '9',     // Blue
-    'private': '5',     // Yellow/Gold
-    'astrophoto': '10'  // Green
+    'regular': '9',     // Blue - Regular tours
+    'private': '11',    // Red - Private tours (important)
+    'astrophoto': '10'  // Green - Astrophoto tours
   };
   return colors[tourType] || '9';
 }
