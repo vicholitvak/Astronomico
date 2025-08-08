@@ -105,7 +105,7 @@ function initNavigation() {
             requestAnimationFrame(updateHeader);
             ticking = true;
         }
-    });
+    }, { passive: true });
 
     // Highlight active nav item based on scroll position - optimized
     const sections = document.querySelectorAll('section[id]');
@@ -133,7 +133,7 @@ function initNavigation() {
             requestAnimationFrame(updateActiveNav);
             navTicking = true;
         }
-    });
+    }, { passive: true });
 }
 
 // ===== LANGUAGE TOGGLE =====
@@ -625,12 +625,12 @@ function initTestimonialSlider() {
     if (testimonialsSection) {
         testimonialsSection.addEventListener('touchstart', function(e) {
             startX = e.touches[0].clientX;
-        });
+        }, { passive: true });
 
         testimonialsSection.addEventListener('touchend', function(e) {
             endX = e.changedTouches[0].clientX;
             handleSwipe();
-        });
+        }, { passive: true });
     }
 
     function handleSwipe() {
@@ -999,7 +999,7 @@ function initSmoothScrolling() {
                 backToTop.style.opacity = '0';
                 backToTop.style.visibility = 'hidden';
             }
-        });
+        }, { passive: true });
     }
 }
 
@@ -1035,7 +1035,7 @@ function initScrollEffects() {
                 const speed = scrolled * 0.5;
                 heroBackground.style.transform = `translateY(${speed}px)`;
             }
-        });
+        }, { passive: true });
     }
 }
 
