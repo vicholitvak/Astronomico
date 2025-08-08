@@ -58,11 +58,11 @@
     .fa:before,.fas:before,.fab:before{content:attr(data-icon,"□");display:inline-block;width:1em;text-align:center}
     
     /* CLS Prevention - Stable dimensions for hero content */
-    .hero-content{min-height:60vh;display:flex;align-items:center;justify-content:center}
-    .hero-title{line-height:1.3!important;margin-bottom:2rem!important}
-    .title-line{display:block!important;height:1.3em;overflow:hidden}
-    .hero-subtitle{height:1.5em;line-height:1.5!important;margin-bottom:2rem!important}
-    .hero-buttons{height:3.5rem;display:flex!important;gap:1rem!important}
+    .hero-content{min-height:60vh!important;height:100vh!important;display:flex!important;align-items:center!important;justify-content:center!important;position:relative!important;z-index:2!important}
+    .hero-title{line-height:1.3!important;margin-bottom:2rem!important;height:auto!important;min-height:8rem!important}
+    .title-line{display:block!important;height:1.3em!important;overflow:hidden!important;min-height:1.3em!important}
+    .hero-subtitle{height:1.5em!important;line-height:1.5!important;margin-bottom:2rem!important;min-height:1.5em!important;overflow:hidden!important}
+    .hero-buttons{height:3.5rem!important;display:flex!important;gap:1rem!important;min-height:3.5rem!important;align-items:center!important;justify-content:center!important}
     
     /* Font loading stability with metric overrides */
     @font-face{font-family:'Roboto Fallback';src:local('Arial');size-adjust:107%;ascent-override:95%;descent-override:25%;line-gap-override:0%}
@@ -92,8 +92,8 @@
     </style>
     
     <!-- Load full CSS after initial render -->
-    <link rel="preload" href="styles.css?v=4.1" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="styles.css?v=4.1"></noscript>
+    <link rel="preload" href="styles.css?v=4.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="styles.css?v=4.2"></noscript>
 </head>
 <body>
     <!-- Header Navigation -->
@@ -336,7 +336,15 @@
                 <!-- Tour 4: Educational Study Tours -->
                 <div class="tour-card">
                     <div class="tour-image">
-                        <img src="images/_DSC1725.jpg?v=3.1" alt="Viajes de estudio educativos con telescopio" loading="lazy">
+                        <picture>
+                            <source srcset="images/responsive/_DSC1725-1x.webp 1x, images/responsive/_DSC1725-2x.webp 2x" type="image/webp">
+                            <img src="images/responsive/_DSC1725-1x.jpg" 
+                                 srcset="images/responsive/_DSC1725-1x.jpg 1x, images/responsive/_DSC1725-2x.jpg 2x"
+                                 alt="Viajes de estudio educativos con telescopio" 
+                                 loading="lazy" 
+                                 width="380" 
+                                 height="294">
+                        </picture>
                     </div>
                     <div class="tour-content">
                         <h3>Viajes de Estudio</h3>
@@ -373,7 +381,15 @@
                 <div class="tour-card featured">
                     <div class="featured-badge">Empresas</div>
                     <div class="tour-image">
-                        <img src="images/ejecutivo.jpg" alt="Eventos corporativos bajo las estrellas" loading="lazy">
+                        <picture>
+                            <source srcset="images/responsive/ejecutivo-1x.webp 1x, images/responsive/ejecutivo-2x.webp 2x" type="image/webp">
+                            <img src="images/responsive/ejecutivo-1x.jpg" 
+                                 srcset="images/responsive/ejecutivo-1x.jpg 1x, images/responsive/ejecutivo-2x.jpg 2x"
+                                 alt="Eventos corporativos bajo las estrellas" 
+                                 loading="lazy" 
+                                 width="380" 
+                                 height="380">
+                        </picture>
                     </div>
                     <div class="tour-content">
                         <h3>Eventos Corporativos</h3>
@@ -844,7 +860,15 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <div class="footer-logo">
-                        <img src="images/Nightskylogo.jpg" alt="Atacama NightSky Logo" class="footer-logo-img">
+                        <picture>
+                            <source srcset="images/responsive/Nightskylogo-1x.webp 1x, images/responsive/Nightskylogo-2x.webp 2x" type="image/webp">
+                            <img src="images/responsive/Nightskylogo-1x.jpg" 
+                                 srcset="images/responsive/Nightskylogo-1x.jpg 1x, images/responsive/Nightskylogo-2x.jpg 2x"
+                                 alt="Atacama NightSky Logo" 
+                                 class="footer-logo-img" 
+                                 width="40" 
+                                 height="40">
+                        </picture>
                     </div>
                     <p>Descubre el universo en el cielo más claro del mundo. Experiencias astronómicas inolvidables en San Pedro de Atacama.</p>
                     <div class="footer-social">
@@ -910,7 +934,7 @@
     <script src="https://apis.google.com/js/api.js" defer></script>
     
     <!-- JavaScript -->
-    <script src="script.js?v=4.0"></script>
+    <script src="script.js?v=4.1"></script>
 
     <!-- Calendario personalizado con fases lunares -->
     <script>
@@ -2622,24 +2646,14 @@ ${msg.contact}`);
         // Prevent layout shifts during initial load
         document.documentElement.style.setProperty('--hero-loaded', '1');
         
-        // Force layout recalculation after critical CSS loads
+        // Force layout recalculation after critical CSS loads - NO DOM MODIFICATIONS
         document.addEventListener('DOMContentLoaded', function() {
+            // Only make body visible, don't modify hero or nav dimensions
+            // CSS already handles all sizing to prevent CLS
             document.body.style.visibility = 'visible';
             
-            // Ensure hero content is stable
-            const heroContent = document.querySelector('.hero-content');
-            if (heroContent) {
-                heroContent.style.minHeight = '60vh';
-                heroContent.style.display = 'flex';
-                heroContent.style.alignItems = 'center';
-                heroContent.style.justifyContent = 'center';
-            }
-            
-            // Lock navigation dimensions
-            const navbar = document.querySelector('.navbar');
-            if (navbar) {
-                navbar.style.height = '60px';
-            }
+            // Mark as loaded for any scripts that need to know
+            document.documentElement.setAttribute('data-cls-optimized', 'true');
         });
         
         // Preload key images for faster loading

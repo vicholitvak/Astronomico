@@ -76,9 +76,11 @@ function initNavigation() {
         });
     });
 
-    // Header scroll effect
-    let lastScrollY = window.scrollY;
-    window.addEventListener('scroll', function() {
+    // Header scroll effect - optimized to prevent forced reflow
+    let lastScrollY = 0;
+    let ticking = false;
+    
+    function updateHeader() {
         const currentScrollY = window.scrollY;
         
         if (currentScrollY > 100) {
@@ -95,11 +97,21 @@ function initNavigation() {
         }
         
         lastScrollY = currentScrollY;
+        ticking = false;
+    }
+    
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            requestAnimationFrame(updateHeader);
+            ticking = true;
+        }
     });
 
-    // Highlight active nav item based on scroll position
+    // Highlight active nav item based on scroll position - optimized
     const sections = document.querySelectorAll('section[id]');
-    window.addEventListener('scroll', function() {
+    let navTicking = false;
+    
+    function updateActiveNav() {
         const scrollPosition = window.scrollY + 200;
 
         sections.forEach(section => {
@@ -113,6 +125,14 @@ function initNavigation() {
                 if (navLink) navLink.classList.add('active');
             }
         });
+        navTicking = false;
+    }
+    
+    window.addEventListener('scroll', function() {
+        if (!navTicking) {
+            requestAnimationFrame(updateActiveNav);
+            navTicking = true;
+        }
     });
 }
 
@@ -1399,7 +1419,12 @@ function initAnimations() {
     `;
     document.head.appendChild(style);
 
-    // Typing effect for hero title (optional enhancement)
+    // Typing effect DISABLED to prevent CLS - text loads immediately
+    // Hero title is now stable to prevent layout shifts
+    // Original typing effect caused 0.499 CLS score
+    
+    /*
+    // Typing effect for hero title (DISABLED for CLS prevention)
     const heroTitle = document.querySelector('.hero-title');
     if (heroTitle && window.innerWidth > 768) {
         const originalText = heroTitle.textContent;
@@ -1423,6 +1448,7 @@ function initAnimations() {
         // Start typing effect after page load
         setTimeout(typeWriter, 1000);
     }
+    */
 }
 
 // ===== UTILITY FUNCTIONS =====
