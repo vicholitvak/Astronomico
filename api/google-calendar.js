@@ -23,6 +23,17 @@ export async function addToGoogleCalendar(booking) {
       credentials = JSON.parse(googleServiceAccountKey);
       console.log('Service account email:', credentials.client_email);
       console.log('Private key exists:', !!credentials.private_key);
+      
+      // Fix potential formatting issues with private key
+      if (credentials.private_key) {
+        // Remove any extra spaces that might have been added
+        credentials.private_key = credentials.private_key
+          .replace(/-----BEGIN PRIVATE KEY----- /g, '-----BEGIN PRIVATE KEY-----')
+          .replace(/ -----END PRIVATE KEY-----/g, '-----END PRIVATE KEY-----')
+          .replace(/\\n/g, '\n'); // Ensure newlines are properly formatted
+        
+        console.log('Private key formatted correctly');
+      }
     } catch (parseError) {
       console.error('Failed to parse service account key:', parseError.message);
       throw new Error('Invalid service account key format');
