@@ -161,7 +161,18 @@ export default async function handler(req, res) {
 // WhatsApp Business API notification
 async function sendWhatsAppNotification(booking) {
   const whatsappToken = process.env.WHATSAPP_TOKEN;
-  const yourPhoneNumber = process.env.YOUR_PHONE_NUMBER; // +56950558761
+  const whatsappPhoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+  const yourPhoneNumber = process.env.YOUR_PHONE_NUMBER; // +56935134669
+  
+  console.log('WhatsApp configuration check:');
+  console.log('- Has token:', !!whatsappToken);
+  console.log('- Has phone number ID:', !!whatsappPhoneNumberId);
+  console.log('- Your phone number:', yourPhoneNumber);
+  
+  if (!whatsappToken || !whatsappPhoneNumberId || !yourPhoneNumber) {
+    console.log('❌ WhatsApp credentials not configured. Check INSTRUCCIONES_WHATSAPP_COMPLETAR.md');
+    return;
+  }
   
   const message = `🌟 *NUEVA RESERVA - Atacama NightSky* 🌟
 
@@ -177,7 +188,8 @@ async function sendWhatsAppNotification(booking) {
 ¡Confirma disponibilidad y contacta al cliente!`;
 
   try {
-    const response = await fetch(`https://graph.facebook.com/v17.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`, {
+    console.log('Sending WhatsApp message to:', yourPhoneNumber);
+    const response = await fetch(`https://graph.facebook.com/v18.0/${whatsappPhoneNumberId}/messages`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${whatsappToken}`,
@@ -193,7 +205,23 @@ async function sendWhatsAppNotification(booking) {
       })
     });
 
-    return await response.json();
+    if (response.ok) {
+      const result = await response.json();
+      console.log('✅ WhatsApp message sent successfully:', result);
+      return result;
+    } else {
+      const error = await response.text();
+      console.log('❌ WhatsApp API error:', error);
+      
+      // Parse common errors
+      if (error.includes('24 hours')) {
+        console.log('💡 Solution: Send "Hola" to your WhatsApp Business number to restart 24h window');
+      } else if (error.includes('phone_number')) {
+        console.log('💡 Solution: Check that YOUR_PHONE_NUMBER is correct: +56935134669');
+      }
+      
+      throw new Error(`WhatsApp API error: ${error}`);
+    }
   } catch (error) {
     console.error('WhatsApp error:', error);
   }
