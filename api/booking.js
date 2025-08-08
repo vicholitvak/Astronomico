@@ -89,21 +89,23 @@ export default async function handler(req, res) {
     
     console.log('Database save successful:', booking);
 
-    // Send WhatsApp notification to you (non-blocking)
+    // Send email notification to admin (non-blocking)
     try {
-      console.log('Sending WhatsApp notification...');
-      await sendWhatsAppNotification({
+      console.log('Sending admin notification email...');
+      await sendAdminNotificationEmail({
         bookingId,
         date,
         persons,
         tourType,
         time: assignedTime,
         name,
-        phone
+        email,
+        phone,
+        message
       });
-      console.log('WhatsApp notification sent successfully');
+      console.log('Admin notification sent successfully');
     } catch (error) {
-      console.error('WhatsApp notification failed:', error);
+      console.error('Admin notification failed:', error);
       // Continue processing - don't fail the entire booking
     }
 
@@ -158,72 +160,136 @@ export default async function handler(req, res) {
   }
 }
 
-// WhatsApp Business API notification
-async function sendWhatsAppNotification(booking) {
-  const whatsappToken = process.env.WHATSAPP_TOKEN;
-  const whatsappPhoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
-  const yourPhoneNumber = process.env.YOUR_PHONE_NUMBER; // +56935134669
+// Email notification to admin
+async function sendAdminNotificationEmail(booking) {
+  const resendApiKey = process.env.RESEND_API_KEY;
+  const adminEmail = process.env.ADMIN_EMAIL || 'vicente.litvak@gmail.com'; // Tu email
   
-  console.log('WhatsApp configuration check:');
-  console.log('- Has token:', !!whatsappToken);
-  console.log('- Has phone number ID:', !!whatsappPhoneNumberId);
-  console.log('- Your phone number:', yourPhoneNumber);
-  
-  if (!whatsappToken || !whatsappPhoneNumberId || !yourPhoneNumber) {
-    console.log('❌ WhatsApp credentials not configured. Check INSTRUCCIONES_WHATSAPP_COMPLETAR.md');
+  if (!resendApiKey) {
+    console.log('❌ Resend API key not configured');
     return;
   }
   
-  const message = `🌟 *NUEVA RESERVA - Atacama NightSky* 🌟
-
-📅 *Fecha:* ${booking.date}
-⏰ *Horario:* ${booking.time}
-👥 *Personas:* ${booking.persons}
-🎯 *Tour:* ${booking.tourType}
-👤 *Cliente:* ${booking.name}
-📱 *Teléfono:* ${booking.phone}
-
-🆔 *ID Reserva:* ${booking.bookingId}
-
-¡Confirma disponibilidad y contacta al cliente!`;
+  // Format date in Spanish
+  const dateObj = new Date(booking.date);
+  const formattedDate = dateObj.toLocaleDateString('es-CL', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  
+  const tourTypes = {
+    'regular': 'Tour Astronómico Regular',
+    'private': 'Tour Privado Exclusivo',
+    'astrophoto': 'Tour Astrofotográfico Especializado'
+  };
+  
+  const emailHtml = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 28px;">🌟 Nueva Reserva Recibida</h1>
+        <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">Atacama NightSky Tours</p>
+      </div>
+      
+      <div style="background: #f7f7f7; padding: 30px; border-radius: 0 0 10px 10px;">
+        <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <h2 style="color: #333; border-bottom: 2px solid #667eea; padding-bottom: 10px;">📋 Detalles de la Reserva</h2>
+          
+          <table style="width: 100%; margin: 20px 0;">
+            <tr>
+              <td style="padding: 8px 0; color: #666;"><strong>ID Reserva:</strong></td>
+              <td style="padding: 8px 0; color: #333; font-family: monospace; font-size: 14px;">${booking.bookingId}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #666;"><strong>Fecha:</strong></td>
+              <td style="padding: 8px 0; color: #333;">${formattedDate}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #666;"><strong>Horario:</strong></td>
+              <td style="padding: 8px 0; color: #333;">${booking.time}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #666;"><strong>Tipo de Tour:</strong></td>
+              <td style="padding: 8px 0; color: #333;">${tourTypes[booking.tourType] || booking.tourType}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #666;"><strong>Personas:</strong></td>
+              <td style="padding: 8px 0; color: #333;">${booking.persons} ${booking.persons == 1 ? 'persona' : 'personas'}</td>
+            </tr>
+          </table>
+          
+          <h3 style="color: #333; border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-top: 30px;">👤 Información del Cliente</h3>
+          
+          <table style="width: 100%; margin: 20px 0;">
+            <tr>
+              <td style="padding: 8px 0; color: #666;"><strong>Nombre:</strong></td>
+              <td style="padding: 8px 0; color: #333;">${booking.name}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #666;"><strong>Email:</strong></td>
+              <td style="padding: 8px 0;"><a href="mailto:${booking.email}" style="color: #667eea;">${booking.email}</a></td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #666;"><strong>Teléfono:</strong></td>
+              <td style="padding: 8px 0;"><a href="tel:${booking.phone}" style="color: #667eea;">${booking.phone}</a></td>
+            </tr>
+            ${booking.message ? `
+            <tr>
+              <td style="padding: 8px 0; color: #666; vertical-align: top;"><strong>Mensaje:</strong></td>
+              <td style="padding: 8px 0; color: #333;">${booking.message}</td>
+            </tr>
+            ` : ''}
+          </table>
+          
+          <div style="background: #667eea; color: white; padding: 20px; border-radius: 8px; margin-top: 30px;">
+            <h4 style="margin: 0 0 10px 0;">⚡ Acciones Requeridas:</h4>
+            <ol style="margin: 10px 0; padding-left: 20px;">
+              <li>Verificar disponibilidad en el calendario</li>
+              <li>Contactar al cliente dentro de 24 horas</li>
+              <li>Confirmar detalles del tour y punto de encuentro</li>
+              <li>Solicitar anticipo del 50% si corresponde</li>
+            </ol>
+          </div>
+          
+          <div style="margin-top: 30px; padding: 20px; background: #f0f0f0; border-radius: 8px;">
+            <p style="margin: 0; color: #666; font-size: 14px;">
+              <strong>Nota:</strong> El cliente también recibió un email de confirmación automático.
+              ${booking.tourType === 'private' ? 'Este es un tour privado - coordinar horario flexible con el cliente.' : ''}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 
   try {
-    console.log('Sending WhatsApp message to:', yourPhoneNumber);
-    const response = await fetch(`https://graph.facebook.com/v18.0/${whatsappPhoneNumberId}/messages`, {
+    const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${whatsappToken}`,
+        'Authorization': `Bearer ${resendApiKey}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        messaging_product: 'whatsapp',
-        to: yourPhoneNumber,
-        type: 'text',
-        text: {
-          body: message
-        }
+        from: 'Atacama NightSky <onboarding@resend.dev>',
+        to: [adminEmail],
+        subject: `🌟 Nueva Reserva: ${booking.name} - ${formattedDate}`,
+        html: emailHtml,
+        reply_to: booking.email // Para que puedas responder directamente al cliente
       })
     });
 
     if (response.ok) {
       const result = await response.json();
-      console.log('✅ WhatsApp message sent successfully:', result);
+      console.log('✅ Admin notification email sent:', result);
       return result;
     } else {
       const error = await response.text();
-      console.log('❌ WhatsApp API error:', error);
-      
-      // Parse common errors
-      if (error.includes('24 hours')) {
-        console.log('💡 Solution: Send "Hola" to your WhatsApp Business number to restart 24h window');
-      } else if (error.includes('phone_number')) {
-        console.log('💡 Solution: Check that YOUR_PHONE_NUMBER is correct: +56935134669');
-      }
-      
-      throw new Error(`WhatsApp API error: ${error}`);
+      console.log('❌ Email sending error:', error);
+      throw new Error(`Email error: ${error}`);
     }
   } catch (error) {
-    console.error('WhatsApp error:', error);
+    console.error('Admin email error:', error);
   }
 }
 
