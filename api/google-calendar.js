@@ -39,14 +39,12 @@ export async function addToGoogleCalendar(booking) {
       throw new Error('Invalid service account key format');
     }
     
-    // Create JWT client
-    const auth = new google.auth.JWT(
-      credentials.client_email,
-      null,
-      credentials.private_key,
-      ['https://www.googleapis.com/auth/calendar'],
-      null
-    );
+    // Create JWT client with cleaned private key
+    const auth = new google.auth.JWT({
+      email: credentials.client_email,
+      key: credentials.private_key,
+      scopes: ['https://www.googleapis.com/auth/calendar']
+    });
     
     // Authorize the client
     await auth.authorize();
