@@ -6,7 +6,8 @@
     "dev": "vercel dev",
     "build": "echo 'Static site - no build needed'",
     "start": "echo 'Static site'",
-    "optimize-images": "node optimize-in-place.js"
+    "optimize-images": "node optimize-in-place.js",
+    "create-responsive": "node create-responsive-images.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.0",
