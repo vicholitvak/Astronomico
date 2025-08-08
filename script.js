@@ -46,12 +46,34 @@ document.addEventListener('DOMContentLoaded', function() {
     initQuickBooking();
     initAnimations();
     initTypewriter();
-    
-    // Initialize telescope gallery with a slight delay to ensure DOM is ready
-    setTimeout(() => {
-        initTelescopeGallery();
-    }, 100);
+    lowerPriorityForLazyImages();
+
+    // Defer telescope gallery initialization until section is near viewport
+    const telescopeSection = document.querySelector('#telescopio');
+    if (telescopeSection && 'IntersectionObserver' in window) {
+        const telObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    initTelescopeGallery();
+                    obs.disconnect();
+                }
+            });
+        }, { rootMargin: '200px 0px' });
+        telObserver.observe(telescopeSection);
+    } else {
+        // Fallback
+        setTimeout(() => initTelescopeGallery(), 300);
+    }
 });
+
+// Lower network/decoding priority for non-critical images
+function lowerPriorityForLazyImages() {
+    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+    lazyImages.forEach(img => {
+        if (!img.getAttribute('decoding')) img.setAttribute('decoding', 'async');
+        if (!img.getAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'low');
+    });
+}
 
 // ===== NAVIGATION FUNCTIONALITY =====
 function initNavigation() {
@@ -947,21 +969,16 @@ function initBookingForm() {
 
 // ===== SMOOTH SCROLLING =====
 function initSmoothScrolling() {
-    // Handle anchor links
+    // Handle anchor links without layout reads
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (!href || href === '#') return;
             e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
+            const targetId = href.substring(1);
             const targetElement = document.getElementById(targetId);
-            
             if (targetElement) {
-                const headerHeight = document.querySelector('.header').offsetHeight;
-                const targetPosition = targetElement.offsetTop - headerHeight - 20;
-                
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
     });
