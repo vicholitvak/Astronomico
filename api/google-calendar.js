@@ -115,7 +115,8 @@ function createCalendarEvent(booking) {
   };
   
   // Parse date and set the actual tour time
-  const eventDate = new Date(booking.date);
+  // Important: Create date in Santiago time zone to avoid UTC issues
+  const [year, month, day] = booking.date.split('-');
   
   // Handle flexible time for private tours
   let startTime = booking.time;
@@ -123,9 +124,17 @@ function createCalendarEvent(booking) {
     startTime = '21:00'; // Default for flexible times
   }
   
-  // Set the actual tour time (important: use local time for Chile)
+  // Create the date with the exact time
   const [hours, minutes] = startTime.split(':');
-  eventDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+  // Month is 0-indexed in JavaScript Date
+  const eventDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hours), parseInt(minutes), 0);
+  
+  console.log('Event timing details:');
+  console.log('- Original date:', booking.date);
+  console.log('- Original time:', booking.time);
+  console.log('- Parsed start time:', startTime);
+  console.log('- Event date object:', eventDate);
+  console.log('- Event date ISO:', eventDate.toISOString());
   
   // Calculate end time based on tour type
   const duration = {
