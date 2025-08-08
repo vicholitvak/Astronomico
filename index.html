@@ -2484,7 +2484,8 @@ ${msg.contact}`);
                         if (response.ok && result.success) {
                             console.log('Booking successful, redirecting to confirmation page');
                             // Redirect a página de confirmación con fecha
-                            const tourDate = document.getElementById('tourDate').value;
+                            const tourDateElement = document.getElementById('tourDate');
+                            const tourDate = tourDateElement ? tourDateElement.value : formData.date;
                             window.location.href = `confirmacion.html?id=${encodeURIComponent(result.bookingId)}&date=${encodeURIComponent(tourDate)}`;
                         } else {
                             console.error('API returned error:', result);
