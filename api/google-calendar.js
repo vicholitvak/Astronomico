@@ -20,22 +20,46 @@ export async function addToGoogleCalendar(booking) {
     // Parse service account credentials
     let credentials;
     try {
+      // First, try to parse as-is
       credentials = JSON.parse(googleServiceAccountKey);
       console.log('Service account email:', credentials.client_email);
       console.log('Private key exists:', !!credentials.private_key);
       
       // Fix potential formatting issues with private key
       if (credentials.private_key) {
-        // Remove any extra spaces that might have been added
-        credentials.private_key = credentials.private_key
-          .replace(/-----BEGIN PRIVATE KEY----- /g, '-----BEGIN PRIVATE KEY-----')
-          .replace(/ -----END PRIVATE KEY-----/g, '-----END PRIVATE KEY-----')
-          .replace(/\\n/g, '\n'); // Ensure newlines are properly formatted
+        // Fix various formatting issues that Vercel might introduce
+        let fixedKey = credentials.private_key;
         
-        console.log('Private key formatted correctly');
+        // Remove extra spaces around BEGIN/END markers
+        fixedKey = fixedKey
+          .replace(/-----BEGIN PRIVATE KEY-----\s+/g, '-----BEGIN PRIVATE KEY-----\n')
+          .replace(/\s+-----END PRIVATE KEY-----/g, '\n-----END PRIVATE KEY-----')
+          .replace(/-----BEGIN PRIVATE KEY----- /g, '-----BEGIN PRIVATE KEY-----\n')
+          .replace(/ -----END PRIVATE KEY-----/g, '\n-----END PRIVATE KEY-----');
+        
+        // Ensure proper line breaks (handle both literal \n and escaped \\n)
+        if (!fixedKey.includes('\n') && fixedKey.includes('\\n')) {
+          // If we have escaped newlines, convert them
+          fixedKey = fixedKey.replace(/\\n/g, '\n');
+        }
+        
+        // Ensure there's a newline after BEGIN and before END
+        if (!fixedKey.includes('-----BEGIN PRIVATE KEY-----\n')) {
+          fixedKey = fixedKey.replace('-----BEGIN PRIVATE KEY-----', '-----BEGIN PRIVATE KEY-----\n');
+        }
+        if (!fixedKey.includes('\n-----END PRIVATE KEY-----')) {
+          fixedKey = fixedKey.replace('-----END PRIVATE KEY-----', '\n-----END PRIVATE KEY-----');
+        }
+        
+        credentials.private_key = fixedKey;
+        console.log('Private key formatted and cleaned');
+        
+        // Log first 100 chars of the key for debugging (safe portion)
+        console.log('Key start:', credentials.private_key.substring(0, 100) + '...');
       }
     } catch (parseError) {
       console.error('Failed to parse service account key:', parseError.message);
+      console.error('Raw key length:', googleServiceAccountKey ? googleServiceAccountKey.length : 0);
       throw new Error('Invalid service account key format');
     }
     
