@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vercel dev",
     "build": "echo 'Static site - no build needed'",
-    "start": "echo 'Static site'"
+    "start": "echo 'Static site'",
+    "optimize-images": "node optimize-in-place.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.0",
@@ -16,5 +17,11 @@
   },
   "engines": {
     "node": "22.x"
+  },
+  "devDependencies": {
+    "imagemin": "^9.0.1",
+    "imagemin-mozjpeg": "^10.0.0",
+    "imagemin-webp": "^8.0.0",
+    "sharp": "^0.34.3"
   }
 }

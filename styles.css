@@ -301,6 +301,7 @@ p {
                 rgba(26, 26, 46, 0.85) 35%, 
                 rgba(22, 33, 62, 0.8) 65%,
                 rgba(0, 212, 255, 0.2) 100%),
+                url('images/hero1.webp'), 
                 url('images/hero1.jpg');
     background-size: cover;
     background-position: center;
