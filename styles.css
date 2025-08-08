@@ -418,6 +418,10 @@ p {
         line-height: 1.1;
         text-align: center;
     }
+    
+    .hero-background {
+        background-attachment: scroll;
+    }
 }
 
 @media (max-width: 480px) {
