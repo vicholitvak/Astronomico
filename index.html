@@ -31,13 +31,7 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"></noscript>
     
-    <!-- Preload Font Awesome fonts for faster rendering -->
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
-    
     <!-- Defer non-critical CSS -->
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></noscript>
     
     
     
@@ -576,10 +570,10 @@
                             </button>
                             
                             <!-- Carousel Indicators -->
-                            <div class="carousel-indicators">
-                                <button class="indicator active" data-slide="0"></button>
-                                <button class="indicator" data-slide="1"></button>
-                            </div>
+                        <div class="carousel-indicators" role="tablist" aria-label="Selector de imágenes de telescopio">
+                            <button class="indicator active" data-slide="0" aria-label="Slide 1" aria-current="true"></button>
+                            <button class="indicator" data-slide="1" aria-label="Slide 2"></button>
+                        </div>
                         </div>
                         
                         <!-- Gallery Modal -->
@@ -608,38 +602,11 @@
 
     <!-- Contact Section -->
 
-    <!-- About Us Section -->
-    <section id="nosotros" class="about">
-        <div class="container">
-            <div class="section-header">
-                <h2>Vicente Litvak</h2>
-                <p class="section-subtitle">Sobre mi</p>
-            </div>
-            
-            <div class="about-content">
-                <div class="about-text">
-                    <p>Con más de 5 años guiando tours astronómicos en el Desierto de Atacama, he tenido el privilegio de compartir con miles de personas la magia de los cielos más puros del mundo.</p>
-                    <p>Mi pasión por la astronomía comenzó desde pequeño, y hoy combino conocimiento científico con tecnología de vanguardia para crear experiencias inolvidables bajo las estrellas.</p>
-                    <p>Utilizo telescopios Unistellar eVscope de última generación que permiten capturar y observar objetos del espacio profundo en tiempo real, transformando cada tour en una ventana hacia el universo.</p>
-                </div>
-                <div class="about-image">
-                    <picture>
-                        <source srcset="images/responsive/me2-1x.webp 1x, images/responsive/me2-2x.webp 2x" type="image/webp">
-                        <img src="images/responsive/me2-1x.jpg" 
-                             srcset="images/responsive/me2-1x.jpg 1x, images/responsive/me2-2x.jpg 2x"
-                             alt="Guía astronómico en el desierto de Atacama con equipos profesionales" 
-                             loading="lazy" 
-                             width="400" 
-                             height="400">
-                    </picture>
-                </div>
-            </div>
-        </div>
-    </section>
+  
 
 
     <!-- Booking Section -->
-    <section id="reservas" class="booking">
+    <section id="reservas" class="booking">     
         <div class="container">
             <div class="section-header">
                 <h2>Reserva Tu Experiencia Astronómica</h2>
@@ -657,22 +624,6 @@
                             
                             <div id="calendar-container">
                                 <div id="fullcalendar"></div>
-                            </div>
-                            
-                            <div class="calendar-legend">
-                                <div class="legend-item">
-                                    <span class="legend-dot available"></span>
-                                    <span>Disponible para reserva</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-dot unavailable"></span>
-                                    <span>No disponible (luna llena)</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="moon-legend">🌑🌒🌓🌔🌕🌖🌗🌘</span>
-                                    <span>Fases lunares</span>
-                                </div>
-                            </div>
                             
                             <!-- Selected Date Display -->
                             <div class="selected-date-display" id="selected-date-display">
@@ -794,6 +745,34 @@
         </div>
     </section>
 
+      <!-- About Us Section -->
+    <section id="nosotros" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2>Vicente Litvak</h2>
+                <p class="section-subtitle">Sobre mi</p>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Más de 7 años guiando tours astronómicos en el Desierto de Atacama a personas de todo el mundo.</p>
+                    <p>Mi pasión por la astronomía comenzó desde pequeño, y hoy combino conocimiento científico con tecnología de vanguardia para crear experiencias inolvidables bajo las estrellas.</p>
+                    <p>Mi misión es compartir la magia del cielo con el mundo, y que cada persona que visita el Desierto de Atacama se lleve una experiencia única y memorable.</p>
+                </div>
+                <div class="about-image">
+                    <picture>
+                        <source srcset="images/responsive/me2-1x.webp 1x, images/responsive/me2-2x.webp 2x" type="image/webp">
+                        <img src="images/responsive/me2-1x.jpg" 
+                             srcset="images/responsive/me2-1x.jpg 1x, images/responsive/me2-2x.jpg 2x"
+                             alt="Guía astronómico en el desierto de Atacama con equipos profesionales" 
+                             loading="lazy" 
+                             width="400" 
+                             height="400">
+                    </picture>
+                </div>
+            </div>
+        </div>
+    </section>
     <!-- Telescope Section -->
 
     <!-- Contact Section -->
@@ -806,37 +785,37 @@
             
             <div class="contact-content">
                 <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <div>
-                            <h4>Dirección</h4>
-                            <p>Calle Caracoles 123<br>San Pedro de Atacama, Chile</p>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                            <div>
+                                <h3>Dirección</h3>
+                                <p>Calle Caracoles 123<br>San Pedro de Atacama, Chile</p>
+                            </div>
                         </div>
-                    </div>
                     
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <div>
-                            <h4>Teléfono</h4>
-                            <p><a href="tel:+56955123456">+56 9 3513 4669</a></p>
+                        <div class="contact-item">
+                            <i class="fas fa-phone" aria-hidden="true"></i>
+                            <div>
+                                <h3>Teléfono</h3>
+                                <p><a href="tel:+56955123456">+56 9 3513 4669</a></p>
+                            </div>
                         </div>
-                    </div>
                     
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <div>
-                            <h4>Email</h4>
-                            <p><a href="mailto:vicente.litvak@gmail.com">vicente.litvak@gmail.com</a></p>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope" aria-hidden="true"></i>
+                            <div>
+                                <h3>Email</h3>
+                                <p><a href="mailto:vicente.litvak@gmail.com">vicente.litvak@gmail.com</a></p>
+                            </div>
                         </div>
-                    </div>
                     
-                    <div class="contact-item">
-                        <i class="fab fa-whatsapp"></i>
-                        <div>
-                            <h4>WhatsApp</h4>
-                            <p><a href="https://wa.me/56935134669" target="_blank">+56 9 3513 4669</a></p>
+                        <div class="contact-item">
+                            <i class="fab fa-whatsapp" aria-hidden="true"></i>
+                            <div>
+                                <h3>WhatsApp</h3>
+                                <p><a href="https://wa.me/56935134669" target="_blank">+56 9 3513 4669</a></p>
+                            </div>
                         </div>
-                    </div>
                     
                     <div class="social-links">
                         <h4>Síguenos</h4>
