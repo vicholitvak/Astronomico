@@ -188,13 +188,8 @@ ${moonInfo}
       dateTime: endDate.toISOString(),
       timeZone: 'America/Santiago'
     },
-    attendees: booking.email ? [
-      {
-        email: booking.email,
-        displayName: booking.name,
-        responseStatus: 'needsAction'
-      }
-    ] : [],
+    // Note: Service accounts cannot invite attendees without Domain-Wide Delegation
+    // The client info is in the description instead
     reminders: {
       useDefault: false,
       overrides: [

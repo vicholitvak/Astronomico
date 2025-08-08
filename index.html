@@ -545,7 +545,6 @@
                             </div>
                             
                             <input type="hidden" id="selected-date" name="date" required>
-                            <input type="hidden" id="selected-time" name="time" required>
                         </div>
                         
                         <!-- Datos de la reserva -->
@@ -2484,8 +2483,9 @@ ${msg.contact}`);
                         if (response.ok && result.success) {
                             console.log('Booking successful, redirecting to confirmation page');
                             // Redirect a página de confirmación con fecha
-                            const tourDateElement = document.getElementById('tourDate');
-                            const tourDate = tourDateElement ? tourDateElement.value : formData.date;
+                            const selectedDateElement = document.getElementById('selected-date');
+                            const tourDate = selectedDateElement ? selectedDateElement.value : formData.date;
+                            console.log('Date for confirmation page:', tourDate);
                             window.location.href = `confirmacion.html?id=${encodeURIComponent(result.bookingId)}&date=${encodeURIComponent(tourDate)}`;
                         } else {
                             console.error('API returned error:', result);
