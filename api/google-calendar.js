@@ -14,13 +14,22 @@ export async function addToGoogleCalendar(booking) {
   console.log('Same tour bookings for combining:', sameTourBookings.length);
   
   const googleServiceAccountKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
-  const googleCalendarId = process.env.GOOGLE_CALENDAR_ID;
+  let googleCalendarId = process.env.GOOGLE_CALENDAR_ID;
+  
+  console.log('Google Calendar configuration check:');
+  console.log('- Service account key exists:', !!googleServiceAccountKey);
+  console.log('- Calendar ID from env:', googleCalendarId);
+  
+  // Force use Tours calendar ID if still getting the old one
+  if (googleCalendarId === 'vicente.litvak@gmail.com' || !googleCalendarId) {
+    console.log('⚠️ Using hardcoded Tours calendar ID as fallback');
+    googleCalendarId = '9a3ed2b295897e3fe68d2b719d3a1049a24c83dde50983b0625aed37407158b3@group.calendar.google.com';
+  }
+  
+  console.log('- Final calendar ID to use:', googleCalendarId.substring(0, 20) + '...');
   
   if (!googleServiceAccountKey || !googleCalendarId) {
     console.log('Google Calendar credentials not configured');
-    console.log('Has service account key:', !!googleServiceAccountKey);
-    console.log('Has calendar ID:', !!googleCalendarId);
-    console.log('Calendar ID value:', googleCalendarId ? 'Set but not shown' : 'Not set');
     return;
   }
   
