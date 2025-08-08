@@ -9,6 +9,10 @@ export async function addToGoogleCalendar(booking) {
   const dayTotal = await getTotalPassengersForDay(booking.date);
   console.log('Total passengers for', booking.date, ':', dayTotal);
   
+  // Get all bookings for the same tour type and date (for combining)
+  const sameTourBookings = await getBookingsForTourAndDate(booking.date, booking.tourType);
+  console.log('Same tour bookings for combining:', sameTourBookings.length);
+  
   const googleServiceAccountKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
   const googleCalendarId = process.env.GOOGLE_CALENDAR_ID;
   
@@ -81,8 +85,23 @@ export async function addToGoogleCalendar(booking) {
     // Create calendar instance
     const calendar = google.calendar({ version: 'v3', auth });
     
-    // Create event object with day total
-    const event = createCalendarEvent(booking, dayTotal);
+    // Check if there's an existing event for the same tour type and date
+    const existingEventId = await findExistingCalendarEvent(calendar, googleCalendarId, booking.date, booking.tourType);
+    if (existingEventId) {
+      console.log('Found existing event for same tour/date. Deleting:', existingEventId);
+      try {
+        await calendar.events.delete({
+          calendarId: googleCalendarId,
+          eventId: existingEventId
+        });
+        console.log('Successfully deleted existing event');
+      } catch (deleteError) {
+        console.error('Error deleting existing event:', deleteError.message);
+      }
+    }
+    
+    // Create event object with combined data
+    const event = createCombinedCalendarEvent(booking, sameTourBookings, dayTotal);
     console.log('Creating calendar event:', event.summary);
     
     // Insert event
@@ -296,6 +315,160 @@ async function getTotalPassengersForDay(date) {
     console.error('Error in getTotalPassengersForDay:', error);
     return null;
   }
+}
+
+// Function to get all bookings for same tour type and date
+async function getBookingsForTourAndDate(date, tourType) {
+  try {
+    const { createClient } = await import('@supabase/supabase-js');
+    
+    const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY;
+    const supabase = createClient(process.env.SUPABASE_URL, supabaseKey);
+    
+    const { data, error } = await supabase
+      .from('bookings')
+      .select('*')
+      .eq('date', date)
+      .eq('tour_type', tourType)
+      .neq('status', 'cancelled')
+      .order('created_at', { ascending: true });
+    
+    if (error) {
+      console.error('Error getting bookings for tour/date:', error);
+      return [];
+    }
+    
+    return data || [];
+  } catch (error) {
+    console.error('Error in getBookingsForTourAndDate:', error);
+    return [];
+  }
+}
+
+// Function to find existing calendar event for same tour and date
+async function findExistingCalendarEvent(calendar, calendarId, date, tourType) {
+  try {
+    const startOfDay = new Date(date + 'T00:00:00');
+    const endOfDay = new Date(date + 'T23:59:59');
+    
+    const response = await calendar.events.list({
+      calendarId: calendarId,
+      timeMin: startOfDay.toISOString(),
+      timeMax: endOfDay.toISOString(),
+      singleEvents: true
+    });
+    
+    if (response.data.items) {
+      // Look for event that contains the tour type
+      const tourTypes = {
+        'regular': 'Regular',
+        'private': 'Privado',
+        'astrophoto': 'Astrofoto'
+      };
+      
+      const tourTypeName = tourTypes[tourType] || tourType;
+      const existingEvent = response.data.items.find(event => 
+        event.summary && event.summary.includes(tourTypeName)
+      );
+      
+      return existingEvent ? existingEvent.id : null;
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Error finding existing calendar event:', error);
+    return null;
+  }
+}
+
+// Function to create combined calendar event
+function createCombinedCalendarEvent(booking, allTourBookings, dayTotal = null) {
+  const tourTypes = {
+    'regular': 'Regular',
+    'private': 'Privado', 
+    'astrophoto': 'Astrofoto'
+  };
+  
+  // Parse date and set the actual tour time
+  const [year, month, day] = booking.date.split('-');
+  
+  // Handle flexible time for private tours
+  let startTime = booking.time;
+  if (booking.time === 'flexible') {
+    startTime = '21:00'; // Default for flexible times
+  }
+  
+  // Create the date with the exact time
+  const [hours, minutes] = startTime.split(':');
+  const eventDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hours), parseInt(minutes), 0);
+  
+  console.log('Event timing details:');
+  console.log('- Original date:', booking.date);
+  console.log('- Original time:', booking.time);
+  console.log('- Parsed start time:', startTime);
+  console.log('- Event date object:', eventDate);
+  console.log('- Event date ISO:', eventDate.toISOString());
+  
+  // Calculate end time based on tour type
+  const duration = {
+    'regular': 2.5,
+    'private': 3,
+    'astrophoto': 5
+  };
+  
+  const endDate = new Date(eventDate);
+  const tourDuration = duration[booking.tourType] || 2.5;
+  endDate.setHours(endDate.getHours() + Math.floor(tourDuration));
+  endDate.setMinutes(endDate.getMinutes() + (tourDuration % 1) * 60);
+  
+  const tourType = tourTypes[booking.tourType] || booking.tourType;
+  
+  // Calculate total passengers for this specific tour
+  const totalTourPax = allTourBookings.reduce((sum, b) => sum + (b.persons || 0), 0);
+  const paxEmoji = totalTourPax > 1 ? '👥' : '👤';
+  
+  // Create title with combined info
+  let title = `${paxEmoji} ${totalTourPax} | ${tourType}`;
+  if (dayTotal && dayTotal > totalTourPax) {
+    title += ` (Día: ${dayTotal} pax)`;
+  }
+  
+  // Create combined description with all clients
+  let description = `🎯 ${tourType} - ${totalTourPax} pax total\n\n`;
+  
+  allTourBookings.forEach((b, index) => {
+    description += `👤 ${b.name}\n📞 ${b.phone}\n📧 ${b.email || 'Sin email'}\n`;
+    if (b.message) {
+      description += `💬 ${b.message}\n`;
+    }
+    description += `🆔 ${b.booking_id}\n`;
+    if (index < allTourBookings.length - 1) {
+      description += '\n─────────────\n\n';
+    }
+  });
+  
+  return {
+    summary: title,
+    description: description,
+    location: 'San Pedro de Atacama, Chile',
+    start: {
+      dateTime: eventDate.toISOString(),
+      timeZone: 'America/Santiago'
+    },
+    end: {
+      dateTime: endDate.toISOString(),
+      timeZone: 'America/Santiago'
+    },
+    reminders: {
+      useDefault: false,
+      overrides: [
+        { method: 'email', minutes: 24 * 60 },
+        { method: 'popup', minutes: 2 * 60 },
+      ]
+    },
+    colorId: getEventColor(booking.tourType),
+    status: 'tentative'
+  };
 }
 
 export { createCalendarEvent, getMoonPhaseInfo, getTotalPassengersForDay };
