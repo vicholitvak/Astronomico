@@ -21,9 +21,11 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     
-    <!-- Optimized Google Fonts with preload -->
+    <!-- Optimized Google Fonts with preload and font metrics -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.gstatic.com/s/roboto/v48/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://fonts.gstatic.com/s/roboto/v48/KFOlCnqEu92Fr1MmEU9fBBc4AMP6lQ.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"></noscript>
     
@@ -54,6 +56,39 @@
     
     /* Prevent invisible text during font load */
     .fa:before,.fas:before,.fab:before{content:attr(data-icon,"□");display:inline-block;width:1em;text-align:center}
+    
+    /* CLS Prevention - Stable dimensions for hero content */
+    .hero-content{min-height:60vh;display:flex;align-items:center;justify-content:center}
+    .hero-title{line-height:1.3!important;margin-bottom:2rem!important}
+    .title-line{display:block!important;height:1.3em;overflow:hidden}
+    .hero-subtitle{height:1.5em;line-height:1.5!important;margin-bottom:2rem!important}
+    .hero-buttons{height:3.5rem;display:flex!important;gap:1rem!important}
+    
+    /* Font loading stability with metric overrides */
+    @font-face{font-family:'Roboto Fallback';src:local('Arial');size-adjust:107%;ascent-override:95%;descent-override:25%;line-gap-override:0%}
+    body,h1,h2,h3,p{font-family:'Roboto','Roboto Fallback',system-ui,-apple-system,sans-serif!important}
+    
+    /* Stable text rendering during font load */
+    .hero-title,.hero-subtitle{font-kerning:none;font-feature-settings:normal;text-rendering:optimizeSpeed}
+    
+    /* Language dropdown stable positioning */
+    .lang-dropdown{position:absolute;top:100%;right:0;min-width:150px;width:150px;transform:translateY(-100%);transition:transform 0.3s ease,opacity 0.3s ease;opacity:0;pointer-events:none;z-index:1001}
+    .lang-dropdown.show{transform:translateY(0);opacity:1;pointer-events:auto}
+    
+    /* Additional CLS prevention for dynamic elements */
+    .nav-container{height:60px;min-height:60px}
+    .navbar{min-height:60px}
+    .logo-img{width:40px;height:40px;flex-shrink:0}
+    .lang-selector{position:relative;width:60px;height:40px}
+    .lang-btn{width:60px;height:40px;padding:0;border:none;background:transparent}
+    
+    /* Prevent layout shifts from images */
+    img{max-width:100%;height:auto}
+    picture{display:block}
+    
+    /* Stable button dimensions */
+    .btn{min-width:120px;white-space:nowrap}
+    .hero-buttons .btn{flex-shrink:0}
     </style>
     
     <!-- Load full CSS after initial render -->
@@ -2582,19 +2617,37 @@ ${msg.contact}`);
     
     <!-- Performance optimization script -->
     <script>
-    // Ensure smooth CSS loading and handle fallbacks
+    // CLS Prevention and smooth loading
     (function() {
+        // Prevent layout shifts during initial load
+        document.documentElement.style.setProperty('--hero-loaded', '1');
+        
         // Force layout recalculation after critical CSS loads
         document.addEventListener('DOMContentLoaded', function() {
             document.body.style.visibility = 'visible';
+            
+            // Ensure hero content is stable
+            const heroContent = document.querySelector('.hero-content');
+            if (heroContent) {
+                heroContent.style.minHeight = '60vh';
+                heroContent.style.display = 'flex';
+                heroContent.style.alignItems = 'center';
+                heroContent.style.justifyContent = 'center';
+            }
+            
+            // Lock navigation dimensions
+            const navbar = document.querySelector('.navbar');
+            if (navbar) {
+                navbar.style.height = '60px';
+            }
         });
         
         // Preload key images for faster loading
         const criticalImages = [
             'images/hero1.webp',
-            'images/Nightskylogo.webp',
-            'images/regular3-2.webp',
-            'images/fotografico.webp'
+            'images/responsive/Nightskylogo-1x.webp',
+            'images/responsive/regular3-2-1x.webp',
+            'images/responsive/fotografico-1x.webp'
         ];
         
         criticalImages.forEach(src => {
@@ -2604,6 +2657,13 @@ ${msg.contact}`);
             link.href = src;
             document.head.appendChild(link);
         });
+        
+        // Font loading completion handler
+        if ('fonts' in document) {
+            document.fonts.ready.then(() => {
+                document.documentElement.classList.add('fonts-loaded');
+            });
+        }
     })();
     </script>
 </body>
