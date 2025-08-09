@@ -45,6 +45,9 @@
     .fa:before,.fas:before,.fab:before{content:attr(data-icon,"□");display:inline-block;width:1em;text-align:center}
     
     /* CLS Prevention - Stable dimensions for hero content */
+    .hero{min-height:100vh!important;position:relative!important}
+    .hero-background{position:absolute!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;height:100%!important}
+    .hero-bg-img{position:absolute!important;top:0!important;left:0!important;width:100%!important;height:100%!important;object-fit:cover!important;aspect-ratio:16/9!important}
     .hero-content{min-height:60vh!important;display:flex!important;align-items:center!important;justify-content:center!important;position:relative!important;z-index:2!important}
     .hero-title{line-height:1.3!important;margin-bottom:2rem!important;height:auto!important;min-height:8rem!important}
     .title-line{display:block!important;height:1.3em!important;overflow:hidden!important;min-height:1.3em!important}
@@ -158,11 +161,16 @@
     <section id="inicio" class="hero" role="main">
         <div class="hero-background">
             <picture>
-                <source srcset="images/optimized/hero1-mobile.webp 480w, images/optimized/hero1-tablet.webp 768w, images/optimized/hero1-desktop.webp 1200w" type="image/webp">
+                <source srcset="images/optimized/hero1-mobile.webp 480w, images/optimized/hero1-tablet.webp 768w, images/optimized/hero1-desktop.webp 1200w" 
+                        type="image/webp"
+                        width="1920"
+                        height="1080">
                 <img class="hero-bg-img"
                      src="images/optimized/hero1-desktop.jpg"
                      srcset="images/optimized/hero1-mobile.jpg 480w, images/optimized/hero1-tablet.jpg 768w, images/optimized/hero1-desktop.jpg 1200w"
                      sizes="100vw"
+                     width="1920"
+                     height="1080"
                      alt="Cielo nocturno de Atacama, fondo del héroe"
                      fetchpriority="high"
                      decoding="sync">
@@ -568,9 +576,9 @@
                             </button>
                             
                             <!-- Carousel Indicators -->
-                        <div class="carousel-indicators" role="tablist" aria-label="Selector de imágenes de telescopio">
-                            <button class="indicator active" data-slide="0" aria-label="Slide 1" aria-current="true"></button>
-                            <button class="indicator" data-slide="1" aria-label="Slide 2"></button>
+                        <div class="carousel-indicators" aria-label="Selector de imágenes de telescopio">
+                            <button class="indicator active" data-slide="0" aria-label="Slide 1" aria-current="true" role="tab"></button>
+                            <button class="indicator" data-slide="1" aria-label="Slide 2" role="tab"></button>
                         </div>
                         </div>
                         
