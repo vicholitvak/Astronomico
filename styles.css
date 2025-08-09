@@ -286,10 +286,12 @@ p {
 .hero {
     position: relative;
     height: 100vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    contain: layout style paint;
 }
 
 .hero-background {
@@ -327,6 +329,8 @@ p {
     height: 100%;
     object-fit: cover;
     z-index: 0;
+    aspect-ratio: 16/9;
+    contain: layout style paint;
 }
 
 .hero-content {
@@ -335,6 +339,11 @@ p {
     text-align: center;
     max-width: 800px;
     padding: var(--spacing-md);
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    contain: layout;
 }
 
 .hero-title {
