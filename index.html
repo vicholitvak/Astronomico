@@ -35,19 +35,40 @@
     
     <!-- Critical CSS inlined for above-the-fold -->
     <style>
-    /* Minimal critical CSS - optimized for fastest LCP rendering */
-    *{margin:0;padding:0;box-sizing:border-box;contain:layout style}
-    :root{--primary:#00D4FF;--bg:#0a0a0a;--text:#fff;--secondary:#b8b8b8}
-    html,body{font:400 16px/1.6 system-ui,sans-serif;color:var(--text);background:var(--bg);overflow-x:hidden}
-    .header{position:fixed;inset:0 0 auto;background:rgba(10,10,10,.95);height:60px;z-index:1000;contain:strict}
-    .hero{position:relative;height:100vh;contain:strict}
-    .hero-content{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;z-index:2}
-    .container{max-width:800px;padding:2rem}
-    h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.3;margin-bottom:2rem}
-    .hero-subtitle{font-size:clamp(1.1rem,2.5vw,1.3rem);color:var(--secondary);margin-bottom:2rem}
-    .hero-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem}
-    .btn{padding:14px 24px;border:none;border-radius:8px;font:700 16px system-ui;text-decoration:none;color:#fff;background:linear-gradient(45deg,var(--primary),#7B68EE);min-width:140px;white-space:nowrap}
-    .btn-secondary{background:transparent;color:var(--primary);border:2px solid var(--primary)}
+    /* Essential CSS - all critical elements visible */
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--primary-color:#00D4FF;--bg-primary:#0a0a0a;--text-primary:#fff;--text-secondary:#b8b8b8;--z-header:1000}
+    html,body{font-family:system-ui,sans-serif;color:var(--text-primary);background:var(--bg-primary);overflow-x:hidden}
+    
+    /* Header and Navigation */
+    .header{position:fixed;top:0;left:0;right:0;background:rgba(10,10,10,.95);backdrop-filter:blur(10px);z-index:var(--z-header);height:60px}
+    .navbar{padding:1rem 0;height:60px}
+    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:0 1rem;height:60px}
+    .logo-img{height:40px;width:40px}
+    .nav-menu{display:flex;gap:2rem;list-style:none}
+    .nav-link{color:var(--text-primary);text-decoration:none;font-weight:500}
+    .hamburger{display:none;flex-direction:column;cursor:pointer;width:30px;height:24px;justify-content:space-between}
+    .hamburger span{display:block;height:3px;width:100%;background:var(--text-primary);transition:0.3s}
+    .lang-selector{position:relative}
+    .lang-btn{background:transparent;border:1px solid var(--primary-color);color:var(--primary-color);padding:5px 10px;border-radius:4px;cursor:pointer}
+    
+    /* Hero Section */
+    .hero{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .hero-background{position:absolute;top:0;left:0;right:0;bottom:0}
+    .hero-bg-img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
+    .hero-content{position:relative;z-index:2;text-align:center;max-width:800px;padding:2rem}
+    .hero-title{font-size:clamp(2rem,5vw,3.5rem);line-height:1.3;margin-bottom:2rem}
+    .hero-subtitle{font-size:clamp(1.1rem,2.5vw,1.3rem);color:var(--text-secondary);margin-bottom:2rem}
+    .hero-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+    .btn{display:inline-flex;padding:14px 24px;border:none;border-radius:8px;font-weight:700;text-decoration:none;color:#fff;background:linear-gradient(45deg,var(--primary-color),#7B68EE);min-width:140px;white-space:nowrap}
+    .btn-secondary{background:transparent;color:var(--primary-color);border:2px solid var(--primary-color)}
+    
+    /* Mobile Navigation */
+    @media (max-width: 768px) {
+        .nav-menu{display:none}
+        .hamburger{display:flex}
+        .nav-container{padding:0 1rem}
+    }
     
     /* Fallback icon display during font load */
     .fa,.fas,.fab{font-family:"Font Awesome 6 Free","fa-solid-900",monospace!important;font-size:inherit;line-height:1}
@@ -508,6 +529,12 @@
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Slide 2 -->
+                                <div class="carousel-slide">
+                                    <div class="gallery-grid">
                                         <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250525-021351.jpg')">
                                             <picture>
                                                 <source srcset="images/responsive/eVscope2-20250525-021351-1x.webp 1x, images/responsive/eVscope2-20250525-021351-2x.webp 2x" type="image/webp">
@@ -528,12 +555,6 @@
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Slide 2 -->
-                                <div class="carousel-slide">
-                                    <div class="gallery-grid">
                                     </div>
                                 </div>
                             </div>
