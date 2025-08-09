@@ -3,18 +3,9 @@
 
 // ===== TYPEWRITER EFFECT =====
 function initTypewriter() {
-    const textElement = document.getElementById('typewriter-text');
-    const cursorElement = document.getElementById('cursor');
-    const text = 'Atacama Dark Skies - El Cielo Más Puro del Mundo en San Pedro de Atacama';
-    
-    console.log('✍️ Starting typewriter...');
-    console.log('Text element:', textElement);
-    console.log('Cursor element:', cursorElement);
-    
-    if (!textElement) {
-        // Element not present on this page; silently skip
-        return;
-    }
+    // Typewriter is disabled for CLS prevention
+    // Text loads immediately to prevent layout shifts
+    return;
     
     let index = 0;
     textElement.textContent = ''; // Clear any existing text
@@ -1497,14 +1488,16 @@ window.addEventListener('error', function(e) {
 
 // ===== PERFORMANCE MONITORING =====
 window.addEventListener('load', function() {
-    // Monitor page load performance
-    if ('performance' in window) {
+    // Monitor page load performance (with proper timing check)
+    if ('performance' in window && performance.timing.loadEventEnd > 0) {
         const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
-        console.log(`Page load time: ${loadTime}ms`);
-        
-        // Log if load time is too slow
-        if (loadTime > 3000) {
-            console.warn('Page load time is slower than recommended (>3s)');
+        if (loadTime > 0 && loadTime < 60000) { // Reasonable load time range
+            console.log(`Page load time: ${loadTime}ms`);
+            
+            // Log if load time is too slow
+            if (loadTime > 3000) {
+                console.warn('Page load time is slower than recommended (>3s)');
+            }
         }
     }
 });
@@ -1780,18 +1773,19 @@ function setupModal() {
 }
 
 
-// ===== SERVICE WORKER REGISTRATION (for PWA capabilities) =====
-if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
-    window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js')
-            .then(function(registration) {
-                console.log('ServiceWorker registration successful');
-            })
-            .catch(function(err) {
-                console.log('ServiceWorker registration failed');
-            });
-    });
-}
+// ===== SERVICE WORKER REGISTRATION (temporarily disabled) =====
+// ServiceWorker disabled to prevent 404 errors until sw.js is created
+// if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
+//     window.addEventListener('load', function() {
+//         navigator.serviceWorker.register('/sw.js')
+//             .then(function(registration) {
+//                 console.log('ServiceWorker registration successful');
+//             })
+//             .catch(function(err) {
+//                 console.log('ServiceWorker registration failed');
+//             });
+//     });
+// }
 
 // Function moved to the top of the file
 

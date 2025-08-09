@@ -540,24 +540,6 @@
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-004143.jpg')">
-                                            <img src="images/eVscope2-20250803-004143.jpg" alt="Galaxia espiral fotografiada con telescopio Unistellar" loading="lazy">
-                                            <div class="gallery-overlay">
-                                                <i class="fas fa-search-plus"></i>
-                                            </div>
-                                        </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-004145.jpg')">
-                                            <img src="images/eVscope2-20250803-004145.jpg" alt="Cúmulo globular del espacio profundo" loading="lazy">
-                                            <div class="gallery-overlay">
-                                                <i class="fas fa-search-plus"></i>
-                                            </div>
-                                        </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-032904.jpg')">
-                                            <img src="images/eVscope2-20250803-032904.jpg" alt="Nebulosa planetaria capturada en Atacama" loading="lazy">
-                                            <div class="gallery-overlay">
-                                                <i class="fas fa-search-plus"></i>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2652,21 +2634,8 @@ ${msg.contact}`);
             document.documentElement.setAttribute('data-cls-optimized', 'true');
         });
         
-        // Preload key images for faster loading
-        const criticalImages = [
-            'images/hero1.webp',
-            'images/responsive/Nightskylogo-1x.webp',
-            'images/responsive/regular3-2-1x.webp',
-            'images/responsive/fotografico-1x.webp'
-        ];
-        
-        criticalImages.forEach(src => {
-            const link = document.createElement('link');
-            link.rel = 'preload';
-            link.as = 'image';
-            link.href = src;
-            document.head.appendChild(link);
-        });
+        // Critical images are already preloaded in HTML head
+        // Removed script-based preloading to prevent unused preload warnings
         
         // Font loading completion handler
         if ('fonts' in document) {
