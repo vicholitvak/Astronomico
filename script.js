@@ -12,7 +12,7 @@ function initTypewriter() {
     console.log('Cursor element:', cursorElement);
     
     if (!textElement) {
-        console.error('❌ Typewriter text element not found!');
+        // Element not present on this page; silently skip
         return;
     }
     
