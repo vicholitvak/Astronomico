@@ -35,48 +35,26 @@
     
     <!-- Critical CSS inlined for above-the-fold -->
     <style>
-    /* Essential CSS - all critical elements visible */
+    /* Minimal CSS - Clean hero-focused design */
     *{margin:0;padding:0;box-sizing:border-box}
-    :root{--primary-color:#00D4FF;--bg-primary:#0a0a0a;--text-primary:#fff;--text-secondary:#b8b8b8;--z-header:1000}
+    :root{--primary-color:#00D4FF;--bg-primary:#0a0a0a;--text-primary:#fff;--text-secondary:#b8b8b8}
     html,body{font-family:system-ui,sans-serif;color:var(--text-primary);background:var(--bg-primary);overflow-x:hidden}
     
-    /* Header and Navigation - Ensure visibility */
-    .header{position:fixed;top:0;left:0;right:0;background:rgba(10,10,10,.95);backdrop-filter:blur(10px);z-index:var(--z-header);height:60px;border-bottom:1px solid rgba(255,215,0,.1)}
-    .navbar{padding:1rem 0;height:60px}
-    .nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:0 1rem;height:60px}
-    .logo-container a{display:flex;align-items:center}
-    .logo-img{height:40px;width:40px;border-radius:8px}
-    .nav-menu{display:flex;gap:2rem;list-style:none;margin:0;padding:0}
-    .nav-menu li{display:block}
-    .nav-link{color:var(--text-primary);text-decoration:none;font-weight:500;padding:0.5rem 1rem;border-radius:4px;transition:all 0.3s ease}
-    .nav-link:hover{background:rgba(0,212,255,0.1);color:var(--primary-color)}
-    .hamburger{display:none;flex-direction:column;cursor:pointer;width:30px;height:24px;justify-content:space-between}
-    .hamburger span{display:block;height:3px;width:100%;background:var(--text-primary);transition:0.3s}
-    .lang-selector{position:relative;margin-left:1rem}
-    .lang-btn{background:transparent;border:1px solid var(--primary-color);color:var(--primary-color);padding:5px 10px;border-radius:4px;cursor:pointer;font-size:14px}
-    
-    /* Hero Section */
+    /* Hero Section - Full focus */
     .hero{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
     .hero-background{position:absolute;top:0;left:0;right:0;bottom:0}
     .hero-bg-img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
-    .hero-content{position:relative;z-index:2;text-align:center;max-width:800px;padding:2rem}
-    .hero-title{font-size:clamp(2rem,5vw,3.5rem);line-height:1.3;margin-bottom:2rem}
-    .hero-subtitle{font-size:clamp(1.1rem,2.5vw,1.3rem);color:var(--text-secondary);margin-bottom:2rem}
-    .hero-buttons{display:flex;justify-content:center;margin-top:1rem}
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 24px;border:none;border-radius:8px;font-weight:600;font-size:16px;text-decoration:none;color:#fff;background:linear-gradient(45deg,var(--primary-color),#7B68EE);min-width:160px;white-space:nowrap;cursor:pointer;transition:all 0.3s ease;box-shadow:0 4px 12px rgba(0,212,255,0.2)}
+    .hero-content{position:relative;z-index:2;text-align:center;max-width:900px;padding:2rem}
+    .hero-title{font-size:clamp(2.125rem,5.5vw,3.625rem);line-height:1.3;margin-bottom:2rem}
+    .hero-subtitle{font-size:clamp(1.125rem,2.75vw,1.375rem);color:var(--text-secondary);margin-bottom:2rem;line-height:1.4}
+    .hero-buttons{display:flex;justify-content:center;margin-top:1.5rem}
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:14px 28px;border:none;border-radius:10px;font-weight:600;font-size:17px;text-decoration:none;color:#fff;background:linear-gradient(45deg,var(--primary-color),#7B68EE);min-width:180px;white-space:nowrap;cursor:pointer;transition:all 0.3s ease;box-shadow:0 4px 12px rgba(0,212,255,0.2)}
     .btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,212,255,0.4)}
     
-    /* Mobile Navigation */
+    /* Mobile Optimization */
     @media (max-width: 768px) {
-        .nav-menu{display:none;position:absolute;top:60px;left:0;right:0;background:rgba(10,10,10,0.98);flex-direction:column;padding:1rem;gap:0}
-        .nav-menu.active{display:flex}
-        .nav-menu li{width:100%;border-bottom:1px solid rgba(255,255,255,0.1)}
-        .nav-link{display:block;padding:1rem;text-align:center}
-        .hamburger{display:flex}
-        .hamburger.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
-        .hamburger.active span:nth-child(2){opacity:0}
-        .hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(7px,-6px)}
-        .btn{min-width:180px;font-size:15px}
+        .hero-content{max-width:100%;padding:1.5rem}
+        .btn{min-width:200px;font-size:16px;padding:16px 32px}
     }
     
     /* Fallback icon display during font load */
@@ -133,73 +111,6 @@
     <noscript><link rel="stylesheet" href="styles.css?v=4.2"></noscript>
 </head>
 <body>
-    <!-- Header Navigation -->
-    <header class="header" role="banner">
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="nav-logo">
-                    <a href="#inicio">
-                        <picture>
-                            <source srcset="images/responsive/Nightskylogo-1x.webp 1x, images/responsive/Nightskylogo-2x.webp 2x" type="image/webp">
-                            <img src="images/responsive/Nightskylogo-1x.jpg" 
-                                 srcset="images/responsive/Nightskylogo-1x.jpg 1x, images/responsive/Nightskylogo-2x.jpg 2x"
-                                 alt="Atacama NightSky Logo" 
-                                 class="logo-img" 
-                                 width="40" 
-                                 height="40"
-                                 fetchpriority="low"
-                                 decoding="async">
-                        </picture>
-                    </a>
-                </div>
-                
-                <!-- Language Toggle -->
-                <div class="language-toggle">
-                    <div class="lang-selector">
-                        <button id="lang-toggle" class="lang-btn">
-                            <i class="fas fa-globe"></i>
-                            <span id="current-lang">ES</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                        <div class="lang-dropdown" id="lang-dropdown">
-                            <div class="lang-option" data-lang="es">
-                                <span class="flag">🇪🇸</span>
-                                <span>Español</span>
-                            </div>
-                            <div class="lang-option" data-lang="en">
-                                <span class="flag">🇺🇸</span>
-                                <span>English</span>
-                            </div>
-                            <div class="lang-option" data-lang="pt">
-                                <span class="flag">🇧🇷</span>
-                                <span>Português</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Desktop Menu -->
-                <ul class="nav-menu">
-                    <li class="nav-item"><a href="#inicio" class="nav-link">Inicio</a></li>
-                    <li class="nav-item"><a href="#tours" class="nav-link">Tours</a></li>
-                    <li class="nav-item"><a href="#telescopio" class="nav-link">Telescopio</a></li>
-                    <li class="nav-item"><a href="#nosotros" class="nav-link">Sobre Mí</a></li>
-                    <li class="nav-item"><a href="#reservas" class="nav-link">Reservas</a></li>
-                    <li class="nav-item"><a href="#contacto" class="nav-link">Contacto</a></li>
-                    <li class="nav-item">
-                        <a href="#reservas" class="cta-button">Reserva Ahora</a>
-                    </li>
-                </ul>
-                
-                <!-- Mobile Menu Toggle -->
-                <div class="hamburger">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                </div>
-            </div>
-        </nav>
-    </header>
 
     <!-- Hero Section -->
     <section id="inicio" class="hero" role="main">
