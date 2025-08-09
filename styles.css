@@ -334,16 +334,17 @@ p {
 }
 
 .hero-content {
-    position: relative;
+    position: absolute;
+    inset: 0;
     z-index: 2;
     text-align: center;
-    max-width: 800px;
     padding: var(--spacing-md);
-    min-height: 60vh;
     display: flex;
     align-items: center;
     justify-content: center;
     contain: layout;
+    width: 100%;
+    height: 100%;
 }
 
 .hero-title {
@@ -2627,10 +2628,11 @@ blockquote {
     transition: all var(--transition-normal);
 }
 
-.indicator.active,
-.indicator:hover {
+.indicator.active::before,
+.indicator:hover::before {
     background: var(--primary-color);
     box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+    transform: scale(1.2);
 }
 
 /* Gallery Modal */
