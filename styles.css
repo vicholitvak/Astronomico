@@ -357,6 +357,11 @@ p {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    background: linear-gradient(45deg, #FF0000, #FFFF00, #0066FF, #000000);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: clamp(2.25rem, 6vw, 3.875rem);
 }
 
 .title-line {
@@ -448,6 +453,11 @@ p {
     .hero-title {
         line-height: 1.1;
         text-align: center;
+        background: linear-gradient(45deg, #FF0000, #FFFF00, #0066FF, #000000);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: clamp(2rem, 8vw, 3.2rem);
     }
 }
 
@@ -2415,6 +2425,10 @@ blockquote {
     
     .hero-title {
         font-size: 4rem;
+        background: linear-gradient(45deg, #FF0000, #FFFF00, #0066FF, #000000);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
     
     .hero-subtitle {
