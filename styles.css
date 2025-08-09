@@ -291,7 +291,8 @@ p {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    contain: layout style paint;
+    contain: strict;
+    content-visibility: visible;
 }
 
 .hero-background {
@@ -520,6 +521,7 @@ p {
 /* ===== SECTION STYLES ===== */
 section {
     padding: var(--spacing-xxl) 0;
+    contain: layout;
 }
 
 .section-header {
@@ -533,10 +535,11 @@ section {
     margin-bottom: 0;
 }
 
-/* Boost first paint by skipping rendering of below-the-fold until scrolled */
+/* Boost first paint by skipping rendering + layout containment */
 .tours, .telescope, .about, .booking, .contact, .footer {
     content-visibility: auto;
     contain-intrinsic-size: 1000px;
+    contain: layout style;
 }
 
 /* ===== ABOUT SECTION ===== */

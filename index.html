@@ -35,7 +35,18 @@
     
     <!-- Critical CSS inlined for above-the-fold -->
     <style>
-    *{margin:0;padding:0;box-sizing:border-box}:root{--primary-color:#00D4FF;--secondary-color:#7B68EE;--accent-color:#FF6B6B;--bg-primary:#0a0a0a;--bg-secondary:#1a1a2e;--bg-tertiary:#16213e;--text-primary:#ffffff;--text-secondary:#b8b8b8;--font-primary:'Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;--font-weight-normal:400;--font-weight-bold:700;--spacing-xs:.5rem;--spacing-sm:1rem;--spacing-md:2rem;--border-radius:8px;--transition-normal:.3s ease;--z-header:1000}html{scroll-behavior:smooth;scroll-padding-top:80px}body{font-family:var(--font-primary);font-weight:var(--font-weight-normal);line-height:1.6;color:var(--text-primary);background:var(--bg-primary);overflow-x:hidden}.container{max-width:1200px;margin:0 auto;padding:0 var(--spacing-sm)}h1{font-weight:var(--font-weight-bold);line-height:1.2;margin-bottom:var(--spacing-sm);font-size:clamp(2rem,5vw,3.5rem)}p{margin-bottom:var(--spacing-sm);font-size:clamp(1rem,2vw,1.1rem)}.header{position:fixed;top:0;left:0;right:0;background:rgba(10,10,10,.95);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,215,0,.1);z-index:var(--z-header);transition:all var(--transition-normal)}.navbar{padding:var(--spacing-sm) 0}.nav-container{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:0 var(--spacing-sm)}.logo-img{height:40px;width:auto;border-radius:var(--border-radius);transition:all var(--transition-normal)}.hero{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}.hero-background{position:absolute;top:0;left:0;right:0;bottom:0;background:none;background-size:cover;background-position:center}.hero-content{position:relative;z-index:2;text-align:center;max-width:800px;padding:var(--spacing-md)}.hero-title{margin-bottom:var(--spacing-md);line-height:1.3;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}.title-line{display:block;position:relative}.hero-subtitle{font-size:clamp(1.1rem,2.5vw,1.3rem);color:var(--text-secondary);margin-bottom:var(--spacing-md);line-height:1.5}.hero-buttons{display:flex;gap:var(--spacing-sm);justify-content:center;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--spacing-xs);padding:0.875rem 1.5rem;border:none;border-radius:var(--border-radius);font-family:var(--font-primary);font-size:1rem;font-weight:var(--font-weight-bold);text-decoration:none;cursor:pointer;transition:all var(--transition-normal);white-space:nowrap}.btn-primary{background:linear-gradient(45deg,var(--primary-color) 0%,var(--secondary-color) 100%);color:#ffffff}.btn-secondary{background:transparent;color:var(--primary-color);border:2px solid var(--primary-color)}
+    /* Minimal critical CSS - optimized for fastest LCP rendering */
+    *{margin:0;padding:0;box-sizing:border-box;contain:layout style}
+    :root{--primary:#00D4FF;--bg:#0a0a0a;--text:#fff;--secondary:#b8b8b8}
+    html,body{font:400 16px/1.6 system-ui,sans-serif;color:var(--text);background:var(--bg);overflow-x:hidden}
+    .header{position:fixed;inset:0 0 auto;background:rgba(10,10,10,.95);height:60px;z-index:1000;contain:strict}
+    .hero{position:relative;height:100vh;contain:strict}
+    .hero-content{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;z-index:2}
+    .container{max-width:800px;padding:2rem}
+    h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.3;margin-bottom:2rem}
+    .hero-subtitle{font-size:clamp(1.1rem,2.5vw,1.3rem);color:var(--secondary);margin-bottom:2rem}
+    .hero-buttons{display:flex;gap:1rem;justify-content:center}
+    .btn{padding:14px 24px;border:none;border-radius:8px;font:700 16px system-ui;text-decoration:none;color:#fff;background:linear-gradient(45deg,var(--primary),#7B68EE)}
     
     /* Fallback icon display during font load */
     .fa,.fas,.fab{font-family:"Font Awesome 6 Free","fa-solid-900",monospace!important;font-size:inherit;line-height:1}
@@ -44,11 +55,11 @@
     /* Prevent invisible text during font load */
     .fa:before,.fas:before,.fab:before{content:attr(data-icon,"□");display:inline-block;width:1em;text-align:center}
     
-    /* CLS Prevention - Absolute positioning to prevent any shifts */
-    .hero{height:100vh!important;min-height:100vh!important;position:relative!important;contain:layout style paint!important;overflow:hidden!important}
-    .hero-background{position:absolute!important;inset:0!important;width:100%!important;height:100%!important}
-    .hero-bg-img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important}
-    .hero-content{position:absolute!important;inset:0!important;display:flex!important;align-items:center!important;justify-content:center!important;z-index:2!important;width:100%!important;height:100%!important}
+    /* Ultra-optimized CLS Prevention - Minimal layout calculation */
+    .hero{height:100vh!important;position:relative!important;contain:strict!important;content-visibility:visible!important}
+    .hero-background{position:absolute!important;inset:0!important;contain:strict!important}
+    .hero-bg-img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;content-visibility:visible!important}
+    .hero-content{position:absolute!important;inset:0!important;display:flex!important;align-items:center!important;justify-content:center!important;z-index:2!important;contain:layout!important}
     .hero-content .container{width:100%!important;max-width:800px!important;padding:2rem!important}
     .hero-title{font-size:clamp(2rem,5vw,3.5rem)!important;line-height:1.3!important;margin-bottom:2rem!important;min-height:8rem!important}
     .title-line{display:block!important;min-height:1.3em!important;line-height:1.3!important}
@@ -908,10 +919,23 @@
         <div class="whatsapp-tooltip">¿Tienes preguntas? ¡Escríbenos!</div>
     </div>
 
-    <!-- Google APIs -->
-    <script src="https://apis.google.com/js/api.js" defer></script>
+    <!-- Defer all JavaScript until after LCP for faster rendering -->
+    <script>
+        // Load scripts after LCP to minimize main thread blocking
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                // Load Google APIs
+                const apiScript = document.createElement('script');
+                apiScript.src = 'https://apis.google.com/js/api.js';
+                apiScript.defer = true;
+                document.head.appendChild(apiScript);
+                
+                // Main script already deferred
+            }, 100);
+        });
+    </script>
     
-    <!-- JavaScript -->
+    <!-- JavaScript - deferred for non-blocking load -->
     <script src="script.js?v=4.1" defer></script>
 
     <!-- Calendario personalizado con fases lunares -->
