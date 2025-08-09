@@ -45,8 +45,9 @@
     .container{max-width:800px;padding:2rem}
     h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.3;margin-bottom:2rem}
     .hero-subtitle{font-size:clamp(1.1rem,2.5vw,1.3rem);color:var(--secondary);margin-bottom:2rem}
-    .hero-buttons{display:flex;gap:1rem;justify-content:center}
-    .btn{padding:14px 24px;border:none;border-radius:8px;font:700 16px system-ui;text-decoration:none;color:#fff;background:linear-gradient(45deg,var(--primary),#7B68EE)}
+    .hero-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem}
+    .btn{padding:14px 24px;border:none;border-radius:8px;font:700 16px system-ui;text-decoration:none;color:#fff;background:linear-gradient(45deg,var(--primary),#7B68EE);min-width:140px;white-space:nowrap}
+    .btn-secondary{background:transparent;color:var(--primary);border:2px solid var(--primary)}
     
     /* Fallback icon display during font load */
     .fa,.fas,.fab{font-family:"Font Awesome 6 Free","fa-solid-900",monospace!important;font-size:inherit;line-height:1}
@@ -527,30 +528,12 @@
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250629-013307.jpg')">
-                                            <img src="images/eVscope2-20250629-013307.jpg" alt="Objeto celeste fotografiado con telescopio Unistellar" loading="lazy">
-                                            <div class="gallery-overlay">
-                                                <i class="fas fa-search-plus"></i>
-                                            </div>
-                                        </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250629-013312.jpg')">
-                                            <img src="images/eVscope2-20250629-013312.jpg" alt="Astrofotografía del espacio profundo con eVscope" loading="lazy">
-                                            <div class="gallery-overlay">
-                                                <i class="fas fa-search-plus"></i>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                                 
                                 <!-- Slide 2 -->
                                 <div class="carousel-slide">
                                     <div class="gallery-grid">
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250719-001348.jpg')">
-                                            <img src="images/eVscope2-20250719-001348.jpg" alt="Nebulosa del Anillo capturada con eVscope" loading="lazy">
-                                            <div class="gallery-overlay">
-                                                <i class="fas fa-search-plus"></i>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>

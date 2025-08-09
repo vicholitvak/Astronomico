@@ -2509,8 +2509,10 @@ blockquote {
 
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-md);
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .gallery-item {
@@ -2718,6 +2720,7 @@ blockquote {
     
     .gallery-grid {
         grid-template-columns: repeat(2, 1fr);
+        max-width: 500px;
     }
     
     .carousel-control {
@@ -2733,14 +2736,9 @@ blockquote {
     }
     
     .gallery-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
         gap: var(--spacing-sm);
-    }
-    
-    /* Mobile: Responsive gallery */
-    .gallery-grid {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-sm);
+        max-width: 400px;
     }
     
     .gallery-item {
@@ -2946,6 +2944,7 @@ blockquote {
 @media (max-width: 480px) {
     .gallery-grid {
         grid-template-columns: 1fr;
+        max-width: 300px;
     }
     
     .telescope {
