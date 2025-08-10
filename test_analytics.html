@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Google Analytics</title>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T39HYLDJ8K"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-T39HYLDJ8K');
+      
+      // Funciones de tracking
+      function trackBookingClick(tourType) {
+        gtag('event', 'booking_click', {
+          'event_category': 'engagement',
+          'event_label': tourType,
+          'value': 1
+        });
+        console.log('Evento enviado: booking_click -', tourType);
+        alert('Evento enviado: booking_click - ' + tourType);
+      }
+      
+      function trackContact(method) {
+        gtag('event', 'contact', {
+          'event_category': 'engagement',
+          'event_label': method,
+          'value': 1
+        });
+        console.log('Evento enviado: contact -', method);
+        alert('Evento enviado: contact - ' + method);
+      }
+      
+      function testPageView() {
+        gtag('event', 'page_view', {
+          page_title: 'Test Page',
+          page_location: window.location.href,
+          page_path: window.location.pathname
+        });
+        console.log('Evento enviado: page_view');
+        alert('Evento enviado: page_view');
+      }
+    </script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .status {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .instructions {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test de Google Analytics</h1>
+    
+    <div class="test-section">
+        <h2>Estado de GA4</h2>
+        <p>ID de medición: <code>G-T39HYLDJ8K</code></p>
+        <div class="status">
+            <p>✅ Google Analytics está cargado en esta página</p>
+            <p>📊 Abre la consola del navegador (F12) para ver los eventos</p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Probar Eventos</h2>
+        <p>Haz clic en estos botones para enviar eventos de prueba:</p>
+        
+        <button onclick="testPageView()">📄 Enviar Page View</button>
+        <button onclick="trackBookingClick('Tour Astronómico Regular')">🎫 Simular Reserva Tour Regular</button>
+        <button onclick="trackBookingClick('Tour Privado VIP')">⭐ Simular Reserva Tour VIP</button>
+        <button onclick="trackContact('whatsapp')">💬 Simular Click WhatsApp</button>
+        <button onclick="trackContact('email')">📧 Simular Click Email</button>
+    </div>
+    
+    <div class="instructions">
+        <h3>📋 Instrucciones para verificar:</h3>
+        <ol>
+            <li>Abre <a href="https://analytics.google.com" target="_blank">Google Analytics</a></li>
+            <li>Ve a <strong>Informes → Tiempo real</strong></li>
+            <li>Haz clic en los botones de prueba arriba</li>
+            <li>Deberías ver los eventos aparecer en tiempo real</li>
+            <li>Si no ves eventos después de 30 segundos, verifica:
+                <ul>
+                    <li>¿Tienes bloqueadores de anuncios? Desactívalos temporalmente</li>
+                    <li>¿El ID de GA es correcto? (G-T39HYLDJ8K)</li>
+                    <li>¿Estás viendo la propiedad correcta en GA4?</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+    
+    <div class="test-section">
+        <h2>Depuración en Consola</h2>
+        <p>Los eventos también se muestran en la consola del navegador.</p>
+        <p>Presiona <code>F12</code> y ve a la pestaña "Console" para ver los detalles.</p>
+    </div>
+    
+    <script>
+        // Verificar que gtag está disponible
+        window.addEventListener('load', function() {
+            if (typeof gtag !== 'undefined') {
+                console.log('✅ Google Analytics cargado correctamente');
+                console.log('📊 ID de medición: G-T39HYLDJ8K');
+            } else {
+                console.error('❌ Google Analytics NO está cargado');
+            }
+        });
+        
+        // Enviar evento de prueba automático
+        setTimeout(function() {
+            console.log('Enviando evento de prueba automático...');
+            gtag('event', 'test_load', {
+                'event_category': 'test',
+                'event_label': 'página cargada'
+            });
+        }, 2000);
+    </script>
+</body>
+</html>

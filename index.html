@@ -7,6 +7,63 @@
     <meta name="description" content="Atacama NightSky: Tours guiados con telescopio Unistellar en el desierto más claro del mundo. Observación de estrellas, astrofotografía y experiencias únicas.">
     <meta name="keywords" content="Atacama NightSky, tours astronómicos San Pedro de Atacama, observación estrellas Atacama, telescopio Unistellar, astro turismo Chile">
     
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T39HYLDJ8K"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-T39HYLDJ8K');
+      
+      // Funciones de tracking personalizadas
+      function trackBookingClick(tourType) {
+        gtag('event', 'booking_click', {
+          'event_category': 'engagement',
+          'event_label': tourType,
+          'value': 1
+        });
+      }
+      
+      function trackContact(method) {
+        gtag('event', 'contact', {
+          'event_category': 'engagement',
+          'event_label': method,
+          'value': 1
+        });
+      }
+      
+      function trackTourView(tourName, price) {
+        gtag('event', 'view_item', {
+          'currency': 'CLP',
+          'value': price,
+          'items': [{
+            'item_id': tourName,
+            'item_name': tourName,
+            'item_category': 'Tours',
+            'price': price,
+            'quantity': 1
+          }]
+        });
+      }
+    </script>
+    
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', 'YOUR_PIXEL_ID');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"
+    /></noscript>
+    
     <!-- Performance Optimizations -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,10 +72,23 @@
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
     
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Tours Astronómicos en San Pedro de Atacama">
-    <meta property="og:description" content="Descubre el cielo más puro del mundo con nuestros tours guiados">
+    <meta property="og:title" content="Atacama NightSky - Tours Astronómicos en San Pedro de Atacama">
+    <meta property="og:description" content="Descubre el cielo más puro del mundo con nuestros tours guiados. Telescopio Unistellar, fotografía astronómica y experiencias únicas en el Desierto de Atacama.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://toursastronomicosatacama.cl">
+    <meta property="og:url" content="https://atacamanightsky.com">
+    <meta property="og:image" content="https://atacamanightsky.com/images/atacama-stars.jpg">
+    <meta property="og:site_name" content="Atacama NightSky">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Atacama NightSky - Tours Astronómicos">
+    <meta name="twitter:description" content="Tours astronómicos en el cielo más claro del mundo">
+    <meta name="twitter:image" content="https://atacamanightsky.com/images/atacama-stars.jpg">
+    
+    <!-- Additional SEO -->
+    <link rel="canonical" href="https://atacamanightsky.com">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Atacama NightSky">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -30,8 +100,38 @@
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"></noscript>
     
     <!-- FontAwesome Icons -->
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Schema.org Structured Data for Tourism -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TouristAttraction",
+      "name": "Atacama NightSky Tours",
+      "description": "Tours astronómicos guiados en el Desierto de Atacama con telescopio Unistellar",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "San Pedro de Atacama",
+        "addressRegion": "Antofagasta",
+        "addressCountry": "CL"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -22.9087,
+        "longitude": -68.1997
+      },
+      "url": "https://atacamanightsky.com",
+      "telephone": "+56912345678",
+      "priceRange": "$$",
+      "openingHours": "Mo-Su 19:00-23:00",
+      "image": "https://atacamanightsky.com/images/atacama-stars.jpg",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "156"
+      }
+    }
+    </script>
     
     <!-- Critical CSS inlined for above-the-fold -->
     <style>
@@ -344,7 +444,7 @@
                             </ul>
                         </div>
                         
-                        <a href="https://wa.me/56950558761?text=Hola!%20Me%20interesa%20cotizar%20un%20*Viaje%20de%20Estudio*%20astronómico%20para%20mi%20grupo.%20¿Podrían%20enviarme%20información%20detallada%20sobre%20disponibilidad,%20precios%20y%20opciones%20educativas?" target="_blank" class="btn btn-primary btn-tour">Solicitar Cotización</a>
+                        <a href="https://wa.me/56950558761?text=Hola!%20Me%20interesa%20cotizar%20un%20*Viaje%20de%20Estudio*%20astronómico%20para%20mi%20grupo.%20¿Podrían%20enviarme%20información%20detallada%20sobre%20disponibilidad,%20precios%20y%20opciones%20educativas?" target="_blank" class="btn btn-primary btn-tour" onclick="trackContact('whatsapp_educational')">Solicitar Cotización</a>
                     </div>
                 </div>
                 
@@ -390,7 +490,7 @@
                             </ul>
                         </div>
                         
-                        <a href="https://wa.me/56950558761?text=Hola!%20Me%20interesa%20cotizar%20un%20*Evento%20Corporativo*%20astronómico%20para%20mi%20empresa.%20¿Podrían%20enviarme%20información%20sobre%20disponibilidad,%20precios%20y%20opciones%20de%20team%20building?" target="_blank" class="btn btn-primary btn-tour">Solicitar Cotización</a>
+                        <a href="https://wa.me/56950558761?text=Hola!%20Me%20interesa%20cotizar%20un%20*Evento%20Corporativo*%20astronómico%20para%20mi%20empresa.%20¿Podrían%20enviarme%20información%20sobre%20disponibilidad,%20precios%20y%20opciones%20de%20team%20building?" target="_blank" class="btn btn-primary btn-tour" onclick="trackContact('whatsapp_corporate')">Solicitar Cotización</a>
                     </div>
                 </div>
             </div>
@@ -741,7 +841,7 @@
                             <i class="fab fa-whatsapp" aria-hidden="true"></i>
                             <div>
                                 <h3>WhatsApp</h3>
-                                <p><a href="https://wa.me/56935134669" target="_blank">+56 9 3513 4669</a></p>
+                                <p><a href="https://wa.me/56935134669" target="_blank" onclick="trackContact('whatsapp_contact')">+56 9 3513 4669</a></p>
                             </div>
                         </div>
                     
@@ -839,7 +939,7 @@
 
     <!-- WhatsApp Float Button -->
     <div class="whatsapp-float">
-        <a href="https://wa.me/56935134669?text=Hola!%20Me%20interesa%20información%20sobre%20los%20tours%20astronómicos" target="_blank" aria-label="Contactar por WhatsApp">
+        <a href="https://wa.me/56935134669?text=Hola!%20Me%20interesa%20información%20sobre%20los%20tours%20astronómicos" target="_blank" aria-label="Contactar por WhatsApp" onclick="trackContact('whatsapp_float')">
             <i class="fab fa-whatsapp"></i>
         </a>
         <div class="whatsapp-tooltip">¿Tienes preguntas? ¡Escríbenos!</div>
@@ -2514,6 +2614,26 @@ ${msg.contact}`);
                     }
                     
                     console.log('Client-side validation passed');
+                    
+                    // Track booking attempt en Google Analytics
+                    const tourPrices = {
+                        'Tour Astronómico Regular': 30000,
+                        'Tour de Astrofotografía Especializado': 120000,
+                        'Tour Privado VIP': 200000,
+                        'Viajes de Estudio': 15000
+                    };
+                    
+                    // El formulario usa 'regular' o 'private' como valores
+                    const tourTypeMapping = {
+                        'regular': 'Tour Astronómico Regular',
+                        'private': 'Tour Privado VIP'
+                    };
+                    
+                    const tourName = tourTypeMapping[bookingData.tourType] || bookingData.tourType;
+                    const tourPrice = tourPrices[tourName] || 0;
+                    
+                    trackBookingClick(tourName);
+                    trackTourView(tourName, tourPrice);
                     
                     // Mostrar loading en el botón
                     const submitBtn = bookingForm.querySelector('button[type="submit"]');

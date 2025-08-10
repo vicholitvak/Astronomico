@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vincular GA4 con Google Ads - Guía Paso a Paso</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .step {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .step h2 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .action {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .code {
+            background: #282c34;
+            color: #61dafb;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #5a67d8;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #28a745;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .checklist li:hover {
+            background: #e9ecef;
+        }
+        .checklist li.completed {
+            background: #d4edda;
+            text-decoration: line-through;
+        }
+        .checklist li:before {
+            content: "☐ ";
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        .checklist li.completed:before {
+            content: "✓ ";
+            color: #28a745;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            background: #f8f9fa;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .copy-btn {
+            background: #28a745;
+            font-size: 14px;
+            padding: 8px 15px;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+            animation: pulse 2s infinite;
+        }
+        .status-indicator.pending {
+            background: #ffc107;
+        }
+        .status-indicator.success {
+            background: #28a745;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 Vincular GA4 con Google Ads - Atacama Night Sky</h1>
+        
+        <div class="warning">
+            <strong>⚠️ Importante:</strong> Necesitas tener acceso de administrador tanto en GA4 como en Google Ads para completar estos pasos.
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('vincular')">1. Vincular Cuentas</div>
+            <div class="tab" onclick="showTab('conversiones')">2. Configurar Conversiones</div>
+            <div class="tab" onclick="showTab('audiencias')">3. Crear Audiencias</div>
+            <div class="tab" onclick="showTab('verificar')">4. Verificar</div>
+        </div>
+
+        <div id="vincular" class="tab-content active">
+            <div class="step">
+                <h2><span class="status-indicator pending"></span>Paso 1: Abrir GA4 y Google Ads</h2>
+                <div class="action">
+                    <p>Abre estas dos pestañas:</p>
+                    <button onclick="window.open('https://analytics.google.com', '_blank')">Abrir Google Analytics</button>
+                    <button onclick="window.open('https://ads.google.com', '_blank')">Abrir Google Ads</button>
+                </div>
+            </div>
+
+            <div class="step">
+                <h2><span class="status-indicator pending"></span>Paso 2: Obtener ID de Google Ads</h2>
+                <div class="action">
+                    <p>En Google Ads, tu ID está en la esquina superior derecha (formato: XXX-XXX-XXXX)</p>
+                    <input type="text" id="adsId" placeholder="Ingresa tu ID de Google Ads" style="padding: 10px; width: 250px;">
+                    <button onclick="saveAdsId()">Guardar ID</button>
+                </div>
+            </div>
+
+            <div class="step">
+                <h2><span class="status-indicator pending"></span>Paso 3: Vincular en GA4</h2>
+                <div class="action">
+                    <ol>
+                        <li>En GA4, ve a <strong>Admin (⚙️)</strong></li>
+                        <li>En la columna "Propiedad", busca <strong>Vínculos de productos</strong></li>
+                        <li>Haz clic en <strong>Vínculos de Google Ads</strong></li>
+                        <li>Clic en <strong>Vincular</strong></li>
+                        <li>Selecciona tu cuenta de Google Ads</li>
+                        <li>Activa estas opciones:
+                            <ul>
+                                <li>✅ Habilitar anuncios personalizados</li>
+                                <li>✅ Habilitar exportación automática de audiencias</li>
+                                <li>✅ Habilitar la exportación de conversiones de sitios web</li>
+                            </ul>
+                        </li>
+                        <li>Clic en <strong>Enviar</strong></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div id="conversiones" class="tab-content">
+            <div class="step">
+                <h2>🎯 Marcar Eventos como Conversiones en GA4</h2>
+                <div class="action">
+                    <p>Ve a <strong>Configurar → Eventos</strong> en GA4 y activa el switch de conversión para:</p>
+                    <ul class="checklist" id="conversionsList">
+                        <li onclick="toggleCheck(this)">booking_click (Intento de reserva)</li>
+                        <li onclick="toggleCheck(this)">contact (Contacto por WhatsApp)</li>
+                        <li onclick="toggleCheck(this)">view_item (Vista de tour)</li>
+                        <li onclick="toggleCheck(this)">scroll (Usuario engaged - 75%)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step">
+                <h2>📊 Importar Conversiones en Google Ads</h2>
+                <div class="action">
+                    <ol>
+                        <li>En Google Ads, ve a <strong>Herramientas y configuración → Medición → Conversiones</strong></li>
+                        <li>Clic en <strong>+ Nueva acción de conversión</strong></li>
+                        <li>Selecciona <strong>Importar</strong></li>
+                        <li>Elige <strong>Google Analytics 4</strong></li>
+                        <li>Selecciona estas conversiones:
+                            <ul>
+                                <li><strong>booking_click</strong> - Valor: $30 USD</li>
+                                <li><strong>contact</strong> - Valor: $10 USD</li>
+                            </ul>
+                        </li>
+                        <li>Clic en <strong>Importar y continuar</strong></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div id="audiencias" class="tab-content">
+            <div class="step">
+                <h2>👥 Crear Audiencias en GA4</h2>
+                <div class="action">
+                    <p>Ve a <strong>Configurar → Audiencias</strong> y crea estas 3 audiencias:</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>Audiencia 1: Interesados en Tours</h3>
+                <div class="code">
+Nombre: Interesados en Tours - 30 días
+Condición: Incluir usuarios cuando → Evento → view_item
+Duración: 30 días
+Descripción: Usuarios que vieron detalles de tours
+                </div>
+                <button onclick="copyToClipboard(this)" class="copy-btn">Copiar configuración</button>
+            </div>
+
+            <div class="step">
+                <h3>Audiencia 2: Alta Intención de Compra</h3>
+                <div class="code">
+Nombre: Intentaron Reservar - 7 días
+Condición: Incluir usuarios cuando → Evento → booking_click
+Duración: 7 días
+Descripción: Usuarios que intentaron hacer una reserva
+                </div>
+                <button onclick="copyToClipboard(this)" class="copy-btn">Copiar configuración</button>
+            </div>
+
+            <div class="step">
+                <h3>Audiencia 3: Contacto WhatsApp</h3>
+                <div class="code">
+Nombre: WhatsApp Contacts - 14 días
+Condición: Incluir usuarios cuando → Evento → contact
+Parámetro del evento: event_label contiene "whatsapp"
+Duración: 14 días
+Descripción: Usuarios que contactaron por WhatsApp
+                </div>
+                <button onclick="copyToClipboard(this)" class="copy-btn">Copiar configuración</button>
+            </div>
+        </div>
+
+        <div id="verificar" class="tab-content">
+            <div class="step">
+                <h2>✅ Lista de Verificación Final</h2>
+                <ul class="checklist" id="finalChecklist">
+                    <li onclick="toggleCheck(this)">GA4 vinculado con Google Ads</li>
+                    <li onclick="toggleCheck(this)">Eventos marcados como conversiones en GA4</li>
+                    <li onclick="toggleCheck(this)">Conversiones importadas en Google Ads</li>
+                    <li onclick="toggleCheck(this)">3 audiencias creadas en GA4</li>
+                    <li onclick="toggleCheck(this)">Audiencias disponibles en Google Ads</li>
+                    <li onclick="toggleCheck(this)">Modo debug desactivado en producción</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h2>🧪 Probar que Todo Funciona</h2>
+                <div class="action">
+                    <p>Realiza estas pruebas:</p>
+                    <ol>
+                        <li>Abre tu sitio web en una pestaña privada</li>
+                        <li>Haz clic en un botón de WhatsApp</li>
+                        <li>Espera 5 minutos</li>
+                        <li>En GA4 → Informes → Tiempo real → deberías ver el evento</li>
+                        <li>En Google Ads → Herramientas → Conversiones → verifica que aparezca (puede tardar hasta 3 horas)</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="success">
+                <h3>🎉 ¡Configuración Completada!</h3>
+                <p>Ahora tu Google Ads puede:</p>
+                <ul>
+                    <li>✓ Optimizar campañas basándose en conversiones reales</li>
+                    <li>✓ Crear campañas de remarketing con audiencias personalizadas</li>
+                    <li>✓ Medir el ROI real de tus anuncios</li>
+                    <li>✓ Usar Smart Bidding con datos de conversión</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="warning">
+            <h3>⏰ Tiempos de Procesamiento:</h3>
+            <ul>
+                <li>Eventos en GA4: Inmediato en tiempo real, 24h en informes</li>
+                <li>Conversiones en Google Ads: 3-6 horas</li>
+                <li>Audiencias: 24-48 horas para poblar</li>
+                <li>Smart Bidding: Necesita 30 conversiones en 30 días para optimizar</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Ocultar todos los tabs
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar el tab seleccionado
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function toggleCheck(element) {
+            element.classList.toggle('completed');
+            
+            // Actualizar indicadores si todos están completados
+            const allChecked = document.querySelectorAll('#finalChecklist li.completed').length === 6;
+            if (allChecked) {
+                alert('🎉 ¡Felicitaciones! Has completado toda la configuración.');
+            }
+        }
+
+        function saveAdsId() {
+            const adsId = document.getElementById('adsId').value;
+            if (adsId) {
+                localStorage.setItem('googleAdsId', adsId);
+                alert('ID guardado: ' + adsId);
+                document.querySelectorAll('.status-indicator')[1].classList.remove('pending');
+                document.querySelectorAll('.status-indicator')[1].classList.add('success');
+            }
+        }
+
+        function copyToClipboard(button) {
+            const codeBlock = button.previousElementSibling;
+            const text = codeBlock.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '✓ Copiado!';
+                button.style.background = '#28a745';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '';
+                }, 2000);
+            });
+        }
+
+        // Cargar ID guardado si existe
+        window.onload = function() {
+            const savedId = localStorage.getItem('googleAdsId');
+            if (savedId) {
+                document.getElementById('adsId').value = savedId;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Audiencias en GA4 - Paso a Paso</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        .audience-card {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        .audience-card h2 {
+            color: #667eea;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .step-by-step {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .step-number {
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        .config-box {
+            background: #e8f4f8;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: monospace;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+            color: #856404;
+        }
+        .warning {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .checklist li:hover {
+            background: #e9ecef;
+        }
+        .checklist li.completed {
+            background: #d4edda;
+            text-decoration: line-through;
+        }
+        .checklist li:before {
+            content: "☐ ";
+            font-size: 18px;
+            margin-right: 10px;
+        }
+        .checklist li.completed:before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #5a67d8;
+        }
+        .icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        .path {
+            background: #343a40;
+            color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👥 Crear Audiencias en Google Analytics 4</h1>
+        
+        <div class="warning">
+            <strong>📍 Ubicación:</strong> Ve a <span class="path">GA4 → Configurar → Audiencias</span>
+        </div>
+
+        <!-- AUDIENCIA 1 -->
+        <div class="audience-card">
+            <h2><span class="icon">👀</span>Audiencia 1: Interesados en Tours</h2>
+            
+            <div class="step-by-step">
+                <div class="step-number">1</div>
+                <strong>Clic en "Nueva audiencia"</strong>
+            </div>
+            
+            <div class="step-by-step">
+                <div class="step-number">2</div>
+                <strong>Seleccionar "Crear una audiencia personalizada"</strong>
+            </div>
+            
+            <div class="step-by-step">
+                <div class="step-number">3</div>
+                <strong>Configurar los detalles:</strong>
+                <div class="config-box">
+                    <strong>Nombre de la audiencia:</strong> Interesados en Tours - 30 días<br>
+                    <strong>Descripción:</strong> Usuarios que vieron detalles de tours<br>
+                    <strong>Duración:</strong> 30 días
+                </div>
+            </div>
+            
+            <div class="step-by-step">
+                <div class="step-number">4</div>
+                <strong>Agregar condición:</strong>
+                <div class="config-box">
+                    <strong>Incluir usuarios cuando:</strong> Evento<br>
+                    <strong>Nombre del evento:</strong> view_item<br>
+                    <strong>En los últimos:</strong> 30 días
+                </div>
+            </div>
+            
+            <div class="step-by-step">
+                <div class="step-number">5</div>
+                <strong>Guardar audiencia</strong>
+            </div>
+        </div>
+
+        <!-- AUDIENCIA 2 -->
+        <div class="audience-card">
+            <h2><span class="icon">🎯</span>Audiencia 2: Intentaron Reservar</h2>
+            
+            <div class="step-by-step">
+                <div class="step-number">1</div>
+                <strong>Nueva audiencia → Crear audiencia personalizada</strong>
+            </div>
+            
+            <div class="step-by-step">
+                <div class="step-number">2</div>
+                <strong>Configurar:</strong>
+                <div class="config-box">
+                    <strong>Nombre:</strong> Intentaron Reservar - 7 días<br>
+                    <strong>Descripción:</strong> Alta intención - Usuarios que intentaron hacer reserva<br>
+                    <strong>Duración:</strong> 7 días
+                </div>
+            </div>
+            
+            <div class="step-by-step">
+                <div class="step-number">3</div>
+                <strong>Condición:</strong>
+                <div class="config-box">
+                    <strong>Incluir usuarios cuando:</strong> Evento<br>
+                    <strong>Nombre del evento:</strong> booking_click<br>
+                    <strong>En los últimos:</strong> 7 días
+                </div>
+            </div>
+        </div>
+
+        <!-- AUDIENCIA 3 -->
+        <div class="audience-card">
+            <h2><span class="icon">💬</span>Audiencia 3: Contacto WhatsApp</h2>
+            
+            <div class="step-by-step">
+                <div class="step-number">1</div>
+                <strong>Nueva audiencia → Crear audiencia personalizada</strong>
+            </div>
+            
+            <div class="step-by-step">
+                <div class="step-number">2</div>
+                <strong>Configurar:</strong>
+                <div class="config-box">
+                    <strong>Nombre:</strong> WhatsApp Contacts - 14 días<br>
+                    <strong>Descripción:</strong> Leads calientes - Contactaron por WhatsApp<br>
+                    <strong>Duración:</strong> 14 días
+                </div>
+            </div>
+            
+            <div class="step-by-step">
+                <div class="step-number">3</div>
+                <strong>Condición:</strong>
+                <div class="config-box">
+                    <strong>Incluir usuarios cuando:</strong> Evento<br>
+                    <strong>Nombre del evento:</strong> contact<br>
+                    <strong>En los últimos:</strong> 14 días
+                </div>
+            </div>
+            
+            <div class="step-by-step">
+                <div class="step-number">4</div>
+                <strong>Condición adicional (OPCIONAL):</strong>
+                <div class="config-box">
+                    <strong>Y también:</strong> Parámetro del evento<br>
+                    <strong>Nombre del parámetro:</strong> event_label<br>
+                    <strong>Condición:</strong> contiene<br>
+                    <strong>Valor:</strong> whatsapp
+                </div>
+            </div>
+        </div>
+
+        <div class="success">
+            <h3>✅ Checklist de Verificación:</h3>
+            <ul class="checklist" id="audienceChecklist">
+                <li onclick="toggleCheck(this)">Audiencia "Interesados en Tours" creada (30 días)</li>
+                <li onclick="toggleCheck(this)">Audiencia "Intentaron Reservar" creada (7 días)</li>
+                <li onclick="toggleCheck(this)">Audiencia "WhatsApp Contacts" creada (14 días)</li>
+                <li onclick="toggleCheck(this)">Todas las audiencias tienen nombres descriptivos</li>
+                <li onclick="toggleCheck(this)">Duraciones configuradas correctamente</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <h3>⏰ Tiempos importantes:</h3>
+            <ul>
+                <li><strong>Población inicial:</strong> 1-2 días para que se llenen</li>
+                <li><strong>Disponible en Google Ads:</strong> 24-48 horas</li>
+                <li><strong>Tamaño mínimo para ads:</strong> 1,000 usuarios activos</li>
+                <li><strong>Audiencias similares:</strong> Necesita 1,000+ usuarios</li>
+            </ul>
+        </div>
+
+        <div class="audience-card">
+            <h2><span class="icon">🔧</span>Después de crear las audiencias:</h2>
+            
+            <div class="step-by-step">
+                <div class="step-number">1</div>
+                <strong>Ve a Google Ads</strong>
+                <div class="config-box">
+                    Herramientas → Biblioteca compartida → Gestión de audiencias<br>
+                    Busca: "Google Analytics (Universal Analytics y GA4)"
+                </div>
+            </div>
+            
+            <div class="step-by-step">
+                <div class="step-number">2</div>
+                <strong>Verificar que aparezcan las 3 audiencias</strong>
+                <div class="config-box">
+                    ✓ Interesados en Tours - 30 días<br>
+                    ✓ Intentaron Reservar - 7 días<br>
+                    ✓ WhatsApp Contacts - 14 días
+                </div>
+            </div>
+            
+            <div class="step-by-step">
+                <div class="step-number">3</div>
+                <strong>Usar en campañas:</strong>
+                <div class="config-box">
+                    • Remarketing: "Interesados en Tours"<br>
+                    • Alta conversión: "Intentaron Reservar"<br>
+                    • Audiencias similares: "WhatsApp Contacts"
+                </div>
+            </div>
+        </div>
+
+        <div class="success">
+            <h3>🚀 ¿Listo para el siguiente paso?</h3>
+            <p>Una vez creadas las audiencias, podremos:</p>
+            <ul>
+                <li>✓ Crear campañas de remarketing específicas</li>
+                <li>✓ Generar audiencias similares (lookalikes)</li>
+                <li>✓ Optimizar pujas por tipo de usuario</li>
+                <li>✓ Crear anuncios personalizados por audiencia</li>
+            </ul>
+            
+            <button onclick="window.open('https://analytics.google.com', '_blank')">Abrir Google Analytics</button>
+            <button onclick="window.open('https://ads.google.com', '_blank')">Abrir Google Ads</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleCheck(element) {
+            element.classList.toggle('completed');
+            
+            // Verificar si todas están completadas
+            const total = document.querySelectorAll('#audienceChecklist li').length;
+            const completed = document.querySelectorAll('#audienceChecklist li.completed').length;
+            
+            if (completed === total) {
+                setTimeout(() => {
+                    alert('🎉 ¡Excelente! Todas las audiencias están configuradas. Ahora ve a Google Ads para verificar que aparezcan.');
+                }, 500);
+            }
+        }
+        
+        // Mostrar progreso
+        let currentStep = 1;
+        function nextStep() {
+            alert(`Paso ${currentStep} completado. Continuando con el paso ${currentStep + 1}`);
+            currentStep++;
+        }
+    </script>
+</body>
+</html>

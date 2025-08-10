@@ -145,6 +145,7 @@ p {
     font-weight: var(--font-weight-medium);
     transition: all var(--transition-normal);
     box-shadow: var(--shadow-sm);
+    display: inline-block;
 }
 
 .cta-button:hover {
@@ -463,22 +464,23 @@ p {
 
 @media (max-width: 480px) {
     .title-line-1 {
-        font-size: clamp(1.8rem, 7vw, 2.5rem);
+        font-size: clamp(2.2rem, 9vw, 3rem);
     }
     .title-line-2 {
-        font-size: clamp(1.2rem, 4vw, 1.8rem);
+        font-size: clamp(1.5rem, 6vw, 2.2rem);
     }
     .title-line-3 {
-        font-size: clamp(1rem, 3.5vw, 1.5rem);
+        font-size: clamp(1.3rem, 5vw, 1.8rem);
     }
 }
 
 .hero-subtitle {
-    font-size: clamp(1.1rem, 3vw, 1.4rem);
+    font-size: clamp(1.2rem, 3.5vw, 1.4rem);
     color: var(--text-secondary);
-    margin-bottom: var(--spacing-xl);
+    margin-bottom: calc(var(--spacing-xl) + 1rem);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     animation: fadeInUp 1s ease-out 0.3s both;
+    padding: 0 var(--spacing-sm);
 }
 
 .hero-buttons {
