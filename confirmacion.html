@@ -9,6 +9,8 @@
       gtag('js', new Date());
       
       gtag('config', 'G-T39HYLDJ8K');
+      // Configure Google Ads tracking (conversion ID: 795362262)
+      gtag('config', 'AW-795362262');
     </script>
     
     <meta charset="UTF-8">
@@ -26,15 +28,10 @@
             'value': 1
           });
           
-          // Track specific Google Ads conversions
+          // Track specific Google Ads conversion - "Solicitud reserva"
+          // Conversion ID: 795362262, Label: 2aoGCPrxl4cBENaHofsC
           gtag('event', 'conversion', {
-            'send_to': 'G-T39HYLDJ8K/Solicitud_reserva',
-            'value': 1.0,
-            'currency': 'CLP'
-          });
-          
-          gtag('event', 'conversion', {
-            'send_to': 'G-T39HYLDJ8K/Reserva_de_cita',
+            'send_to': 'AW-795362262/2aoGCPrxl4cBENaHofsC',
             'value': 1.0,
             'currency': 'CLP'
           });
