@@ -2673,8 +2673,9 @@ ${msg.contact}`);
                         if (response.ok && result.success) {
                             console.log('Booking successful, redirecting to confirmation page');
                             
-                            // Track conversion in Google Analytics
+                            // Track conversion in Google Analytics and Google Ads
                             if (typeof gtag !== 'undefined') {
+                                // Google Analytics event
                                 gtag('event', 'purchase', {
                                     'transaction_id': result.bookingId || 'booking_' + Date.now(),
                                     'value': 1,
@@ -2683,6 +2684,21 @@ ${msg.contact}`);
                                         'item_name': bookingData.tourType,
                                         'quantity': bookingData.persons
                                     }]
+                                });
+                                
+                                // Google Ads conversion event - "Solicitud reserva"
+                                gtag('event', 'conversion', {
+                                    'send_to': 'G-T39HYLDJ8K/Solicitud_reserva',
+                                    'value': 1.0,
+                                    'currency': 'CLP',
+                                    'transaction_id': result.bookingId || 'booking_' + Date.now()
+                                });
+                                
+                                // Additional conversion tracking for "Reserva_de_cita"
+                                gtag('event', 'conversion', {
+                                    'send_to': 'G-T39HYLDJ8K/Reserva_de_cita',
+                                    'value': 1.0,
+                                    'currency': 'CLP'
                                 });
                             }
                             

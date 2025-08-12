@@ -19,10 +19,24 @@
     <script>
       window.addEventListener('load', function() {
         if (typeof gtag !== 'undefined') {
+          // Track general conversion
           gtag('event', 'conversion', {
             'event_category': 'booking',
             'event_label': 'tour_reservation',
             'value': 1
+          });
+          
+          // Track specific Google Ads conversions
+          gtag('event', 'conversion', {
+            'send_to': 'G-T39HYLDJ8K/Solicitud_reserva',
+            'value': 1.0,
+            'currency': 'CLP'
+          });
+          
+          gtag('event', 'conversion', {
+            'send_to': 'G-T39HYLDJ8K/Reserva_de_cita',
+            'value': 1.0,
+            'currency': 'CLP'
           });
         }
       });
