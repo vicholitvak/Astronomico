@@ -1,49 +1,59 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T39HYLDJ8K"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      
+      gtag('config', 'G-T39HYLDJ8K');
+    </script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atacama NightSky | Tours Astronómicos en San Pedro de Atacama</title>
     <meta name="description" content="Atacama NightSky: Tours guiados con telescopio Unistellar en el desierto más claro del mundo. Observación de estrellas, astrofotografía y experiencias únicas.">
     <meta name="keywords" content="Atacama NightSky, tours astronómicos San Pedro de Atacama, observación estrellas Atacama, telescopio Unistellar, astro turismo Chile">
     
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T39HYLDJ8K"></script>
+    <!-- Custom tracking functions -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-T39HYLDJ8K');
-      
       // Funciones de tracking personalizadas
       function trackBookingClick(tourType) {
-        gtag('event', 'booking_click', {
-          'event_category': 'engagement',
-          'event_label': tourType,
-          'value': 1
-        });
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'booking_click', {
+            'event_category': 'engagement',
+            'event_label': tourType,
+            'value': 1
+          });
+        }
       }
       
       function trackContact(method) {
-        gtag('event', 'contact', {
-          'event_category': 'engagement',
-          'event_label': method,
-          'value': 1
-        });
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'contact', {
+            'event_category': 'engagement',
+            'event_label': method,
+            'value': 1
+          });
+        }
       }
       
       function trackTourView(tourName, price) {
-        gtag('event', 'view_item', {
-          'currency': 'CLP',
-          'value': price,
-          'items': [{
-            'item_id': tourName,
-            'item_name': tourName,
-            'item_category': 'Tours',
-            'price': price,
-            'quantity': 1
-          }]
-        });
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'view_item', {
+            'currency': 'CLP',
+            'value': price,
+            'items': [{
+              'item_id': tourName,
+              'item_name': tourName,
+              'item_category': 'Tours',
+              'price': price,
+              'quantity': 1
+            }]
+          });
+        }
       }
     </script>
     
