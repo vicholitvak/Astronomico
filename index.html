@@ -57,6 +57,79 @@
           });
         }
       }
+      
+      // Corporate campaign specific tracking
+      function trackCorporateClick(action, source) {
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'corporate_interaction', {
+            'event_category': 'corporate_campaign',
+            'event_label': action,
+            'custom_parameter_1': source,
+            'value': 1
+          });
+          
+          // Also track as lead generation
+          gtag('event', 'generate_lead', {
+            'event_category': 'corporate',
+            'event_label': action,
+            'value': 1
+          });
+        }
+      }
+      
+      // Track corporate page section views
+      function trackCorporateView(section) {
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'view_promotion', {
+            'event_category': 'corporate_campaign',
+            'event_label': section,
+            'creative_name': 'corporate_events_section',
+            'creative_slot': section
+          });
+        }
+      }
+      
+      // Handle tour type selection in booking form
+      function handleTourTypeChange() {
+        const tourType = document.getElementById('tour-type').value;
+        if (tourType === 'corporate') {
+          trackCorporateClick('form_selection', 'booking_form');
+          
+          // Show corporate-specific message or modify form if needed
+          const messageField = document.getElementById('message');
+          if (messageField && !messageField.value.includes('Evento corporativo')) {
+            messageField.placeholder = 'Cuéntanos sobre tu evento corporativo: número de empleados, objetivos del team building, fechas preferidas, requerimientos especiales...';
+          }
+        }
+      }
+      
+      // UTM parameter tracking for corporate campaigns
+      function trackCampaignSource() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const source = urlParams.get('utm_source');
+        const medium = urlParams.get('utm_medium');
+        const campaign = urlParams.get('utm_campaign');
+        
+        if (campaign && campaign.includes('corporativ')) {
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'campaign_visit', {
+              'event_category': 'corporate_campaign',
+              'campaign_name': campaign,
+              'source': source,
+              'medium': medium
+            });
+          }
+          
+          // Auto-scroll to corporate section if coming from campaign
+          setTimeout(() => {
+            const corporateSection = document.getElementById('eventos-corporativos');
+            if (corporateSection) {
+              corporateSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              trackCorporateView('auto_scroll');
+            }
+          }, 1500);
+        }
+      }
     </script>
     
     <!-- Meta Pixel Code -->
@@ -463,7 +536,7 @@
                 </div>
                 
                 <!-- Tour 5: Corporate Events -->
-                <div class="tour-card featured">
+                <div class="tour-card featured" id="eventos-corporativos">
                     <div class="featured-badge">Empresas</div>
                     <div class="tour-image">
                         <picture>
@@ -504,7 +577,7 @@
                             </ul>
                         </div>
                         
-                        <a href="https://wa.me/56950558761?text=Hola!%20Me%20interesa%20cotizar%20un%20*Evento%20Corporativo*%20astronómico%20para%20mi%20empresa.%20¿Podrían%20enviarme%20información%20sobre%20disponibilidad,%20precios%20y%20opciones%20de%20team%20building?" target="_blank" class="btn btn-primary btn-tour" onclick="trackContact('whatsapp_corporate')">Solicitar Cotización</a>
+                        <a href="https://wa.me/56950558761?text=Hola!%20Me%20interesa%20cotizar%20un%20*Evento%20Corporativo*%20astronómico%20para%20mi%20empresa.%20¿Podrían%20enviarme%20información%20sobre%20disponibilidad,%20precios%20y%20opciones%20de%20team%20building?" target="_blank" class="btn btn-primary btn-tour" onclick="trackCorporateClick('whatsapp_quote', 'tour_card')">Solicitar Cotización</a>
                     </div>
                 </div>
             </div>
@@ -710,11 +783,12 @@
                             </div>
                             <div class="form-group">
                                 <label for="tour-type">Tipo de Tour *</label>
-                                <select id="tour-type" name="tour-type" required>
+                                <select id="tour-type" name="tour-type" required onchange="handleTourTypeChange()">
                                     <option value="">Selecciona tipo de tour</option>
                                     <option value="regular">Tour Regular (Grupo)</option>
                                     <option value="private">Tour Privado (Solo tu grupo)</option>
                                     <option value="astrophoto">Tour Astrofotográfico (Especializado)</option>
+                                    <option value="corporate">Evento Corporativo / Team Building</option>
                                 </select>
                             </div>
                         </div>
@@ -2735,6 +2809,23 @@ ${msg.contact}`);
             
             // Mark as loaded for any scripts that need to know
             document.documentElement.setAttribute('data-cls-optimized', 'true');
+            
+            // Track campaign source for corporate campaigns
+            trackCampaignSource();
+            
+            // Set up intersection observer for corporate section
+            const corporateSection = document.getElementById('eventos-corporativos');
+            if (corporateSection) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+                            trackCorporateView('section_view');
+                        }
+                    });
+                }, { threshold: 0.5 });
+                
+                observer.observe(corporateSection);
+            }
         });
         
         // Critical images are already preloaded in HTML head
