@@ -99,9 +99,10 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"></noscript>
     
-    <!-- FontAwesome Icons with better mobile loading -->
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <!-- FontAwesome Icons with fallback for better compatibility -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Fallback for older browsers -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.0/css/all.css">
     
     <!-- Schema.org Structured Data for Tourism -->
     <script type="application/ld+json">
@@ -146,7 +147,7 @@
     .hero-background{position:absolute;top:0;left:0;right:0;bottom:0}
     .hero-bg-img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
     .hero-content{position:relative;z-index:2;text-align:center;max-width:900px;padding:2rem}
-    .hero-title{font-size:clamp(2.25rem,6vw,3.875rem);line-height:1.3;margin-bottom:2rem;background:linear-gradient(45deg,#FF0000,#FFFF00,#0066FF,#000000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero-title{font-size:clamp(2.25rem,6vw,3.875rem);line-height:1.3;margin-bottom:2rem;color:#00D4FF}
     .hero-subtitle{font-size:clamp(1.25rem,3vw,1.5rem);color:rgba(184,184,184,0.9);margin-bottom:2rem;line-height:1.4}
     .hero-buttons{display:flex;justify-content:center;margin-top:1.5rem}
     .btn{display:inline-flex;align-items:center;justify-content:center;padding:14px 28px;border:none;border-radius:10px;font-weight:600;font-size:17px;text-decoration:none;color:#fff;background:linear-gradient(45deg,var(--primary-color),#7B68EE);min-width:180px;white-space:nowrap;cursor:pointer;transition:all 0.3s ease;box-shadow:0 4px 12px rgba(0,212,255,0.2)}
@@ -174,7 +175,7 @@
     .hero-bg-img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;content-visibility:visible!important}
     .hero-content{position:relative!important;z-index:2!important;text-align:center!important;max-width:900px!important;padding:2rem!important;contain:layout!important}
     .hero-content .container{width:100%!important;max-width:800px!important;padding:2rem!important}
-    .hero-title{font-size:clamp(2rem,5vw,3.5rem)!important;line-height:1.3!important;margin-bottom:2rem!important;min-height:8rem!important;background:linear-gradient(45deg,#FF0000,#FFFF00,#0066FF,#000000)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important}
+    .hero-title{font-size:clamp(2rem,5vw,3.5rem)!important;line-height:1.3!important;margin-bottom:2rem!important;min-height:8rem!important;color:#00D4FF!important}
     .title-line{display:block!important;min-height:1.3em!important;line-height:1.3!important}
     .hero-subtitle{font-size:clamp(1.1rem,2.5vw,1.3rem)!important;height:2em!important;line-height:1.5!important;margin-bottom:2rem!important}
     .hero-buttons{height:3.5rem!important;display:flex!important;gap:1rem!important;justify-content:center!important;align-items:center!important}
@@ -2661,11 +2662,22 @@ ${msg.contact}`);
                         
                         if (response.ok && result.success) {
                             console.log('Booking successful, redirecting to confirmation page');
-                            // Redirect a página de confirmación con fecha
-                            const selectedDateElement = document.getElementById('selected-date');
-                            const tourDate = selectedDateElement ? selectedDateElement.value : formData.date;
-                            console.log('Date for confirmation page:', tourDate);
-                            window.location.href = `confirmacion.html?id=${encodeURIComponent(result.bookingId)}&date=${encodeURIComponent(tourDate)}`;
+                            
+                            // Track conversion in Google Analytics
+                            if (typeof gtag !== 'undefined') {
+                                gtag('event', 'purchase', {
+                                    'transaction_id': result.bookingId || 'booking_' + Date.now(),
+                                    'value': 1,
+                                    'currency': 'CLP',
+                                    'items': [{
+                                        'item_name': bookingData.tourType,
+                                        'quantity': bookingData.persons
+                                    }]
+                                });
+                            }
+                            
+                            // Simple redirect to confirmation page without parameters
+                            window.location.href = 'confirmacion.html';
                         } else {
                             console.error('API returned error:', result);
                             throw new Error(result.error || 'Error al procesar la reserva');

@@ -4,6 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reserva Confirmada - Atacama NightSky</title>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T39HYLDJ8K"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-T39HYLDJ8K');
+      
+      // Track conversion event
+      gtag('event', 'conversion', {
+        'event_category': 'booking',
+        'event_label': 'tour_reservation',
+        'value': 1
+      });
+    </script>
+    
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/jpeg" href="images/Nightskylogo.jpg">
     <style>
@@ -172,15 +189,11 @@
             <h1 class="confirmation-title">¡Reserva Confirmada!</h1>
             
             <p class="confirmation-text">
-                Tu reserva ha sido procesada exitosamente.
+                ¡Gracias por tu reserva! Hemos recibido tu solicitud exitosamente.
             </p>
             
-            <div class="booking-id" id="bookingId">
-                Cargando ID...
-            </div>
-            
-            <div class="booking-date" id="bookingDate" style="background: rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 1rem; margin: 1rem 0; color: #ffffff; font-size: 1.2rem;">
-                📅 Fecha del tour: <span id="tourDateDisplay" style="color: #00D4FF; font-weight: bold;">Cargando...</span>
+            <div class="booking-id">
+                ✨ Tu solicitud está siendo procesada ✨
             </div>
             
             <div class="next-steps">
@@ -215,33 +228,22 @@
     </div>
     
     <script>
-        // Get booking ID and date from URL parameters
+        // Simple page load tracking
         document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const bookingId = urlParams.get('id');
-            const tourDate = urlParams.get('date');
-            
-            // Display booking ID
-            if (bookingId) {
-                document.getElementById('bookingId').textContent = bookingId;
-            } else {
-                document.getElementById('bookingId').textContent = 'ID no disponible';
+            // Track page view as conversion
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'page_view', {
+                    'page_title': 'Confirmation Page',
+                    'page_location': window.location.href,
+                    'page_path': '/confirmacion.html'
+                });
             }
             
-            // Display and format tour date
-            if (tourDate) {
-                const dateObj = new Date(tourDate + 'T00:00:00');
-                const options = { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                };
-                const formattedDate = dateObj.toLocaleDateString('es-CL', options);
-                document.getElementById('tourDateDisplay').textContent = formattedDate;
-            } else {
-                document.getElementById('bookingDate').style.display = 'none';
-            }
+            // Optional: Redirect to home after 30 seconds
+            setTimeout(function() {
+                // Uncomment if you want automatic redirect
+                // window.location.href = '/';
+            }, 30000);
         });
     </script>
 </body>
