@@ -238,6 +238,36 @@
     margin-bottom: var(--spacing-sm);
 }
 
+/* Compact Alert Subscription */
+.compact-alert-subscription {
+    text-align: center;
+    margin-top: var(--spacing-md);
+}
+
+.btn-compact-alert {
+    background: rgba(0, 212, 255, 0.15);
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.btn-compact-alert:hover {
+    background: rgba(0, 212, 255, 0.25);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+}
+
+/* Priority Section Styling */
+.priority-section {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, rgba(139, 69, 255, 0.05) 100%);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+}
+
 /* Observatory Info Section */
 .observatory-info {
     background: var(--bg-secondary);

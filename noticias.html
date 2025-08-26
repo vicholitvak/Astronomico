@@ -77,11 +77,63 @@
             <h1 class="news-title">Centro de Noticias Astronómicas</h1>
             <p class="news-subtitle">Tu portal hacia el cosmos desde el Desierto de Atacama</p>
             
-            <!-- Alert Subscription -->
-            <div class="alert-subscription">
-                <h3>🔔 Recibe Alertas Personalizadas</h3>
-                <p>No te pierdas ningún evento celestial. Configura tus alertas y te avisaremos cuando haya algo especial para observar.</p>
-                <button class="btn btn-primary" onclick="openAlertModal()">Configurar Alertas</button>
+            <!-- Compact Alert Subscription -->
+            <div class="compact-alert-subscription">
+                <button class="btn-compact-alert" onclick="openAlertModal()">
+                    🔔 Alertas Personalizadas
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Real-Time Space Data Section - MOVED TO TOP FOR VISUAL IMPACT -->
+    <section class="real-time-space-section priority-section">
+        <div class="container">
+            <h2>🌠 Eventos Astronómicos Extraordinarios</h2>
+            <p>Fenómenos únicos y espectaculares visibles desde Atacama</p>
+            
+            <!-- Live Space Data Grid -->
+            <div class="space-data-grid">
+                <!-- Astronomy Events -->
+                <div class="space-widget full-width" id="astronomy-events">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando eventos astronómicos...</p>
+                    </div>
+                </div>
+                
+                <!-- ISS Tracking -->
+                <div class="space-widget" id="iss-info">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando posición de la ISS...</p>
+                    </div>
+                </div>
+                
+                <!-- Space Weather -->
+                <div class="space-widget" id="space-weather">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando clima espacial...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Events Banner -->
+    <section class="live-events-banner" id="live-events">
+        <div class="container">
+            <div class="live-indicator">
+                <span class="live-dot"></span>
+                <span>EN VIVO</span>
+            </div>
+            <div class="live-content">
+                <h3>🌠 Próximo Evento: Lluvia de Meteoros Perseidas</h3>
+                <p>Visible esta noche desde las 22:00. Condiciones perfectas en Atacama.</p>
+                <a href="#booking" class="btn btn-accent" onclick="trackNewsInteraction('book_from_live', 'Perseidas')">
+                    Reservar Tour de Observación →
+                </a>
             </div>
         </div>
     </section>
@@ -126,23 +178,6 @@
                 <button class="filter-tab" data-filter="discoveries">Descubrimientos</button>
                 <button class="filter-tab" data-filter="tours">Tours Especiales</button>
                 <button class="filter-tab" data-filter="meteors">Lluvias de Meteoros</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Live Events Banner -->
-    <section class="live-events-banner" id="live-events">
-        <div class="container">
-            <div class="live-indicator">
-                <span class="live-dot"></span>
-                <span>EN VIVO</span>
-            </div>
-            <div class="live-content">
-                <h3>🌠 Próximo Evento: Lluvia de Meteoros Perseidas</h3>
-                <p>Visible esta noche desde las 22:00. Condiciones perfectas en Atacama.</p>
-                <a href="#booking" class="btn btn-accent" onclick="trackNewsInteraction('book_from_live', 'Perseidas')">
-                    Reservar Tour de Observación →
-                </a>
             </div>
         </div>
     </section>
@@ -192,40 +227,6 @@
         </div>
     </section>
 
-    <!-- Real-Time Space Data Section -->
-    <section class="real-time-space-section">
-        <div class="container">
-            <h2>📡 Datos Espaciales en Tiempo Real</h2>
-            <p>Información actualizada del cosmos para optimizar tu experiencia de observación</p>
-            
-            <!-- Live Space Data Grid -->
-            <div class="space-data-grid">
-                <!-- ISS Tracking -->
-                <div class="space-widget" id="iss-info">
-                    <div class="loading">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <p>Cargando posición de la ISS...</p>
-                    </div>
-                </div>
-                
-                <!-- Space Weather -->
-                <div class="space-widget" id="space-weather">
-                    <div class="loading">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <p>Cargando clima espacial...</p>
-                    </div>
-                </div>
-                
-                <!-- Astronomy Events -->
-                <div class="space-widget full-width" id="astronomy-events">
-                    <div class="loading">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <p>Cargando eventos astronómicos...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Tour Integration Section -->
     <section class="tour-integration">

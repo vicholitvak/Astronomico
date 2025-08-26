@@ -183,7 +183,7 @@ const chileObservatories = [
             sensitivity: "La más alta del mundo en su rango"
         },
         tours: "Tours públicos disponibles los sábados y domingos",
-        image: "images/eVscope2-20250525-021351.webp"
+        image: "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=500&h=300&fit=crop&crop=center"
     },
     {
         id: 2,
@@ -217,7 +217,7 @@ const chileObservatories = [
             lightCollecting: "Equivalente a un telescopio de 16m"
         },
         tours: "Tours disponibles primera y tercera sábado del mes",
-        image: "images/eVscope2-20250418-015040.webp"
+        image: "https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=500&h=300&fit=crop&crop=center"
     },
     {
         id: 3,
@@ -251,7 +251,7 @@ const chileObservatories = [
             observationTime: "~4000 horas/año"
         },
         tours: "Acceso limitado por altitud extrema",
-        image: "images/eVscope2-20250629-012206.webp"
+        image: "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=500&h=300&fit=crop&crop=center"
     },
     {
         id: 4,
@@ -285,7 +285,7 @@ const chileObservatories = [
             clearNights: "~300 noches despejadas/año"
         },
         tours: "Tours públicos disponibles",
-        image: "images/eVscope2-20250629-013307.webp"
+        image: "https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=500&h=300&fit=crop&crop=center"
     },
     {
         id: 5,
@@ -319,7 +319,7 @@ const chileObservatories = [
             skyArea: "5000 grados cuadrados mapeados"
         },
         tours: "Tours disponibles fines de semana",
-        image: "images/eVscope2-20250803-004143.webp"
+        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=300&fit=crop&crop=center"
     },
     {
         id: 6,
@@ -353,7 +353,7 @@ const chileObservatories = [
             resolution: "0.1 arcosegundos con óptica adaptativa"
         },
         tours: "Tours especiales para grupos organizados",
-        image: "images/eVscope2-20250803-004145.webp"
+        image: "https://images.unsplash.com/photo-1518066000714-58c45f1a2c0a?w=500&h=300&fit=crop&crop=center"
     },
     {
         id: 7,
@@ -387,7 +387,7 @@ const chileObservatories = [
             dataRate: "20 TB por noche"
         },
         tours: "Centro de visitantes en construcción",
-        image: "images/eVscope2-20250719-001348.webp"
+        image: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=500&h=300&fit=crop&crop=center"
     },
     {
         id: 8,
@@ -421,7 +421,7 @@ const chileObservatories = [
             efficiency: "Optimizado para espectroscopía"
         },
         tours: "Incluido en tours de CTIO",
-        image: "images/eVscope2-20250803-032904.webp"
+        image: "https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=500&h=300&fit=crop&crop=center"
     },
     {
         id: 9,
@@ -455,7 +455,7 @@ const chileObservatories = [
             observationEfficiency: "Muy alta en su rango"
         },
         tours: "Acceso muy limitado por ubicación remota",
-        image: "images/eVscope2-20250803-034840.webp"
+        image: "https://images.unsplash.com/photo-1444927714506-8492d94b5ba0?w=500&h=300&fit=crop&crop=center"
     },
     {
         id: 10,
@@ -490,6 +490,40 @@ const chileObservatories = [
         },
         tours: "Tours educativos regulares",
         image: "images/hero2.webp"
+    },
+    {
+        id: 11,
+        name: "TAO",
+        fullName: "Tokyo Astronomical Observatory (Atacama Observatory)",
+        location: "Cerro Chajnantor, Región de Antofagasta",
+        coordinates: { lat: -24.0900, lon: -67.7500 },
+        altitude: "5640m",
+        distanceFromSanPedro: "55km",
+        type: "Óptico infrarrojo",
+        frequency: "Luz infrarroja cercana (1-2.5 μm)",
+        organization: "Universidad de Tokio, Japón",
+        operationalSince: "2024",
+        website: "https://www.ioa.s.u-tokyo.ac.jp/TAO/",
+        mainObjectives: [
+            "Observación del universo infrarrojo",
+            "Estudio de formación estelar",
+            "Detección de exoplanetas",
+            "Investigación de galaxias distantes"
+        ],
+        discoveries: [
+            "Telescopio óptico más alto del mundo (5640m)",
+            "Primera luz obtenida en 2024",
+            "Tecnología avanzada de óptica adaptativa",
+            "Diseño único para condiciones extremas de altitud"
+        ],
+        specifications: {
+            diameter: "6.5 metros",
+            instruments: "Cámara infrarroja SWIMS, Espectrógrafo MIMIZUKU",
+            resolution: "Resolución sub-arcsegundo con óptica adaptativa",
+            uniqueness: "Telescopio óptico más alto del mundo"
+        },
+        tours: "Acceso extremadamente limitado por altitud récord",
+        image: "https://images.unsplash.com/photo-1614728263952-84ea256f9679?w=500&h=300&fit=crop&crop=center"
     }
 ];
 
