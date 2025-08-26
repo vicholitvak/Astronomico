@@ -68,45 +68,58 @@ function lowerPriorityForLazyImages() {
 
 // ===== NAVIGATION FUNCTIONALITY =====
 function initNavigation() {
-    const hamburger = document.querySelector('.hamburger');
+    const menuToggle = document.querySelector('.menu-toggle');
     const navMenu = document.querySelector('.nav-menu');
-    const navLinks = document.querySelectorAll('.nav-link');
+    const navLinks = document.querySelectorAll('.nav-menu a');
     const header = document.querySelector('.header');
 
     // Mobile menu toggle
-    hamburger.addEventListener('click', function() {
-        hamburger.classList.toggle('active');
-        navMenu.classList.toggle('active');
-        document.body.classList.toggle('no-scroll');
-    });
+    if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', function() {
+            menuToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            document.body.classList.toggle('no-scroll');
+        });
+    }
 
     // Close mobile menu when clicking on a link
     navLinks.forEach(link => {
         link.addEventListener('click', function() {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-            document.body.classList.remove('no-scroll');
+            if (menuToggle && navMenu) {
+                menuToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                document.body.classList.remove('no-scroll');
+            }
         });
     });
 
     // Header scroll effect without layout reads
     let lastScrollY = 0;
     let ticking = false;
-
+    
     function updateHeader() {
-        const currentScrollY = window.scrollY;
-        header.classList.toggle('scrolled', currentScrollY > 100);
-        header.style.transform = (currentScrollY > lastScrollY && currentScrollY > 200) ? 'translateY(-100%)' : 'translateY(0)';
+        const currentScrollY = window.pageYOffset;
+        
+        if (header) {
+            if (currentScrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        }
+        
         lastScrollY = currentScrollY;
         ticking = false;
     }
-
-    window.addEventListener('scroll', function() {
+    
+    function onScroll() {
         if (!ticking) {
             requestAnimationFrame(updateHeader);
             ticking = true;
         }
-    });
+    }
+    
+    window.addEventListener('scroll', onScroll, { passive: true });
 
     // Highlight active nav via IntersectionObserver (no forced layout)
     const sections = document.querySelectorAll('section[id]');

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T39HYLDJ8K"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      
+      gtag('config', 'G-T39HYLDJ8K');
+      gtag('config', 'AW-795362262');
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noticias Astronómicas | Atacama NightSky</title>
+    <meta name="description" content="Mantente actualizado con las últimas noticias astronómicas y eventos celestiales visibles desde el Desierto de Atacama. Reserva tours guiados para observar estos fenómenos.">
+    <meta name="keywords" content="noticias astronómicas, eventos celestiales Atacama, lluvias de meteoros, eclipses Chile, auroras australes">
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="news-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+      // Track news interactions
+      function trackNewsInteraction(action, newsTitle) {
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'news_interaction', {
+            'event_category': 'news',
+            'event_label': newsTitle,
+            'action': action
+          });
+        }
+      }
+      
+      function trackAlertSubscription(alertType) {
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'alert_subscription', {
+            'event_category': 'engagement',
+            'event_label': alertType
+          });
+        }
+      }
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container nav-container">
+                <a href="index.html" class="logo">
+                    <img src="images/Nightskylogo.webp" alt="Atacama NightSky" class="logo-img" loading="lazy" width="50" height="50">
+                    <span>Atacama NightSky</span>
+                </a>
+                <button class="menu-toggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="index.html#tours">Tours</a></li>
+                    <li><a href="index.html#galeria">Galería</a></li>
+                    <li><a href="noticias.html" class="active">Noticias</a></li>
+                    <li><a href="index.html#sobre-mi">Sobre Mí</a></li>
+                    <li><a href="index.html#contacto">Contacto</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="news-hero">
+        <div class="stars-bg"></div>
+        <div class="container">
+            <h1 class="news-title">Centro de Noticias Astronómicas</h1>
+            <p class="news-subtitle">Tu portal hacia el cosmos desde el Desierto de Atacama</p>
+            
+            <!-- Alert Subscription -->
+            <div class="alert-subscription">
+                <h3>🔔 Recibe Alertas Personalizadas</h3>
+                <p>No te pierdas ningún evento celestial. Configura tus alertas y te avisaremos cuando haya algo especial para observar.</p>
+                <button class="btn btn-primary" onclick="openAlertModal()">Configurar Alertas</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chile Observatory Info -->
+    <section class="observatory-info">
+        <div class="container">
+            <h2>🏔️ Chile: Capital Mundial de la Astronomía</h2>
+            <p>El Desierto de Atacama alberga el 70% de la infraestructura astronómica mundial</p>
+            
+            <div class="observatory-grid">
+                <div class="observatory-card">
+                    <h3>ALMA</h3>
+                    <p>Radiotelescopio más potente del mundo</p>
+                    <span class="distance">50km de San Pedro</span>
+                </div>
+                <div class="observatory-card">
+                    <h3>VLT Paranal</h3>
+                    <p>Very Large Telescope del ESO</p>
+                    <span class="distance">350km al sur</span>
+                </div>
+                <div class="observatory-card">
+                    <h3>La Silla</h3>
+                    <p>Primer observatorio del ESO en Chile</p>
+                    <span class="distance">600km al sur</span>
+                </div>
+                <div class="observatory-card">
+                    <h3>APEX</h3>
+                    <p>Telescopio submilimétrico</p>
+                    <span class="distance">40km de San Pedro</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Tabs -->
+    <section class="news-filters">
+        <div class="container">
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-filter="all">Todas</button>
+                <button class="filter-tab" data-filter="events">Eventos Celestiales</button>
+                <button class="filter-tab" data-filter="discoveries">Descubrimientos</button>
+                <button class="filter-tab" data-filter="tours">Tours Especiales</button>
+                <button class="filter-tab" data-filter="meteors">Lluvias de Meteoros</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Events Banner -->
+    <section class="live-events-banner" id="live-events">
+        <div class="container">
+            <div class="live-indicator">
+                <span class="live-dot"></span>
+                <span>EN VIVO</span>
+            </div>
+            <div class="live-content">
+                <h3>🌠 Próximo Evento: Lluvia de Meteoros Perseidas</h3>
+                <p>Visible esta noche desde las 22:00. Condiciones perfectas en Atacama.</p>
+                <a href="#booking" class="btn btn-accent" onclick="trackNewsInteraction('book_from_live', 'Perseidas')">
+                    Reservar Tour de Observación →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Grid -->
+    <section class="news-section">
+        <div class="container">
+            <div class="news-grid" id="news-grid">
+                <!-- News items will be dynamically loaded here -->
+            </div>
+            
+            <button class="btn btn-secondary load-more" id="load-more">
+                Cargar Más Noticias
+            </button>
+        </div>
+    </section>
+
+    <!-- Telescopes Directory Section -->
+    <section class="telescopes-directory">
+        <div class="container">
+            <h2>🌌 Directorio Completo de Telescopios en Chile</h2>
+            <p>Descubre todos los observatorios y centros astronómicos que hacen de Chile la capital mundial de la astronomía</p>
+            
+            <!-- Filter Controls -->
+            <div class="telescope-filters">
+                <button class="telescope-filter active" data-type="all">Todos</button>
+                <button class="telescope-filter" data-type="Radiotelescopio">Radio</button>
+                <button class="telescope-filter" data-type="Óptico/Infrarrojo">Óptico</button>
+                <button class="telescope-filter" data-type="Óptico de survey">Survey</button>
+                <button class="telescope-filter" data-type="educativo">Educativo</button>
+            </div>
+            
+            <!-- Telescopes Grid -->
+            <div class="telescopes-grid" id="telescopes-grid">
+                <!-- Telescopes will be dynamically populated here -->
+            </div>
+            
+            <!-- Detailed View Modal -->
+            <div class="telescope-modal" id="telescope-modal">
+                <div class="telescope-modal-content">
+                    <span class="close-telescope-modal">&times;</span>
+                    <div class="telescope-modal-body" id="telescope-modal-body">
+                        <!-- Detailed telescope info will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Real-Time Space Data Section -->
+    <section class="real-time-space-section">
+        <div class="container">
+            <h2>📡 Datos Espaciales en Tiempo Real</h2>
+            <p>Información actualizada del cosmos para optimizar tu experiencia de observación</p>
+            
+            <!-- Live Space Data Grid -->
+            <div class="space-data-grid">
+                <!-- ISS Tracking -->
+                <div class="space-widget" id="iss-info">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando posición de la ISS...</p>
+                    </div>
+                </div>
+                
+                <!-- Space Weather -->
+                <div class="space-widget" id="space-weather">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando clima espacial...</p>
+                    </div>
+                </div>
+                
+                <!-- Astronomy Events -->
+                <div class="space-widget full-width" id="astronomy-events">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando eventos astronómicos...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tour Integration Section -->
+    <section class="tour-integration">
+        <div class="container">
+            <h2>🔭 Observa el Cosmos desde Atacama</h2>
+            <p>El Desierto de Atacama ofrece las mejores condiciones astronómicas del mundo</p>
+            
+            <div class="tour-cards">
+                <div class="tour-card">
+                    <h3>Lluvias de Meteoros</h3>
+                    <p>Observación de Perseidas, Gemínidas y más eventos meteóricos anuales</p>
+                    <span class="tour-badge">Temporadas Específicas</span>
+                    <a href="index.html#tours" class="btn btn-primary">Ver Fechas</a>
+                </div>
+                
+                <div class="tour-card">
+                    <h3>Objetos de Espacio Profundo</h3>
+                    <p>Nebulosas, galaxias y cúmulos estelares con telescopio Unistellar</p>
+                    <span class="tour-badge">Todo el Año</span>
+                    <a href="index.html#tours" class="btn btn-primary">Reservar Tour</a>
+                </div>
+                
+                <div class="tour-card">
+                    <h3>Planetas y Luna</h3>
+                    <p>Observación planetaria y lunar en condiciones ideales</p>
+                    <span class="tour-badge">Disponible</span>
+                    <a href="index.html#tours" class="btn btn-primary">Más Info</a>
+                </div>
+                
+                <div class="tour-card special-card">
+                    <h3>Tours ISS & Eventos Espaciales</h3>
+                    <p>Observación de pasos de la ISS y fenómenos espaciales en tiempo real</p>
+                    <span class="tour-badge new">¡Nuevo!</span>
+                    <a href="https://wa.me/56920008782?text=Hola!%20Me%20interesa%20el%20nuevo%20tour%20de%20eventos%20espaciales%20en%20tiempo%20real" class="btn btn-accent">Consultar</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Alert Modal -->
+    <div class="modal" id="alert-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Configurar Alertas Astronómicas</h2>
+            
+            <form id="alert-form">
+                <div class="form-group">
+                    <label>Selecciona los eventos que te interesan:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="alerts" value="meteors"> Lluvias de Meteoros</label>
+                        <label><input type="checkbox" name="alerts" value="planets"> Conjunciones Planetarias</label>
+                        <label><input type="checkbox" name="alerts" value="iss"> Paso de la ISS</label>
+                        <label><input type="checkbox" name="alerts" value="discoveries"> Descubrimientos Astronómicos</label>
+                        <label><input type="checkbox" name="alerts" value="events"> Eventos Celestiales</label>
+                        <label><input type="checkbox" name="alerts" value="tours"> Tours Especiales</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Método de notificación:</label>
+                    <select name="notification-method">
+                        <option value="email">Email</option>
+                        <option value="whatsapp">WhatsApp</option>
+                        <option value="both">Ambos</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" name="email" placeholder="tu@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label>WhatsApp (opcional):</label>
+                    <input type="tel" name="phone" placeholder="+56 9 XXXX XXXX">
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Activar Alertas</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Atacama NightSky</h3>
+                    <p>Tu ventana al universo desde el desierto más claro del mundo</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul>
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="index.html#tours">Tours</a></li>
+                        <li><a href="noticias.html">Noticias</a></li>
+                        <li><a href="index.html#contacto">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Observatorios en Chile</h4>
+                    <ul>
+                        <li>ALMA - San Pedro de Atacama</li>
+                        <li>VLT - Paranal</li>
+                        <li>La Silla Observatory</li>
+                        <li>APEX - Llano de Chajnantor</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Atacama NightSky. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/56920008782?text=Hola!%20Vi%20las%20noticias%20astronómicas%20y%20me%20gustaría%20reservar%20un%20tour" 
+       class="whatsapp-btn" 
+       target="_blank"
+       onclick="trackNewsInteraction('whatsapp_click', 'news_page')">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Scripts - Updated integration -->
+    <script>
+        // Tab functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const targetTab = this.dataset.tab;
+                    
+                    // Remove active from all
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabPanes.forEach(p => p.classList.remove('active'));
+                    
+                    // Add active to clicked
+                    this.classList.add('active');
+                    document.getElementById(targetTab + '-tab').classList.add('active');
+                    
+                    // Track tab change
+                    if (typeof trackNewsInteraction === 'function') {
+                        trackNewsInteraction('tab_change', targetTab);
+                    }
+                });
+            });
+            
+            // Newsletter form
+            const newsletterForm = document.getElementById('newsletter-form');
+            if (newsletterForm) {
+                newsletterForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = this.querySelector('input[type="email"]').value;
+                    
+                    // Here you would normally send to your backend
+                    alert('¡Gracias por suscribirte! Te mantendremos informado sobre las últimas noticias astronómicas.');
+                    this.reset();
+                    
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'newsletter_subscription', {
+                            'event_category': 'engagement',
+                            'event_label': 'news_page'
+                        });
+                    }
+                });
+            }
+            
+            // Menu toggle for mobile
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+            
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    navMenu.classList.toggle('active');
+                });
+            }
+        });
+    </script>
+    
+    <script src="news-api.js"></script>
+    <script src="news-script.js"></script>
+    <script src="notification-system.js"></script>
+    <script src="automation-config.js"></script>
+    <script src="script.js"></script>
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Atacama NightSky - Noticias Astronómicas",
+        "description": "Centro de noticias astronómicas con datos en tiempo real desde el Desierto de Atacama",
+        "url": "https://atacamadarksky.cl/noticias.html",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://atacamadarksky.cl/noticias.html?search={search_term_string}",
+            "query-input": "required name=search_term_string"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Atacama NightSky",
+            "logo": "https://atacamadarksky.cl/images/Nightskylogo.webp"
+        }
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "NewsMediaOrganization",
+        "name": "Atacama NightSky News",
+        "url": "https://atacamadarksky.cl/noticias.html",
+        "logo": "https://atacamadarksky.cl/images/Nightskylogo.webp",
+        "sameAs": [
+            "https://instagram.com/atacama-nightsky",
+            "https://facebook.com/atacama-nightsky"
+        ],
+        "specialty": [
+            "Astronomy",
+            "Space Science",
+            "Astrophotography",
+            "Space Weather",
+            "Astronomical Events"
+        ],
+        "areaServed": {
+            "@type": "Place",
+            "name": "Atacama Desert, Chile"
+        }
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Inicio",
+                "item": "https://atacamadarksky.cl/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Noticias Astronómicas",
+                "item": "https://atacamadarksky.cl/noticias.html"
+            }
+        ]
+    }
+    </script>
+</body>
+</html>

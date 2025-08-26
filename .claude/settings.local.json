@@ -23,6 +23,7 @@
       "Bash(node:*)",
       "Bash(find:*)"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "acceptEdits"
   }
 }
