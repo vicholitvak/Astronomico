@@ -1743,7 +1743,139 @@
     margin-top: var(--spacing-md);
 }
 
-/* Astronomy Events Styles */
+/* Extraordinary Astronomy Events Styles */
+.extraordinary-events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.extraordinary-event-card {
+    background: var(--bg-tertiary);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    transition: var(--transition-normal);
+    position: relative;
+    border-left: 4px solid var(--primary-color);
+}
+
+.extraordinary-event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.extraordinary-event-card.urgent {
+    border-left-color: var(--accent-color);
+    box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+}
+
+.extraordinary-event-card.soon {
+    border-left-color: #ffc107;
+    box-shadow: 0 0 15px rgba(255, 193, 7, 0.2);
+}
+
+.extraordinary-event-card.future {
+    border-left-color: var(--secondary-color);
+}
+
+.event-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: var(--transition-normal);
+}
+
+.extraordinary-event-card:hover .event-image {
+    transform: scale(1.05);
+}
+
+.event-content {
+    padding: var(--spacing-md);
+}
+
+.event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.event-type {
+    background: var(--primary-color);
+    color: var(--bg-primary);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.event-rarity {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+    padding: 4px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.extraordinary-event-card h5 {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.3;
+}
+
+.event-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-md);
+    line-height: 1.4;
+}
+
+.event-details {
+    display: grid;
+    gap: 4px;
+    margin-bottom: var(--spacing-md);
+}
+
+.event-details p {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.event-details i {
+    color: var(--primary-color);
+    width: 14px;
+    text-align: center;
+}
+
+.event-tour-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: var(--bg-primary);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: var(--transition-fast);
+}
+
+.event-tour-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+}
+
+/* Legacy styles for compatibility */
 .planetary-events,
 .meteor-showers {
     display: grid;
