@@ -268,6 +268,183 @@
     border-bottom: 1px solid rgba(0, 212, 255, 0.2);
 }
 
+/* ISS World Map Styles */
+.iss-map-container {
+    margin: var(--spacing-lg) 0;
+    background: var(--bg-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-md);
+}
+
+.iss-world-map {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(to bottom, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    background-image: 
+        /* World map silhouette */
+        radial-gradient(ellipse at 20% 50%, rgba(34, 139, 34, 0.3) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 30%, rgba(34, 139, 34, 0.2) 0%, transparent 40%),
+        radial-gradient(ellipse at 85% 70%, rgba(34, 139, 34, 0.25) 0%, transparent 35%);
+}
+
+.world-map-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        /* Grid lines */
+        linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px);
+    background-size: 10% 10%;
+}
+
+.iss-marker {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    animation: issOrbit 90s linear infinite;
+}
+
+.iss-icon {
+    font-size: 1.5rem;
+    animation: issSpin 3s linear infinite;
+    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.8));
+}
+
+.iss-trail {
+    position: absolute;
+    width: 30px;
+    height: 2px;
+    background: linear-gradient(to right, transparent, rgba(0, 212, 255, 0.6), transparent);
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%);
+}
+
+.atacama-marker {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+}
+
+.atacama-icon {
+    font-size: 1.2rem;
+    color: var(--accent-color);
+    filter: drop-shadow(0 0 6px rgba(255, 107, 107, 0.8));
+}
+
+.atacama-label {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 107, 107, 0.9);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+@keyframes issOrbit {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes issSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Enhanced Space Weather Styles */
+.observation-conditions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+    margin: var(--spacing-lg) 0;
+}
+
+.moon-info, .cloud-info {
+    background: var(--bg-tertiary);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+.moon-info h5, .cloud-info h5 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-sm);
+    font-size: 1rem;
+}
+
+.moon-phase {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.moon-icon {
+    font-size: 2rem;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+.moon-details p {
+    margin: 0.2rem 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.cloud-status {
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.cloud-status p {
+    margin: 0.3rem 0;
+    font-size: 0.9rem;
+}
+
+.weather-status.compact {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-sm);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--border-radius);
+}
+
+.weather-summary {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xs);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.weather-summary span {
+    background: rgba(0, 212, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .observation-conditions {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .weather-summary {
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+}
+
 /* Observatory Info Section */
 .observatory-info {
     background: var(--bg-secondary);
@@ -295,11 +472,12 @@
 
 .observatory-card {
     background: var(--bg-tertiary);
-    padding: var(--spacing-lg);
     border-radius: var(--border-radius-lg);
     border: 1px solid rgba(0, 212, 255, 0.2);
     transition: var(--transition-normal);
     position: relative;
+    overflow: hidden;
+    text-align: center;
 }
 
 .observatory-card:hover {
@@ -308,15 +486,24 @@
     transform: translateY(-5px);
 }
 
+.observatory-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-bottom: 2px solid var(--primary-color);
+}
+
 .observatory-card h3 {
     color: var(--primary-color);
-    margin-bottom: var(--spacing-sm);
+    margin: var(--spacing-md) 0 var(--spacing-sm) 0;
     font-size: 1.3rem;
+    padding: 0 var(--spacing-md);
 }
 
 .observatory-card p {
     color: var(--text-secondary);
     margin-bottom: var(--spacing-md);
+    padding: 0 var(--spacing-md);
 }
 
 .distance {
@@ -327,6 +514,7 @@
     border-radius: 20px;
     font-size: 0.9rem;
     font-weight: 500;
+    margin-bottom: var(--spacing-md);
 }
 
 /* Filter Tabs */

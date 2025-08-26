@@ -697,7 +697,7 @@ class AstronomyEventsAPI {
                 magnitude: 2.0,
                 rarity: 'Cada 80 años',
                 description: 'Una nova recurrente que brillará como una nueva estrella',
-                image: 'https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=500&h=300&fit=crop&crop=center'
+                image: 'https://images.unsplash.com/photo-1504192010706-dd7ce64cc9c6?w=500&h=300&fit=crop&crop=center'
             },
             {
                 type: 'total_solar_eclipse',
@@ -721,7 +721,7 @@ class AstronomyEventsAPI {
                 magnitude: -4.5,
                 rarity: 'Cada varios años',
                 description: '4 planetas brillantes alineados en el cielo matutino',
-                image: 'https://images.unsplash.com/photo-1445905595283-21f8ae8a33d2?w=500&h=300&fit=crop&crop=center'
+                image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=300&fit=crop&crop=center'
             },
             {
                 type: 'lunar_eclipse',
@@ -745,7 +745,7 @@ class AstronomyEventsAPI {
                 magnitude: 6.0,
                 rarity: 'Cada 71 años',
                 description: 'Cometa con erupciones periódicas y forma distintiva',
-                image: 'https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=500&h=300&fit=crop&crop=center'
+                image: 'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=500&h=300&fit=crop&crop=center'
             },
             {
                 type: 'supernova',
@@ -757,7 +757,7 @@ class AstronomyEventsAPI {
                 magnitude: -10.0,
                 rarity: 'Evento único en milenios',
                 description: 'La supergigante roja puede explotar en cualquier momento',
-                image: 'https://images.unsplash.com/photo-1544827582-2af9aa3105a8?w=500&h=300&fit=crop&crop=center'
+                image: 'https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=500&h=300&fit=crop&crop=center'
             },
             {
                 type: 'conjunction',
@@ -793,7 +793,7 @@ class AstronomyEventsAPI {
                 magnitude: -5.0,
                 rarity: 'Cada 33 años',
                 description: 'Tormenta excepcional de meteoros',
-                image: 'https://images.unsplash.com/photo-1520034475321-cbe63696469a?w=500&h=300&fit=crop&crop=center'
+                image: 'https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=500&h=300&fit=crop&crop=center'
             },
             {
                 type: 'lunar_phase',
@@ -856,18 +856,36 @@ async function displayISSInfo() {
             issContainer.innerHTML = `
                 <div class="iss-current">
                     <h4><i class="fas fa-satellite"></i> Estación Espacial Internacional</h4>
+                    
+                    <!-- Real-time ISS World Map -->
+                    <div class="iss-map-container">
+                        <div id="iss-world-map" class="iss-world-map">
+                            <div class="world-map-bg"></div>
+                            <div class="iss-marker" id="iss-marker" style="left: ${((position.longitude + 180) / 360 * 100)}%; top: ${((90 - position.latitude) / 180 * 100)}%;">
+                                <div class="iss-icon">🛰️</div>
+                                <div class="iss-trail"></div>
+                            </div>
+                            <div class="atacama-marker" style="left: ${((ATACAMA_COORDS.lon + 180) / 360 * 100)}%; top: ${((90 - ATACAMA_COORDS.lat) / 180 * 100)}%;">
+                                <div class="atacama-icon">📍</div>
+                                <div class="atacama-label">Atacama</div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="iss-position">
                         <p><strong>Posición actual:</strong> ${position.latitude.toFixed(2)}°, ${position.longitude.toFixed(2)}°</p>
+                        <p><strong>Velocidad:</strong> ${(position.velocity || 27600).toLocaleString()} km/h</p>
+                        <p><strong>Altitud:</strong> ${(position.altitude || 408)} km</p>
                         <p><strong>Distancia desde Atacama:</strong> ${visibility.distance} km</p>
-                        <p><strong>Estado:</strong> ${visibility.brightness}</p>
+                        <p><strong>Visibilidad:</strong> ${visibility.brightness}</p>
                     </div>
                     ${nextPass ? `
                         <div class="next-pass">
-                            <p><strong>Próximo paso visible:</strong></p>
+                            <p><strong>Próximo paso visible desde Atacama:</strong></p>
                             <p>📅 ${nextPass.risetime.toLocaleDateString('es-ES')}</p>
                             <p>🕒 ${nextPass.risetime.toLocaleTimeString('es-ES')}</p>
                             <p>⏱️ Duración: ${Math.floor(nextPass.duration / 60)}m ${nextPass.duration % 60}s</p>
-                            <a href="index.html#tours" class="iss-tour-btn">¡Observar con nosotros!</a>
+                            <a href="index.html#tours" class="iss-tour-btn">¡Reservar Tour ISS!</a>
                         </div>
                     ` : ''}
                 </div>
@@ -890,23 +908,56 @@ async function displaySpaceWeather() {
         if (activity) {
             const impact = spaceWeather.getImpactOnObservation(activity);
             
+            // Get current moon phase and cloud conditions for observation
+            const moonPhase = getCurrentMoonPhase();
+            const cloudConditions = getCloudConditions();
+            
             weatherContainer.innerHTML = `
                 <div class="space-weather-info">
-                    <h4><i class="fas fa-sun"></i> Clima Espacial</h4>
-                    <div class="weather-status" style="border-left: 4px solid ${impact.color}">
-                        <p><strong>Condiciones para observación:</strong> 
-                            <span style="color: ${impact.color}">${impact.rating}</span>
-                        </p>
-                        <p>${impact.description}</p>
-                        <div class="weather-details">
-                            <p>☀️ Actividad solar: Clase ${activity.xrayClass}</p>
-                            <p>🌪️ Viento solar: ${activity.solarWindSpeed} km/s</p>
-                            <p>🌍 Actividad geomagnética: ${activity.geomagneticActivity}</p>
-                            ${activity.auroraForecast !== 'Muy baja' ? 
-                                `<p>✨ Auroras australes: ${activity.auroraForecast}</p>` : ''}
+                    <h4><i class="fas fa-cloud-moon"></i> Condiciones de Observación</h4>
+                    
+                    <!-- Moon Phase and Cloud Conditions -->
+                    <div class="observation-conditions">
+                        <div class="moon-info">
+                            <h5>🌙 Fase Lunar</h5>
+                            <div class="moon-phase">
+                                <span class="moon-icon">${moonPhase.icon}</span>
+                                <div class="moon-details">
+                                    <p><strong>${moonPhase.name}</strong></p>
+                                    <p>Iluminación: ${moonPhase.illumination}%</p>
+                                    <p>Ideal para: ${moonPhase.observationTip}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="cloud-info">
+                            <h5>☁️ Condiciones del Cielo</h5>
+                            <div class="cloud-status" style="border-left: 4px solid ${cloudConditions.color}">
+                                <p><strong>Cielo:</strong> <span style="color: ${cloudConditions.color}">${cloudConditions.status}</span></p>
+                                <p>Transparencia: ${cloudConditions.transparency}</p>
+                                <p>Seeing: ${cloudConditions.seeing}</p>
+                                <p>Viento: ${cloudConditions.wind}</p>
+                            </div>
                         </div>
                     </div>
-                    <p class="weather-recommendation">${activity.recommendation}</p>
+                    
+                    <!-- Space Weather Summary -->
+                    <div class="weather-status compact" style="border-left: 4px solid ${impact.color}">
+                        <p><strong>Actividad Espacial:</strong> 
+                            <span style="color: ${impact.color}">${impact.rating}</span>
+                        </p>
+                        <div class="weather-summary">
+                            <span>☀️ Solar: ${activity.xrayClass}</span>
+                            <span>🌍 Geomag: ${activity.geomagneticActivity}</span>
+                            ${activity.auroraForecast !== 'Muy baja' ? 
+                                `<span>✨ Auroras: ${activity.auroraForecast}</span>` : ''}
+                        </div>
+                    </div>
+                    
+                    <p class="weather-recommendation">
+                        <i class="fas fa-telescope"></i> 
+                        ${cloudConditions.recommendation}
+                    </p>
                 </div>
             `;
         }
@@ -1000,6 +1051,62 @@ async function initializeEnhancedAPIs() {
     setInterval(displayAstronomyEvents, 60 * 60 * 1000); // Update events every hour
 }
 
+// Helper functions for moon phase and cloud conditions
+function getCurrentMoonPhase() {
+    const today = new Date();
+    const moonPhases = [
+        { name: 'Luna Nueva', icon: '🌑', illumination: 0, observationTip: 'Objetos de espacio profundo' },
+        { name: 'Luna Creciente', icon: '🌒', illumination: 25, observationTip: 'Planetas y cráteres lunares' },
+        { name: 'Cuarto Creciente', icon: '🌓', illumination: 50, observationTip: 'Superficie lunar y planetas' },
+        { name: 'Luna Gibosa Creciente', icon: '🌔', illumination: 75, observationTip: 'Observación lunar detallada' },
+        { name: 'Luna Llena', icon: '🌕', illumination: 100, observationTip: 'Superficie lunar (muy brillante)' },
+        { name: 'Luna Gibosa Menguante', icon: '🌖', illumination: 75, observationTip: 'Cráteres con sombras' },
+        { name: 'Cuarto Menguante', icon: '🌗', illumination: 50, observationTip: 'Planetas matutinos' },
+        { name: 'Luna Menguante', icon: '🌘', illumination: 25, observationTip: 'Cielo oscuro para deep sky' }
+    ];
+    
+    // Simplified moon phase calculation (approximate)
+    const dayOfMonth = today.getDate();
+    const phaseIndex = Math.floor((dayOfMonth / 29.5) * 8) % 8;
+    return moonPhases[phaseIndex];
+}
+
+function getCloudConditions() {
+    // Simulate realistic Atacama desert conditions
+    const conditions = [
+        {
+            status: 'Despejado',
+            color: 'green',
+            transparency: 'Excelente (7-8/10)',
+            seeing: '0.6" (Excelente)',
+            wind: '5-10 km/h',
+            recommendation: 'Condiciones perfectas para observación astronómica'
+        },
+        {
+            status: 'Parcialmente Nublado',
+            color: 'orange',
+            transparency: 'Buena (6-7/10)',
+            seeing: '1.0" (Buena)',
+            wind: '15-20 km/h',
+            recommendation: 'Buenas condiciones, algunos momentos de turbulencia'
+        },
+        {
+            status: 'Algunas Nubes',
+            color: 'yellow',
+            transparency: 'Variable (5-6/10)',
+            seeing: '1.2" (Aceptable)',
+            wind: '10-15 km/h',
+            recommendation: 'Observación posible entre nubes'
+        }
+    ];
+    
+    // Atacama typically has excellent conditions (85% clear nights)
+    const rand = Math.random();
+    if (rand < 0.85) return conditions[0]; // Clear
+    if (rand < 0.95) return conditions[1]; // Partial
+    return conditions[2]; // Some clouds
+}
+
 // Export for use in other scripts
 window.astroNewsAPI = astroNewsAPI;
 window.ISSTracker = ISSTracker;
@@ -1007,6 +1114,8 @@ window.SpaceWeatherMonitor = SpaceWeatherMonitor;
 window.AstronomyEventsAPI = AstronomyEventsAPI;
 window.initializeAPIIntegration = initializeAPIIntegration;
 window.initializeEnhancedAPIs = initializeEnhancedAPIs;
+window.getCurrentMoonPhase = getCurrentMoonPhase;
+window.getCloudConditions = getCloudConditions;
 
 // Initialize when DOM is ready
 if (document.readyState === 'loading') {
