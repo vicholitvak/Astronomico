@@ -1,4 +1,4 @@
-// news-api.js - API Integration for Astronomical News
+// news-api.js - Enhanced API Integration for Astronomical News
 
 // Configuration
 const API_CONFIG = {
@@ -8,7 +8,18 @@ const API_CONFIG = {
     NASA_APOD_API: 'https://api.nasa.gov/planetary/apod',
     ISS_API: 'https://api.wheretheiss.at/v1',
     SPACE_WEATHER_API: 'https://services.swpc.noaa.gov/json',
-    ASTRONOMY_API: 'https://api.astronomyapi.com/api/v2'
+    ASTRONOMY_API: 'https://api.astronomyapi.com/api/v2',
+    // New APIs for enhanced functionality
+    HEAVENS_ABOVE_API: 'https://www.heavens-above.com/api',
+    ASTEROID_API: 'https://api.nasa.gov/neo/rest/v1',
+    EPIC_API: 'https://api.nasa.gov/EPIC/api/natural',
+    MARS_WEATHER_API: 'https://api.nasa.gov/insight_weather/',
+    SOLAR_SYSTEM_API: 'https://api.le-systeme-solaire.net/rest',
+    ASTRONOMY_PICTURES_API: 'https://apod.nasa.gov/apod',
+    SATELLITE_TRACKER_API: 'https://api.n2yo.com/rest/v1/satellite',
+    TLE_API: 'https://celestrak.org/NORAD/elements/gp.php',
+    WEATHER_API: 'https://api.openweathermap.org/data/2.5',
+    EARTH_OBSERVATION_API: 'https://api.nasa.gov/planetary/earth'
 };
 
 // Atacama coordinates for location-specific data
@@ -18,11 +29,13 @@ const ATACAMA_COORDS = {
     elevation: 2400
 };
 
-// News API Integration Class
+// Enhanced News API Integration Class
 class AstronomicalNewsAPI {
     constructor() {
         this.cache = new Map();
         this.cacheExpiry = 30 * 60 * 1000; // 30 minutes
+        this.realTimeData = new Map();
+        this.updateIntervals = new Map();
     }
 
     // Get data from cache if available and not expired
@@ -41,6 +54,264 @@ class AstronomicalNewsAPI {
             timestamp: Date.now()
         });
     }
+
+    // ===== ENHANCED REAL-TIME SPACE DATA =====
+
+    // Get real-time ISS position and pass predictions
+    async getISSData() {
+        try {
+            const [positionRes, passesRes] = await Promise.all([
+                fetch(`${API_CONFIG.ISS_API}/satellites/25544`),
+                fetch(`${API_CONFIG.ISS_API}/satellites/25544/positions?timestamps=${Date.now()}&units=miles`)
+            ]);
+
+            const position = await positionRes.json();
+            const passes = await passesRes.json();
+
+            return {
+                position: {
+                    latitude: position.latitude,
+                    longitude: position.longitude,
+                    altitude: position.altitude,
+                    velocity: position.velocity,
+                    visibility: position.visibility
+                },
+                nextPasses: passes,
+                lastUpdate: new Date().toISOString()
+            };
+        } catch (error) {
+            console.error('Error fetching ISS data:', error);
+            return null;
+        }
+    }
+
+    // Get space weather data
+    async getSpaceWeather() {
+        try {
+            const [solarWindRes, geomagneticRes, solarFlaresRes] = await Promise.all([
+                fetch(`${API_CONFIG.SPACE_WEATHER_API}/solar-wind.json`),
+                fetch(`${API_CONFIG.SPACE_WEATHER_API}/geomagnetic-storms.json`),
+                fetch(`${API_CONFIG.SPACE_WEATHER_API}/solar-flares.json`)
+            ]);
+
+            const solarWind = await solarWindRes.json();
+            const geomagnetic = await geomagneticRes.json();
+            const solarFlares = await solarFlaresRes.json();
+
+            return {
+                solarWind: solarWind[0] || {},
+                geomagnetic: geomagnetic[0] || {},
+                solarFlares: solarFlares.slice(0, 5),
+                kpIndex: geomagnetic[0]?.kp || 0,
+                auroraProbability: this.calculateAuroraProbability(geomagnetic[0]?.kp || 0),
+                lastUpdate: new Date().toISOString()
+            };
+        } catch (error) {
+            console.error('Error fetching space weather:', error);
+            return null;
+        }
+    }
+
+    // Calculate aurora probability based on KP index
+    calculateAuroraProbability(kpIndex) {
+        if (kpIndex >= 7) return 'Alta';
+        if (kpIndex >= 5) return 'Moderada';
+        if (kpIndex >= 3) return 'Baja';
+        return 'Muy Baja';
+    }
+
+    // Get near-Earth asteroids
+    async getNearEarthAsteroids() {
+        try {
+            const today = new Date().toISOString().split('T')[0];
+            const response = await fetch(
+                `${API_CONFIG.ASTEROID_API}/feed?start_date=${today}&end_date=${today}&api_key=${API_CONFIG.NASA_API_KEY}`
+            );
+
+            const data = await response.json();
+            const asteroids = data.near_earth_objects[today] || [];
+
+            return asteroids.slice(0, 10).map(asteroid => ({
+                name: asteroid.name,
+                diameter: asteroid.estimated_diameter.kilometers.estimated_diameter_max,
+                hazardous: asteroid.is_potentially_hazardous_asteroid,
+                missDistance: asteroid.close_approach_data[0]?.miss_distance.kilometers,
+                relativeVelocity: asteroid.close_approach_data[0]?.relative_velocity.kilometers_per_hour,
+                nextApproach: asteroid.close_approach_data[0]?.close_approach_date_full
+            }));
+        } catch (error) {
+            console.error('Error fetching asteroids:', error);
+            return [];
+        }
+    }
+
+    // Get Mars weather data
+    async getMarsWeather() {
+        try {
+            const response = await fetch(
+                `${API_CONFIG.MARS_WEATHER_API}?api_key=${API_CONFIG.NASA_API_KEY}&feedtype=json&ver=1.0`
+            );
+
+            const data = await response.json();
+            const latest = data[data.length - 1];
+
+            return {
+                sol: latest.sol,
+                temperature: {
+                    min: latest.min_temp,
+                    max: latest.max_temp,
+                    average: latest.at?.av
+                },
+                pressure: latest.pressure,
+                wind: {
+                    speed: latest.wind_speed,
+                    direction: latest.wind_direction
+                },
+                season: latest.season,
+                lastUpdate: latest.Last_UTC
+            };
+        } catch (error) {
+            console.error('Error fetching Mars weather:', error);
+            return null;
+        }
+    }
+
+    // Get astronomical events for Atacama location
+    async getAstronomicalEvents() {
+        const events = [];
+
+        // Moon phases
+        const moonPhase = await this.getMoonPhase();
+        if (moonPhase) events.push(moonPhase);
+
+        // Planetary conjunctions
+        const conjunctions = await this.getPlanetaryConjunctions();
+        events.push(...conjunctions);
+
+        // Meteor showers
+        const meteorShowers = await this.getMeteorShowers();
+        events.push(...meteorShowers);
+
+        // Satellite passes
+        const satellitePasses = await this.getSatellitePasses();
+        events.push(...satellitePasses);
+
+        return events.sort((a, b) => new Date(a.date) - new Date(b.date));
+    }
+
+    // Get current moon phase
+    async getMoonPhase() {
+        try {
+            // Calculate moon phase (simplified)
+            const now = new Date();
+            const moonPhases = [
+                { phase: 'Nueva', emoji: '🌑' },
+                { phase: 'Creciente', emoji: '🌒' },
+                { phase: 'Cuarto Creciente', emoji: '🌓' },
+                { phase: 'Gibosa Creciente', emoji: '🌔' },
+                { phase: 'Llena', emoji: '🌕' },
+                { phase: 'Gibosa Menguante', emoji: '🌖' },
+                { phase: 'Cuarto Menguante', emoji: '🌗' },
+                { phase: 'Menguante', emoji: '🌘' }
+            ];
+
+            // Simplified moon phase calculation
+            const phaseIndex = Math.floor((now.getTime() / (29.5 * 24 * 60 * 60 * 1000)) % 8);
+            const currentPhase = moonPhases[phaseIndex];
+
+            return {
+                id: 'moon-phase',
+                title: `Luna ${currentPhase.phase}`,
+                description: `La luna está en fase ${currentPhase.phase.toLowerCase()}`,
+                emoji: currentPhase.emoji,
+                type: 'moon',
+                date: now.toISOString().split('T')[0],
+                visibility: currentPhase.phase === 'Llena' ? 'Excelente' : 'Buena',
+                bestTime: 'Toda la noche'
+            };
+        } catch (error) {
+            console.error('Error calculating moon phase:', error);
+            return null;
+        }
+    }
+
+    // Get planetary conjunctions
+    async getPlanetaryConjunctions() {
+        // This would typically use an astronomy API
+        // For now, return some example conjunctions
+        const conjunctions = [
+            {
+                id: 'venus-jupiter',
+                title: 'Conjunción Venus-Júpiter',
+                description: 'Venus y Júpiter se acercarán a menos de 1 grado',
+                type: 'conjunction',
+                date: '2024-08-27',
+                visibility: 'Excelente',
+                bestTime: 'Amanecer',
+                planets: ['Venus', 'Júpiter']
+            }
+        ];
+
+        return conjunctions;
+    }
+
+    // Get meteor showers
+    async getMeteorShowers() {
+        const meteorShowers = [
+            {
+                id: 'perseids',
+                title: 'Lluvia de Meteoros Perseidas',
+                description: 'Las Perseidas ofrecen hasta 100 meteoros por hora',
+                type: 'meteor_shower',
+                date: '2024-08-12',
+                peakDate: '2024-08-13',
+                rate: '100 por hora',
+                visibility: 'Excelente desde Atacama',
+                bestTime: '22:00 - 06:00',
+                radiant: 'Perseo'
+            },
+            {
+                id: 'geminids',
+                title: 'Lluvia de Meteoros Gemínidas',
+                description: 'Las mejores lluvias del año, originadas por un asteroide',
+                type: 'meteor_shower',
+                date: '2024-12-13',
+                peakDate: '2024-12-14',
+                rate: '120 por hora',
+                visibility: 'Excelente desde Atacama',
+                bestTime: '22:00 - 06:00',
+                radiant: 'Géminis'
+            }
+        ];
+
+        return meteorShowers;
+    }
+
+    // Get satellite passes
+    async getSatellitePasses() {
+        try {
+            // This would use satellite tracking APIs
+            const satellites = [
+                {
+                    id: 'starlink',
+                    title: 'Paso de Starlink',
+                    description: 'Tren de satélites Starlink visible',
+                    type: 'satellite',
+                    date: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString().split('T')[0],
+                    visibility: 'Moderada',
+                    bestTime: 'Próximas 2 horas',
+                    magnitude: -3.5
+                }
+            ];
+
+            return satellites;
+        } catch (error) {
+            console.error('Error fetching satellite passes:', error);
+            return [];
+        }
+    }
+
+    // ===== EXISTING METHODS (ENHANCED) =====
 
     // Fetch latest space news from Spaceflight News API
     async fetchSpaceflightNews(limit = 10) {
@@ -70,7 +341,11 @@ class AstronomicalNewsAPI {
                 category: this.categorizeNews(item),
                 featured: index === 0,
                 launches: item.launches || [],
-                events: item.events || []
+                events: item.events || [],
+                // Enhanced metadata
+                readingTime: this.calculateReadingTime(item.summary),
+                sentiment: this.analyzeSentiment(item.title + ' ' + item.summary),
+                tags: this.extractTags(item.title + ' ' + item.summary)
             }));
 
             this.saveToCache(cacheKey, formattedNews);
@@ -79,6 +354,39 @@ class AstronomicalNewsAPI {
             console.error('Error fetching Spaceflight News:', error);
             return [];
         }
+    }
+
+    // Calculate reading time
+    calculateReadingTime(text) {
+        const wordsPerMinute = 200;
+        const words = text.split(' ').length;
+        return Math.ceil(words / wordsPerMinute);
+    }
+
+    // Simple sentiment analysis
+    analyzeSentiment(text) {
+        const positiveWords = ['descubrimiento', 'éxito', 'avance', 'nuevo', 'innovador', 'histórico'];
+        const negativeWords = ['fallo', 'accidente', 'problema', 'dificultad', 'retraso'];
+
+        const lowerText = text.toLowerCase();
+        const positiveCount = positiveWords.filter(word => lowerText.includes(word)).length;
+        const negativeCount = negativeWords.filter(word => lowerText.includes(word)).length;
+
+        if (positiveCount > negativeCount) return 'positive';
+        if (negativeCount > positiveCount) return 'negative';
+        return 'neutral';
+    }
+
+    // Extract tags from text
+    extractTags(text) {
+        const keywords = [
+            'NASA', 'ESA', 'SpaceX', 'astronomía', 'telescopio', 'planeta', 'estrella',
+            'galaxia', 'universo', 'espacio', 'misión', 'lanzamiento', 'descubrimiento'
+        ];
+
+        return keywords.filter(keyword => 
+            text.toLowerCase().includes(keyword.toLowerCase())
+        );
     }
 
     // Fetch NASA Astronomy Picture of the Day
@@ -106,7 +414,11 @@ class AstronomicalNewsAPI {
                 hdurl: data.hdurl || data.url,
                 media_type: data.media_type,
                 copyright: data.copyright,
-                thumbnail_url: data.thumbnail_url || data.url
+                thumbnail_url: data.thumbnail_url || data.url,
+                // Enhanced metadata
+                readingTime: this.calculateReadingTime(data.explanation),
+                tags: this.extractTags(data.title + ' ' + data.explanation),
+                astronomyTerms: this.extractAstronomyTerms(data.explanation)
             };
 
             this.saveToCache(cacheKey, formattedApod);
@@ -117,120 +429,154 @@ class AstronomicalNewsAPI {
         }
     }
 
-    // Fetch latest astronomy papers from arXiv
-    async fetchArxivPapers(category = 'astro-ph', maxResults = 10) {
-        const cacheKey = `arxiv-${category}-${maxResults}`;
-        const cached = this.getFromCache(cacheKey);
-        if (cached) return cached;
+    // Extract astronomy terms
+    extractAstronomyTerms(text) {
+        const astronomyTerms = [
+            'galaxia', 'nebulosa', 'supernova', 'púlsar', 'cuásar', 'agujero negro',
+            'constelación', 'planeta', 'satélite', 'asteroide', 'cometa', 'meteorito'
+        ];
 
+        return astronomyTerms.filter(term => 
+            text.toLowerCase().includes(term.toLowerCase())
+        );
+    }
+
+    // ===== NEW GADGET METHODS =====
+
+    // Get interactive sky map data
+    async getSkyMapData(date = new Date()) {
         try {
-            const query = `search_query=cat:${category}&sortBy=submittedDate&sortOrder=descending&max_results=${maxResults}`;
-            const response = await fetch(`${API_CONFIG.ARXIV_API}?${query}`);
-            
-            if (!response.ok) throw new Error('Failed to fetch arXiv papers');
-            
-            const text = await response.text();
-            const papers = this.parseArxivXML(text);
-            
-            this.saveToCache(cacheKey, papers);
-            return papers;
-        } catch (error) {
-            console.error('Error fetching arXiv papers:', error);
-            return [];
-        }
-    }
-
-    // Parse arXiv XML response
-    parseArxivXML(xmlText) {
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-        const entries = xmlDoc.getElementsByTagName('entry');
-        const papers = [];
-
-        for (let entry of entries) {
-            try {
-                const getTextContent = (tagName) => {
-                    const element = entry.getElementsByTagName(tagName)[0];
-                    return element ? element.textContent : '';
-                };
-
-                const getAuthors = () => {
-                    const authors = entry.getElementsByTagName('author');
-                    return Array.from(authors).map(author => 
-                        author.getElementsByTagName('name')[0]?.textContent || ''
-                    ).filter(name => name);
-                };
-
-                const id = getTextContent('id');
-                const arxivId = id ? id.split('/abs/')[1] : '';
-
-                papers.push({
-                    id: `arxiv-${arxivId}`,
-                    arxiv_id: arxivId,
-                    title: getTextContent('title').replace(/\n/g, ' ').trim(),
-                    summary: getTextContent('summary').replace(/\n/g, ' ').trim(),
-                    authors: getAuthors(),
-                    published: getTextContent('published'),
-                    updated: getTextContent('updated'),
-                    pdf_url: id ? id.replace('/abs/', '/pdf/') + '.pdf' : '',
-                    abs_url: id,
-                    category: getTextContent('arxiv:primary_category')
-                });
-            } catch (e) {
-                console.error('Error parsing arXiv entry:', e);
-            }
-        }
-
-        return papers;
-    }
-
-    // Categorize news based on keywords
-    categorizeNews(item) {
-        const title = (item.title || '').toLowerCase();
-        const summary = (item.summary || '').toLowerCase();
-        const combined = title + ' ' + summary;
-
-        if (combined.includes('meteor') || combined.includes('perseids') || combined.includes('geminids')) {
-            return 'meteors';
-        } else if (combined.includes('discover') || combined.includes('found') || combined.includes('detect')) {
-            return 'discoveries';
-        } else if (combined.includes('launch') || combined.includes('mission') || combined.includes('rocket')) {
-            return 'missions';
-        } else if (combined.includes('planet') || combined.includes('conjunc') || combined.includes('eclipse')) {
-            return 'events';
-        } else {
-            return 'general';
-        }
-    }
-
-    // Combine all news sources
-    async fetchAllNews() {
-        try {
-            const [spaceflightNews, apod, arxivPapers] = await Promise.allSettled([
-                this.fetchSpaceflightNews(15),
-                this.fetchNASAApod(),
-                this.fetchArxivPapers('astro-ph', 10)
-            ]);
-
-            const allNews = {
-                spaceflight: spaceflightNews.status === 'fulfilled' ? spaceflightNews.value : [],
-                apod: apod.status === 'fulfilled' ? apod.value : null,
-                papers: arxivPapers.status === 'fulfilled' ? arxivPapers.value : [],
-                timestamp: new Date().toISOString()
-            };
-
-            return allNews;
-        } catch (error) {
-            console.error('Error fetching all news:', error);
+            // This would integrate with astronomy APIs for real sky data
+            // For now, return structured data for visualization
             return {
-                spaceflight: [],
-                apod: null,
-                papers: [],
-                timestamp: new Date().toISOString()
+                visibleObjects: await this.getVisibleCelestialObjects(date),
+                constellations: await this.getVisibleConstellations(date),
+                planets: await this.getVisiblePlanets(date),
+                moon: await this.getMoonPosition(date),
+                location: ATACAMA_COORDS
             };
+        } catch (error) {
+            console.error('Error fetching sky map data:', error);
+            return null;
         }
+    }
+
+    // Get visible celestial objects
+    async getVisibleCelestialObjects(date) {
+        // Simplified implementation - would use astronomy API
+        return [
+            { name: 'Sirius', ra: '06h 45m', dec: '-16° 43\'', magnitude: -1.46, type: 'star' },
+            { name: 'Canopus', ra: '06h 24m', dec: '-52° 42\'', magnitude: -0.74, type: 'star' },
+            { name: 'Venus', ra: '23h 45m', dec: '-04° 12\'', magnitude: -4.2, type: 'planet' },
+            { name: 'Jupiter', ra: '02h 15m', dec: '+12° 45\'', magnitude: -2.1, type: 'planet' }
+        ];
+    }
+
+    // Get astronomy quiz questions
+    getAstronomyQuiz() {
+        return [
+            {
+                question: "¿Cuál es el planeta más cercano al Sol?",
+                options: ["Venus", "Mercurio", "Marte", "Tierra"],
+                correct: 1,
+                explanation: "Mercurio es el planeta más cercano al Sol, orbitando a una distancia promedio de 58 millones de kilómetros."
+            },
+            {
+                question: "¿Qué fenómeno astronómico se conoce como 'la lluvia de estrellas'?",
+                options: ["Aurora Boreal", "Lluvia de Meteoros", "Lluvia de Estrellas Fugaces", "Todas las anteriores"],
+                correct: 1,
+                explanation: "Las lluvias de meteoros son conocidas popularmente como 'lluvia de estrellas'."
+            },
+            {
+                question: "¿Cuál es el telescopio más grande del mundo ubicado en Chile?",
+                options: ["Hubble", "James Webb", "ALMA", "Extremely Large Telescope"],
+                correct: 3,
+                explanation: "El Extremely Large Telescope (ELT) será el telescopio más grande del mundo cuando se complete."
+            }
+        ];
+    }
+
+    // Get astronomy facts
+    getAstronomyFacts() {
+        return [
+            {
+                fact: "El universo tiene aproximadamente 13.800 millones de años de edad.",
+                category: "cosmología"
+            },
+            {
+                fact: "Un año luz equivale a aproximadamente 9.461 billones de kilómetros.",
+                category: "medidas"
+            },
+            {
+                fact: "El telescopio ALMA en Atacama puede detectar señales de radio del espacio profundo.",
+                category: "observatorios"
+            },
+            {
+                fact: "La Vía Láctea contiene entre 100.000 y 400.000 millones de estrellas.",
+                category: "galaxia"
+            }
+        ];
+    }
+
+    // ===== UTILITY METHODS =====
+
+    // Start real-time updates for specific data types
+    startRealTimeUpdates(dataType, callback, interval = 60000) {
+        if (this.updateIntervals.has(dataType)) {
+            clearInterval(this.updateIntervals.get(dataType));
+        }
+
+        const updateFunction = async () => {
+            try {
+                let data;
+                switch (dataType) {
+                    case 'iss':
+                        data = await this.getISSData();
+                        break;
+                    case 'space-weather':
+                        data = await this.getSpaceWeather();
+                        break;
+                    case 'asteroids':
+                        data = await this.getNearEarthAsteroids();
+                        break;
+                    case 'mars-weather':
+                        data = await this.getMarsWeather();
+                        break;
+                }
+
+                if (data) {
+                    this.realTimeData.set(dataType, data);
+                    callback(data);
+                }
+            } catch (error) {
+                console.error(`Error updating ${dataType}:`, error);
+            }
+        };
+
+        // Initial update
+        updateFunction();
+
+        // Set interval for updates
+        const intervalId = setInterval(updateFunction, interval);
+        this.updateIntervals.set(dataType, intervalId);
+    }
+
+    // Stop real-time updates
+    stopRealTimeUpdates(dataType) {
+        if (this.updateIntervals.has(dataType)) {
+            clearInterval(this.updateIntervals.get(dataType));
+            this.updateIntervals.delete(dataType);
+        }
+    }
+
+    // Get all real-time data
+    getRealTimeData() {
+        return Object.fromEntries(this.realTimeData);
     }
 }
+
+// Export the enhanced API class
+window.AstronomicalNewsAPI = AstronomicalNewsAPI;
 
 // Initialize the API
 const astroNewsAPI = new AstronomicalNewsAPI();

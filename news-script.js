@@ -1,10 +1,15 @@
-// ===== NEWS PAGE FUNCTIONALITY =====
+// ===== ENHANCED NEWS PAGE FUNCTIONALITY =====
 
-// Real astronomical events data - Updated daily
-let newsData = [];
+// Initialize the enhanced astronomical news system
+let newsAPI;
+let realTimeUpdates = new Map();
+let currentFilters = new Set(['all']);
+let searchQuery = '';
+let currentPage = 1;
+let isLoading = false;
 
-// Real astronomical events and news relevant to Atacama
-const realAstronomicalEvents = [
+// Enhanced astronomical events data with real-time capabilities
+const enhancedAstronomicalEvents = [
     {
         id: 1,
         title: "ALMA detecta moléculas orgánicas complejas en disco protoplanetario",
@@ -17,7 +22,10 @@ const realAstronomicalEvents = [
         source: "ESO Chile",
         visibility: "Investigación desde Atacama",
         bestTime: "Investigación continua",
-        constellation: "Observable desde nuestros tours"
+        constellation: "Observable desde nuestros tours",
+        tags: ["ALMA", "astroquímica", "formación planetaria"],
+        readingTime: 3,
+        sentiment: "positive"
     },
     {
         id: 2,
@@ -31,7 +39,10 @@ const realAstronomicalEvents = [
         source: "ESO Paranal",
         visibility: "Investigación desde Chile",
         bestTime: "Visible en tours nocturnos",
-        constellation: "Centaurus"
+        constellation: "Centaurus",
+        tags: ["VLT", "exoplanetas", "zona habitable"],
+        readingTime: 4,
+        sentiment: "positive"
     },
     {
         id: 3,
@@ -46,7 +57,10 @@ const realAstronomicalEvents = [
         source: "IMO",
         visibility: "Excelente desde Atacama",
         bestTime: "22:00 - 06:00",
-        constellation: "Gemini"
+        constellation: "Gemini",
+        tags: ["meteoritos", "Gemínidas", "observación"],
+        readingTime: 2,
+        sentiment: "excited"
     },
     {
         id: 4,
@@ -60,7 +74,10 @@ const realAstronomicalEvents = [
         source: "ALMA Observatory",
         visibility: "Investigación desde Atacama",
         bestTime: "Tours educativos disponibles",
-        constellation: "Sagittarius"
+        constellation: "Sagittarius",
+        tags: ["formación planetaria", "ALMA", "HD 163296"],
+        readingTime: 3,
+        sentiment: "neutral"
     },
     {
         id: 5,
@@ -74,7 +91,10 @@ const realAstronomicalEvents = [
         source: "ESO La Silla",
         visibility: "Visible desde tours",
         bestTime: "Historia astronómica de Chile",
-        constellation: "Múltiples descubrimientos"
+        constellation: "Múltiples descubrimientos",
+        tags: ["historia", "descubrimientos", "ESO"],
+        readingTime: 4,
+        sentiment: "positive"
     },
     {
         id: 6,
@@ -88,7 +108,10 @@ const realAstronomicalEvents = [
         source: "NASA",
         visibility: "Excelente con telescopio",
         bestTime: "21:00 - 05:00",
-        constellation: "Aquarius"
+        constellation: "Aquarius",
+        tags: ["Saturno", "oposición", "observación"],
+        readingTime: 2,
+        sentiment: "excited"
     },
     {
         id: 7,
@@ -102,7 +125,10 @@ const realAstronomicalEvents = [
         source: "NASA JPL",
         visibility: "Visible al amanecer",
         bestTime: "05:30 - 06:30",
-        constellation: "Gemini"
+        constellation: "Gemini",
+        tags: ["Venus", "Júpiter", "conjunción"],
+        readingTime: 2,
+        sentiment: "positive"
     },
     {
         id: 8,
@@ -116,7 +142,10 @@ const realAstronomicalEvents = [
         source: "NASA/ESO",
         visibility: "Objetos observables en tours",
         bestTime: "Nebulosas visibles toda la noche",
-        constellation: "Múltiples objetos"
+        constellation: "Múltiples objetos",
+        tags: ["JWST", "nebulosas", "observación"],
+        readingTime: 3,
+        sentiment: "neutral"
     },
     {
         id: 9,
@@ -131,7 +160,10 @@ const realAstronomicalEvents = [
         source: "Atacama NightSky",
         visibility: "Excelente desde Atacama",
         bestTime: "20:00 - 06:00",
-        constellation: "Sagittarius"
+        constellation: "Sagittarius",
+        tags: ["galaxias", "cosmos profundo", "observación"],
+        readingTime: 4,
+        sentiment: "excited"
     },
     {
         id: 10,
@@ -145,7 +177,10 @@ const realAstronomicalEvents = [
         source: "NASA",
         visibility: "Excelente para telescopio",
         bestTime: "20:00 - 06:00",
-        constellation: "Taurus"
+        constellation: "Taurus",
+        tags: ["Júpiter", "oposición", "observación"],
+        readingTime: 3,
+        sentiment: "positive"
     }
 ];
 
@@ -1520,9 +1555,325 @@ function closeTelescopeModal() {
     }
 }
 
+// ===== MODAL AND NOTIFICATION FUNCTIONS =====
+
+// Alert Modal Functions
+function openAlertModal() {
+    const modal = document.getElementById('alert-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        trackNewsInteraction('alert_modal_opened', 'subscription');
+    }
+}
+
+function closeAlertModal() {
+    const modal = document.getElementById('alert-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Notification Modal Functions
+function openNotificationModal() {
+    const modal = document.getElementById('notification-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function closeNotificationModal() {
+    const modal = document.getElementById('notification-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Enable Browser Notifications
+async function enableNotifications() {
+    try {
+        const permission = await Notification.requestPermission();
+
+        if (permission === 'granted') {
+            // Show success message
+            showNotification('¡Notificaciones activadas!', 'Recibirás alertas sobre eventos astronómicos.');
+
+            // Track the event
+            trackNewsInteraction('notifications_enabled', 'browser');
+
+            // Close modal
+            closeNotificationModal();
+
+            // Test notification
+            setTimeout(() => {
+                new Notification('🔔 Atacama NightSky', {
+                    body: 'Notificaciones activadas correctamente. Te avisaremos sobre eventos astronómicos especiales.',
+                    icon: '/images/Nightskylogo.webp'
+                });
+            }, 1000);
+
+        } else {
+            showNotification('Notificaciones denegadas', 'Puedes activarlas más tarde desde la configuración del navegador.');
+        }
+    } catch (error) {
+        console.error('Error requesting notification permission:', error);
+        showNotification('Error', 'No se pudieron activar las notificaciones.');
+    }
+}
+
+// Alert Form Submission
+document.addEventListener('DOMContentLoaded', function() {
+    const alertForm = document.getElementById('alert-form');
+    if (alertForm) {
+        alertForm.addEventListener('submit', handleAlertSubscription);
+    }
+
+    // Close modals when clicking outside
+    document.addEventListener('click', function(e) {
+        const alertModal = document.getElementById('alert-modal');
+        const notificationModal = document.getElementById('notification-modal');
+
+        if (e.target === alertModal) {
+            closeAlertModal();
+        }
+        if (e.target === notificationModal) {
+            closeNotificationModal();
+        }
+    });
+
+    // ESC key to close modals
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAlertModal();
+            closeNotificationModal();
+        }
+    });
+});
+
+async function handleAlertSubscription(e) {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const email = document.getElementById('alert-email').value;
+
+    // Get selected alert types
+    const alertTypes = [];
+    const checkboxes = document.querySelectorAll('#alert-form input[type="checkbox"]:checked');
+
+    checkboxes.forEach(checkbox => {
+        alertTypes.push(checkbox.id.replace('alert-', ''));
+    });
+
+    if (!email) {
+        showNotification('Error', 'Por favor ingresa tu email.');
+        return;
+    }
+
+    if (alertTypes.length === 0) {
+        showNotification('Error', 'Selecciona al menos un tipo de alerta.');
+        return;
+    }
+
+    try {
+        // Here you would typically send this to your backend
+        // For now, we'll simulate the subscription
+        console.log('Subscribing user:', { email, alertTypes });
+
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Track the subscription
+        trackNewsInteraction('alert_subscribed', alertTypes.join(','));
+
+        // Show success message
+        showNotification('¡Suscripción exitosa!', 'Recibirás alertas astronómicas en tu email.');
+
+        // Reset form and close modal
+        e.target.reset();
+        closeAlertModal();
+
+        // Store subscription in localStorage (in production, this would be on server)
+        const subscription = {
+            email,
+            alertTypes,
+            subscribedAt: new Date().toISOString(),
+            location: 'Atacama'
+        };
+
+        localStorage.setItem('astronomical-alerts', JSON.stringify(subscription));
+
+    } catch (error) {
+        console.error('Error subscribing to alerts:', error);
+        showNotification('Error', 'No se pudo procesar la suscripción. Inténtalo de nuevo.');
+    }
+}
+
+// Show notification messages
+function showNotification(title, message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <div class="notification-title">${title}</div>
+            <div class="notification-message">${message}</div>
+        </div>
+        <button class="notification-close" onclick="this.parentElement.remove()">&times;</button>
+    `;
+
+    // Add to page
+    document.body.appendChild(notification);
+
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+// Enhanced search functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('news-search');
+    const searchClear = document.getElementById('search-clear');
+
+    if (searchInput && searchClear) {
+        // Show/hide clear button
+        searchInput.addEventListener('input', function() {
+            searchClear.style.display = this.value ? 'block' : 'none';
+        });
+
+        // Clear search
+        searchClear.addEventListener('click', function() {
+            searchInput.value = '';
+            searchQuery = '';
+            this.style.display = 'none';
+            filterNews();
+        });
+    }
+});
+
+// Enhanced loading states
+function showLoadingState(elementId, message = 'Cargando...') {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.innerHTML = `
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>${message}</p>
+            </div>
+        `;
+    }
+}
+
+function showErrorState(elementId, message = 'Error al cargar los datos') {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.innerHTML = `
+            <div class="error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>${message}</p>
+                <button class="btn btn-secondary" onclick="retryLoad('${elementId}')">Reintentar</button>
+            </div>
+        `;
+    }
+}
+
+function showSuccessState(elementId, message = 'Datos cargados correctamente') {
+    const element = document.getElementById(elementId);
+    if (element) {
+        const successDiv = document.createElement('div');
+        successDiv.className = 'success';
+        successDiv.innerHTML = `
+            <i class="fas fa-check-circle"></i>
+            <p>${message}</p>
+        `;
+
+        element.appendChild(successDiv);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            if (successDiv.parentElement) {
+                successDiv.remove();
+            }
+        }, 3000);
+    }
+}
+
+function retryLoad(elementId) {
+    // This would trigger a reload of the specific widget
+    console.log('Retrying load for:', elementId);
+
+    switch (elementId) {
+        case 'iss-info':
+            initializeISSTracker();
+            break;
+        case 'space-weather':
+            initializeSpaceWeatherWidget();
+            break;
+        case 'mars-weather':
+            initializeMarsWeatherWidget();
+            break;
+        case 'asteroids-info':
+            initializeAsteroidsWidget();
+            break;
+        case 'astronomy-events':
+            initializeAstronomicalEventsWidget();
+            break;
+        default:
+            location.reload();
+    }
+}
+
+// Enhanced tracking for user interactions
+function trackWidgetInteraction(widgetName, action, details = {}) {
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'widget_interaction', {
+            'event_category': 'engagement',
+            'event_label': `${widgetName}_${action}`,
+            'custom_parameter_1': JSON.stringify(details),
+            'value': 1
+        });
+    }
+
+    console.log(`Widget interaction: ${widgetName} - ${action}`, details);
+}
+
+// Performance monitoring
+function trackPerformance(metric, value) {
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'performance_metric', {
+            'event_category': 'performance',
+            'event_label': metric,
+            'value': value
+        });
+    }
+}
+
+// Initialize performance tracking
+document.addEventListener('DOMContentLoaded', function() {
+    // Track page load time
+    window.addEventListener('load', function() {
+        const loadTime = performance.now();
+        trackPerformance('page_load_time', Math.round(loadTime));
+    });
+
+    // Track API response times
+    const originalFetch = window.fetch;
+    window.fetch = function(...args) {
+        const start = performance.now();
+        return originalFetch.apply(this, args).then(response => {
+            const end = performance.now();
+            trackPerformance('api_response_time', Math.round(end - start));
+            return response;
+        });
+    };
+});
+
 // Export functions for global access
 window.openAlertModal = openAlertModal;
 window.closeAlertModal = closeAlertModal;
-window.openNewsDetail = openNewsDetail;
-window.openTelescopeModal = openTelescopeModal;
-window.closeTelescopeModal = closeTelescopeModal;
+window.openNotificationModal = openNotificationModal;
+window.closeNotificationModal = closeNotificationModal;
+window.enableNotifications = enableNotifications;
+window.showNotification = showNotification;
+window.trackWidgetInteraction = trackWidgetInteraction;

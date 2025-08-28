@@ -91,7 +91,7 @@
         <div class="container">
             <h2>🌠 Eventos Astronómicos Extraordinarios</h2>
             <p>Fenómenos únicos y espectaculares visibles desde Atacama</p>
-            
+
             <!-- Live Space Data Grid -->
             <div class="space-data-grid">
                 <!-- Astronomy Events -->
@@ -101,7 +101,7 @@
                         <p>Cargando eventos astronómicos...</p>
                     </div>
                 </div>
-                
+
                 <!-- ISS Tracking -->
                 <div class="space-widget" id="iss-info">
                     <div class="loading">
@@ -109,13 +109,64 @@
                         <p>Cargando posición de la ISS...</p>
                     </div>
                 </div>
-                
+
                 <!-- Space Weather -->
                 <div class="space-widget" id="space-weather">
                     <div class="loading">
                         <i class="fas fa-spinner fa-spin"></i>
                         <p>Cargando clima espacial...</p>
                     </div>
+                </div>
+
+                <!-- Mars Weather -->
+                <div class="space-widget mars-weather-widget" id="mars-weather">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando clima marciano...</p>
+                    </div>
+                </div>
+
+                <!-- Near-Earth Asteroids -->
+                <div class="space-widget asteroids-widget" id="asteroids-info">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando asteroides cercanos...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Gadgets Section -->
+    <section class="interactive-gadgets-section">
+        <div class="container">
+            <h2>🎮 Gadgets Interactivos</h2>
+            <p>Explora el universo con nuestras herramientas interactivas</p>
+
+            <div class="gadgets-grid">
+                <!-- Astronomy Quiz -->
+                <div class="space-widget astronomy-quiz-widget" id="astronomy-quiz">
+                    <!-- Quiz content will be loaded dynamically -->
+                </div>
+
+                <!-- Sky Map -->
+                <div class="space-widget sky-map-widget" id="sky-map">
+                    <!-- Sky map content will be loaded dynamically -->
+                </div>
+
+                <!-- Telescope Simulator -->
+                <div class="space-widget telescope-simulator-widget" id="telescope-simulator">
+                    <!-- Telescope simulator content will be loaded dynamically -->
+                </div>
+
+                <!-- Astronomy Facts -->
+                <div class="space-widget astronomy-facts-widget" id="astronomy-facts">
+                    <!-- Facts content will be loaded dynamically -->
+                </div>
+
+                <!-- Constellation Viewer -->
+                <div class="space-widget constellation-viewer-widget" id="constellation-viewer">
+                    <!-- Constellation viewer content will be loaded dynamically -->
                 </div>
             </div>
         </div>
@@ -176,12 +227,25 @@
     <!-- Filter Tabs -->
     <section class="news-filters">
         <div class="container">
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" id="news-search" placeholder="🔍 Buscar noticias astronómicas..." class="search-input">
+                <button class="search-clear" id="search-clear" style="display: none;">✕</button>
+            </div>
+
             <div class="filter-tabs">
                 <button class="filter-tab active" data-filter="all">Todas</button>
                 <button class="filter-tab" data-filter="events">Eventos Celestiales</button>
                 <button class="filter-tab" data-filter="discoveries">Descubrimientos</button>
                 <button class="filter-tab" data-filter="tours">Tours Especiales</button>
                 <button class="filter-tab" data-filter="meteors">Lluvias de Meteoros</button>
+                <button class="filter-tab" data-filter="missions">Misiones Espaciales</button>
+                <button class="filter-tab" data-filter="research">Investigación</button>
+            </div>
+
+            <!-- News Statistics -->
+            <div id="news-stats">
+                <!-- Stats will be populated by JavaScript -->
             </div>
         </div>
     </section>
@@ -189,13 +253,25 @@
     <!-- News Grid -->
     <section class="news-section">
         <div class="container">
+            <!-- Results Counter -->
+            <div class="results-info" id="results-info" style="display: none;">
+                <p id="results-count">Mostrando resultados</p>
+            </div>
+
             <div class="news-grid" id="news-grid">
                 <!-- News items will be dynamically loaded here -->
             </div>
-            
+
+            <!-- Load More Button -->
             <button class="btn btn-secondary load-more" id="load-more">
-                Cargar Más Noticias
+                <i class="fas fa-plus"></i> Cargar Más Noticias
             </button>
+
+            <!-- Loading Indicator -->
+            <div class="loading-indicator" id="loading-indicator" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Cargando más noticias...</p>
+            </div>
         </div>
     </section>
 
@@ -270,46 +346,80 @@
         </div>
     </section>
 
-    <!-- Alert Modal -->
-    <div class="modal" id="alert-modal">
+    <!-- Alert Subscription Modal -->
+    <div id="alert-modal" class="modal" style="display: none;">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Configurar Alertas Astronómicas</h2>
-            
-            <form id="alert-form">
-                <div class="form-group">
-                    <label>Selecciona los eventos que te interesan:</label>
-                    <div class="checkbox-group">
-                        <label><input type="checkbox" name="alerts" value="meteors"> Lluvias de Meteoros</label>
-                        <label><input type="checkbox" name="alerts" value="planets"> Conjunciones Planetarias</label>
-                        <label><input type="checkbox" name="alerts" value="iss"> Paso de la ISS</label>
-                        <label><input type="checkbox" name="alerts" value="discoveries"> Descubrimientos Astronómicos</label>
-                        <label><input type="checkbox" name="alerts" value="events"> Eventos Celestiales</label>
-                        <label><input type="checkbox" name="alerts" value="tours"> Tours Especiales</label>
+            <div class="modal-header">
+                <h3>🔔 Alertas Astronómicas Personalizadas</h3>
+                <button class="modal-close" onclick="closeAlertModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Recibe notificaciones sobre eventos astronómicos visibles desde Atacama:</p>
+
+                <form id="alert-form" class="alert-form">
+                    <div class="form-group">
+                        <label for="alert-email">Email:</label>
+                        <input type="email" id="alert-email" required placeholder="tu@email.com">
                     </div>
+
+                    <div class="alert-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="alert-meteors" checked>
+                            <span class="checkmark"></span>
+                            Lluvias de Meteoros
+                        </label>
+
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="alert-eclipses" checked>
+                            <span class="checkmark"></span>
+                            Eclipses y Conjunciones
+                        </label>
+
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="alert-discoveries">
+                            <span class="checkmark"></span>
+                            Nuevos Descubrimientos
+                        </label>
+
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="alert-space-weather">
+                            <span class="checkmark"></span>
+                            Clima Espacial
+                        </label>
+
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="alert-tours">
+                            <span class="checkmark"></span>
+                            Tours Especiales
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-bell"></i> Activar Alertas
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Permission Modal -->
+    <div id="notification-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔔 Notificaciones del Navegador</h3>
+                <button class="modal-close" onclick="closeNotificationModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>¿Quieres recibir notificaciones en tiempo real sobre eventos astronómicos?</p>
+                <div class="notification-options">
+                    <button class="btn btn-primary" onclick="enableNotifications()">
+                        <i class="fas fa-bell"></i> Sí, activar notificaciones
+                    </button>
+                    <button class="btn btn-secondary" onclick="closeNotificationModal()">
+                        <i class="fas fa-times"></i> No, gracias
+                    </button>
                 </div>
-                
-                <div class="form-group">
-                    <label>Método de notificación:</label>
-                    <select name="notification-method">
-                        <option value="email">Email</option>
-                        <option value="whatsapp">WhatsApp</option>
-                        <option value="both">Ambos</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Email:</label>
-                    <input type="email" name="email" placeholder="tu@email.com">
-                </div>
-                
-                <div class="form-group">
-                    <label>WhatsApp (opcional):</label>
-                    <input type="tel" name="phone" placeholder="+56 9 XXXX XXXX">
-                </div>
-                
-                <button type="submit" class="btn btn-primary">Activar Alertas</button>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -423,6 +533,7 @@
     
     <script src="news-api.js"></script>
     <script src="news-script.js"></script>
+    <script src="test-news-system.js"></script>
     <script src="notification-system.js"></script>
     <script src="automation-config.js"></script>
     <script src="script.js"></script>
