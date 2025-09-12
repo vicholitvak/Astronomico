@@ -180,372 +180,69 @@ function initLanguageToggle() {
             'Tour Astronómico Completo': 'Tour Astronómico Completo',
             'Tour Privado': 'Tour Privado', 
             'Tour Fotográfico': 'Tour Fotográfico',
-            'Viajes de Estudio// ===== TOURS ASTRONÓMICOS ATACAMA - JAVASCRIPT =====
-// Main JavaScript functionality for astronomical tours website - v5.5
-
-// ===== TYPEWRITER EFFECT =====
-function initTypewriter() {
-    // Typewriter is disabled for CLS prevention
-    // Text loads immediately to prevent layout shifts
-    return;
-    
-    let index = 0;
-    textElement.textContent = ''; // Clear any existing text
-    
-    function typeChar() {
-        if (index < text.length) {
-            textElement.textContent += text.charAt(index);
-            index++;
-            setTimeout(typeChar, 60);
-        } else {
-            setTimeout(() => {
-                if (cursorElement) cursorElement.style.display = 'none';
-            }, 2000);
-        }
-    }
-    
-    setTimeout(typeChar, 800);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize all components
-    initNavigation();
-    initLanguageToggle();
-    initTestimonialSlider();
-    initBookingForm();
-    initSmoothScrolling();
-    initScrollEffects();
-    initDatePicker();
-    initQuickBooking();
-    initAnimations();
-    initTypewriter();
-    lowerPriorityForLazyImages();
-
-    // Defer telescope gallery initialization until section is near viewport
-    const telescopeSection = document.querySelector('#telescopio');
-    if (telescopeSection && 'IntersectionObserver' in window) {
-        const telObserver = new IntersectionObserver((entries, obs) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    initTelescopeGallery();
-                    obs.disconnect();
-                }
-            });
-        }, { rootMargin: '200px 0px' });
-        telObserver.observe(telescopeSection);
-    } else {
-        // Fallback
-        setTimeout(() => initTelescopeGallery(), 300);
-    }
-});
-
-// Lower network/decoding priority for non-critical images
-function lowerPriorityForLazyImages() {
-    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
-    lazyImages.forEach(img => {
-        if (!img.getAttribute('decoding')) img.setAttribute('decoding', 'async');
-        if (!img.getAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'low');
-    });
-}
-
-// ===== NAVIGATION FUNCTIONALITY =====
-function initNavigation() {
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navMenu = document.querySelector('.nav-menu');
-    const navLinks = document.querySelectorAll('.nav-menu a');
-    const header = document.querySelector('.header');
-
-    // Mobile menu toggle
-    if (menuToggle && navMenu) {
-        menuToggle.addEventListener('click', function() {
-            menuToggle.classList.toggle('active');
-            navMenu.classList.toggle('active');
-            document.body.classList.toggle('no-scroll');
-        });
-    }
-
-    // Close mobile menu when clicking on a link
-    navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            if (menuToggle && navMenu) {
-                menuToggle.classList.remove('active');
-                navMenu.classList.remove('active');
-                document.body.classList.remove('no-scroll');
-            }
-        });
-    });
-
-    // Header scroll effect without layout reads
-    let lastScrollY = 0;
-    let ticking = false;
-    
-    function updateHeader() {
-        const currentScrollY = window.pageYOffset;
-        
-        if (header) {
-            if (currentScrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        }
-        
-        lastScrollY = currentScrollY;
-        ticking = false;
-    }
-    
-    function onScroll() {
-        if (!ticking) {
-            requestAnimationFrame(updateHeader);
-            ticking = true;
-        }
-    }
-    
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    // Highlight active nav via IntersectionObserver (no forced layout)
-    const sections = document.querySelectorAll('section[id]');
-    const navLinkMap = new Map(
-        [...sections].map(s => [s.id, document.querySelector(`a[href="#${s.id}"]`)])
-    );
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            const id = entry.target.id;
-            const link = navLinkMap.get(id);
-            if (!link) return;
-            if (entry.isIntersecting) {
-                navLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-            }
-        });
-    }, { rootMargin: '-50% 0px -50% 0px', threshold: 0 });
-    sections.forEach(s => observer.observe(s));
-}
-
-// ===== LANGUAGE TOGGLE =====
-function initLanguageToggle() {
-    const langToggle = document.getElementById('lang-toggle');
-    const currentLangSpan = document.getElementById('current-lang');
-    
-    // Exit if elements don't exist (prevent null reference errors)
-    if (!langToggle || !currentLangSpan) {
-        console.log('Language toggle elements not found, skipping initialization');
-        return;
-    }
-    
-    const translations = {
-        es: {
+            'Viajes de Estudio': 'Viajes de Estudio'
+        },
+        en: {
             // Navigation
-            'Inicio': 'Inicio',
-            'Sobre Nosotros': 'Sobre Nosotros', 
+            'Inicio': 'Home',
+            'Sobre Nosotros': 'About Us',
             'Tours': 'Tours',
-            'Telescopio': 'Telescopio',
-            'Reservas': 'Reservas',
-            'Contacto': 'Contacto',
-            'Reserva Ahora': 'Reserva Ahora',
-            
+            'Telescopio': 'Telescope',
+            'Reservas': 'Bookings',
+            'Contacto': 'Contact',
+            'Reserva Ahora': 'Book Now',
+
             // Hero Section
-            'hero-title': ['Atacama Dark Skies', 'El Cielo Más Puro del Mundo', 'en San Pedro de Atacama'],
-            'hero-subtitle': 'Tours astronómicos guiados por expertos: observación de estrellas, constelaciones y fenómenos celestes del espacio profundo.',
-            'btn-reserve': 'Reserva Tu Tour',
-            'btn-see-tours': 'Ver Tours',
-            
+            'hero-title': ['Atacama Dark Skies', 'The Purest Sky in the World', 'in San Pedro de Atacama'],
+            'hero-subtitle': 'Expert-guided astronomical tours: star observation, constellations and deep space celestial phenomena.',
+            'btn-reserve': 'Book Your Tour',
+            'btn-see-tours': 'View Tours',
+
             // Features Section
-            'Cielos Únicos': 'Cielos Únicos',
-            'Guías Expertos': 'Guías Expertos',
-            'Ubicación Perfecta': 'Ubicación Perfecta',
-            'Equipos Profesionales': 'Equipos Profesionales',
-            
+            'Cielos Únicos': 'Unique Skies',
+            'Guías Expertos': 'Expert Guides',
+            'Ubicación Perfecta': 'Perfect Location',
+            'Equipos Profesionales': 'Professional Equipment',
+
             // Tours
-            'Nuestros Tours Astronómicos': 'Nuestros Tours Astronómicos',
-            'Experiencias únicas bajo el cielo más claro del mundo': 'Experiencias únicas bajo el cielo más claro del mundo',
-            'Tour Astronómico Completo': 'Tour Astronómico Completo',
-            'Tour Privado': 'Tour Privado', 
-            'Tour Fotográfico': 'Tour Fotográfico',
-            'Viajes de Estudio// ===== TOURS ASTRONÓMICOS ATACAMA - JAVASCRIPT =====
-// Main JavaScript functionality for astronomical tours website - v5.5
-
-// ===== TYPEWRITER EFFECT =====
-function initTypewriter() {
-    // Typewriter is disabled for CLS prevention
-    // Text loads immediately to prevent layout shifts
-    return;
-    
-    let index = 0;
-    textElement.textContent = ''; // Clear any existing text
-    
-    function typeChar() {
-        if (index < text.length) {
-            textElement.textContent += text.charAt(index);
-            index++;
-            setTimeout(typeChar, 60);
-        } else {
-            setTimeout(() => {
-                if (cursorElement) cursorElement.style.display = 'none';
-            }, 2000);
-        }
-    }
-    
-    setTimeout(typeChar, 800);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize all components
-    initNavigation();
-    initLanguageToggle();
-    initTestimonialSlider();
-    initBookingForm();
-    initSmoothScrolling();
-    initScrollEffects();
-    initDatePicker();
-    initQuickBooking();
-    initAnimations();
-    initTypewriter();
-    lowerPriorityForLazyImages();
-
-    // Defer telescope gallery initialization until section is near viewport
-    const telescopeSection = document.querySelector('#telescopio');
-    if (telescopeSection && 'IntersectionObserver' in window) {
-        const telObserver = new IntersectionObserver((entries, obs) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    initTelescopeGallery();
-                    obs.disconnect();
-                }
-            });
-        }, { rootMargin: '200px 0px' });
-        telObserver.observe(telescopeSection);
-    } else {
-        // Fallback
-        setTimeout(() => initTelescopeGallery(), 300);
-    }
-});
-
-// Lower network/decoding priority for non-critical images
-function lowerPriorityForLazyImages() {
-    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
-    lazyImages.forEach(img => {
-        if (!img.getAttribute('decoding')) img.setAttribute('decoding', 'async');
-        if (!img.getAttribute('fetchpriority')) img.setAttribute('fetchpriority', 'low');
-    });
-}
-
-// ===== NAVIGATION FUNCTIONALITY =====
-function initNavigation() {
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navMenu = document.querySelector('.nav-menu');
-    const navLinks = document.querySelectorAll('.nav-menu a');
-    const header = document.querySelector('.header');
-
-    // Mobile menu toggle
-    if (menuToggle && navMenu) {
-        menuToggle.addEventListener('click', function() {
-            menuToggle.classList.toggle('active');
-            navMenu.classList.toggle('active');
-            document.body.classList.toggle('no-scroll');
-        });
-    }
-
-    // Close mobile menu when clicking on a link
-    navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            if (menuToggle && navMenu) {
-                menuToggle.classList.remove('active');
-                navMenu.classList.remove('active');
-                document.body.classList.remove('no-scroll');
-            }
-        });
-    });
-
-    // Header scroll effect without layout reads
-    let lastScrollY = 0;
-    let ticking = false;
-    
-    function updateHeader() {
-        const currentScrollY = window.pageYOffset;
-        
-        if (header) {
-            if (currentScrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        }
-        
-        lastScrollY = currentScrollY;
-        ticking = false;
-    }
-    
-    function onScroll() {
-        if (!ticking) {
-            requestAnimationFrame(updateHeader);
-            ticking = true;
-        }
-    }
-    
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    // Highlight active nav via IntersectionObserver (no forced layout)
-    const sections = document.querySelectorAll('section[id]');
-    const navLinkMap = new Map(
-        [...sections].map(s => [s.id, document.querySelector(`a[href="#${s.id}"]`)])
-    );
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            const id = entry.target.id;
-            const link = navLinkMap.get(id);
-            if (!link) return;
-            if (entry.isIntersecting) {
-                navLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-            }
-        });
-    }, { rootMargin: '-50% 0px -50% 0px', threshold: 0 });
-    sections.forEach(s => observer.observe(s));
-}
-
-// ===== LANGUAGE TOGGLE =====
-function initLanguageToggle() {
-    const langToggle = document.getElementById('lang-toggle');
-    const currentLangSpan = document.getElementById('current-lang');
-    
-    // Exit if elements don't exist (prevent null reference errors)
-    if (!langToggle || !currentLangSpan) {
-        console.log('Language toggle elements not found, skipping initialization');
-        return;
-    }
-    
-    const translations = {
-        es: {
+            'Nuestros Tours Astronómicos': 'Our Astronomical Tours',
+            'Experiencias únicas bajo el cielo más claro del mundo': 'Unique experiences under the clearest sky in the world',
+            'Tour Astronómico Completo': 'Complete Astronomical Tour',
+            'Tour Privado': 'Private Tour',
+            'Tour Fotográfico': 'Photography Tour',
+            'Viajes de Estudio': 'Study Trips'
+        },
+        pt: {
             // Navigation
-            'Inicio': 'Inicio',
-            'Sobre Nosotros': 'Sobre Nosotros', 
-            'Tours': 'Tours',
-            'Telescopio': 'Telescopio',
+            'Inicio': 'Início',
+            'Sobre Nosotros': 'Sobre Nós',
+            'Tours': 'Passeios',
+            'Telescopio': 'Telescópio',
             'Reservas': 'Reservas',
-            'Contacto': 'Contacto',
-            'Reserva Ahora': 'Reserva Ahora',
-            
+            'Contacto': 'Contato',
+            'Reserva Ahora': 'Reserve Agora',
+
             // Hero Section
-            'hero-title': ['Atacama Dark Skies', 'El Cielo Más Puro del Mundo', 'en San Pedro de Atacama'],
-            'hero-subtitle': 'Tours astronómicos guiados por expertos: observación de estrellas, constelaciones y fenómenos celestes del espacio profundo.',
-            'btn-reserve': 'Reserva Tu Tour',
-            'btn-see-tours': 'Ver Tours',
-            
+            'hero-title': ['Atacama Dark Skies', 'O Céu Mais Puro do Mundo', 'em San Pedro de Atacama'],
+            'hero-subtitle': 'Passeios astronômicos guiados por especialistas: observação de estrelas, constelações e fenômenos celestes do espaço profundo.',
+            'btn-reserve': 'Reserve Seu Passeio',
+            'btn-see-tours': 'Ver Passeios',
+
             // Features Section
-            'Cielos Únicos': 'Cielos Únicos',
-            'Guías Expertos': 'Guías Expertos',
-            'Ubicación Perfecta': 'Ubicación Perfecta',
-            'Equipos Profesionales': 'Equipos Profesionales',
-            
+            'Cielos Únicos': 'Céus Únicos',
+            'Guías Expertos': 'Guias Especialistas',
+            'Ubicación Perfecta': 'Localização Perfeita',
+            'Equipos Profesionales': 'Equipamentos Profissionais',
+
             // Tours
-            'Nuestros Tours Astronómicos': 'Nuestros Tours Astronómicos',
-            'Experiencias únicas bajo el cielo más claro del mundo': 'Experiencias únicas bajo el cielo más claro del mundo',
-            'Tour Astronómico Completo': 'Tour Astronómico Completo',
-            'Tour Privado': 'Tour Privado', 
-            'Tour Fotográfico': 'Tour Fotográfico',
-            'Viajes de Estudio
-    }
+            'Nuestros Tours Astronómicos': 'Nossos Passeios Astronômicos',
+            'Experiencias únicas bajo el cielo más claro del mundo': 'Experiências únicas sob o céu mais claro do mundo',
+            'Tour Astronómico Completo': 'Passeio Astronômico Completo',
+            'Tour Privado': 'Passeio Privado',
+            'Tour Fotográfico': 'Passeio Fotográfico',
+            'Viajes de Estudio': 'Viagens de Estudo'
+        }
+    };
 
     // Load saved language preference
     const savedLang = localStorage.getItem('preferred-language');
