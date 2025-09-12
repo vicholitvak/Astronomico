@@ -1,341 +1,95 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T39HYLDJ8K"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      
-      gtag('config', 'G-T39HYLDJ8K');
-      // Configure Google Ads tracking (conversion ID: 795362262)
-      gtag('config', 'AW-795362262');
-    </script>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atacama NightSky | Tours Astronómicos en San Pedro de Atacama</title>
     <meta name="description" content="Atacama NightSky: Tours guiados con telescopio Unistellar en el desierto más claro del mundo. Observación de estrellas, astrofotografía y experiencias únicas.">
     <meta name="keywords" content="Atacama NightSky, tours astronómicos San Pedro de Atacama, observación estrellas Atacama, telescopio Unistellar, astro turismo Chile">
     
-    <!-- Custom tracking functions -->
-    <script>
-      // Funciones de tracking personalizadas
-      function trackBookingClick(tourType) {
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'booking_click', {
-            'event_category': 'engagement',
-            'event_label': tourType,
-            'value': 1
-          });
-        }
-      }
-      
-      function trackContact(method) {
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'contact', {
-            'event_category': 'engagement',
-            'event_label': method,
-            'value': 1
-          });
-        }
-      }
-      
-      function trackTourView(tourName, price) {
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'view_item', {
-            'currency': 'CLP',
-            'value': price,
-            'items': [{
-              'item_id': tourName,
-              'item_name': tourName,
-              'item_category': 'Tours',
-              'price': price,
-              'quantity': 1
-            }]
-          });
-        }
-      }
-      
-      // Corporate campaign specific tracking
-      function trackCorporateClick(action, source) {
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'corporate_interaction', {
-            'event_category': 'corporate_campaign',
-            'event_label': action,
-            'custom_parameter_1': source,
-            'value': 1
-          });
-          
-          // Also track as lead generation
-          gtag('event', 'generate_lead', {
-            'event_category': 'corporate',
-            'event_label': action,
-            'value': 1
-          });
-        }
-      }
-      
-      // Track corporate page section views
-      function trackCorporateView(section) {
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'view_promotion', {
-            'event_category': 'corporate_campaign',
-            'event_label': section,
-            'creative_name': 'corporate_events_section',
-            'creative_slot': section
-          });
-        }
-      }
-      
-      // Handle tour type selection in booking form
-      function handleTourTypeChange() {
-        const tourType = document.getElementById('tour-type').value;
-        if (tourType === 'corporate') {
-          trackCorporateClick('form_selection', 'booking_form');
-          
-          // Show corporate-specific message or modify form if needed
-          const messageField = document.getElementById('message');
-          if (messageField && !messageField.value.includes('Evento corporativo')) {
-            messageField.placeholder = 'Cuéntanos sobre tu evento corporativo: número de empleados, objetivos del team building, fechas preferidas, requerimientos especiales...';
-          }
-        }
-      }
-      
-      // UTM parameter tracking for corporate campaigns
-      function trackCampaignSource() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const source = urlParams.get('utm_source');
-        const medium = urlParams.get('utm_medium');
-        const campaign = urlParams.get('utm_campaign');
-        
-        if (campaign && campaign.includes('corporativ')) {
-          if (typeof gtag !== 'undefined') {
-            gtag('event', 'campaign_visit', {
-              'event_category': 'corporate_campaign',
-              'campaign_name': campaign,
-              'source': source,
-              'medium': medium
-            });
-          }
-          
-          // Auto-scroll to corporate section if coming from campaign
-          setTimeout(() => {
-            const corporateSection = document.getElementById('eventos-corporativos');
-            if (corporateSection) {
-              corporateSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              trackCorporateView('auto_scroll');
-            }
-          }, 1500);
-        }
-      }
-    </script>
-    
     <!-- Performance Optimizations -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="preconnect" href="https://apis.google.com" crossorigin>
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
     
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Atacama NightSky - Tours Astronómicos en San Pedro de Atacama">
-    <meta property="og:description" content="Descubre el cielo más puro del mundo con nuestros tours guiados. Telescopio Unistellar, fotografía astronómica y experiencias únicas en el Desierto de Atacama.">
+    <meta property="og:title" content="Tours Astronómicos en San Pedro de Atacama">
+    <meta property="og:description" content="Descubre el cielo más puro del mundo con nuestros tours guiados">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://atacamanightsky.com">
-    <meta property="og:image" content="https://atacamanightsky.com/images/atacama-stars.jpg">
-    <meta property="og:site_name" content="Atacama NightSky">
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Atacama NightSky - Tours Astronómicos">
-    <meta name="twitter:description" content="Tours astronómicos en el cielo más claro del mundo">
-    <meta name="twitter:image" content="https://atacamanightsky.com/images/atacama-stars.jpg">
-    
-    <!-- Additional SEO -->
-    <link rel="canonical" href="https://atacamanightsky.com">
-    <meta name="robots" content="index, follow">
-    <meta name="author" content="Atacama NightSky">
+    <meta property="og:url" content="https://toursastronomicosatacama.cl">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     
-    <!-- Optimized Google Fonts with preload and font metrics -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"></noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
-    <!-- FontAwesome Icons - Reliable CDN Version -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- Schema.org Structured Data for Tourism -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "TouristAttraction",
-      "name": "Atacama NightSky Tours",
-      "description": "Tours astronómicos guiados en el Desierto de Atacama con telescopio Unistellar",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "San Pedro de Atacama",
-        "addressRegion": "Antofagasta",
-        "addressCountry": "CL"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": -22.9087,
-        "longitude": -68.1997
-      },
-      "url": "https://atacamanightsky.com",
-      "telephone": "+56912345678",
-      "priceRange": "$$",
-      "openingHours": "Mo-Su 19:00-23:00",
-      "image": "https://atacamanightsky.com/images/atacama-stars.jpg",
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "reviewCount": "156"
-      }
-    }
-    </script>
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet">
     
-    <!-- Critical CSS inlined for above-the-fold -->
-    <style>
-    /* Minimal CSS - Clean hero-focused design */
-    *{margin:0;padding:0;box-sizing:border-box}
-    :root{--primary-color:#00D4FF;--bg-primary:#0a0a0a;--text-primary:#fff;--text-secondary:#b8b8b8}
-    html,body{font-family:system-ui,sans-serif;color:var(--text-primary);background:var(--bg-primary);overflow-x:hidden}
-    
-    /* Hero Section - Full focus */
-    .hero{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
-    .hero-background{position:absolute;top:0;left:0;right:0;bottom:0}
-    .hero-bg-img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
-    .hero-content{position:relative;z-index:2;text-align:center;max-width:900px;padding:2rem}
-    .hero-title{font-size:clamp(2.25rem,6vw,3.875rem);line-height:1.3;margin-bottom:2rem;color:#00D4FF}
-    .hero-subtitle{font-size:clamp(1.25rem,3vw,1.5rem);color:rgba(184,184,184,0.9);margin-bottom:2rem;line-height:1.4}
-    .hero-buttons{display:flex;justify-content:center;margin-top:1.5rem}
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:14px 28px;border:none;border-radius:10px;font-weight:600;font-size:17px;text-decoration:none;color:#fff;background:linear-gradient(45deg,var(--primary-color),#7B68EE);min-width:180px;white-space:nowrap;cursor:pointer;transition:all 0.3s ease;box-shadow:0 4px 12px rgba(0,212,255,0.2)}
-    .btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,212,255,0.4)}
-    
-    /* Mobile Optimization */
-    @media (max-width: 768px) {
-        .hero{padding-top:8vh}
-        .hero-content{max-width:100%;padding:1.5rem}
-        .hero-title{font-size:clamp(2rem,8vw,3.2rem)}
-        .hero-subtitle{font-size:clamp(1.1rem,4vw,1.35rem)}
-        .btn{min-width:200px;font-size:16px;padding:16px 32px}
-    }
-    
-    /* Fallback icon display during font load */
-    .fa,.fas,.fab{font-family:"Font Awesome 6 Free","fa-solid-900",monospace!important;font-size:inherit;line-height:1}
-    .fab{font-family:"Font Awesome 6 Brands","fa-brands-400",monospace!important;font-size:inherit;line-height:1}
-    
-    /* Prevent invisible text during font load */
-    .fa:before,.fas:before,.fab:before{content:attr(data-icon,"□");display:inline-block;width:1em;text-align:center}
-    
-    /* Ultra-optimized CLS Prevention - Minimal layout calculation */
-    .hero{height:100vh!important;position:relative!important;display:flex!important;align-items:center!important;justify-content:center!important;contain:strict!important;content-visibility:visible!important}
-    .hero-background{position:absolute!important;inset:0!important;contain:strict!important}
-    .hero-bg-img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;content-visibility:visible!important}
-    .hero-content{position:relative!important;z-index:2!important;text-align:center!important;max-width:900px!important;padding:2rem!important;contain:layout!important}
-    .hero-content .container{width:100%!important;max-width:800px!important;padding:2rem!important}
-    .hero-title{font-size:clamp(2rem,5vw,3.5rem)!important;line-height:1.3!important;margin-bottom:2rem!important;min-height:8rem!important;color:#00D4FF!important}
-    .title-line{display:block!important;min-height:1.3em!important;line-height:1.3!important}
-    .hero-subtitle{font-size:clamp(1.1rem,2.5vw,1.3rem)!important;height:2em!important;line-height:1.5!important;margin-bottom:2rem!important}
-    .hero-buttons{height:3.5rem!important;display:flex!important;gap:1rem!important;justify-content:center!important;align-items:center!important}
-    
-    /* Font loading stability with metric overrides */
-    @font-face{font-family:'Roboto Fallback';src:local('Arial');size-adjust:107%;ascent-override:95%;descent-override:25%;line-gap-override:0%}
-    body,h1,h2,h3,p{font-family:'Roboto','Roboto Fallback',system-ui,-apple-system,sans-serif!important}
-    
-    /* Stable text rendering during font load */
-    .hero-title,.hero-subtitle{font-kerning:none;font-feature-settings:normal,text-rendering:optimizeSpeed}
-    
-    /* Language dropdown stable positioning */
-    .lang-dropdown{position:absolute;top:100%;right:0;min-width:150px;width:150px;transform:translateY(-100%);transition:transform 0.3s ease,opacity 0.3s ease;opacity:0;pointer-events:none;z-index:1001}
-    .lang-dropdown.show{transform:translateY(0);opacity:1;pointer-events:auto}
-    
-    /* Header and Navigation - Improved design */
-    .header{position:absolute;top:0;left:0;right:0;z-index:1000;background:transparent;transition:all 0.3s ease}
-    .header.scrolled{position:fixed;background:rgba(10,10,10,0.95);backdrop-filter:blur(10px);box-shadow:0 2px 20px rgba(0,0,0,0.5)}
-    .nav-container{display:flex;justify-content:space-between;align-items:center;height:80px;min-height:80px;padding:0 2rem;max-width:1200px;margin:0 auto}
-    .navbar{min-height:80px;width:100%}
-    .logo{display:flex;align-items:center;gap:0.5rem}
-    .logo-img{width:50px;height:50px;flex-shrink:0;border-radius:50%;box-shadow:0 0 20px rgba(0,212,255,0.3)}
-    .logo span{font-size:1.2rem;font-weight:600;color:var(--primary-color);display:none}
-    .nav-menu{display:flex;list-style:none;gap:2.5rem;margin:0;align-items:center}
-    .nav-menu a{color:var(--text-primary);text-decoration:none;font-weight:400;font-size:1rem;position:relative;padding:0.5rem 0;transition:all 0.3s ease}
-    .nav-menu a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:linear-gradient(45deg,var(--primary-color),var(--secondary-color));transition:width 0.3s ease}
-    .nav-menu a:hover::after,.nav-menu a.active::after{width:100%}
-    .nav-menu a:hover,.nav-menu a.active{color:var(--primary-color)}
-    .menu-toggle{display:none;flex-direction:column;background:none;border:none;cursor:pointer;padding:8px;border-radius:4px;transition:background 0.3s ease}
-    .menu-toggle:hover{background:rgba(0,212,255,0.1)}
-    .menu-toggle span{width:24px;height:2px;background:var(--text-primary);margin:3px 0;transition:all 0.3s ease;border-radius:2px}
-    .menu-toggle.active span:nth-child(1){transform:rotate(-45deg) translate(-5px, 6px)}
-    .menu-toggle.active span:nth-child(2){opacity:0}
-    .menu-toggle.active span:nth-child(3){transform:rotate(45deg) translate(-5px, -6px)}
-    
-    /* Mobile Navigation */
-    @media (max-width: 768px) {
-        .nav-container{padding:0 1rem}
-        .menu-toggle{display:flex}
-        .logo span{display:block}
-        .nav-menu{position:absolute;top:100%;left:0;right:0;background:rgba(10,10,10,0.98);backdrop-filter:blur(10px);flex-direction:column;padding:2rem;transform:translateY(-100%);opacity:0;pointer-events:none;transition:all 0.3s ease;gap:0}
-        .nav-menu.active{transform:translateY(0);opacity:1;pointer-events:auto}
-        .nav-menu li{margin:1rem 0;text-align:center}
-        .nav-menu a{font-size:1.1rem;padding:1rem 0}
-    }
-    
-    /* Hero adjustments - no fixed margin since header is absolute initially */
-    .hero{position:relative}
-    
-    /* Prevent layout shifts from images */
-    img{max-width:100%;height:auto}
-    picture{display:block}
-    
-    /* Stable button dimensions */
-    .btn{min-width:120px;white-space:nowrap}
-    .hero-buttons .btn{flex-shrink:0}
-    </style>
-    
-    <!-- Preload LCP hero image for faster rendering -->
-    <link rel="preload" as="image" href="images/optimized/hero1-desktop.webp" imagesrcset="images/optimized/hero1-mobile.webp 480w, images/optimized/hero1-tablet.webp 768w, images/optimized/hero1-desktop.webp 1200w" imagesizes="100vw">
-
-    <!-- Load full CSS after initial render -->
-    <link rel="preload" href="styles.css?v=4.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="styles.css?v=4.2"></noscript>
-
-    <!-- Font Awesome Fix -->
-    <link rel="stylesheet" href="fontawesome-fix.css">
-
-    <!-- Font Awesome Loader Script -->
-    <script src="fontawesome-loader.js"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css?v=4.0">
 </head>
 <body>
-
-    <!-- Header with Navigation -->
-    <header class="header">
+    <!-- Header Navigation -->
+    <header class="header" role="banner">
         <nav class="navbar">
-            <div class="container nav-container">
-                <a href="index.html" class="logo">
-                    <img src="images/Nightskylogo.webp" alt="Atacama NightSky" class="logo-img" loading="lazy" width="50" height="50">
-                    <span>Atacama NightSky</span>
-                </a>
-                <button class="menu-toggle" aria-label="Toggle menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <a href="#inicio">
+                        <img src="images/Nightskylogo.jpg" alt="Atacama NightSky Logo" class="logo-img">
+                    </a>
+                </div>
+                
+                <!-- Language Toggle -->
+                <div class="language-toggle">
+                    <div class="lang-selector">
+                        <button id="lang-toggle" class="lang-btn">
+                            <i class="fas fa-globe"></i>
+                            <span id="current-lang">ES</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="lang-dropdown" id="lang-dropdown">
+                            <div class="lang-option" data-lang="es">
+                                <span class="flag">🇪🇸</span>
+                                <span>Español</span>
+                            </div>
+                            <div class="lang-option" data-lang="en">
+                                <span class="flag">🇺🇸</span>
+                                <span>English</span>
+                            </div>
+                            <div class="lang-option" data-lang="pt">
+                                <span class="flag">🇧🇷</span>
+                                <span>Português</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Desktop Menu -->
                 <ul class="nav-menu">
-                    <li><a href="#inicio">Inicio</a></li>
-                    <li><a href="#tours">Tours</a></li>
-                    <li><a href="#telescopio">Telescopio</a></li>
-                    <li><a href="noticias.html">Noticias</a></li>
-                    <li><a href="#nosotros">Sobre Mí</a></li>
-                    <li><a href="#contacto">Contacto</a></li>
+                    <li class="nav-item"><a href="#inicio" class="nav-link">Inicio</a></li>
+                    <li class="nav-item"><a href="#nosotros" class="nav-link">Sobre Nosotros</a></li>
+                    <li class="nav-item"><a href="#tours" class="nav-link">Tours</a></li>
+                    <li class="nav-item"><a href="#telescopio" class="nav-link">Telescopio</a></li>
+                    <li class="nav-item"><a href="#reservas" class="nav-link">Reservas</a></li>
+                    <li class="nav-item"><a href="#contacto" class="nav-link">Contacto</a></li>
+                    <li class="nav-item">
+                        <a href="#reservas" class="cta-button">Reserva Ahora</a>
+                    </li>
                 </ul>
+                
+                <!-- Mobile Menu Toggle -->
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
             </div>
         </nav>
     </header>
@@ -343,33 +97,19 @@
     <!-- Hero Section -->
     <section id="inicio" class="hero" role="main">
         <div class="hero-background">
-            <picture>
-                <source srcset="images/optimized/hero1-mobile.webp 480w, images/optimized/hero1-tablet.webp 768w, images/optimized/hero1-desktop.webp 1200w" 
-                        type="image/webp"
-                        width="1920"
-                        height="1080">
-                <img class="hero-bg-img"
-                     src="images/optimized/hero1-desktop.jpg"
-                     srcset="images/optimized/hero1-mobile.jpg 480w, images/optimized/hero1-tablet.jpg 768w, images/optimized/hero1-desktop.jpg 1200w"
-                     sizes="100vw"
-                     width="1920"
-                     height="1080"
-                     alt="Cielo nocturno de Atacama, fondo del héroe"
-                     loading="eager"
-                     fetchpriority="high"
-                     decoding="sync">
-            </picture>
+            <!-- Background image will be set via CSS -->
         </div>
         <div class="hero-content">
             <div class="container">
                 <h1 class="hero-title" id="hero-title-animated">
                     <span class="title-line title-line-1">Atacama Dark Skies</span>
-                    <span class="title-line title-line-2">Descubre el cosmos </span>
-                    <span class="title-line title-line-3">En el desierto de Atacama</span>
+                    <span class="title-line title-line-2">El cielo más puro del mundo</span>
+                    <span class="title-line title-line-3">En San Pedro de Atacama</span>
                 </h1>
-                <p class="hero-subtitle">Un viaje astronómico a través del espacio y del tiempo</p>
+                <p class="hero-subtitle">Tours astronómicos guiados por expertos: observación de estrellas, constelaciones y fenómenos celestes del espacio profundo.</p>
                 <div class="hero-buttons">
                     <a href="#reservas" class="btn btn-primary">Reserva Tu Tour</a>
+                    <a href="#tours" class="btn btn-secondary">Ver Tours</a>
                 </div>
             </div>
         </div>
@@ -379,6 +119,25 @@
     </section>
 
     <!-- About Us Section -->
+    <section id="nosotros" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2>Vicente Litvak</h2>
+                <p class="section-subtitle">Sobre mi</p>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Con más de 5 años guiando tours astronómicos en el Desierto de Atacama, he tenido el privilegio de compartir con miles de personas la magia de los cielos más puros del mundo.</p>
+                    <p>Mi pasión por la astronomía comenzó desde pequeño, y hoy combino conocimiento científico con tecnología de vanguardia para crear experiencias inolvidables bajo las estrellas.</p>
+                    <p>Utilizo telescopios Unistellar eVscope de última generación que permiten capturar y observar objetos del espacio profundo en tiempo real, transformando cada tour en una ventana hacia el universo.</p>
+                </div>
+                <div class="about-image">
+                    <img src="images/me2.jpg" alt="Guía astronómico en el desierto de Atacama con equipos profesionales" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Tours Section -->
     <section id="tours" class="tours">
@@ -393,16 +152,7 @@
                 <div class="tour-card featured">
                     <div class="featured-badge">Más Popular</div>
                     <div class="tour-image">
-                        <picture>
-                            <source srcset="images/responsive/regular3-2-1x.webp" type="image/webp">
-                            <img src="images/responsive/regular3-2-1x.jpg"
-                                 alt="Tour astronómico regular con telescopio profesional"
-                                 loading="lazy"
-                                 decoding="async"
-                                 fetchpriority="low"
-                                 width="380"
-                                 height="380">
-                        </picture>
+                        <img src="images/regular3-2.jpg" alt="Tour astronómico regular con telescopio profesional" loading="lazy">
                     </div>
                     <div class="tour-content">
                         <h3>Tour Astronómico Regular</h3>
@@ -437,18 +187,9 @@
                 </div>
                 
                 <!-- Tour 2: Astrophotography -->
-                <div class="tour-card featured">
+                <div class="tour-card">
                     <div class="tour-image">
-                        <picture>
-                            <source srcset="images/responsive/fotografico-1x.webp" type="image/webp">
-                            <img src="images/responsive/fotografico-1x.jpg"
-                                 alt="Tour de astrofotografía especializado con eVscope"
-                                 loading="lazy"
-                                 decoding="async"
-                                 fetchpriority="low"
-                                 width="444"
-                                 height="250">
-                        </picture>
+                        <img src="images/fotografico.jpg" alt="Tour de astrofotografía especializado con eVscope" loading="lazy">
                     </div>
                     <div class="tour-content">
                         <h3>Tour de Astrofotografía Especializado</h3>
@@ -483,432 +224,51 @@
                 </div>
                 
                 <!-- Tour 3: Private VIP -->
-                <div class="tour-card featured">
+                <div class="tour-card">
                     <div class="tour-image">
-                        <picture>
-                            <source srcset="images/responsive/privado1-1x.webp" type="image/webp">
-                            <img src="images/responsive/privado1-1x.jpg"
-                                 alt="Tour privado VIP exclusivo bajo las estrellas"
-                                 loading="lazy"
-                                 decoding="async"
-                                 fetchpriority="low"
-                                 width="380"
-                                 height="346">
-                        </picture>
+                        <img src="images/privado1.jpg" alt="Tour privado VIP exclusivo bajo las estrellas" loading="lazy">
                     </div>
                     <div class="tour-content">
                         <h3>Tour Privado VIP</h3>
                         <div class="tour-price">$200.000</div>
-                        <p>Experiencia exclusiva totalmente personalizada<!DOCTYPE html>
-<html lang="es">
-<head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T39HYLDJ8K"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      
-      gtag('config', 'G-T39HYLDJ8K');
-      // Configure Google Ads tracking (conversion ID: 795362262)
-      gtag('config', 'AW-795362262');
-    </script>
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atacama NightSky | Tours Astronómicos en San Pedro de Atacama</title>
-    <meta name="description" content="Atacama NightSky: Tours guiados con telescopio Unistellar en el desierto más claro del mundo. Observación de estrellas, astrofotografía y experiencias únicas.">
-    <meta name="keywords" content="Atacama NightSky, tours astronómicos San Pedro de Atacama, observación estrellas Atacama, telescopio Unistellar, astro turismo Chile">
-    
-    <!-- Custom tracking functions -->
-    <script>
-      // Funciones de tracking personalizadas
-      function trackBookingClick(tourType) {
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'booking_click', {
-            'event_category': 'engagement',
-            'event_label': tourType,
-            'value': 1
-          });
-        }
-      }
-      
-      function trackContact(method) {
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'contact', {
-            'event_category': 'engagement',
-            'event_label': method,
-            'value': 1
-          });
-        }
-      }
-      
-      function trackTourView(tourName, price) {
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'view_item', {
-            'currency': 'CLP',
-            'value': price,
-            'items': [{
-              'item_id': tourName,
-              'item_name': tourName,
-              'item_category': 'Tours',
-              'price': price,
-              'quantity': 1
-            }]
-          });
-        }
-      }
-      
-      // Corporate campaign specific tracking
-      function trackCorporateClick(action, source) {
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'corporate_interaction', {
-            'event_category': 'corporate_campaign',
-            'event_label': action,
-            'custom_parameter_1': source,
-            'value': 1
-          });
-          
-          // Also track as lead generation
-          gtag('event', 'generate_lead', {
-            'event_category': 'corporate',
-            'event_label': action,
-            'value': 1
-          });
-        }
-      }
-      
-      // Track corporate page section views
-      function trackCorporateView(section) {
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'view_promotion', {
-            'event_category': 'corporate_campaign',
-            'event_label': section,
-            'creative_name': 'corporate_events_section',
-            'creative_slot': section
-          });
-        }
-      }
-      
-      // Handle tour type selection in booking form
-      function handleTourTypeChange() {
-        const tourType = document.getElementById('tour-type').value;
-        if (tourType === 'corporate') {
-          trackCorporateClick('form_selection', 'booking_form');
-          
-          // Show corporate-specific message or modify form if needed
-          const messageField = document.getElementById('message');
-          if (messageField && !messageField.value.includes('Evento corporativo')) {
-            messageField.placeholder = 'Cuéntanos sobre tu evento corporativo: número de empleados, objetivos del team building, fechas preferidas, requerimientos especiales...';
-          }
-        }
-      }
-      
-      // UTM parameter tracking for corporate campaigns
-      function trackCampaignSource() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const source = urlParams.get('utm_source');
-        const medium = urlParams.get('utm_medium');
-        const campaign = urlParams.get('utm_campaign');
+                        <p>Experiencia exclusiva totalmente personalizada. Ideal para ocasiones especiales, parejas o familias que buscan privacidad absoluta en un lugar único en el mundo.</p>
+                        
+                        <div class="tour-details">
+                            <div class="detail">
+                                <i class="fas fa-clock"></i>
+                                <span>3 horas</span>
+                            </div>
+                            <div class="detail">
+                                <i class="fas fa-users"></i>
+                                <span>1-4 personas</span>
+                            </div>
+                        </div>
+                        
+                        <div class="tour-includes">
+                            <h4>Incluye:</h4>
+                            <ul>
+                                <li><i class="fas fa-check"></i> Guía astronómico exclusivo</li>
+                                <li><i class="fas fa-check"></i> Ubicación privada privilegiada</li>
+                                <li><i class="fas fa-check"></i> Telescopio Unistellar dedicado</li>
         
-        if (campaign && campaign.includes('corporativ')) {
-          if (typeof gtag !== 'undefined') {
-            gtag('event', 'campaign_visit', {
-              'event_category': 'corporate_campaign',
-              'campaign_name': campaign,
-              'source': source,
-              'medium': medium
-            });
-          }
-          
-          // Auto-scroll to corporate section if coming from campaign
-          setTimeout(() => {
-            const corporateSection = document.getElementById('eventos-corporativos');
-            if (corporateSection) {
-              corporateSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              trackCorporateView('auto_scroll');
-            }
-          }, 1500);
-        }
-      }
-    </script>
-    
-    <!-- Performance Optimizations -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="preconnect" href="https://apis.google.com" crossorigin>
-    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-    
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Atacama NightSky - Tours Astronómicos en San Pedro de Atacama">
-    <meta property="og:description" content="Descubre el cielo más puro del mundo con nuestros tours guiados. Telescopio Unistellar, fotografía astronómica y experiencias únicas en el Desierto de Atacama.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://atacamanightsky.com">
-    <meta property="og:image" content="https://atacamanightsky.com/images/atacama-stars.jpg">
-    <meta property="og:site_name" content="Atacama NightSky">
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Atacama NightSky - Tours Astronómicos">
-    <meta name="twitter:description" content="Tours astronómicos en el cielo más claro del mundo">
-    <meta name="twitter:image" content="https://atacamanightsky.com/images/atacama-stars.jpg">
-    
-    <!-- Additional SEO -->
-    <link rel="canonical" href="https://atacamanightsky.com">
-    <meta name="robots" content="index, follow">
-    <meta name="author" content="Atacama NightSky">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    
-    <!-- Optimized Google Fonts with preload and font metrics -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"></noscript>
-    
-    <!-- FontAwesome Icons - Reliable CDN Version -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
-    
-    <!-- Schema.org Structured Data for Tourism -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "TouristAttraction",
-      "name": "Atacama NightSky Tours",
-      "description": "Tours astronómicos guiados en el Desierto de Atacama con telescopio Unistellar",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "San Pedro de Atacama",
-        "addressRegion": "Antofagasta",
-        "addressCountry": "CL"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": -22.9087,
-        "longitude": -68.1997
-      },
-      "url": "https://atacamanightsky.com",
-      "telephone": "+56912345678",
-      "priceRange": "$$",
-      "openingHours": "Mo-Su 19:00-23:00",
-      "image": "https://atacamanightsky.com/images/atacama-stars.jpg",
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "reviewCount": "156"
-      }
-    }
-    </script>
-    
-    <!-- Critical CSS inlined for above-the-fold -->
-    <style>
-    /* Minimal CSS - Clean hero-focused design */
-    *{margin:0;padding:0;box-sizing:border-box}
-    :root{--primary-color:#00D4FF;--bg-primary:#0a0a0a;--text-primary:#fff;--text-secondary:#b8b8b8}
-    html,body{font-family:system-ui,sans-serif;color:var(--text-primary);background:var(--bg-primary);overflow-x:hidden}
-    
-    /* Hero Section - Full focus */
-    .hero{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
-    .hero-background{position:absolute;top:0;left:0;right:0;bottom:0}
-    .hero-bg-img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
-    .hero-content{position:relative;z-index:2;text-align:center;max-width:900px;padding:2rem}
-    .hero-title{font-size:clamp(2.25rem,6vw,3.875rem);line-height:1.3;margin-bottom:2rem;color:#00D4FF}
-    .hero-subtitle{font-size:clamp(1.25rem,3vw,1.5rem);color:rgba(184,184,184,0.9);margin-bottom:2rem;line-height:1.4}
-    .hero-buttons{display:flex;justify-content:center;margin-top:1.5rem}
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:14px 28px;border:none;border-radius:10px;font-weight:600;font-size:17px;text-decoration:none;color:#fff;background:linear-gradient(45deg,var(--primary-color),#7B68EE);min-width:180px;white-space:nowrap;cursor:pointer;transition:all 0.3s ease;box-shadow:0 4px 12px rgba(0,212,255,0.2)}
-    .btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,212,255,0.4)}
-    
-    /* Mobile Optimization */
-    @media (max-width: 768px) {
-        .hero{padding-top:8vh}
-        .hero-content{max-width:100%;padding:1.5rem}
-        .hero-title{font-size:clamp(2rem,8vw,3.2rem)}
-        .hero-subtitle{font-size:clamp(1.1rem,4vw,1.35rem)}
-        .btn{min-width:200px;font-size:16px;padding:16px 32px}
-    }
-    
-    /* Fallback icon display during font load */
-    .fa,.fas,.fab{font-family:"Font Awesome 6 Free","fa-solid-900",monospace!important;font-size:inherit;line-height:1}
-    .fab{font-family:"Font Awesome 6 Brands","fa-brands-400",monospace!important;font-size:inherit;line-height:1}
-    
-    /* Prevent invisible text during font load */
-    .fa:before,.fas:before,.fab:before{content:attr(data-icon,"□");display:inline-block;width:1em;text-align:center}
-    
-    /* Ultra-optimized CLS Prevention - Minimal layout calculation */
-    .hero{height:100vh!important;position:relative!important;display:flex!important;align-items:center!important;justify-content:center!important;contain:strict!important;content-visibility:visible!important}
-    .hero-background{position:absolute!important;inset:0!important;contain:strict!important}
-    .hero-bg-img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;content-visibility:visible!important}
-    .hero-content{position:relative!important;z-index:2!important;text-align:center!important;max-width:900px!important;padding:2rem!important;contain:layout!important}
-    .hero-content .container{width:100%!important;max-width:800px!important;padding:2rem!important}
-    .hero-title{font-size:clamp(2rem,5vw,3.5rem)!important;line-height:1.3!important;margin-bottom:2rem!important;min-height:8rem!important;color:#00D4FF!important}
-    .title-line{display:block!important;min-height:1.3em!important;line-height:1.3!important}
-    .hero-subtitle{font-size:clamp(1.1rem,2.5vw,1.3rem)!important;height:2em!important;line-height:1.5!important;margin-bottom:2rem!important}
-    .hero-buttons{height:3.5rem!important;display:flex!important;gap:1rem!important;justify-content:center!important;align-items:center!important}
-    
-    /* Font loading stability with metric overrides */
-    @font-face{font-family:'Roboto Fallback';src:local('Arial');size-adjust:107%;ascent-override:95%;descent-override:25%;line-gap-override:0%}
-    body,h1,h2,h3,p{font-family:'Roboto','Roboto Fallback',system-ui,-apple-system,sans-serif!important}
-    
-    /* Stable text rendering during font load */
-    .hero-title,.hero-subtitle{font-kerning:none;font-feature-settings:normal,text-rendering:optimizeSpeed}
-    
-    /* Language dropdown stable positioning */
-    .lang-dropdown{position:absolute;top:100%;right:0;min-width:150px;width:150px;transform:translateY(-100%);transition:transform 0.3s ease,opacity 0.3s ease;opacity:0;pointer-events:none;z-index:1001}
-    .lang-dropdown.show{transform:translateY(0);opacity:1;pointer-events:auto}
-    
-    /* Header and Navigation - Improved design */
-    .header{position:absolute;top:0;left:0;right:0;z-index:1000;background:transparent;transition:all 0.3s ease}
-    .header.scrolled{position:fixed;background:rgba(10,10,10,0.95);backdrop-filter:blur(10px);box-shadow:0 2px 20px rgba(0,0,0,0.5)}
-    .nav-container{display:flex;justify-content:space-between;align-items:center;height:80px;min-height:80px;padding:0 2rem;max-width:1200px;margin:0 auto}
-    .navbar{min-height:80px;width:100%}
-    .logo{display:flex;align-items:center;gap:0.5rem}
-    .logo-img{width:50px;height:50px;flex-shrink:0;border-radius:50%;box-shadow:0 0 20px rgba(0,212,255,0.3)}
-    .logo span{font-size:1.2rem;font-weight:600;color:var(--primary-color);display:none}
-    .nav-menu{display:flex;list-style:none;gap:2.5rem;margin:0;align-items:center}
-    .nav-menu a{color:var(--text-primary);text-decoration:none;font-weight:400;font-size:1rem;position:relative;padding:0.5rem 0;transition:all 0.3s ease}
-    .nav-menu a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:linear-gradient(45deg,var(--primary-color),var(--secondary-color));transition:width 0.3s ease}
-    .nav-menu a:hover::after,.nav-menu a.active::after{width:100%}
-    .nav-menu a:hover,.nav-menu a.active{color:var(--primary-color)}
-    .menu-toggle{display:none;flex-direction:column;background:none;border:none;cursor:pointer;padding:8px;border-radius:4px;transition:background 0.3s ease}
-    .menu-toggle:hover{background:rgba(0,212,255,0.1)}
-    .menu-toggle span{width:24px;height:2px;background:var(--text-primary);margin:3px 0;transition:all 0.3s ease;border-radius:2px}
-    .menu-toggle.active span:nth-child(1){transform:rotate(-45deg) translate(-5px, 6px)}
-    .menu-toggle.active span:nth-child(2){opacity:0}
-    .menu-toggle.active span:nth-child(3){transform:rotate(45deg) translate(-5px, -6px)}
-    
-    /* Mobile Navigation */
-    @media (max-width: 768px) {
-        .nav-container{padding:0 1rem}
-        .menu-toggle{display:flex}
-        .logo span{display:block}
-        .nav-menu{position:absolute;top:100%;left:0;right:0;background:rgba(10,10,10,0.98);backdrop-filter:blur(10px);flex-direction:column;padding:2rem;transform:translateY(-100%);opacity:0;pointer-events:none;transition:all 0.3s ease;gap:0}
-        .nav-menu.active{transform:translateY(0);opacity:1;pointer-events:auto}
-        .nav-menu li{margin:1rem 0;text-align:center}
-        .nav-menu a{font-size:1.1rem;padding:1rem 0}
-    }
-    
-    /* Hero adjustments - no fixed margin since header is absolute initially */
-    .hero{position:relative}
-    
-    /* Prevent layout shifts from images */
-    img{max-width:100%;height:auto}
-    picture{display:block}
-    
-    /* Stable button dimensions */
-    .btn{min-width:120px;white-space:nowrap}
-    .hero-buttons .btn{flex-shrink:0}
-    </style>
-    
-    <!-- Preload LCP hero image for faster rendering -->
-    <link rel="preload" as="image" href="images/optimized/hero1-desktop.webp" imagesrcset="images/optimized/hero1-mobile.webp 480w, images/optimized/hero1-tablet.webp 768w, images/optimized/hero1-desktop.webp 1200w" imagesizes="100vw">
-
-    <!-- Load full CSS after initial render -->
-    <link rel="preload" href="styles.css?v=4.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="styles.css?v=4.2"></noscript>
-
-    <!-- Font Awesome Fix -->
-    <link rel="stylesheet" href="fontawesome-fix.css">
-
-    <!-- Font Awesome Loader Script -->
-    <script src="fontawesome-loader.js"></script>
-</head>
-<body>
-
-    <!-- Header with Navigation -->
-    <header class="header">
-        <nav class="navbar">
-            <div class="container nav-container">
-                <a href="index.html" class="logo">
-                    <img src="images/Nightskylogo.webp" alt="Atacama NightSky" class="logo-img" loading="lazy" width="50" height="50">
-                    <span>Atacama NightSky</span>
-                </a>
-                <button class="menu-toggle" aria-label="Toggle menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                <ul class="nav-menu">
-                    <li><a href="#inicio">Inicio</a></li>
-                    <li><a href="#tours">Tours</a></li>
-                    <li><a href="#telescopio">Telescopio</a></li>
-                    <li><a href="noticias.html">Noticias</a></li>
-                    <li><a href="#nosotros">Sobre Mí</a></li>
-                    <li><a href="#contacto">Contacto</a></li>
-                </ul>
-            </div>
-        </nav>
-    </header>
-
-    <!-- Hero Section -->
-    <section id="inicio" class="hero" role="main">
-        <div class="hero-background">
-            <picture>
-                <source srcset="images/optimized/hero1-mobile.webp 480w, images/optimized/hero1-tablet.webp 768w, images/optimized/hero1-desktop.webp 1200w" 
-                        type="image/webp"
-                        width="1920"
-                        height="1080">
-                <img class="hero-bg-img"
-                     src="images/optimized/hero1-desktop.jpg"
-                     srcset="images/optimized/hero1-mobile.jpg 480w, images/optimized/hero1-tablet.jpg 768w, images/optimized/hero1-desktop.jpg 1200w"
-                     sizes="100vw"
-                     width="1920"
-                     height="1080"
-                     alt="Cielo nocturno de Atacama, fondo del héroe"
-                     loading="eager"
-                     fetchpriority="high"
-                     decoding="sync">
-            </picture>
-        </div>
-        <div class="hero-content">
-            <div class="container">
-                <h1 class="hero-title" id="hero-title-animated">
-                    <span class="title-line title-line-1">Atacama Dark Skies</span>
-                    <span class="title-line title-line-2">Descubre el cosmos </span>
-                    <span class="title-line title-line-3">En el desierto de Atacama</span>
-                </h1>
-                <p class="hero-subtitle">Un viaje astronómico a través del espacio y del tiempo</p>
-                <div class="hero-buttons">
-                    <a href="#reservas" class="btn btn-primary">Reserva Tu Tour</a>
+                                <li><i class="fas fa-check"></i> Sesión fotográfica en locaciones únicas</li>
+                    
+                            </ul>
+                        </div>
+                        
+                        <a href="#reservas" class="btn btn-primary btn-tour">Reservar Tour</a>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="scroll-indicator">
-            <i class="fas fa-chevron-down"></i>
-        </div>
-    </section>
-
-    <!-- About Us Section -->
-
-    <!-- Tours Section -->
-    <section id="tours" class="tours">
-        <div class="container">
-            <div class="section-header">
-                <h2>Nuestros Tours Astronómicos</h2>
-                <p class="section-subtitle">Experiencias únicas bajo el cielo más claro del mundo</p>
-            </div>
-            
-            <div class="tours-grid">
-                <!-- Tour 1: Complete Experience -->
-                <div class="tour-card featured">
-                    <div class="featured-badge">Más Popular</div>
+                
+                <!-- Tour 4: Educational Study Tours -->
+                <div class="tour-card">
                     <div class="tour-image">
-                        <picture>
-                            <source srcset="images/responsive/regular3-2-1x.webp" type="image/webp">
-                            <img src="images/responsive/regular3-2-1x.jpg"
-                                 alt="Tour astronómico regular con telescopio profesional"
-                                 loading="lazy"
-                                 decoding="async"
-                                 fetchpriority="low"
-                                 width="380"
-                                 height="380">
-                        </picture>
+                        <img src="images/_DSC1725.jpg?v=3.1" alt="Viajes de estudio educativos con telescopio" loading="lazy">
                     </div>
                     <div class="tour-content">
-                        <h3>Tour Astronómico Regular</h3>
-                        <div class="tour-price">$30.000</div>
-                        <p>Observación a ojo desnudo con puntero láser, charla sobre el universo, observación por telescopio inteligente, cóctel bajo las estrellas y sesión de fotos.</p>
+                        <h3>Viajes de Estudio</h3>
+                        <div class="tour-price">$15.000</div>
+                        <p>Programas educativos especializados para colegios, universidades e institutos. Contenido adaptado según nivel académico con material didáctico incluido.</p>
                         
                         <div class="tour-details">
                             <div class="detail">
@@ -917,90 +277,463 @@
                             </div>
                             <div class="detail">
                                 <i class="fas fa-users"></i>
-                                <span>Max 16 personas</span>
+                                <span>Grupos 15-30</span>
                             </div>
                         </div>
-                        
+
                         <div class="tour-includes">
                             <h4>Incluye:</h4>
                             <ul>
-                                <li><i class="fas fa-check"></i> Transporte desde/hacia hotel</li>
-                                <li><i class="fas fa-check"></i> Guía astronómico certificado</li>
-                                <li><i class="fas fa-check"></i> Observación con puntero láser</li>
-                                <li><i class="fas fa-check"></i> Telescopio Unistellar eVscope</li>
-                                <li><i class="fas fa-check"></i> Cóctel bajo las estrellas</li>
-                                <li><i class="fas fa-check"></i> Sesión de fotografías</li>
+                                <li><i class="fas fa-check"></i> Material didáctico especializado</li>
+                                <li><i class="fas fa-check"></i> Charlas magistrales personalizadas</li>
+                                <li><i class="fas fa-check"></i> Actividades grupales interactivas</li>
+                                <li><i class="fas fa-check"></i> Certificados de participación</li>
+                                <li><i class="fas fa-check"></i> Transporte grupal incluido</li>
                             </ul>
                         </div>
                         
-                        <a href="#reservas" class="btn btn-primary btn-tour">Reservar Tour</a>
+                        <a href="https://wa.me/56950558761?text=Hola!%20Me%20interesa%20cotizar%20un%20*Viaje%20de%20Estudio*%20astronómico%20para%20mi%20grupo.%20¿Podrían%20enviarme%20información%20detallada%20sobre%20disponibilidad,%20precios%20y%20opciones%20educativas?" target="_blank" class="btn btn-primary btn-tour">Solicitar Cotización</a>
                     </div>
                 </div>
                 
-                <!-- Tour 2: Astrophotography -->
+                <!-- Tour 5: Corporate Events -->
                 <div class="tour-card featured">
+                    <div class="featured-badge">Empresas</div>
                     <div class="tour-image">
-                        <picture>
-                            <source srcset="images/responsive/fotografico-1x.webp" type="image/webp">
-                            <img src="images/responsive/fotografico-1x.jpg"
-                                 alt="Tour de astrofotografía especializado con eVscope"
-                                 loading="lazy"
-                                 decoding="async"
-                                 fetchpriority="low"
-                                 width="444"
-                                 height="250">
-                        </picture>
+                        <img src="images/ejecutivo.jpg" alt="Eventos corporativos bajo las estrellas" loading="lazy">
                     </div>
                     <div class="tour-content">
-                        <h3>Tour de Astrofotografía Especializado</h3>
-                        <div class="tour-price">$120.000</div>
-                        <p>Aprende técnicas profesionales de astrofotografía con equipos especializados en distintas locaciones alrrededor de San Pedro de Atacama que parecen de otro planeta. Incluye configuración de cámara, técnicas avanzadas y edición básica.</p>
+                        <h3>Eventos Corporativos</h3>
+                        <div class="tour-price">Cotizar</div>
+                        <p>Team building bajo las estrellas. Fortalece vínculos empresariales con experiencias astronómicas únicas diseñadas para fortalecer equipos.</p>
                         
                         <div class="tour-details">
                             <div class="detail">
                                 <i class="fas fa-clock"></i>
-                                <span>5 horas</span>
+                                <span>4-5 horas</span>
                             </div>
                             <div class="detail">
                                 <i class="fas fa-users"></i>
-                                <span>Max 4 personas</span>
+                                <span>10-50 personas</span>
                             </div>
                         </div>
-                        
+
                         <div class="tour-includes">
                             <h4>Incluye:</h4>
                             <ul>
-                                <li><i class="fas fa-check"></i> Instructor especializado</li>
-                                <li><i class="fas fa-check"></i> Transporte en camioneta</li>
-                                <li><i class="fas fa-check"></i> Trípodes y accesorios</li>
-                                <li><i class="fas fa-check"></i> Sesión de edición</li>
-                                
-        
+                                <li><i class="fas fa-check"></i> Charlas motivacionales personalizadas</li>
+                                <li><i class="fas fa-check"></i> Actividades de team building</li>
+                                <li><i class="fas fa-check"></i> Cóctel y catering premium</li>
+                                <li><i class="fas fa-check"></i> Transporte ejecutivo incluido</li>
+                                <li><i class="fas fa-check"></i> Fotografía corporativa profesional</li>
                             </ul>
                         </div>
                         
-                        <a href="#reservas" class="btn btn-primary btn-tour">Reservar Tour</a>
+                        <a href="https://wa.me/56950558761?text=Hola!%20Me%20interesa%20cotizar%20un%20*Evento%20Corporativo*%20astronómico%20para%20mi%20empresa.%20¿Podrían%20enviarme%20información%20sobre%20disponibilidad,%20precios%20y%20opciones%20de%20team%20building?" target="_blank" class="btn btn-primary btn-tour">Solicitar Cotización</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="reservas" class="booking">
+        <div class="container">
+            <div class="section-header">
+                <h2>Reserva Tu Experiencia Astronómica</h2>
+                <p class="section-subtitle">Completa el formulario y te contactaremos para confirmar disponibilidad</p>
+            </div>
+            
+            <div class="booking-content">
+                <div class="booking-form-container">
+                    <form id="booking-form" class="booking-form" name="booking">
+                        
+                        <!-- Calendar Section with FullCalendar -->
+                        
+                        <div class="form-group calendar-section">
+                            <label for="calendar">Selecciona Fecha y Hora *</label>
+                            <div class="calendar-description">
+                                <p><strong>🌕 Fases Lunares:</strong> Los tours no están disponibles 3 días antes y después de luna llena para mejor visibilidad estelar.</p>
+                            </div>
+                            
+                            <div id="calendar-container">
+                                <div id="fullcalendar"></div>
+                            </div>
+                            
+                            <div class="calendar-legend">
+                                <div class="legend-item">
+                                    <span class="legend-dot available"></span>
+                                    <span>Disponible para reserva</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-dot unavailable"></span>
+                                    <span>No disponible (luna llena)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="moon-legend">🌑🌒🌓🌔🌕🌖🌗🌘</span>
+                                    <span>Fases lunares</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Selected Date Display -->
+                            <div class="selected-date-display" id="selected-date-display">
+                                Haz clic en una fecha disponible para continuar
+                            </div>
+                            
+                            <input type="hidden" id="selected-date" name="date" required>
+                            <input type="hidden" id="selected-time" name="time" required>
+                        </div>
+                        
+                        <!-- Datos de la reserva -->
+                        <div class="form-section">
+                            <h4>Datos de tu Reserva</h4>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="persons">Número de Personas *</label>
+                                <select id="persons" name="persons" required aria-required="true">
+                                    <option value="">Selecciona cantidad</option>
+                                    <option value="1">1 persona</option>
+                                    <option value="2">2 personas</option>
+                                    <option value="3">3 personas</option>
+                                    <option value="4">4 personas</option>
+                                    <option value="5">5 personas</option>
+                                    <option value="6">6 personas</option>
+                                    <option value="7">7 personas</option>
+                                    <option value="8">8 personas</option>
+                                    <option value="9">9 personas</option>
+                                    <option value="10">10 personas</option>
+                                    <option value="11">11 personas</option>
+                                    <option value="12">12 personas</option>
+                                    <option value="13">13 personas</option>
+                                    <option value="14">14 personas</option>
+                                    <option value="15">15 personas</option>
+                                    <option value="16">16 personas</option>
+                                    <option value="16+">Más de 16 personas (contactar)</option>
+                                </select>
+                                <div id="availability-warning" class="availability-warning" style="display: none;">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span class="warning-text"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="tour-type">Tipo de Tour *</label>
+                                <select id="tour-type" name="tour-type" required>
+                                    <option value="">Selecciona tipo de tour</option>
+                                    <option value="regular">Tour Regular (Grupo)</option>
+                                    <option value="private">Tour Privado (Solo tu grupo)</option>
+                                    <option value="astrophoto">Tour Astrofotográfico (Especializado)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Información de contacto -->
+                        <div class="form-section">
+                            <h4>Información de Contacto</h4>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Nombre Completo *</label>
+                                <input type="text" id="name" name="name" required aria-required="true" placeholder="Tu nombre completo">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" name="email" required aria-required="true" placeholder="tu@email.com">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Teléfono/WhatsApp *</label>
+                            <input type="tel" id="phone" name="phone" required aria-required="true" placeholder="+56 9 1234 5678">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Mensaje Adicional</label>
+                            <textarea id="message" name="message" rows="4" placeholder="¿Alguna pregunta o requerimiento especial?"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-submit">
+                            <i class="fas fa-paper-plane"></i>
+                            Enviar Reserva
+                        </button>
+                        
+                        <div class="form-success" id="form-success">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>¡Reserva Enviada!</h3>
+                            <p>Te contactaremos dentro de 24 horas para confirmar disponibilidad y detalles del pago.</p>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="booking-info">
+                    <div class="info-card">
+                        <i class="fas fa-clock"></i>
+                        <h4>Horarios</h4>
+                        <p>Tours nocturnos desde 20:00 hrs<br>Duración: 2.5 - 4+ horas</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h4>Disponibilidad</h4>
+                        <p>Todos los días del año, excepto 3 dias antes y después de luna llena<br>Sujeto a condiciones climáticas</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h4>Punto de Encuentro</h4>
+                        <p>Recogida en hoteles de San Pedro de Atacama incluida</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <i class="fas fa-credit-card"></i>
+                        <h4>Formas de Pago</h4>
+                        <p>Efectivo, Transferencia, PayPal<br>50% anticipo - 50% al inicio del tour</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Telescope Section -->
+    <section id="telescopio" class="telescope">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nuestro Telescopio Unistellar eVscope 2</h2>
+                <p class="section-subtitle">Tecnología revolucionaria que captura la belleza del espacio profundo en tiempo real</p>
+            </div>
+            
+            <div class="telescope-content">
+                <div class="telescope-info">
+                    <div class="telescope-features">
+                        <h3>Tecnología de Vanguardia</h3>
+                        <p>El telescopio Unistellar eVscope 2 utiliza tecnología revolucionaria que permite observar objetos del espacio profundo a color que normalmente son invisibles al ojo humano.</p>
+                        
                     </div>
                 </div>
                 
-                <!-- Tour 3: Private VIP -->
-                <div class="tour-card featured">
-                    <div class="tour-image">
-                        <picture>
-                            <source srcset="images/responsive/privado1-1x.webp" type="image/webp">
-                            <img src="images/responsive/privado1-1x.jpg"
-                                 alt="Tour privado VIP exclusivo bajo las estrellas"
-                                 loading="lazy"
-                                 decoding="async"
-                                 fetchpriority="low"
-                                 width="380"
-                                 height="346">
-                        </picture>
+                <div class="telescope-gallery">
+                    <h3>Galería del Espacio Profundo</h3>
+                    <p>Estas son fotografías reales capturadas con nuestro telescopio Unistellar durante nuestros tours</p>
+                    
+                    <script>
+                        function abrirImagen(src) {
+                            console.log('🔍 Abriendo:', src);
+                            const modal = document.getElementById('galleryModal');
+                            const img = document.getElementById('modalImage');
+                            if(modal && img) {
+                                img.src = src;
+                                modal.style.display = 'flex';
+                            }
+                        }
+                    </script>
+                    
+                    <div class="gallery-container">
+                        <!-- Gallery Carousel -->
+                        <div class="gallery-carousel" id="telescopeCarousel">
+                            <div class="carousel-track" id="carouselTrack">
+                                <!-- Slide 1 -->
+                                <div class="carousel-slide active">
+                                    <div class="gallery-grid">
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250418-015040.jpg')">
+                                            <img src="images/eVscope2-20250418-015040.jpg" alt="Objeto del espacio profundo capturado con eVscope" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250520-005028.jpg')">
+                                            <img src="images/eVscope2-20250520-005028.jpg" alt="Nebulosa capturada con telescopio Unistellar" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250525-021351.jpg')">
+                                            <img src="images/eVscope2-20250525-021351.jpg" alt="Galaxia fotografiada con eVscope2" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250629-012206.jpg')">
+                                            <img src="images/eVscope2-20250629-012206.jpg" alt="Cúmulo estelar capturado durante tour astronómico" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250629-013307.jpg')">
+                                            <img src="images/eVscope2-20250629-013307.jpg" alt="Objeto celeste fotografiado con telescopio Unistellar" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250629-013312.jpg')">
+                                            <img src="images/eVscope2-20250629-013312.jpg" alt="Astrofotografía del espacio profundo con eVscope" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Slide 2 -->
+                                <div class="carousel-slide">
+                                    <div class="gallery-grid">
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250719-001348.jpg')">
+                                            <img src="images/eVscope2-20250719-001348.jpg" alt="Nebulosa del Anillo capturada con eVscope" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-004143.jpg')">
+                                            <img src="images/eVscope2-20250803-004143.jpg" alt="Galaxia espiral fotografiada con telescopio Unistellar" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-004145.jpg')">
+                                            <img src="images/eVscope2-20250803-004145.jpg" alt="Cúmulo globular del espacio profundo" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-032904.jpg')">
+                                            <img src="images/eVscope2-20250803-032904.jpg" alt="Nebulosa planetaria capturada en Atacama" loading="lazy">
+                                            <div class="gallery-overlay">
+                                                <i class="fas fa-search-plus"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Carousel Controls -->
+                            <button class="carousel-control prev" id="carouselPrev" onclick="
+                                console.log('⬅️ PREV CLICKED!'); 
+                                const track = document.getElementById('carouselTrack');
+                                if(track) track.style.transform = 'translateX(0%)';
+                            ">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="carousel-control next" id="carouselNext" onclick="
+                                console.log('➡️ NEXT CLICKED!'); 
+                                const track = document.getElementById('carouselTrack');
+                                if(track) track.style.transform = 'translateX(-50%)';
+                            ">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            
+                            <!-- Carousel Indicators -->
+                            <div class="carousel-indicators">
+                                <button class="indicator active" data-slide="0"></button>
+                                <button class="indicator" data-slide="1"></button>
+                            </div>
+                        </div>
+                        
+                        <!-- Gallery Modal -->
+                        <div id="galleryModal" class="gallery-modal" onclick="window.closeGalleryModal()">
+                            <div class="modal-content" onclick="event.stopPropagation()">
+                                <span class="close-modal" onclick="
+                                    console.log('❌ CLOSE CLICKED!');
+                                    document.getElementById('galleryModal').style.display = 'none';
+                                ">&times;</span>
+                                <img id="modalImage" src="" alt="Imagen ampliada del telescopio">
+                                <div class="modal-nav">
+                                    <button id="prevImage" class="nav-btn prev-btn">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <button id="nextImage" class="nav-btn next-btn">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="tour-content">
-                        <h3>Tour Privado VIP</h3>
-                        <div class="tour-price">$200.000</div>
-                        <p>Experiencia exclusiva totalmente personalizada
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2>Contacto y Ubicación</h2>
+                <p class="section-subtitle">Estamos a 10km al sur de San Pedro en la oscuridad absoluta del desierto de Atacama</p>
+            </div>
+            
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Dirección</h4>
+                            <p>Calle Caracoles 123<br>San Pedro de Atacama, Chile</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Teléfono</h4>
+                            <p><a href="tel:+56955123456">+56 9 3513 4669</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p><a href="mailto:vicente.litvak@gmail.com">vicente.litvak@gmail.com</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <div>
+                            <h4>WhatsApp</h4>
+                            <p><a href="https://wa.me/56935134669" target="_blank">+56 9 3513 4669</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="social-links">
+                        <h4>Síguenos</h4>
+                        <div class="social-icons">
+                            <a href="#" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                            <a href="#" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" target="_blank" aria-label="TripAdvisor"><i class="fab fa-tripadvisor"></i></a>
+                            <a href="#" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-map">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.8890525328354!2d-68.20028768502085!3d-22.911434484260326!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x96ac0919447d2e07%3A0x6b8f1c3c9c2f8c5d!2sSan%20Pedro%20de%20Atacama%2C%20Chile!5e0!3m2!1sen!2scl!4v1643723458123!5m2!1sen!2scl" 
+                        width="100%" 
+                        height="400" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Ubicación Tours Astronómicos Atacama en San Pedro de Atacama">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <img src="images/Nightskylogo.jpg" alt="Atacama NightSky Logo" class="footer-logo-img">
+                    </div>
+                    <p>Descubre el universo en el cielo más claro del mundo. Experiencias astronómicas inolvidables en San Pedro de Atacama.</p>
+                    <div class="footer-social">
+                        <a href="#" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                         <a href="#" target="_blank" aria-label="TripAdvisor"><i class="fab fa-tripadvisor"></i></a>
                         <a href="#" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                     </div>
@@ -1048,30 +781,20 @@
 
     <!-- WhatsApp Float Button -->
     <div class="whatsapp-float">
-        <a href="https://wa.me/56935134669?text=Hola!%20Me%20interesa%20información%20sobre%20los%20tours%20astronómicos" target="_blank" aria-label="Contactar por WhatsApp" onclick="trackContact('whatsapp_float')">
+        <a href="https://wa.me/56935134669?text=Hola!%20Me%20interesa%20información%20sobre%20los%20tours%20astronómicos" target="_blank" aria-label="Contactar por WhatsApp">
             <i class="fab fa-whatsapp"></i>
         </a>
         <div class="whatsapp-tooltip">¿Tienes preguntas? ¡Escríbenos!</div>
     </div>
 
-    <!-- Defer all JavaScript until after LCP for faster rendering -->
-    <script>
-        // Load scripts after LCP to minimize main thread blocking
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                // Load Google APIs
-                const apiScript = document.createElement('script');
-                apiScript.src = 'https://apis.google.com/js/api.js';
-                apiScript.defer = true;
-                document.head.appendChild(apiScript);
-                
-                // Main script already deferred
-            }, 100);
-        });
-    </script>
+    <!-- FullCalendar JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.js" defer></script>
     
-    <!-- JavaScript - deferred for non-blocking load -->
-    <script src="script.js?v=4.1" defer></script>
+    <!-- Google APIs -->
+    <script src="https://apis.google.com/js/api.js" defer></script>
+    
+    <!-- JavaScript -->
+    <script src="script.js?v=4.0"></script>
 
     <!-- Calendario personalizado con fases lunares -->
     <script>
@@ -1181,7 +904,7 @@
                 es: {
                     available: 'Disponible - Condiciones óptimas',
                     unavailable: 'No disponible - Luna muy brillante',
-                    info: '',
+                    info: '🌒 Creciente: bloqueado si >75% iluminación | 🌖 Menguante: bloqueado si >90% iluminación',
                     dateSelected: 'Fecha Seleccionada',
                     excellentConditions: 'Condiciones excelentes para observación estelar',
                     notAvailableTitle: 'Fecha no disponible para tours.',
@@ -1370,7 +1093,7 @@
                     reason = `${getCalendarText('almostFull', currentLang)} (${moonPhase.illumination}% ${currentLang === 'en' ? 'illumination' : currentLang === 'pt' ? 'iluminação' : 'iluminación'}) ${currentLang === 'en' ? 'and still too bright for optimal observation.' : currentLang === 'pt' ? 'e ainda muito brilhante para observação ótima.' : 'y aún muy brillante para la observación óptima.'}`;
                 }
                 alert(`${getCalendarText('notAvailableTitle', currentLang)}\n\n${currentLang === 'en' ? 'Lunar phase' : currentLang === 'pt' ? 'Fase lunar' : 'Fase lunar'}: ${moonPhase.name} ${moonPhase.emoji}\n${currentLang === 'en' ? 'Illumination' : currentLang === 'pt' ? 'Iluminação' : 'Iluminación'}: ${moonPhase.illumination}%\n\n${reason}\n\n${getCalendarText('selectOther', currentLang)}`);
-                              
+                return;
             }
             
             selectedDate = date;
@@ -1390,7 +1113,7 @@
             const displayElement = document.getElementById('selected-date-display');
             if (displayElement) {
                 const currentLang = localStorage.getItem('preferred-language') || 'es';
-                const dateStr =
+                const dateStr = date.toLocaleDateString(currentLang === 'en' ? 'en-US' : currentLang === 'pt' ? 'pt-BR' : 'es-ES', {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',
@@ -1408,6 +1131,8 @@
                 displayElement.classList.add('has-date');
             }
             
+            // Mostrar confirmación
+            showDateConfirmation(date);
         }
 
         // Mostrar confirmación de fecha seleccionada
@@ -1693,7 +1418,7 @@ ${msg.contact}`);
                     calendarNote: 'Note: Automatic Google Calendar is not available in local development mode.',
                     instructions: 'In production, bookings are automatically added to our calendar.',
                     manual: 'Your booking details:',
-                    contact: '📞 We will contact you soon to confirm details.',
+                    contact: '📞 We will contact you within 24 hours to confirm all details.',
                     whatsapp: 'Have questions? Write us on WhatsApp: +56 9 3513 4669'
                 },
                 pt: {
@@ -2724,26 +2449,6 @@ ${msg.contact}`);
                     
                     console.log('Client-side validation passed');
                     
-                    // Track booking attempt en Google Analytics
-                    const tourPrices = {
-                        'Tour Astronómico Regular': 30000,
-                        'Tour de Astrofotografía Especializado': 120000,
-                        'Tour Privado VIP': 200000,
-                        'Viajes de Estudio': 15000
-                    };
-                    
-                    // El formulario usa 'regular' o 'private' como valores
-                    const tourTypeMapping = {
-                        'regular': 'Tour Astronómico Regular',
-                        'private': 'Tour Privado VIP'
-                    };
-                    
-                    const tourName = tourTypeMapping[bookingData.tourType] || bookingData.tourType;
-                    const tourPrice = tourPrices[tourName] || 0;
-                    
-                    trackBookingClick(tourName);
-                    trackTourView(tourName, tourPrice);
-                    
                     // Mostrar loading en el botón
                     const submitBtn = bookingForm.querySelector('button[type="submit"]');
                     const originalText = submitBtn.textContent;
@@ -2769,32 +2474,8 @@ ${msg.contact}`);
                         
                         if (response.ok && result.success) {
                             console.log('Booking successful, redirecting to confirmation page');
-                            
-                            // Track conversion in Google Analytics and Google Ads
-                            if (typeof gtag !== 'undefined') {
-                                // Google Analytics event
-                                gtag('event', 'purchase', {
-                                    'transaction_id': result.bookingId || 'booking_' + Date.now(),
-                                    'value': 1,
-                                    'currency': 'CLP',
-                                    'items': [{
-                                        'item_name': bookingData.tourType,
-                                        'quantity': bookingData.persons
-                                    }]
-                                });
-                                
-                                // Google Ads conversion event - "Solicitud reserva"
-                                // Conversion ID: 795362262, Label: 2aoGCPrxl4cBENaHofsC
-                                gtag('event', 'conversion', {
-                                    'send_to': 'AW-795362262/2aoGCPrxl4cBENaHofsC',
-                                    'value': 1.0,
-                                    'currency': 'CLP',
-                                    'transaction_id': result.bookingId || 'booking_' + Date.now()
-                                });
-                            }
-                            
-                            // Simple redirect to confirmation page without parameters
-                            window.location.href = 'confirmacion.html';
+                            // Redirect a página de confirmación
+                            window.location.href = `confirmacion.html?id=${encodeURIComponent(result.bookingId)}`;
                         } else {
                             console.error('API returned error:', result);
                             throw new Error(result.error || 'Error al procesar la reserva');
@@ -2813,52 +2494,6 @@ ${msg.contact}`);
                 console.error('Booking form not found!');
             }
         });
-    </script>
-    
-    <!-- Performance optimization script -->
-    <script>
-    // CLS Prevention and smooth loading
-    (function() {
-        // Prevent layout shifts during initial load
-        document.documentElement.style.setProperty('--hero-loaded', '1');
-        
-        // Force layout recalculation after critical CSS loads - NO DOM MODIFICATIONS
-        document.addEventListener('DOMContentLoaded', function() {
-            // Only make body visible, don't modify hero or nav dimensions
-            // CSS already handles all sizing to prevent CLS
-            document.body.style.visibility = 'visible';
-            
-            // Mark as loaded for any scripts that need to know
-            document.documentElement.setAttribute('data-cls-optimized', 'true');
-            
-            // Track campaign source for corporate campaigns
-            trackCampaignSource();
-            
-            // Set up intersection observer for corporate section
-            const corporateSection = document.getElementById('eventos-corporativos');
-            if (corporateSection) {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-                            trackCorporateView('section_view');
-                        }
-                    });
-                }, { threshold: 0.5 });
-                
-                observer.observe(corporateSection);
-            }
-        });
-        
-        // Critical images are already preloaded in HTML head
-        // Removed script-based preloading to prevent unused preload warnings
-        
-        // Font loading completion handler
-        if ('fonts' in document) {
-            document.fonts.ready.then(() => {
-                document.documentElement.classList.add('fonts-loaded');
-            });
-        }
-    })();
     </script>
 </body>
 </html>

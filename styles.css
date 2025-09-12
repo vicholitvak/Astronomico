@@ -302,23 +302,16 @@ p {
     left: 0;
     right: 0;
     bottom: 0;
-    background: none;
-}
-
-.hero-background::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     background: linear-gradient(135deg, 
                 rgba(10, 10, 10, 0.9) 0%, 
                 rgba(26, 26, 46, 0.85) 35%, 
                 rgba(22, 33, 62, 0.8) 65%,
-                rgba(0, 212, 255, 0.2) 100%);
-    z-index: 1;
-    pointer-events: none;
+                rgba(0, 212, 255, 0.2) 100%),
+                url('images/hero1.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .hero-bg-img {
@@ -2945,121 +2938,4 @@ blockquote {
 .btn-success:hover {
     background: linear-gradient(135deg, #128C7E, #25D366);
     transform: translateY(-2px);
-}
-    
-    .feature-item {
-        padding: var(--spacing-sm);
-    }
-    
-    .modal-content {
-        padding: var(--spacing-sm);
-        margin: var(--spacing-sm);
-        max-width: 95vw;
-        max-height: 85vh;
-    }
-    
-    #modalImage {
-        max-height: 60vh;
-    }
-    
-    .nav-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 1.2rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .gallery-grid {
-        grid-template-columns: 1fr;
-        max-width: 300px;
-    }
-    
-    .telescope {
-        padding: var(--spacing-lg) 0;
-    }
-    
-    .carousel-control {
-        width: 35px;
-        height: 35px;
-        font-size: 0.9rem;
-    }
-    
-    .carousel-control.prev {
-        left: 10px;
-    }
-    
-    .carousel-control.next {
-        right: 10px;
-    }
-}
-
-/* Print Styles */
-@media print {
-    .header,
-    .whatsapp-float,
-    .scroll-indicator,
-    .hamburger,
-    .btn {
-        display: none !important;
-    }
-    
-    body {
-        background: white !important;
-        color: black !important;
-    }
-    
-    section {
-        page-break-inside: avoid;
-        padding: 1rem 0;
-    }
-    
-    .hero {
-        height: auto;
-        padding: 2rem 0;
-    }
-}
-
-/* Reduced Motion */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-    
-    .hero-background {
-        background-attachment: scroll;
-    }
-    
-    .scroll-indicator {
-        animation: none;
-    }
-    
-    .nav-logo i {
-        animation: none;
-    }
-}
-
-/* High Contrast Mode */
-@media (prefers-contrast: high) {
-    :root {
-        --text-primary: #ffffff;
-        --text-secondary: #cccccc;
-        --bg-primary: #000000;
-        --bg-secondary: #111111;
-        --primary-color: #ffff00;
-    }
-    
-    .btn-primary {
-        border: 2px solid var(--primary-color);
-    }
-    
-    .tour-card,
-    .info-card,
-    .contact-item {
-        border: 2px solid var(--primary-color);
-    }
 }

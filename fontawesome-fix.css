@@ -1,9 +1,6 @@
-/* Font Awesome Fix - Multiple CDN fallbacks for reliability */
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
-@import url('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css');
-@import url('https://use.fontawesome.com/releases/v6.5.1/css/all.css');
+/* Font Awesome Fix - Simplified version for reliability */
 
-/* Force Font Awesome font loading */
+/* Force Font Awesome font loading with fallbacks */
 @font-face {
     font-family: 'Font Awesome 6 Free';
     font-style: normal;
@@ -34,21 +31,40 @@
 /* Additional fixes for icon display */
 .fas, .fab, .far, .fal, .fad {
     font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", sans-serif !important;
-    font-style: normal;
-    font-variant: normal;
-    font-weight: normal;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    font-style: normal !important;
+    font-variant: normal !important;
+    font-weight: normal !important;
+    text-rendering: auto !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* More specific rules to override main CSS */
+.tour-includes i.fas, .tour-includes i.fab, .tour-includes i.far,
+.stars i.fas, .stars i.fab, .stars i.far,
+.contact-item i.fas, .contact-item i.fab, .contact-item i.far,
+.nav-logo i.fas, .nav-logo i.fab, .nav-logo i.far,
+.feature i.fas, .feature i.fab, .feature i.far,
+.detail i.fas, .detail i.fab, .detail i.far,
+.group-features i.fas, .group-features i.fab, .group-features i.far,
+.benefit-item i.fas, .benefit-item i.fab, .benefit-item i.far,
+.info-card i.fas, .info-card i.fab, .info-card i.far,
+.footer-logo i.fas, .footer-logo i.fab, .footer-logo i.far,
+.feature-item i.fas, .feature-item i.fab, .feature-item i.far,
+.gallery-overlay i.fas, .gallery-overlay i.fab, .gallery-overlay i.far,
+.success-header i.fas, .success-header i.fab, .success-header i.far,
+.error-header i.fas, .error-header i.fab, .error-header i.far {
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", sans-serif !important;
 }
 
 /* Ensure icons are visible and properly sized */
 i[class*="fa-"] {
-    display: inline-block;
-    width: 1em;
-    height: 1em;
-    line-height: 1;
-    vertical-align: middle;
+    display: inline-block !important;
+    width: 1em !important;
+    height: 1em !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", sans-serif !important;
 }
 
 /* Fix for specific icon classes used in the site */
