@@ -167,10 +167,8 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"></noscript>
     
-    <!-- FontAwesome Icons with fallback for better compatibility -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Fallback for older browsers -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.0/css/all.css">
+    <!-- FontAwesome Icons - Reliable CDN Version -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
     
     <!-- Schema.org Structured Data for Tourism -->
     <script type="application/ld+json">
@@ -308,6 +306,9 @@
     <!-- Load full CSS after initial render -->
     <link rel="preload" href="styles.css?v=4.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="styles.css?v=4.2"></noscript>
+
+    <!-- Font Awesome Fix -->
+    <link rel="stylesheet" href="fontawesome-fix.css">
 </head>
 <body>
 
@@ -664,10 +665,8 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"></noscript>
     
-    <!-- FontAwesome Icons with fallback for better compatibility -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Fallback for older browsers -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.0/css/all.css">
+    <!-- FontAwesome Icons - Reliable CDN Version -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
     
     <!-- Schema.org Structured Data for Tourism -->
     <script type="application/ld+json">
@@ -805,6 +804,9 @@
     <!-- Load full CSS after initial render -->
     <link rel="preload" href="styles.css?v=4.2" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="styles.css?v=4.2"></noscript>
+
+    <!-- Font Awesome Fix -->
+    <link rel="stylesheet" href="fontawesome-fix.css">
 </head>
 <body>
 
@@ -1362,7 +1364,7 @@
                     reason = `${getCalendarText('almostFull', currentLang)} (${moonPhase.illumination}% ${currentLang === 'en' ? 'illumination' : currentLang === 'pt' ? 'iluminação' : 'iluminación'}) ${currentLang === 'en' ? 'and still too bright for optimal observation.' : currentLang === 'pt' ? 'e ainda muito brilhante para observação ótima.' : 'y aún muy brillante para la observación óptima.'}`;
                 }
                 alert(`${getCalendarText('notAvailableTitle', currentLang)}\n\n${currentLang === 'en' ? 'Lunar phase' : currentLang === 'pt' ? 'Fase lunar' : 'Fase lunar'}: ${moonPhase.name} ${moonPhase.emoji}\n${currentLang === 'en' ? 'Illumination' : currentLang === 'pt' ? 'Iluminação' : 'Iluminación'}: ${moonPhase.illumination}%\n\n${reason}\n\n${getCalendarText('selectOther', currentLang)}`);
-                return;
+                              
             }
             
             selectedDate = date;
@@ -1382,7 +1384,7 @@
             const displayElement = document.getElementById('selected-date-display');
             if (displayElement) {
                 const currentLang = localStorage.getItem('preferred-language') || 'es';
-                const dateStr = date.toLocaleDateString(currentLang === 'en' ? 'en-US' : currentLang === 'pt' ? 'pt-BR' : 'es-ES', {
+                const dateStr =
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',
@@ -1685,7 +1687,7 @@ ${msg.contact}`);
                     calendarNote: 'Note: Automatic Google Calendar is not available in local development mode.',
                     instructions: 'In production, bookings are automatically added to our calendar.',
                     manual: 'Your booking details:',
-                    contact: '📞 We will contact you within 24 hours to confirm all details.',
+                    contact: '📞 We will contact you soon to confirm details.',
                     whatsapp: 'Have questions? Write us on WhatsApp: +56 9 3513 4669'
                 },
                 pt: {

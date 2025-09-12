@@ -1,0 +1,31 @@
+/* Font Awesome Fix - Import latest version */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
+
+/* Additional fixes for icon display */
+.fas, .fab, .far, .fal, .fad {
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure icons are visible */
+i[class*="fa-"] {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    line-height: 1;
+}
+
+/* Fix for specific icon classes used in the site */
+.fa-star:before { content: "\f005"; }
+.fa-moon:before { content: "\f186"; }
+.fa-telescope:before { content: "\f1e6"; }
+.fa-camera:before { content: "\f030"; }
+.fa-facebook:before { content: "\f39e"; }
+.fa-spinner:before { content: "\f110"; }
+.fa-check-circle:before { content: "\f058"; }
+.fa-plus:before { content: "\f067"; }
