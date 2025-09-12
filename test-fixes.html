@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Fixes - Atacama NightSky</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #0a0a0a;
+            color: white;
+            line-height: 1.6;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        .success { color: #4CAF50; }
+        .error { color: #f44336; }
+        .warning { color: #ff9800; }
+        .btn {
+            background: #00D4FF;
+            color: #0a0a0a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover { background: #0099cc; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Website Fixes</h1>
+
+    <div class="test-section">
+        <h2>Language Toggle Test</h2>
+        <p id="lang-test">Testing language toggle elements...</p>
+        <button class="btn" onclick="testLanguageToggle()">Test Language Toggle</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Meta Pixel Test</h2>
+        <p id="pixel-test">Testing Meta Pixel configuration...</p>
+        <button class="btn" onclick="testMetaPixel()">Test Meta Pixel</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Favicon Test</h2>
+        <p id="favicon-test">Testing favicon loading...</p>
+        <button class="btn" onclick="testFavicon()">Test Favicon</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Booking Form Test</h2>
+        <p id="booking-test">Testing booking form date field...</p>
+        <button class="btn" onclick="testBookingForm()">Test Booking Form</button>
+    </div>
+
+    <div class="test-section">
+        <h2>API Test</h2>
+        <p id="api-test">Testing API connectivity...</p>
+        <button class="btn" onclick="testAPI()">Test API</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Console Log</h2>
+        <div id="console-log" style="background: #1a1a1a; padding: 10px; border-radius: 5px; font-family: monospace; max-height: 200px; overflow-y: auto;"></div>
+    </div>
+
+    <script>
+        // Console logging to page
+        const originalLog = console.log;
+        const originalError = console.error;
+        const consoleDiv = document.getElementById('console-log');
+
+        function addToConsole(message, type = 'log') {
+            const time = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#f44336' : type === 'warn' ? '#ff9800' : '#4CAF50';
+            consoleDiv.innerHTML += `<div style="color: ${color}">[${time}] ${message}</div>`;
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToConsole(args.join(' '), 'log');
+        };
+
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToConsole(args.join(' '), 'error');
+        };
+
+        // Test functions
+        function testLanguageToggle() {
+            const testDiv = document.getElementById('lang-test');
+            const langToggle = document.getElementById('lang-toggle');
+            const currentLang = document.getElementById('current-lang');
+
+            if (langToggle && currentLang) {
+                testDiv.innerHTML = '<span class="success">✅ Language toggle elements found</span>';
+                console.log('✅ Language toggle test passed');
+            } else {
+                testDiv.innerHTML = '<span class="error">❌ Language toggle elements missing</span>';
+                console.log('❌ Language toggle test failed');
+            }
+        }
+
+        function testMetaPixel() {
+            const testDiv = document.getElementById('pixel-test');
+            const scripts = document.querySelectorAll('script');
+            let hasValidPixel = false;
+
+            scripts.forEach(script => {
+                if (script.textContent && script.textContent.includes('fbq') && !script.textContent.includes('YOUR_PIXEL_ID')) {
+                    hasValidPixel = true;
+                }
+            });
+
+            if (hasValidPixel) {
+                testDiv.innerHTML = '<span class="success">✅ Meta Pixel configured correctly</span>';
+                console.log('✅ Meta Pixel test passed');
+            } else {
+                testDiv.innerHTML = '<span class="warning">⚠️ Meta Pixel has placeholder ID or is disabled</span>';
+                console.log('⚠️ Meta Pixel test - placeholder ID detected');
+            }
+        }
+
+        function testFavicon() {
+            const testDiv = document.getElementById('favicon-test');
+            const favicon = document.querySelector('link[rel="icon"]');
+
+            if (favicon) {
+                testDiv.innerHTML = '<span class="success">✅ Favicon link found</span>';
+                console.log('✅ Favicon link found');
+
+                // Test if favicon loads
+                fetch(favicon.href)
+                    .then(response => {
+                        if (response.ok) {
+                            testDiv.innerHTML = '<span class="success">✅ Favicon loads successfully</span>';
+                            console.log('✅ Favicon loads successfully');
+                        } else {
+                            testDiv.innerHTML = '<span class="error">❌ Favicon returns ' + response.status + '</span>';
+                            console.log('❌ Favicon returns ' + response.status);
+                        }
+                    })
+                    .catch(error => {
+                        testDiv.innerHTML = '<span class="error">❌ Favicon load error: ' + error.message + '</span>';
+                        console.log('❌ Favicon load error:', error.message);
+                    });
+            } else {
+                testDiv.innerHTML = '<span class="error">❌ No favicon link found</span>';
+                console.log('❌ No favicon link found');
+            }
+        }
+
+        function testBookingForm() {
+            const testDiv = document.getElementById('booking-test');
+
+            // Check if we're on the main page
+            if (window.location.pathname.includes('test-fixes.html')) {
+                testDiv.innerHTML = '<span class="warning">⚠️ Not on main page - cannot test booking form</span>';
+                console.log('⚠️ Not on main page - cannot test booking form');
+                return;
+            }
+
+            const bookingForm = document.getElementById('booking-form');
+            const dateField = document.getElementById('selected-date') || document.getElementById('date');
+
+            if (bookingForm && dateField) {
+                testDiv.innerHTML = '<span class="success">✅ Booking form and date field found</span>';
+                console.log('✅ Booking form test passed');
+            } else {
+                testDiv.innerHTML = '<span class="error">❌ Booking form or date field missing</span>';
+                console.log('❌ Booking form test failed');
+            }
+        }
+
+        function testAPI() {
+            const testDiv = document.getElementById('api-test');
+
+            // Test API connectivity
+            fetch('/api/booking', {
+                method: 'OPTIONS' // Use OPTIONS to test connectivity without actual booking
+            })
+            .then(response => {
+                if (response.status === 405) { // Method not allowed is actually good - means API exists
+                    testDiv.innerHTML = '<span class="success">✅ API endpoint reachable</span>';
+                    console.log('✅ API endpoint reachable');
+                } else {
+                    testDiv.innerHTML = '<span class="warning">⚠️ API returned status: ' + response.status + '</span>';
+                    console.log('⚠️ API returned status:', response.status);
+                }
+            })
+            .catch(error => {
+                testDiv.innerHTML = '<span class="error">❌ API connection failed: ' + error.message + '</span>';
+                console.log('❌ API connection failed:', error.message);
+            });
+        }
+
+        // Auto-run tests on page load
+        window.addEventListener('load', function() {
+            console.log('🧪 Running automatic tests...');
+            setTimeout(() => {
+                testLanguageToggle();
+                testMetaPixel();
+                testFavicon();
+                testBookingForm();
+                testAPI();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
