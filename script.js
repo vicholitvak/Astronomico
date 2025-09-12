@@ -472,16 +472,32 @@ function initBookingForm() {
         submitButton.disabled = true;
 
         try {
-            // Collect form data
+            // Collect form data with null checks
+            const dateField = form.querySelector('#date');
+            const personsField = form.querySelector('#persons');
+            const tourTypeField = form.querySelector('#tour-type');
+            const timeField = form.querySelector('#time'); // Optional field
+            const nameField = form.querySelector('#name');
+            const emailField = form.querySelector('#email');
+            const phoneField = form.querySelector('#phone');
+            const messageField = form.querySelector('#message');
+
+            // Validate required fields exist
+            if (!dateField || !personsField || !tourTypeField || !nameField || !emailField || !phoneField) {
+                console.error('❌ Missing required form fields');
+                alert('Error: Algunos campos del formulario no se encontraron. Por favor recarga la página.');
+                return;
+            }
+
             const bookingData = {
-                date: form.querySelector('#date').value,
-                persons: form.querySelector('#persons').value,
-                tourType: form.querySelector('#tour-type').value,
-                time: form.querySelector('#time').value,
-                name: form.querySelector('#name').value,
-                email: form.querySelector('#email').value,
-                phone: form.querySelector('#phone').value,
-                message: form.querySelector('#message').value
+                date: dateField.value,
+                persons: personsField.value,
+                tourType: tourTypeField.value,
+                time: timeField ? timeField.value : '' // Optional field
+                name: nameField.value,
+                email: emailField.value,
+                phone: phoneField.value,
+                message: messageField ? messageField.value : '' // Optional field
             };
 
             console.log('📝 Sending booking data:', bookingData);
