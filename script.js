@@ -493,7 +493,7 @@ function initBookingForm() {
                 date: dateField.value,
                 persons: personsField.value,
                 tourType: tourTypeField.value,
-                time: timeField ? timeField.value : '' // Optional field
+                time: timeField ? timeField.value : '', // Optional field
                 name: nameField.value,
                 email: emailField.value,
                 phone: phoneField.value,
