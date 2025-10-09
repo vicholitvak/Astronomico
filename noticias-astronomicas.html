@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noticias Astronómicas Chile | Atacama NightSky</title>
+    <meta name="description" content="Últimas noticias astronómicas, observatorios de Chile, eventos celestes en vivo, 3I-Atlas y más. Mantente actualizado con el universo desde el desierto más claro del mundo.">
+    <meta name="keywords" content="noticias astronómicas Chile, observatorios astronómicos, eventos celestes, 3I-Atlas, astronomía Atacama, eclipses, lluvias de meteoros">
+
+    <!-- SEO Meta Tags -->
+    <meta property="og:title" content="Noticias Astronómicas Chile | Atacama NightSky">
+    <meta property="og:description" content="Últimas noticias astronómicas, observatorios de Chile, eventos celestes en vivo y 3I-Atlas">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://atacamanightsky.com/noticias-astronomicas.html">
+    <meta property="og:image" content="https://atacamanightsky.com/images/atacama-stars.jpg">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .news-header {
+            background: linear-gradient(135deg, #00D4FF 0%, #0099CC 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .news-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="20" cy="30" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="70" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="20" r="1" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            opacity: 0.3;
+        }
+
+        .news-header h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .news-header p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 0, 0, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 500;
+            animation: pulse 2s infinite;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Navigation */
+        .news-nav {
+            background: #2a2a2a;
+            padding: 20px 0;
+            border-bottom: 1px solid #00D4FF;
+        }
+
+        .news-nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: #00D4FF;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+
+        .nav-links a:hover {
+            background: #00D4FF;
+            color: #000;
+        }
+
+        .back-btn {
+            background: #00D4FF;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #0099CC;
+            color: white;
+        }
+
+        /* Main Content */
+        .news-content {
+            padding: 50px 0;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            padding: 60px 0;
+            margin-bottom: 50px;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .hero-image {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 400px;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .hero-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .hero-content h2 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5rem;
+            color: #00D4FF;
+            margin-bottom: 20px;
+        }
+
+        .hero-content p {
+            color: #ccc;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid #00D4FF;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #00D4FF;
+            display: block;
+        }
+
+        .stat-label {
+            color: #ccc;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        /* News Section */
+        .news-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+        }
+
+        .news-filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #00d4ff;
+            border-color: #00d4ff;
+            transform: translateY(-2px);
+        }
+
+        .featured-news {
+            margin-bottom: 50px;
+        }
+
+        .featured-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            min-height: 300px;
+        }
+
+        .featured-image {
+            flex: 1;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .featured-content {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .news-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .news-image {
+            height: 200px;
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .news-content {
+            padding: 25px;
+        }
+
+        .load-more-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .load-more-btn {
+            background: linear-gradient(45deg, #00d4ff 0%, #090979 100%);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .load-more-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        /* Observatories Section */
+        .observatories-section {
+            background: #1a1a1a;
+            padding: 60px 0;
+            margin: 50px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5rem;
+            color: #00D4FF;
+            margin-bottom: 50px;
+        }
+
+        .observatories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .observatory-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .observatory-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .observatory-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .observatory-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .observatory-card:hover .observatory-image img {
+            transform: scale(1.05);
+        }
+
+        .observatory-info {
+            padding: 25px;
+        }
+
+        .observatory-info h3 {
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .observatory-location {
+            color: #ccc;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .observatory-description {
+            color: #fff;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .observatory-details {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .detail-item {
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .observatory-link {
+            display: inline-block;
+            background: linear-gradient(45deg, #00d4ff 0%, #090979 100%);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .observatory-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        /* Atlas Section */
+        .atlas-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        .atlas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .atlas-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .atlas-header {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .atlas-header i {
+            font-size: 2rem;
+            color: #fff;
+        }
+
+        .atlas-header h3 {
+            color: #fff;
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .atlas-content {
+            padding: 25px;
+        }
+
+        .atlas-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .atlas-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 5px;
+        }
+
+        .atlas-label {
+            color: #ccc;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .team-member {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .team-member:last-child {
+            border-bottom: none;
+        }
+
+        .member-name {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .member-role {
+            color: #00d4ff;
+            font-size: 0.9rem;
+        }
+
+        .discovery-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .discovery-item:last-child {
+            border-bottom: none;
+        }
+
+        .discovery-item i {
+            color: #00d4ff;
+            width: 20px;
+        }
+
+        .discovery-item span {
+            color: #fff;
+        }
+
+        .live-data-feed {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .live-data-feed h3 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .data-stream-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .data-stream-item:last-child {
+            border-bottom: none;
+        }
+
+        .data-stream-item i {
+            color: #00d4ff;
+            width: 20px;
+        }
+
+        .data-stream-item span {
+            color: #fff;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* News Meta */
+        .news-meta {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        .news-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Responsive Improvements */
+        @media (max-width: 768px) {
+            .observatory-details {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .atlas-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .atlas-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .team-member {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+            .news-meta {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="news-nav">
+        <div class="container">
+            <div class="nav-links">
+                <a href="#noticias">Últimas Noticias</a>
+                <a href="#observatorios">Observatorios</a>
+                <a href="#eventos">Eventos Live</a>
+                <a href="#3i-atlas">3I-Atlas</a>
+            </div>
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Volver al Inicio
+            </a>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="news-header">
+        <div class="container">
+            <h1>🪐 Centro Astronómico Atacama</h1>
+            <p>Descubre el universo desde el desierto más claro del mundo</p>
+            <div class="live-indicator">
+                <i class="fas fa-circle"></i>
+                <span id="live-status">Sistema Operativo</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="news-content">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <div class="container">
+                    <div class="hero-grid">
+                        <div class="hero-content">
+                            <h2 id="nasa-title">Cargando imagen del día...</h2>
+                            <p id="nasa-description">Conectando con la NASA para obtener la imagen astronómica más reciente...</p>
+                            <div class="hero-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number" id="temp-stat">-</span>
+                                    <span class="stat-label">Temperatura</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number" id="humidity-stat">-</span>
+                                    <span class="stat-label">Humedad</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number" id="visibility-stat">-</span>
+                                    <span class="stat-label">Visibilidad</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hero-image">
+                            <img id="nasa-image" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'><rect width='400' height='300' fill='%232a2a2a'/><text x='200' y='150' text-anchor='middle' fill='%23666' font-size='16'>Cargando imagen...</text></svg>" alt="NASA Astronomy Picture of the Day">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- News Section -->
+            <section id="noticias" class="news-section">
+                <div class="container">
+                    <h2>📰 Últimas Noticias Astronómicas</h2>
+                    <p>Descubre los avances más recientes en astronomía y exploración espacial</p>
+
+                    <!-- News Filters -->
+                    <div class="news-filters">
+                        <button class="filter-btn active" data-filter="all">Todas</button>
+                        <button class="filter-btn" data-filter="space">Espacio</button>
+                        <button class="filter-btn" data-filter="astronomy">Astronomía</button>
+                        <button class="filter-btn" data-filter="chile">Chile</button>
+                        <button class="filter-btn" data-filter="3i-atlas">3I-Atlas</button>
+                    </div>
+
+                    <!-- Featured News -->
+                    <div class="featured-news" id="featured-news">
+                        <div class="featured-card loading">
+                            <div class="featured-image">
+                                <i class="fas fa-newspaper"></i>
+                            </div>
+                            <div class="featured-content">
+                                <h3>Cargando noticia destacada...</h3>
+                                <p>Conectando con fuentes astronómicas</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- News Grid -->
+                    <div class="news-grid" id="news-grid">
+                        <div class="news-card loading">
+                            <div class="news-image">
+                                <i class="fas fa-rss"></i>
+                            </div>
+                            <div class="news-content">
+                                <h4>Cargando noticias...</h4>
+                                <p>Obteniendo las últimas actualizaciones</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Load More Button -->
+                    <div class="load-more-container">
+                        <button id="load-more-news" class="load-more-btn">
+                            <i class="fas fa-plus"></i>
+                            Cargar Más Noticias
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chilean Observatories -->
+            <section id="observatorios" class="observatories">
+                <div class="container">
+                    <h2>🔭 Observatorios Astronómicos de Chile</h2>
+                    <p>Descubre los observatorios más avanzados del mundo ubicados en el desierto de Atacama</p>
+
+                    <div class="observatories-grid" id="observatories-grid">
+                        <!-- Observatories will be loaded here -->
+                        <div class="observatory-card loading">
+                            <div class="observatory-image">
+                                <i class="fas fa-telescope"></i>
+                            </div>
+                            <div class="observatory-info">
+                                <h3>Cargando observatorios...</h3>
+                                <p>Conectando con datos astronómicos</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Observatory Stats -->
+                    <div class="observatory-stats" style="margin-top: 40px;">
+                        <div class="stat-item">
+                            <span class="stat-number" id="total-observatories">-</span>
+                            <span class="stat-label">Observatorios</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="total-telescopes">-</span>
+                            <span class="stat-label">Telescopios</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="total-altitude">-</span>
+                            <span class="stat-label">Altitud Promedio</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Live Events -->
+            <section id="eventos" class="live-events">
+                <div class="container">
+                    <h2>🌟 Eventos Celestes en Vivo</h2>
+                    <p>Monitorea eventos astronómicos en tiempo real desde los observatorios de Atacama</p>
+
+                    <!-- Current Event Status -->
+                    <div class="event-status" id="current-event">
+                        <i class="fas fa-moon"></i>
+                        Cargando estado del cielo...
+                    </div>
+
+                    <!-- Next Major Event -->
+                    <div class="event-status" id="next-event" style="margin-top: 20px; background: rgba(255, 165, 0, 0.1); border-color: #FFA500;">
+                        <i class="fas fa-calendar-star"></i>
+                        Cargando próximo evento...
+                    </div>
+
+                    <!-- Today's Events -->
+                    <div id="todays-events" style="margin-top: 30px;">
+                        <h3 style="color: #fff; margin-bottom: 15px;">📅 Eventos de Hoy</h3>
+                        <div id="todays-events-list">
+                            <div class="event-status">
+                                <i class="fas fa-search"></i>
+                                Verificando eventos astronómicos del día...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="hero-stats" style="margin-top: 40px;">
+                        <div class="stat-item">
+                            <span class="stat-number" id="moon-phase">-</span>
+                            <span class="stat-label">Fase Lunar</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="seeing-condition">-</span>
+                            <span class="stat-label">Seeing Astronómico</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="next-event-days">-</span>
+                            <span class="stat-label">Días para próximo evento</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3I-Atlas Section -->
+            <section id="3i-atlas" class="atlas-section">
+                <div class="container">
+                    <h2>🌌 Proyecto 3I-Atlas</h2>
+                    <p>El mayor estudio astronómico de la historia: mapeando 100 millones de galaxias</p>
+
+                    <div class="atlas-grid">
+                        <div class="atlas-card">
+                            <div class="atlas-header">
+                                <i class="fas fa-galactic-republic"></i>
+                                <h3>Estado del Proyecto</h3>
+                            </div>
+                            <div class="atlas-content">
+                                <div class="atlas-stat">
+                                    <span class="atlas-number" id="galaxies-mapped">-</span>
+                                    <span class="atlas-label">Galaxias Mapeadas</span>
+                                </div>
+                                <div class="atlas-stat">
+                                    <span class="atlas-number" id="survey-progress">-</span>
+                                    <span class="atlas-label">Progreso del Survey</span>
+                                </div>
+                                <div class="atlas-stat">
+                                    <span class="atlas-number" id="data-volume">-</span>
+                                    <span class="atlas-label">Volumen de Datos</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="atlas-card">
+                            <div class="atlas-header">
+                                <i class="fas fa-microscope"></i>
+                                <h3>Descubrimientos Recientes</h3>
+                            </div>
+                            <div class="atlas-content">
+                                <div id="atlas-discoveries">
+                                    <div class="discovery-item">
+                                        <i class="fas fa-star"></i>
+                                        <span>Cargando descubrimientos...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="atlas-card">
+                            <div class="atlas-header">
+                                <i class="fas fa-users"></i>
+                                <h3>Equipo Internacional</h3>
+                            </div>
+                            <div class="atlas-content">
+                                <div class="team-member">
+                                    <span class="member-name">Dr. Ignacio Trujillo</span>
+                                    <span class="member-role">Investigador Principal</span>
+                                </div>
+                                <div class="team-member">
+                                    <span class="member-name">Dr. Gaspar Galaz</span>
+                                    <span class="member-role">Co-Investigador</span>
+                                </div>
+                                <div class="team-member">
+                                    <span class="member-name">Equipo Internacional</span>
+                                    <span class="member-role">100+ Investigadores</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Data Feed -->
+                    <div class="live-data-feed" style="margin-top: 40px;">
+                        <h3>📡 Datos en Vivo desde VISTA</h3>
+                        <div id="live-data-stream">
+                            <div class="data-stream-item">
+                                <i class="fas fa-satellite"></i>
+                                <span>Conectando con telescopio VISTA...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>🔭 AstroChile</h3>
+                    <p>Tu portal astronómico hacia el universo. Descubre los secretos del cosmos desde el desierto de Atacama.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul>
+                        <li><a href="#hero">Inicio</a></li>
+                        <li><a href="#observatorios">Observatorios</a></li>
+                        <li><a href="#eventos">Eventos</a></li>
+                        <li><a href="#3i-atlas">3I-Atlas</a></li>
+                        <li><a href="#noticias">Noticias</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Observatorios</h3>
+                    <ul>
+                        <li><a href="https://www.eso.org/" target="_blank">ESO - La Silla</a></li>
+                        <li><a href="https://www.almaobservatory.org/" target="_blank">ALMA</a></li>
+                        <li><a href="https://www.lco.cl/" target="_blank">Observatorio La Campana</a></li>
+                        <li><a href="https://www.ctio.noirlab.edu/" target="_blank">CTIO</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> info@astrochile.cl</li>
+                        <li><i class="fas fa-phone"></i> +56 9 1234 5678</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Desierto de Atacama, Chile</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 AstroChile. Todos los derechos reservados. | Desarrollado con <i class="fas fa-heart" style="color: #e74c3c;"></i> para la astronomía</p>
+                <div class="footer-links">
+                    <a href="#">Política de Privacidad</a>
+                    <a href="#">Términos de Servicio</a>
+                    <a href="#">Accesibilidad</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <!-- Configuration -->
+    <script src="astronomical-config.js"></script>
+
+    <!-- Astronomical Integration Scripts -->
+    <script src="fontawesome-loader.js"></script>
+    <script src="astronomical-news.js"></script>
+    <script src="astronomical-events.js"></script>
+    <script src="astronomical-integration.js"></script>
+    <script>
+        // Initialize the advanced astronomical news system
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🚀 Initializing Advanced Astronomical News System...');
+
+            try {
+                // Initialize the system
+                await astroNewsSystem.initialize();
+
+                // Load NASA image
+                const nasaData = await astroNewsSystem.loadNASAImage();
+                if (nasaData) {
+                    updateNASAImage(nasaData);
+                }
+
+                // Load observatories
+                loadObservatoriesFromSystem();
+
+                // Load space news
+                const newsData = await astroNewsSystem.loadSpaceNews(6);
+                if (newsData.length > 0) {
+                    updateNewsGrid(newsData);
+                }
+
+                // Update live status
+                updateLiveStatus();
+
+                // Set up real-time updates
+                setInterval(updateLiveStatus, 30000);
+
+                console.log('✅ Advanced Astronomical News System initialized successfully');
+
+            } catch (error) {
+                console.error('❌ Error initializing system:', error);
+                showFallbackContent();
+            }
+        });
+
+        // Update NASA Image display
+        function updateNASAImage(data) {
+            document.getElementById('nasa-title').textContent = data.title;
+            document.getElementById('nasa-description').textContent = data.explanation;
+            document.getElementById('nasa-image').src = data.url;
+            document.getElementById('nasa-image').alt = data.title;
+
+            // Update date
+            const date = new Date(data.date);
+            const dateElements = document.querySelectorAll('.news-date');
+            if (dateElements.length > 0) {
+                dateElements[0].innerHTML = `<i class="fas fa-calendar"></i> ${date.toLocaleDateString('es-ES')}`;
+            }
+        }
+
+        // Load observatories from the advanced system
+        function loadObservatoriesFromSystem() {
+            const observatories = astroNewsSystem.getObservatories();
+            const grid = document.getElementById('observatories-grid');
+
+            grid.innerHTML = ''; // Clear any existing content
+
+            observatories.forEach(observatory => {
+                const card = document.createElement('div');
+                card.className = 'observatory-card';
+
+                card.innerHTML = `
+                    <div class="observatory-image">
+                        <i class="${observatory.icon} observatory-icon"></i>
+                    </div>
+                    <div class="observatory-content">
+                        <h3 class="observatory-name">${observatory.name}</h3>
+                        <p class="observatory-location">
+                            <i class="fas fa-map-marker-alt"></i> ${observatory.location}
+                        </p>
+                        <p class="observatory-description">${observatory.description}</p>
+                        <p class="observatory-location">
+                            <strong>Tipo:</strong> ${observatory.type} |
+                            <strong>Altitud:</strong> ${observatory.altitude}
+                        </p>
+                        <p class="observatory-location">
+                            <strong>Telescopios:</strong> ${observatory.telescopes.join(', ')}
+                        </p>
+                        <a href="${observatory.website}" target="_blank" class="observatory-link">
+                            Visitar Sitio Oficial <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            // Update observatory stats
+            document.getElementById('total-observatories').textContent = observatories.length;
+            document.getElementById('total-telescopes').textContent = observatories.reduce((sum, obs) => sum + obs.telescopes.length, 0);
+            document.getElementById('total-altitude').textContent = (observatories.reduce((sum, obs) => sum + obs.altitude, 0) / observatories.length).toFixed(0) + ' m';
+
+            console.log('✅ Loaded', observatories.length, 'observatories from advanced system');
+        }
+
+        // Update news grid with space news
+        function updateNewsGrid(newsData) {
+            const grid = document.getElementById('news-grid');
+            grid.innerHTML = ''; // Clear loading placeholder
+
+            newsData.forEach(article => {
+                const card = document.createElement('div');
+                card.className = 'news-card';
+
+                const date = new Date(article.published_at);
+                const imageUrl = article.image_url || 'https://via.placeholder.com/350x200/00D4FF/000000?text=Space+News';
+
+                card.innerHTML = `
+                    <div class="news-image">
+                        <img src="${imageUrl}" alt="${article.title}" onerror="this.src='https://via.placeholder.com/350x200/00D4FF/000000?text=Space+News'">
+                        <span class="news-category">Espacio</span>
+                    </div>
+                    <div class="news-content">
+                        <div class="news-date">
+                            <i class="fas fa-calendar"></i>
+                            ${date.toLocaleDateString('es-ES')}
+                        </div>
+                        <h3 class="news-title">${article.title}</h3>
+                        <p class="news-excerpt">${article.summary ? article.summary.substring(0, 150) + '...' : 'Resumen no disponible.'}</p>
+                        <a href="${article.url}" target="_blank" class="read-more">
+                            Leer más <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            console.log('✅ Updated news grid with', newsData.length, 'articles');
+        }
+
+        // Update live status with advanced system
+        function updateLiveStatus() {
+            const statusElement = document.getElementById('live-status');
+            const currentHour = new Date().getHours();
+            const moonPhase = astroNewsSystem.getMoonPhase();
+            const observationConditions = astroNewsSystem.checkObservationConditions();
+
+            let statusText = '';
+            let backgroundColor = '';
+
+            if (currentHour >= 22 || currentHour <= 6) {
+                if (observationConditions === 'excellent') {
+                    statusText = `<i class="fas fa-moon"></i> Condiciones Excelentes para Observación (${moonPhase.emoji} ${moonPhase.name})`;
+                    backgroundColor = 'rgba(0, 212, 255, 0.9)';
+                } else if (observationConditions === 'fair') {
+                    statusText = `<i class="fas fa-moon"></i> Condiciones Aceptables (${moonPhase.emoji} ${moonPhase.name})`;
+                    backgroundColor = 'rgba(255, 165, 0, 0.9)';
+                } else {
+                    statusText = `<i class="fas fa-moon"></i> Condiciones Limitadas (${moonPhase.emoji} ${moonPhase.name})`;
+                    backgroundColor = 'rgba(255, 0, 0, 0.9)';
+                }
+            } else if (currentHour >= 6 && currentHour <= 18) {
+                statusText = `<i class="fas fa-sun"></i> Monitoreo Diurno - Preparación Nocturna`;
+                backgroundColor = 'rgba(255, 165, 0, 0.9)';
+            } else {
+                statusText = `<i class="fas fa-clock"></i> Preparación de Equipos`;
+                backgroundColor = 'rgba(128, 128, 128, 0.9)';
+            }
+
+            if (statusElement) {
+                statusElement.innerHTML = statusText;
+                statusElement.parentElement.style.background = backgroundColor;
+            }
+        }
+
+        // Show fallback content if system fails
+        function showFallbackContent() {
+            document.getElementById('nasa-title').textContent = 'Sistema de Noticias Astronómicas';
+            document.getElementById('nasa-description').textContent = 'Bienvenido al Centro Astronómico Atacama. Nuestro sistema avanzado está optimizando la carga de contenido astronómico.';
+
+            // Show basic observatory list
+            const grid = document.getElementById('observatories-grid');
+            grid.innerHTML = `
+                <div class="observatory-card">
+                    <div class="observatory-content">
+                        <h3 class="observatory-name">Sistema Cargando...</h3>
+                        <p class="observatory-description">Los datos de los observatorios chilenos se están cargando. Por favor espera un momento.</p>
+                    </div>
+                </div>
+            `;
+
+            console.log('⚠️ Showing fallback content while system loads');
+        }
+
+        // Enhanced 3I-Atlas functions
+        function open3IAtlas() {
+            window.open('https://www.3i-atlas.cl/', '_blank');
+        }
+
+        function showWeatherData() {
+            const weather = astroNewsSystem.weatherCache;
+            if (weather) {
+                alert(`Datos Meteorológicos de Atacama (Actualización: ${new Date(weather.lastUpdate).toLocaleTimeString('es-ES')}):\n\n🌡️ Temperatura: ${weather.temperature}°C\n💧 Humedad: ${weather.humidity}%\n👁️ Visibilidad: ${weather.visibility}km\n💨 Viento: ${weather.windSpeed} km/h\n🔭 Seeing: ${weather.seeing} arcsec\n☁️ Nubosidad: ${weather.cloudCover}%\n\nEstos datos provienen del sistema 3I-Atlas con 3 telescopios robóticos.`);
+            } else {
+                alert('Cargando datos meteorológicos... Por favor intenta en unos momentos.');
+            }
+        }
+
+        function showAstronomicalCalendar() {
+            const events = astroNewsSystem.getCurrentEvents();
+
+            if (events.length > 0) {
+                let calendarText = 'Calendario Astronómico 2025 - Próximos Eventos:\n\n';
+                events.forEach(event => {
+                    const eventDate = new Date(event.date);
+                    calendarText += `${eventDate.toLocaleDateString('es-ES')}: ${event.title}\n`;
+                    calendarText += `   ${event.description}\n\n`;
+                });
+                alert(calendarText);
+            } else {
+                alert('No hay eventos astronómicos programados en las próximas semanas.');
+            }
+        }
+
+        // Update weather stats periodically
+        setInterval(() => {
+            if (astroNewsSystem.weatherCache) {
+                astroNewsSystem.updateWeatherDisplay(astroNewsSystem.weatherCache);
+            }
+        }, 60000); // Update every minute
+    </script>
+
+    <!-- Test Script (remove in production) -->
+    <script src="test-astronomical-system.js"></script>
+</body>
+</html>

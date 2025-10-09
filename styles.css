@@ -2476,6 +2476,28 @@ blockquote {
     margin-bottom: var(--spacing-lg);
 }
 
+/* Unistellar Image Styles */
+.unistellar-image-container {
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    overflow: hidden;
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.unistellar-tech-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    /* Recortar los márgenes blancos laterales (aproximadamente 8% de cada lado) */
+    object-fit: cover;
+    object-position: center;
+    clip-path: inset(0 8% 0 8%);
+    /* Escalar para compensar el recorte */
+    transform: scale(1.19);
+    transform-origin: center;
+}
+
 .features-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);

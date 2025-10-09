@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Font Awesome</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="fontawesome-fix.css">
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .icon-test { margin: 10px; padding: 10px; border: 1px solid #ccc; display: inline-block; }
+        .icon-test i { font-size: 24px; margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Test de Font Awesome Icons</h1>
+
+    <div class="icon-test">
+        <i class="fas fa-star"></i>
+        <span>Estrella (fas fa-star)</span>
+    </div>
+
+    <div class="icon-test">
+        <i class="fas fa-moon"></i>
+        <span>Luna (fas fa-moon)</span>
+    </div>
+
+    <div class="icon-test">
+        <i class="fas fa-telescope"></i>
+        <span>Telescopio (fas fa-telescope)</span>
+    </div>
+
+    <div class="icon-test">
+        <i class="fab fa-facebook"></i>
+        <span>Facebook (fab fa-facebook)</span>
+    </div>
+
+    <div class="icon-test">
+        <i class="fab fa-whatsapp"></i>
+        <span>WhatsApp (fab fa-whatsapp)</span>
+    </div>
+
+    <div class="icon-test">
+        <i class="fas fa-phone"></i>
+        <span>Teléfono (fas fa-phone)</span>
+    </div>
+
+    <div class="icon-test">
+        <i class="fas fa-envelope"></i>
+        <span>Email (fas fa-envelope)</span>
+    </div>
+
+    <div class="icon-test">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>Ubicación (fas fa-map-marker-alt)</span>
+    </div>
+
+    <script>
+        // Test if Font Awesome is loaded
+        setTimeout(() => {
+            const icons = document.querySelectorAll('i[class*="fa-"]');
+            icons.forEach(icon => {
+                const computedStyle = window.getComputedStyle(icon);
+                const fontFamily = computedStyle.getPropertyValue('font-family');
+                console.log(`${icon.className}: font-family = ${fontFamily}`);
+
+                if (!fontFamily || !fontFamily.includes('Font Awesome')) {
+                    icon.style.color = 'red';
+                    icon.style.border = '2px solid red';
+                } else {
+                    icon.style.color = 'green';
+                }
+            });
+        }, 1000);
+    </script>
+</body>
+</html>
