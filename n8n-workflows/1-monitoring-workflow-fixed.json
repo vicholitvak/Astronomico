@@ -1,0 +1,495 @@
+{
+  "name": "Atacama Dark Sky - Monitoreo y Seguridad (Fixed)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 5
+            }
+          ]
+        }
+      },
+      "id": "cron-trigger",
+      "name": "Cada 5 minutos",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://www.atacamadarksky.cl",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "uptime-check",
+      "name": "Verificar Uptime del Sitio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 200],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "url": "https://www.atacamadarksky.cl/api/health",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "health-check",
+      "name": "Verificar Health Backend",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 400],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "url": "https://api.ssllabs.com/api/v3/analyze",
+        "qs": {
+          "host": "www.atacamadarksky.cl",
+          "fromCache": "on"
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "ssl-check",
+      "name": "Verificar SSL Certificate",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 600],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.statusCode }}",
+              "rightValue": 200,
+              "operator": {
+                "type": "number",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "check-uptime-status",
+      "name": "¿Sitio Caído?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [650, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "healthy",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "check-health-status",
+      "name": "¿Backend Unhealthy?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [650, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.endpoints?.[0]?.grade }}",
+              "rightValue": "C",
+              "operator": {
+                "type": "string",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "check-ssl-status",
+      "name": "¿SSL con Problemas?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [650, 600]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "alert-type",
+              "name": "alertType",
+              "value": "uptime_failure",
+              "type": "string"
+            },
+            {
+              "id": "alert-severity",
+              "name": "severity",
+              "value": "critical",
+              "type": "string"
+            },
+            {
+              "id": "alert-message",
+              "name": "message",
+              "value": "🚨 SITIO WEB CAÍDO - www.atacamadarksky.cl no responde (Status: {{ $json.statusCode }})",
+              "type": "string"
+            },
+            {
+              "id": "alert-timestamp",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "format-uptime-alert",
+      "name": "Formatear Alerta Uptime",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [850, 150]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "alert-type",
+              "name": "alertType",
+              "value": "backend_health",
+              "type": "string"
+            },
+            {
+              "id": "alert-severity",
+              "name": "severity",
+              "value": "high",
+              "type": "string"
+            },
+            {
+              "id": "alert-message",
+              "name": "message",
+              "value": "⚠️ BACKEND DEGRADADO - Estado: {{ $json.status }}",
+              "type": "string"
+            },
+            {
+              "id": "alert-details",
+              "name": "details",
+              "value": "={{ $json }}",
+              "type": "object"
+            },
+            {
+              "id": "alert-timestamp",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "format-health-alert",
+      "name": "Formatear Alerta Backend",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [850, 350]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "alert-type",
+              "name": "alertType",
+              "value": "ssl_security",
+              "type": "string"
+            },
+            {
+              "id": "alert-severity",
+              "name": "severity",
+              "value": "medium",
+              "type": "string"
+            },
+            {
+              "id": "alert-message",
+              "name": "message",
+              "value": "🔒 PROBLEMA SSL DETECTADO - Grade: {{ $json.endpoints?.[0]?.grade }}",
+              "type": "string"
+            },
+            {
+              "id": "alert-timestamp",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "format-ssl-alert",
+      "name": "Formatear Alerta SSL",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [850, 550]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "merge-alerts",
+      "name": "Combinar Todas las Alertas",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [1050, 350]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v18.0/{{ $env.WHATSAPP_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.WHATSAPP_ACCESS_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $env.ADMIN_PHONE_NUMBER }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"{{ $json.message }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "send-whatsapp-alert",
+      "name": "Enviar Alerta por WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1250, 350]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "log-status",
+              "name": "monitoringStatus",
+              "value": "all_healthy",
+              "type": "string"
+            },
+            {
+              "id": "log-timestamp",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "log-message",
+              "name": "message",
+              "value": "✅ Todos los sistemas funcionando correctamente",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "log-healthy-status",
+      "name": "Log Status OK",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [1050, 550]
+    }
+  ],
+  "connections": {
+    "Cada 5 minutos": {
+      "main": [
+        [
+          {
+            "node": "Verificar Uptime del Sitio",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Verificar Health Backend",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Verificar SSL Certificate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar Uptime del Sitio": {
+      "main": [
+        [
+          {
+            "node": "¿Sitio Caído?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar Health Backend": {
+      "main": [
+        [
+          {
+            "node": "¿Backend Unhealthy?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar SSL Certificate": {
+      "main": [
+        [
+          {
+            "node": "¿SSL con Problemas?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Sitio Caído?": {
+      "main": [
+        [
+          {
+            "node": "Formatear Alerta Uptime",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "¿Backend Unhealthy?": {
+      "main": [
+        [
+          {
+            "node": "Formatear Alerta Backend",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "¿SSL con Problemas?": {
+      "main": [
+        [
+          {
+            "node": "Formatear Alerta SSL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Status OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear Alerta Uptime": {
+      "main": [
+        [
+          {
+            "node": "Combinar Todas las Alertas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear Alerta Backend": {
+      "main": [
+        [
+          {
+            "node": "Combinar Todas las Alertas",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Formatear Alerta SSL": {
+      "main": [
+        [
+          {
+            "node": "Combinar Todas las Alertas",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Combinar Todas las Alertas": {
+      "main": [
+        [
+          {
+            "node": "Enviar Alerta por WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-11-11T00:00:00.000Z",
+  "versionId": "2"
+}

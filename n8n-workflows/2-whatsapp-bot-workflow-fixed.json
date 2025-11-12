@@ -1,0 +1,428 @@
+{
+  "name": "Atacama Dark Sky - WhatsApp Bot con Claude AI (Fixed)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-messages",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook de WhatsApp",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [250, 400],
+      "webhookId": "atacama-whatsapp"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "phone",
+              "name": "customerPhone",
+              "value": "={{ $json.from }}",
+              "type": "string"
+            },
+            {
+              "id": "name",
+              "name": "customerName",
+              "value": "={{ $json.contactName }}",
+              "type": "string"
+            },
+            {
+              "id": "message",
+              "name": "messageText",
+              "value": "={{ $json.messageText }}",
+              "type": "string"
+            },
+            {
+              "id": "timestamp",
+              "name": "receivedAt",
+              "value": "={{ $json.receivedAt }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "extract-message-data",
+      "name": "Extraer Datos del Mensaje",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [450, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "anthropicApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "={{ $credentials.anthropicApiKey }}"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-3-5-sonnet-20241022\",\n  \"max_tokens\": 1024,\n  \"temperature\": 0.3,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Analiza el siguiente mensaje de WhatsApp y extrae información clave:\\n\\nMensaje: \\\"{{ $json.messageText }}\\\"\\nDe: {{ $json.customerName }}\\n\\nTu tarea:\\n1. Detecta el idioma del mensaje (español, inglés o portugués)\\n2. Determina la intención del cliente:\\n   - greeting: Saludo o inicio de conversación\\n   - booking_inquiry: Pregunta sobre reservas o tours\\n   - booking_request: Solicitud directa de reserva con fecha/personas\\n   - question_general: Pregunta general sobre el servicio\\n   - question_location: Pregunta sobre ubicación o cómo llegar\\n   - question_pricing: Pregunta sobre precios\\n   - other: Otro tipo de mensaje\\n\\n3. Si es una solicitud de reserva, extrae:\\n   - Fecha deseada (formato YYYY-MM-DD si es posible)\\n   - Número de personas\\n   - Tipo de tour mencionado (regular, privado, astrofotografía)\\n\\n4. Identifica el sentimiento: positive, neutral, negative\\n\\nResponde SOLO en formato JSON válido:\\n{\\n  \\\"language\\\": \\\"es|en|pt\\\",\\n  \\\"intent\\\": \\\"...\\\",\\n  \\\"sentiment\\\": \\\"...\\\",\\n  \\\"bookingData\\\": {\\n    \\\"date\\\": \\\"YYYY-MM-DD o null\\\",\\n    \\\"persons\\\": número o null,\\n    \\\"tourType\\\": \\\"regular|private|astrophoto o null\\\"\\n  },\\n  \\\"keyTopics\\\": [\\\"tópico1\\\", \\\"tópico2\\\"]\\n}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "analyze-with-claude",
+      "name": "Analizar con Claude AI",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [650, 400],
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nlet analysis;\n\ntry {\n  // Claude retorna en response.content[0].text\n  const claudeText = response.content?.[0]?.text || JSON.stringify(response);\n  \n  // Extraer JSON del response\n  const jsonMatch = claudeText.match(/\\{[\\s\\S]*\\}/);\n  if (jsonMatch) {\n    analysis = JSON.parse(jsonMatch[0]);\n  } else {\n    throw new Error('No JSON found in response');\n  }\n} catch (error) {\n  console.error('Parse error:', error);\n  // Fallback si Claude no retorna JSON válido\n  analysis = {\n    language: 'es',\n    intent: 'other',\n    sentiment: 'neutral',\n    bookingData: {\n      date: null,\n      persons: null,\n      tourType: null\n    },\n    keyTopics: []\n  };\n}\n\nreturn {\n  json: {\n    ...analysis,\n    originalMessage: $('Extraer Datos del Mensaje').item.json.messageText,\n    customerPhone: $('Extraer Datos del Mensaje').item.json.customerPhone,\n    customerName: $('Extraer Datos del Mensaje').item.json.customerName\n  }\n};"
+      },
+      "id": "parse-claude-response",
+      "name": "Parsear Análisis de Claude",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "intent-condition",
+              "leftValue": "={{ $json.intent }}",
+              "rightValue": "booking_request",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-if-booking",
+      "name": "¿Es Solicitud de Reserva?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "anthropicApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "={{ $credentials.anthropicApiKey }}"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-3-5-sonnet-20241022\",\n  \"max_tokens\": 1024,\n  \"temperature\": 0.7,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"Eres un asistente de reservas de Atacama Dark Sky, especializado en tours astronómicos en San Pedro de Atacama, Chile.\\n\\nCONTEXTO:\\n- Cliente: {{ $json.customerName }}\\n- Idioma detectado: {{ $json.language }}\\n- Intención: {{ $json.intent }}\\n- Mensaje original: \\\"{{ $json.originalMessage }}\\\"\\n\\nINFORMACIÓN DE TOURS:\\n1. Tour Regular (2.5 horas): Observación astronómica con telescopios profesionales. Precio: $30.000 CLP por persona.\\n2. Tour Privado (3 horas): Experiencia personalizada para grupos privados. Precio: $150.000 CLP grupo hasta 6 personas.\\n3. Tour Astrofotografía (5 horas): Para fotógrafos que quieren capturar el cielo. Precio: $250.000 CLP grupo hasta 4 personas.\\n\\nHORARIOS:\\n- Verano (Sep-Mar): Regular 21:30, Astrophoto 21:00\\n- Invierno (Abr-Ago): Regular 20:30, Astrophoto 20:00\\n- Privado: Horario flexible\\n\\nTu tarea:\\n1. Responde EN EL IDIOMA DEL CLIENTE ({{ $json.language }})\\n2. Si pregunta por reservas, proporciona información clara y pregunta por:\\n   - Fecha deseada\\n   - Número de personas\\n   - Tipo de tour preferido\\n3. Si ya tienes los datos, confirma la información y pide confirmación\\n4. Sé amable, profesional y entusiasta sobre la astronomía\\n5. Menciona que San Pedro de Atacama tiene uno de los cielos más limpios del mundo\\n\\nResponde de forma natural y conversacional. NO uses formato JSON en esta respuesta.\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "generate-response-claude",
+      "name": "Generar Respuesta con Claude",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1250, 500],
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.atacamadarksky.cl/api/booking",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "date",
+              "value": "={{ $json.bookingData.date }}"
+            },
+            {
+              "name": "persons",
+              "value": "={{ $json.bookingData.persons }}"
+            },
+            {
+              "name": "tourType",
+              "value": "={{ $json.bookingData.tourType }}"
+            },
+            {
+              "name": "name",
+              "value": "={{ $json.customerName }}"
+            },
+            {
+              "name": "phone",
+              "value": "={{ $json.customerPhone }}"
+            },
+            {
+              "name": "email",
+              "value": "whatsapp@atacamadarksky.cl"
+            },
+            {
+              "name": "message",
+              "value": "Reserva realizada vía WhatsApp Bot"
+            },
+            {
+              "name": "source",
+              "value": "whatsapp_bot"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "create-booking",
+      "name": "Crear Reserva en Sistema",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1250, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const prevData = $input.first().json;\nconst bookingResponse = prevData;\n\nconst language = $('Parsear Análisis de Claude').item.json.language || 'es';\nconst bookingId = bookingResponse.bookingId;\n\nconst messages = {\n  es: `✅ ¡Reserva confirmada! Tu código de reserva es: ${bookingId}. Recibirás un email de confirmación pronto.`,\n  en: `✅ Booking confirmed! Your booking code is: ${bookingId}. You will receive a confirmation email soon.`,\n  pt: `✅ Reserva confirmada! Seu código de reserva é: ${bookingId}. Você receberá um email de confirmação em breve.`\n};\n\nreturn {\n  json: {\n    ...prevData,\n    confirmationMessage: messages[language] || messages.es,\n    bookingCreated: true,\n    customerPhone: $('Parsear Análisis de Claude').item.json.customerPhone\n  }\n};"
+      },
+      "id": "format-booking-confirmation",
+      "name": "Formatear Confirmación",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1450, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const responseData = $input.first().json;\nconst claudeResponse = responseData.content?.[0]?.text || responseData.text || 'Respuesta no disponible';\n\nreturn {\n  json: {\n    responseText: claudeResponse,\n    customerPhone: $('Parsear Análisis de Claude').item.json.customerPhone\n  }\n};"
+      },
+      "id": "extract-claude-text",
+      "name": "Extraer Texto de Claude",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1450, 500]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      },
+      "id": "merge-responses",
+      "name": "Combinar Respuestas",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [1650, 350]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v18.0/{{ $env.WHATSAPP_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.WHATSAPP_ACCESS_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $json.customerPhone }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"{{ $json.confirmationMessage || $json.responseText }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "send-whatsapp-message",
+      "name": "Enviar Mensaje WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1850, 350]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"status\": \"success\", \"messageSent\": true } }}",
+        "options": {}
+      },
+      "id": "webhook-response",
+      "name": "Responder al Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [2050, 350]
+    }
+  ],
+  "connections": {
+    "Webhook de WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Extraer Datos del Mensaje",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer Datos del Mensaje": {
+      "main": [
+        [
+          {
+            "node": "Analizar con Claude AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analizar con Claude AI": {
+      "main": [
+        [
+          {
+            "node": "Parsear Análisis de Claude",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parsear Análisis de Claude": {
+      "main": [
+        [
+          {
+            "node": "¿Es Solicitud de Reserva?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Es Solicitud de Reserva?": {
+      "main": [
+        [
+          {
+            "node": "Crear Reserva en Sistema",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generar Respuesta con Claude",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear Reserva en Sistema": {
+      "main": [
+        [
+          {
+            "node": "Formatear Confirmación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear Confirmación": {
+      "main": [
+        [
+          {
+            "node": "Combinar Respuestas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar Respuesta con Claude": {
+      "main": [
+        [
+          {
+            "node": "Extraer Texto de Claude",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer Texto de Claude": {
+      "main": [
+        [
+          {
+            "node": "Combinar Respuestas",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Combinar Respuestas": {
+      "main": [
+        [
+          {
+            "node": "Enviar Mensaje WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Mensaje WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Responder al Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-11-11T00:00:00.000Z",
+  "versionId": "2"
+}
