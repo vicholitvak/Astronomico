@@ -1,5 +1,20 @@
-# Guía de Configuración: n8n + WhatsApp Bot + Monitoreo Automático
-## Atacama Dark Sky - Sistema de Automatización Completo
+# 🤖 Guía de Configuración n8n para Atacama NightSky
+## Sistema de Automatización con WhatsApp Bot + Monitoreo + IA
+
+---
+
+## ⚠️ ESTADO ACTUAL (2025-11-12)
+
+**✅ FUNCIONANDO:**
+- Sitio web desplegado en Vercel
+- Base de datos Neon PostgreSQL conectada
+- API de reservas funcionando
+- Health endpoint activo
+
+**⏳ PENDIENTE:**
+- Cuenta WhatsApp Business **RESTRINGIDA** por Meta
+- Esperando revisión (1-5 días hábiles)
+- Workflows de WhatsApp esperando desbloqueo
 
 ---
 
@@ -7,15 +22,14 @@
 
 1. [Visión General del Sistema](#visión-general)
 2. [Requisitos Previos](#requisitos-previos)
-3. [Configuración de Supabase](#configuración-de-supabase)
-4. [Configuración de WhatsApp Business API](#configuración-de-whatsapp)
+3. [Configuración de Base de Datos](#configuración-de-base-de-datos)
+4. [WhatsApp: Estado y Próximos Pasos](#configuración-de-whatsapp)
 5. [Configuración de Anthropic (Claude AI)](#configuración-de-claude)
 6. [Configuración de n8n Cloud](#configuración-de-n8n)
-7. [Importar y Configurar Workflows](#importar-workflows)
-8. [Configurar Variables de Entorno en Vercel](#variables-de-entorno)
-9. [Desplegar Nuevos Endpoints](#desplegar-endpoints)
-10. [Pruebas y Verificación](#pruebas)
-11. [Monitoreo y Mantenimiento](#mantenimiento)
+7. [Importar Workflows](#importar-workflows)
+8. [Configuración Post-Desbloqueo](#post-desbloqueo)
+9. [Pruebas y Verificación](#pruebas)
+10. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -48,106 +62,125 @@ Este sistema implementa 3 agentes automáticos de n8n:
 
 ### Cuentas y Servicios Necesarios
 
-- [x] **n8n Cloud**: https://n8n.io (plan Starter ~$20/mes o superior)
-- [x] **Meta Business Account**: https://business.facebook.com
-- [x] **WhatsApp Business API**: Ya tienes App ID `730003402995386`
-- [x] **Anthropic API**: https://console.anthropic.com (para Claude AI)
-- [x] **Supabase**: Ya configurado ✅
 - [x] **Vercel**: Ya configurado ✅
+- [x] **Neon PostgreSQL**: Ya configurado ✅ (migrado desde Supabase)
+- [x] **Meta Business Account**: https://business.facebook.com
+- [x] **WhatsApp Business API**: App ID `2863885403798741` (⏳ cuenta restringida)
+- [ ] **n8n Cloud**: https://n8n.io (plan Starter ~$20/mes) - **PENDIENTE DE CREAR**
+- [ ] **Anthropic API**: https://console.anthropic.com - **PENDIENTE DE CREAR**
 
 ### Costos Estimados Mensuales
 
 | Servicio | Costo Mensual | Notas |
 |----------|---------------|-------|
+| Vercel (Hobby) | $0 | Gratis ✅ |
+| Neon PostgreSQL (Free) | $0 | 0.5GB, queries ilimitadas ✅ |
+| WhatsApp Business API | $0 | Gratis primeros 1,000 conversaciones/mes |
 | n8n Cloud (Starter) | $20 USD | Hasta 2,500 ejecuciones/mes |
-| WhatsApp Business API | Gratis primeros 1,000 msgs | $0.005-$0.01 por mensaje después |
-| Claude API (Anthropic) | ~$10-30 USD | Depende del uso, ~$0.003 por mensaje |
-| **TOTAL ESTIMADO** | **$30-50 USD/mes** | Para volumen bajo-medio |
+| Claude API (Anthropic) | ~$5-15 USD | ~$0.003 por mensaje, depende del uso |
+| **TOTAL ESTIMADO** | **~$25-35 USD/mes** | ✅ Ahorraste $25/mes vs Supabase |
 
 ---
 
-## 🗄️ Configuración de Supabase
+## 🗄️ Configuración de Base de Datos (Neon PostgreSQL)
 
-### Paso 1: Ejecutar Script SQL
+### ✅ Ya Configurado
 
-1. Ir a Supabase Dashboard: https://supabase.com/dashboard
-2. Seleccionar tu proyecto: `atacama-darksky`
-3. Ir a **SQL Editor** (menú izquierdo)
-4. Crear nueva query
-5. Copiar y pegar el contenido de `database/supabase-n8n-setup.sql`
-6. Ejecutar el script (botón **Run** o `Ctrl+Enter`)
+La base de datos Neon ya está funcionando con:
+- Connection string configurado en Vercel
+- Tabla `bookings` creada y funcionando
+- Health endpoint verificando conexión
 
-### Paso 2: Verificar Tablas Creadas
+### Crear Tablas Adicionales para n8n (Opcional)
 
-```sql
--- Ejecutar para verificar
-SELECT table_name
-FROM information_schema.tables
-WHERE table_schema = 'public'
-ORDER BY table_name;
+Si quieres las tablas adicionales para tracking de WhatsApp y monitoreo:
+
+1. Ve a: **https://console.neon.tech**
+2. Selecciona tu proyecto
+3. Click en **SQL Editor**
+4. Ejecuta el script `database/neon-setup.sql`
+
+Esto creará:
+- ✅ `whatsapp_conversations` - Historial de mensajes
+- ✅ `monitoring_logs` - Logs de monitoreo
+- ✅ `analytics_metrics` - Métricas de uso
+- ✅ `booking_audit_log` - Auditoría de cambios
+
+### Connection String (Ya configurado)
+
+```env
+DATABASE_URL=postgresql://neondb_owner:...@ep-calm-meadow-adiepjlh-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
 ```
 
-Deberías ver:
-- ✅ `bookings` (actualizada con nuevas columnas)
-- ✅ `whatsapp_conversations` (nueva)
-- ✅ `monitoring_logs` (nueva)
-- ✅ `analytics_metrics` (nueva)
-- ✅ `booking_audit_log` (nueva)
-
-### Paso 3: Obtener Credenciales
-
-Ir a **Settings → API** y copiar:
-- `SUPABASE_URL`: `https://[tu-proyecto].supabase.co`
-- `SUPABASE_SERVICE_KEY`: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (service_role key)
+Ya está agregado en:
+- ✅ Vercel (production, preview, development)
+- ⏳ n8n (agregar cuando crees la cuenta)
 
 ---
 
-## 💬 Configuración de WhatsApp Business API
+## 💬 WhatsApp Business API - Estado y Próximos Pasos
 
-### Opción A: Configurar con Meta Directamente (Recomendado)
+### ⚠️ ESTADO ACTUAL: Cuenta Restringida
 
-#### Paso 1: Crear WhatsApp Business Account
+**App ID:** `2863885403798741`
+**Estado:** Cuenta WhatsApp Business **RESTRINGIDA** por Meta
+**Acción:** Solicitud de revisión enviada (2025-11-12)
+**Tiempo estimado:** 1-5 días hábiles
 
-1. Ir a https://developers.facebook.com
-2. Seleccionar tu app existente o crear nueva
-3. Agregar producto **WhatsApp** a tu app
-4. Seguir el wizard de configuración
+### ✅ Credenciales Ya Obtenidas
 
-#### Paso 2: Obtener Credenciales
-
-En el Dashboard de WhatsApp Business:
-
-```
-Phone Number ID: [lo encuentras en WhatsApp > Getting Started]
-Access Token: [Generar en WhatsApp > API Setup]
-App ID: 730003402995386 (ya lo tienes)
+```env
+APP_ID=2863885403798741
+WHATSAPP_ACCESS_TOKEN=EAAossEgrvNUBPxRkFhcaIx2xTh9jcUP4hWtNrS4Wfq7Qf...
+ADMIN_PHONE_NUMBER=56935134669
 ```
 
-Copiar y guardar:
-- `WHATSAPP_PHONE_NUMBER_ID`
-- `WHATSAPP_ACCESS_TOKEN`
+### ❌ Pendiente (Cuando se Desbloquee)
 
-#### Paso 3: Configurar Webhook de Verificación
-
-En **WhatsApp → Configuration → Webhook**:
-
-```
-Callback URL: https://www.atacamadarksky.cl/api/whatsapp-webhook
-Verify Token: atacama_darksky_2024
+```env
+WHATSAPP_PHONE_NUMBER_ID=PENDIENTE_OBTENER
 ```
 
-Subscribirse a:
-- ✅ `messages`
-- ✅ `message_status` (opcional)
+### 📝 Cómo Obtener Phone Number ID (Post-Desbloqueo)
 
-### Opción B: Usar Twilio WhatsApp (Alternativa más fácil)
+1. Ve a: https://developers.facebook.com/apps/2863885403798741
+2. **WhatsApp** → **API Setup** (menú lateral)
+3. Busca la sección "Send and receive messages"
+4. Copia el **Phone number ID** (15 dígitos aproximadamente)
 
-1. Crear cuenta en https://twilio.com
-2. Ir a **Messaging → Try it out → Send a WhatsApp message**
-3. Obtener:
-   - Account SID
-   - Auth Token
-   - WhatsApp Number
+### 🚀 Configuración Post-Desbloqueo
+
+Una vez que Meta desbloquee la cuenta:
+
+#### 1. Agregar Phone Number ID a Vercel
+```bash
+echo "TU_PHONE_NUMBER_ID" | vercel env add WHATSAPP_PHONE_NUMBER_ID production
+echo "TU_PHONE_NUMBER_ID" | vercel env add WHATSAPP_PHONE_NUMBER_ID preview
+echo "TU_PHONE_NUMBER_ID" | vercel env add WHATSAPP_PHONE_NUMBER_ID development
+```
+
+#### 2. Agregar Access Token a Vercel
+```bash
+echo "EAAoss..." | vercel env add WHATSAPP_ACCESS_TOKEN production
+echo "EAAoss..." | vercel env add WHATSAPP_ACCESS_TOKEN preview
+echo "EAAoss..." | vercel env add WHATSAPP_ACCESS_TOKEN development
+```
+
+#### 3. Crear y Agregar Verify Token
+```bash
+echo "atacama_webhook_2025" | vercel env add WHATSAPP_VERIFY_TOKEN production
+echo "atacama_webhook_2025" | vercel env add WHATSAPP_VERIFY_TOKEN preview
+echo "atacama_webhook_2025" | vercel env add WHATSAPP_VERIFY_TOKEN development
+```
+
+#### 4. Configurar Webhook en Meta
+1. Ve a: **WhatsApp → Configuration → Webhook**
+2. **Callback URL:** `https://www.atacamadarksky.cl/api/whatsapp-webhook`
+3. **Verify Token:** `atacama_webhook_2025`
+4. Click **Verify and Save**
+5. Subscribe to fields:
+   - ✅ `messages`
+   - ✅ `messaging_postbacks`
 
 ---
 
