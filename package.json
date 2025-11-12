@@ -1,6 +1,7 @@
 {
   "name": "atacama-nightsky",
   "version": "1.0.0",
+  "type": "module",
   "description": "Astronomical tours website for Atacama Desert",
   "scripts": {
     "dev": "vercel dev",
