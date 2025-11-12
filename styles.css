@@ -618,6 +618,11 @@ section {
     align-items: center;
 }
 
+.about-image {
+    position: relative;
+    flex-direction: column;
+}
+
 .about-image img {
     width: 80%;
     height: auto;
@@ -626,6 +631,89 @@ section {
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-lg);
     background: rgba(0, 0, 0, 0.05);
+}
+
+.about-text .intro-text {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-lg);
+    line-height: 1.6;
+}
+
+.about-text strong {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.credentials {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--primary-color);
+}
+
+.credential-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition-normal);
+}
+
+.credential-item:hover {
+    background: rgba(255, 215, 0, 0.1);
+    transform: translateX(5px);
+}
+
+.credential-item i {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    min-width: 24px;
+}
+
+.credential-item span {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.image-caption {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+    border-radius: var(--border-radius);
+    border-left: 3px solid var(--accent-color);
+    width: 80%;
+}
+
+.image-caption i {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+.image-caption p {
+    font-style: italic;
+    color: var(--text-secondary);
+    margin: var(--spacing-sm) 0;
+    line-height: 1.6;
+    font-size: 1.05rem;
+}
+
+.image-caption span {
+    display: block;
+    text-align: right;
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-top: var(--spacing-xs);
+    font-size: 0.95rem;
 }
 
 /* ===== TOURS SECTION ===== */
@@ -689,15 +777,41 @@ section {
 }
 
 .tour-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+}
+
+.price-amount {
     display: inline-block;
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: var(--bg-primary);
     padding: var(--spacing-xs) var(--spacing-sm);
     border-radius: var(--border-radius);
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: var(--font-weight-bold);
-    margin-bottom: var(--spacing-sm);
     box-shadow: var(--glow-primary);
+}
+
+.price-note {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding-left: var(--spacing-xs);
+}
+
+.tour-description {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.tour-description strong {
+    color: var(--primary-color);
+    font-weight: 600;
 }
 
 .tour-content {
