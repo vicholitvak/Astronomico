@@ -21,7 +21,8 @@
       "WebFetch(domain:atacama-nightsky-ojzme9mrs-vicholitvaks-projects.vercel.app)",
       "Bash(rm:*)",
       "Bash(node:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

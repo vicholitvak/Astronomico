@@ -144,13 +144,16 @@ function initNavigation() {
 function initLanguageToggle() {
     const langToggle = document.getElementById('lang-toggle');
     const currentLangSpan = document.getElementById('current-lang');
-    
+
     // Exit if elements don't exist (prevent null reference errors)
     if (!langToggle || !currentLangSpan) {
         console.log('Language toggle elements not found, skipping initialization');
         return;
     }
-    
+
+    // Get navigation links for translation
+    const navLinks = document.querySelectorAll('.nav-links a');
+
     const translations = {
         es: {
             // Page meta

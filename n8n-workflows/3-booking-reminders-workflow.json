@@ -1,0 +1,381 @@
+{
+  "name": "Atacama Dark Sky - Recordatorios Automáticos",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "cron-trigger-reminders",
+      "name": "Cada 6 horas",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 400]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "method": "GET",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/bookings",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.SUPABASE_SERVICE_KEY }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.SUPABASE_SERVICE_KEY }}"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "eq.confirmed"
+            },
+            {
+              "name": "date",
+              "value": "=gte.{{ $now.toFormat('yyyy-MM-dd') }}"
+            },
+            {
+              "name": "date",
+              "value": "=lte.{{ $now.plus({days: 2}).toFormat('yyyy-MM-dd') }}"
+            },
+            {
+              "name": "select",
+              "value": "*"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fetch-upcoming-bookings",
+      "name": "Obtener Reservas Próximas",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const bookings = $input.all();\nconst now = new Date();\nconst results = [];\n\nfor (const booking of bookings) {\n  const bookingDate = new Date(booking.json.date + 'T' + booking.json.time);\n  const hoursUntil = (bookingDate - now) / (1000 * 60 * 60);\n  \n  // Enviar recordatorio si faltan entre 20-28 horas (ventana de 24h ±4h)\n  if (hoursUntil >= 20 && hoursUntil <= 28) {\n    results.push({\n      json: {\n        ...booking.json,\n        hoursUntil: Math.round(hoursUntil),\n        reminderType: '24h',\n        shouldSendReminder: true\n      }\n    });\n  }\n  // Recordatorio 2 horas antes\n  else if (hoursUntil >= 1.5 && hoursUntil <= 2.5) {\n    results.push({\n      json: {\n        ...booking.json,\n        hoursUntil: Math.round(hoursUntil),\n        reminderType: '2h',\n        shouldSendReminder: true\n      }\n    });\n  }\n}\n\nreturn results.length > 0 ? results : [{ json: { shouldSendReminder: false } }];"
+      },
+      "id": "filter-bookings-for-reminder",
+      "name": "Filtrar Reservas para Recordatorio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [650, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.shouldSendReminder }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-if-send-reminder",
+      "name": "¿Enviar Recordatorio?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [850, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const booking = $input.first().json;\n\n// Detectar idioma según el email o usar español por defecto\nconst language = booking.email?.includes('.br') ? 'pt' : \n                booking.email?.includes('.com') || booking.email?.includes('.uk') ? 'en' : 'es';\n\n// Plantillas de mensajes en 3 idiomas\nconst templates = {\n  '24h': {\n    es: `¡Hola ${booking.name}! 🌟\\n\\nTe recordamos que mañana tienes tu tour astronómico en Atacama Dark Sky.\\n\\n📅 Fecha: ${booking.date}\\n🕐 Hora: ${booking.time}\\n👥 Personas: ${booking.persons}\\n🎫 Código: ${booking.booking_id}\\n\\nRecomendaciones:\\n✓ Llegar 10 min antes\\n✓ Ropa abrigada (temperaturas de 0-10°C en la noche)\\n✓ Zapatillas cómodas\\n\\n¿Alguna pregunta? ¡Responde este mensaje!\\n\\n¡Nos vemos bajo las estrellas! ✨`,\n    \n    en: `Hello ${booking.name}! 🌟\\n\\nReminder: Tomorrow you have your astronomical tour at Atacama Dark Sky.\\n\\n📅 Date: ${booking.date}\\n🕐 Time: ${booking.time}\\n👥 People: ${booking.persons}\\n🎫 Code: ${booking.booking_id}\\n\\nRecommendations:\\n✓ Arrive 10 min early\\n✓ Warm clothing (night temps 0-10°C)\\n✓ Comfortable shoes\\n\\nAny questions? Reply to this message!\\n\\nSee you under the stars! ✨`,\n    \n    pt: `Olá ${booking.name}! 🌟\\n\\nLembrando que amanhã você tem seu tour astronômico no Atacama Dark Sky.\\n\\n📅 Data: ${booking.date}\\n🕐 Hora: ${booking.time}\\n👥 Pessoas: ${booking.persons}\\n🎫 Código: ${booking.booking_id}\\n\\nRecomendações:\\n✓ Chegar 10 min antes\\n✓ Roupa quente (temperaturas de 0-10°C à noite)\\n✓ Sapatos confortáveis\\n\\nAlguma dúvida? Responda esta mensagem!\\n\\nNos vemos sob as estrelas! ✨`\n  },\n  '2h': {\n    es: `¡${booking.name}! 🌟 Tu tour empieza en 2 horas (${booking.time}).\\n\\n📍 Ubicación: [Punto de encuentro]\\n🎫 Código: ${booking.booking_id}\\n\\n¡Nos vemos pronto!`,\n    en: `${booking.name}! 🌟 Your tour starts in 2 hours (${booking.time}).\\n\\n📍 Location: [Meeting point]\\n🎫 Code: ${booking.booking_id}\\n\\nSee you soon!`,\n    pt: `${booking.name}! 🌟 Seu tour começa em 2 horas (${booking.time}).\\n\\n📍 Local: [Ponto de encontro]\\n🎫 Código: ${booking.booking_id}\\n\\nAté já!`\n  }\n};\n\nconst message = templates[booking.reminderType][language];\n\nreturn {\n  json: {\n    ...booking,\n    language,\n    reminderMessage: message,\n    recipientPhone: booking.phone\n  }\n};"
+      },
+      "id": "format-reminder-message",
+      "name": "Formatear Mensaje de Recordatorio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "method": "POST",
+        "url": "https://graph.facebook.com/v18.0/={{ $env.WHATSAPP_PHONE_NUMBER_ID }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.WHATSAPP_ACCESS_TOKEN }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.recipientPhone }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ { \"body\": $json.reminderMessage } }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "send-whatsapp-reminder",
+      "name": "Enviar Recordatorio WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@atacamadarksky.cl",
+        "toEmail": "={{ $json.email }}",
+        "subject": "=Recordatorio: Tu tour en Atacama Dark Sky - {{ $json.date }}",
+        "emailType": "html",
+        "message": "=<html>\n<head>\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n    .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n    .header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }\n    .content { background: #f4f4f4; padding: 30px; border-radius: 0 0 10px 10px; }\n    .booking-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; }\n    .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }\n    .cta-button { display: inline-block; background: #0f3460; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n      <h1>🌟 Atacama Dark Sky</h1>\n      <p>Tu aventura astronómica está por comenzar</p>\n    </div>\n    <div class=\"content\">\n      <h2>¡Hola {{ $json.name }}!</h2>\n      <p>Te recordamos que {{ $json.reminderType === '24h' ? 'mañana' : 'en 2 horas' }} tienes tu tour astronómico reservado.</p>\n      \n      <div class=\"booking-details\">\n        <div class=\"detail-row\">\n          <strong>📅 Fecha:</strong>\n          <span>{{ $json.date }}</span>\n        </div>\n        <div class=\"detail-row\">\n          <strong>🕐 Hora:</strong>\n          <span>{{ $json.time }}</span>\n        </div>\n        <div class=\"detail-row\">\n          <strong>👥 Personas:</strong>\n          <span>{{ $json.persons }}</span>\n        </div>\n        <div class=\"detail-row\">\n          <strong>🎫 Código de reserva:</strong>\n          <span>{{ $json.booking_id }}</span>\n        </div>\n      </div>\n      \n      <h3>Recomendaciones importantes:</h3>\n      <ul>\n        <li>✓ Llegar 10 minutos antes de la hora programada</li>\n        <li>✓ Vestir ropa muy abrigada (temperaturas nocturnas de 0-10°C)</li>\n        <li>✓ Usar zapatillas cómodas para caminar</li>\n        <li>✓ Traer tu cámara si deseas fotografiar el cielo</li>\n      </ul>\n      \n      <p>¿Tienes alguna pregunta? Responde a este email o escríbenos por WhatsApp al +56 9 5055 8761</p>\n      \n      <center>\n        <a href=\"https://wa.me/56950558761\" class=\"cta-button\">Contactar por WhatsApp</a>\n      </center>\n      \n      <p style=\"text-align: center; color: #666; margin-top: 30px;\">\n        ¡Nos vemos bajo el cielo más limpio del mundo! ✨<br>\n        Equipo Atacama Dark Sky\n      </p>\n    </div>\n  </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "id": "send-email-reminder",
+      "name": "Enviar Recordatorio por Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1250, 450],
+      "credentials": {
+        "smtp": {
+          "id": "resend-smtp",
+          "name": "Resend SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "method": "PATCH",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/bookings",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.SUPABASE_SERVICE_KEY }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.SUPABASE_SERVICE_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "booking_id",
+              "value": "=eq.{{ $json.booking_id }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "reminder_sent",
+              "value": true
+            },
+            {
+              "name": "reminder_sent_at",
+              "value": "={{ $now.toISO() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "mark-reminder-sent",
+      "name": "Marcar Recordatorio Enviado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1450, 375],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "log-success",
+              "name": "status",
+              "value": "reminder_sent",
+              "type": "string"
+            },
+            {
+              "id": "log-booking",
+              "name": "bookingId",
+              "value": "={{ $json.booking_id }}",
+              "type": "string"
+            },
+            {
+              "id": "log-type",
+              "name": "reminderType",
+              "value": "={{ $json.reminderType }}",
+              "type": "string"
+            },
+            {
+              "id": "log-time",
+              "name": "sentAt",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "log-reminder-success",
+      "name": "Log Éxito",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [1650, 375]
+    }
+  ],
+  "connections": {
+    "Cada 6 horas": {
+      "main": [
+        [
+          {
+            "node": "Obtener Reservas Próximas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener Reservas Próximas": {
+      "main": [
+        [
+          {
+            "node": "Filtrar Reservas para Recordatorio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar Reservas para Recordatorio": {
+      "main": [
+        [
+          {
+            "node": "¿Enviar Recordatorio?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Enviar Recordatorio?": {
+      "main": [
+        [
+          {
+            "node": "Formatear Mensaje de Recordatorio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Formatear Mensaje de Recordatorio": {
+      "main": [
+        [
+          {
+            "node": "Enviar Recordatorio WhatsApp",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Enviar Recordatorio por Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Recordatorio WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Marcar Recordatorio Enviado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Recordatorio por Email": {
+      "main": [
+        [
+          {
+            "node": "Marcar Recordatorio Enviado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marcar Recordatorio Enviado": {
+      "main": [
+        [
+          {
+            "node": "Log Éxito",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-11-11T00:00:00.000Z",
+  "versionId": "1"
+}
