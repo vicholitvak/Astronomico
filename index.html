@@ -1369,7 +1369,7 @@
                 </div>
 
                 <!-- FAQ Item 15 - Política de Reembolso -->
-                <div class="faq-item">
+                <div class="faq-item" id="politica-reembolso">
                     <button class="faq-question" onclick="toggleFAQ(this)">
                         <h3>¿Cuál es la política de cancelación y reembolso?</h3>
                         <i class="fas fa-chevron-down"></i>
@@ -1538,8 +1538,8 @@
                     <ul>
                         <li><a href="#">Términos y Condiciones</a></li>
                         <li><a href="#">Política de Privacidad</a></li>
-                        <li><a href="#">Política de Cancelación</a></li>
-                        <li><a href="#">Política de Reembolso</a></li>
+                        <li><a href="#politica-reembolso" onclick="openRefundPolicy(event)">Política de Cancelación</a></li>
+                        <li><a href="#politica-reembolso" onclick="openRefundPolicy(event)">Política de Reembolso</a></li>
                     </ul>
                 </div>
             </div>
@@ -3260,6 +3260,26 @@ ${msg.contact}`);
                 faqItem.classList.add('active');
                 answer.style.maxHeight = answer.scrollHeight + 'px';
                 icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Función para abrir la política de reembolso desde el footer
+        function openRefundPolicy(event) {
+            event.preventDefault();
+
+            // Scroll to the FAQ item
+            const faqItem = document.getElementById('politica-reembolso');
+            if (faqItem) {
+                // First scroll to the element
+                faqItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Wait for scroll to finish, then open the FAQ if it's not already open
+                setTimeout(() => {
+                    if (!faqItem.classList.contains('active')) {
+                        const button = faqItem.querySelector('.faq-question');
+                        toggleFAQ(button);
+                    }
+                }, 500);
             }
         }
     </script>
