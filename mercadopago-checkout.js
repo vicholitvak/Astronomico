@@ -129,16 +129,34 @@ function showBookingModal(tourType, price, tourName) {
 
     // Guardar la posición actual del scroll
     const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+    console.log('[MP DEBUG] Scroll position:', scrollPosition);
 
     // Add modal to page
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-    console.log('Modal added to page');
+    console.log('[MP DEBUG] Modal HTML inserted');
+
+    // Verificar que el modal existe
+    const modal = document.getElementById('mp-booking-modal');
+    console.log('[MP DEBUG] Modal element:', modal);
+    console.log('[MP DEBUG] Modal display:', modal ? window.getComputedStyle(modal).display : 'N/A');
+    console.log('[MP DEBUG] Modal visibility:', modal ? window.getComputedStyle(modal).visibility : 'N/A');
+    console.log('[MP DEBUG] Modal position:', modal ? window.getComputedStyle(modal).position : 'N/A');
+    console.log('[MP DEBUG] Modal z-index:', modal ? window.getComputedStyle(modal).zIndex : 'N/A');
+
+    // Asegurar que el modal sea visible
+    if (modal) {
+        modal.style.display = 'flex';
+        modal.style.visibility = 'visible';
+        modal.style.opacity = '1';
+    }
 
     // Bloquear scroll del body y mantener posición
     document.body.classList.add('modal-open');
     document.body.style.position = 'fixed';
     document.body.style.top = `-${scrollPosition}px`;
     document.body.style.width = '100%';
+
+    console.log('[MP DEBUG] Body styles applied');
 
     // Add event listeners
     const form = document.getElementById('mp-booking-form');
