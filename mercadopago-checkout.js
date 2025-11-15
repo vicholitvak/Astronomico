@@ -1,29 +1,54 @@
 // Mercado Pago Checkout Integration
+console.log('[MP DEBUG] Script loaded at:', new Date().toLocaleTimeString());
+
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Mercado Pago checkout script loaded');
+    console.log('[MP DEBUG] DOM Content Loaded at:', new Date().toLocaleTimeString());
+    console.log('[MP DEBUG] Mercado Pago checkout script initialized');
 
     // Get all Mercado Pago payment buttons
     const mpButtons = document.querySelectorAll('.btn-mercadopago');
-    console.log('Found MP buttons:', mpButtons.length);
+    console.log('[MP DEBUG] Found MP buttons:', mpButtons.length);
+    console.log('[MP DEBUG] Button details:', Array.from(mpButtons).map(b => ({
+        tour: b.getAttribute('data-tour'),
+        visible: b.offsetParent !== null,
+        disabled: b.disabled
+    })));
 
-    mpButtons.forEach(button => {
+    if (mpButtons.length === 0) {
+        console.error('[MP DEBUG] NO BUTTONS FOUND! Checking HTML...');
+    }
+
+    mpButtons.forEach((button, index) => {
+        console.log(`[MP DEBUG] Adding click listener to button ${index + 1}`);
+
         button.addEventListener('click', function(e) {
+            console.log(`[MP DEBUG] BUTTON ${index + 1} CLICKED!`);
             e.preventDefault();
             e.stopPropagation();
-            console.log('Mercado Pago button clicked', {
-                tourType: this.getAttribute('data-tour'),
-                price: this.getAttribute('data-price'),
-                tourName: this.getAttribute('data-tour-name')
-            });
 
             const tourType = this.getAttribute('data-tour');
             const price = this.getAttribute('data-price');
             const tourName = this.getAttribute('data-tour-name');
 
+            console.log('[MP DEBUG] Button click data:', {
+                tourType,
+                price,
+                tourName
+            });
+
             // Show modal to collect customer info
-            showBookingModal(tourType, price, tourName);
+            try {
+                showBookingModal(tourType, price, tourName);
+                console.log('[MP DEBUG] Modal function called successfully');
+            } catch (error) {
+                console.error('[MP DEBUG] Error calling modal:', error);
+            }
         });
+
+        console.log(`[MP DEBUG] Listener added to button ${index + 1}`);
     });
+
+    console.log('[MP DEBUG] All event listeners attached');
 });
 
 function showBookingModal(tourType, price, tourName) {
