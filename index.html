@@ -1883,67 +1883,31 @@
                 dateInput.dispatchEvent(new Event('change'));
             }
             
-            // Update the display element
+            // Update the display element with moon phase info
             const displayElement = document.getElementById('selected-date-display');
             if (displayElement) {
                 const currentLang = localStorage.getItem('preferred-language') || 'es';
+                const moonPhase = getMoonPhase(date);
                 const dateStr = date.toLocaleDateString(currentLang === 'en' ? 'en-US' : currentLang === 'pt' ? 'pt-BR' : 'es-ES', {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
                 });
-                
+
+                const illuminationLabel = currentLang === 'en' ? 'illumination' : currentLang === 'pt' ? 'iluminação' : 'iluminación';
+
                 displayElement.innerHTML = `
                     <div class="selected-datetime">
                         <i class="fas fa-check-circle"></i>
                         <h5>${currentLang === 'en' ? 'Date selected!' : currentLang === 'pt' ? 'Data selecionada!' : '¡Fecha seleccionada!'}</h5>
                         <p><strong>📅 ${dateStr}</strong></p>
-                        <small>${currentLang === 'en' ? 'Now select tour type and time below' : currentLang === 'pt' ? 'Agora selecione o tipo de tour e horário abaixo' : 'Ahora selecciona el tipo de tour y horario abajo'}</small>
+                        <p>${moonPhase.emoji} ${moonPhase.name} - ${moonPhase.illumination}% ${illuminationLabel}</p>
+                        <small>${currentLang === 'en' ? 'Excellent conditions for stargazing' : currentLang === 'pt' ? 'Excelentes condições para observar estrelas' : 'Excelentes condiciones para observar estrellas'}</small>
                     </div>
                 `;
                 displayElement.classList.add('has-date');
             }
-            
-            // Mostrar confirmación
-            showDateConfirmation(date);
-        }
-
-        // Mostrar confirmación de fecha seleccionada
-        function showDateConfirmation(date) {
-            const moonPhase = getMoonPhase(date);
-            const currentLang = localStorage.getItem('preferred-language') || 'es';
-            
-            let locale = 'es-ES';
-            if (currentLang === 'en') locale = 'en-US';
-            if (currentLang === 'pt') locale = 'pt-BR';
-            
-            const dateStr = date.toLocaleDateString(locale, {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-            
-            let confirmDiv = document.getElementById('date-confirmation');
-            if (!confirmDiv) {
-                confirmDiv = document.createElement('div');
-                confirmDiv.id = 'date-confirmation';
-                confirmDiv.className = 'date-confirmation';
-                document.getElementById('fullcalendar').parentNode.appendChild(confirmDiv);
-            }
-            
-            const illuminationLabel = currentLang === 'en' ? 'illumination' : currentLang === 'pt' ? 'iluminação' : 'iluminación';
-            
-            confirmDiv.innerHTML = `
-                <div class="confirmation-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <h4>${getCalendarText('dateSelected', currentLang)}</h4>
-                <p><strong>📅 ${dateStr}</strong></p>
-                <p>${moonPhase.emoji} ${moonPhase.name} - ${moonPhase.illumination}% ${illuminationLabel}</p>
-                <p class="conditions">${getCalendarText('excellentConditions', currentLang)}</p>
-            `;
         }
 
         // Funciones auxiliares
