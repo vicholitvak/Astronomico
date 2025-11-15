@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atacama NightSky | Tours Astronómicos en San Pedro de Atacama</title>
-    <meta name="description" content="Atacama NightSky: Tours guiados con telescopio Unistellar en el desierto más claro del mundo. Observación de estrellas, astrofotografía y experiencias únicas.">
-    <meta name="keywords" content="Atacama NightSky, tours astronómicos San Pedro de Atacama, observación estrellas Atacama, telescopio Unistellar, astro turismo Chile">
+    <title>Tours Astronómicos en San Pedro de Atacama | Telescopio Profesional Unistellar | Atacama NightSky</title>
+    <meta name="description" content="Descubre el mejor cielo del mundo con nuestros tours astronómicos en San Pedro de Atacama. Telescopio Unistellar eVscope profesional, guía experto, ubicaciones secretas sin contaminación lumínica. Tours regular, astrofotografía y privado VIP. Reserva tu experiencia única bajo las estrellas.">
+    <meta name="keywords" content="tours astronómicos San Pedro de Atacama, observación estrellas Chile, telescopio Unistellar eVscope, astrofotografía Atacama, tour nocturno estrellas, guía astronómico, cielo más claro del mundo, tour privado astronomía">
     
     <!-- Performance Optimizations -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,9 +31,228 @@
     
     <!-- FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet">
-    
+
+    <!-- Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+
     <!-- Stylesheet -->
     <link rel="stylesheet" href="styles.css?v=4.0">
+    <link rel="stylesheet" href="faq-styles.css">
+
+    <!-- Schema.org Structured Data for SEO and LLMs -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TouristAttraction",
+      "name": "Atacama NightSky - Tours Astronómicos",
+      "description": "Tours astronómicos profesionales en San Pedro de Atacama con telescopios Unistellar eVscope de última generación. Observa galaxias, nebulosas y planetas en el cielo más claro del mundo. Guía experto en astronomía, ubicaciones privilegiadas sin contaminación lumínica.",
+      "url": "https://www.atacamadarksky.cl",
+      "telephone": "+56-9-XXXX-XXXX",
+      "email": "contacto@atacamadarksky.cl",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "San Pedro de Atacama",
+        "addressLocality": "San Pedro de Atacama",
+        "addressRegion": "Región de Antofagasta",
+        "postalCode": "1410000",
+        "addressCountry": "CL"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -22.9087,
+        "longitude": -68.1990
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+          ],
+          "opens": "20:00",
+          "closes": "02:00",
+          "description": "Tours nocturnos disponibles todos los días"
+        }
+      ],
+      "priceRange": "$$",
+      "currenciesAccepted": "CLP, USD",
+      "paymentAccepted": "Tarjeta de crédito, Tarjeta de débito, Efectivo, Transferencia bancaria",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5.0",
+        "reviewCount": "2",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Tours Astronómicos en San Pedro de Atacama",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Tour Astronómico Regular",
+              "description": "Experiencia de observación astronómica con telescopio Unistellar eVscope de última generación. Incluye puntero láser para identificar constelaciones, cóctel bajo las estrellas, y fotografías del tour. Duración: 2.5 horas. Ideal para familias y principiantes en astronomía.",
+              "provider": {
+                "@type": "Organization",
+                "name": "Atacama NightSky"
+              }
+            },
+            "price": "30000",
+            "priceCurrency": "CLP",
+            "availability": "https://schema.org/InStock",
+            "validFrom": "2025-01-01",
+            "url": "https://www.atacamadarksky.cl#tours"
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Tour de Astrofotografía Especializado",
+              "description": "Tour intensivo de 5 horas para aprender técnicas profesionales de astrofotografía. Incluye locaciones secretas con Bortle Class 1-2, edición en vivo de fotografías, captura de Vía Láctea, nebulosas y galaxias. Equipo profesional disponible. Trae tu cámara DSLR.",
+              "provider": {
+                "@type": "Organization",
+                "name": "Atacama NightSky"
+              }
+            },
+            "price": "120000",
+            "priceCurrency": "CLP",
+            "availability": "https://schema.org/InStock",
+            "validFrom": "2025-01-01",
+            "url": "https://www.atacamadarksky.cl#tours"
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Tour Privado VIP",
+              "description": "Experiencia exclusiva personalizada con guía astronómico privado. Ubicación privilegiada solo para tu grupo, setup personalizado según intereses, bebidas premium, telescopio Unistellar dedicado. Duración: 3 horas. Perfecto para parejas, aniversarios o grupos privados.",
+              "provider": {
+                "@type": "Organization",
+                "name": "Atacama NightSky"
+              }
+            },
+            "price": "200000",
+            "priceCurrency": "CLP",
+            "availability": "https://schema.org/InStock",
+            "validFrom": "2025-01-01",
+            "url": "https://www.atacamadarksky.cl#tours"
+          }
+        ]
+      },
+      "amenityFeature": [
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Transporte incluido",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Telescopio profesional Unistellar eVscope",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Guía astronómico experto",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Fotografías incluidas",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Bebidas y snacks",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Tours en español, inglés y portugués",
+          "value": true
+        }
+      ],
+      "knowsAbout": [
+        "Astronomía observacional",
+        "Astrofotografía",
+        "Constelaciones del hemisferio sur",
+        "Galaxias y nebulosas",
+        "Planetas del sistema solar",
+        "Vía Láctea",
+        "Cielos oscuros y contaminación lumínica"
+      ],
+      "image": [
+        "https://www.atacamadarksky.cl/images/regular3-2.jpg",
+        "https://www.atacamadarksky.cl/images/fotografico.jpg",
+        "https://www.atacamadarksky.cl/images/privado1.jpg",
+        "https://www.atacamadarksky.cl/images/Nightskylogo.jpg"
+      ],
+      "sameAs": [
+        "https://www.instagram.com/atacama.nightsky",
+        "https://www.facebook.com/atacamanightsky"
+      ],
+      "touristType": [
+        "Familias con niños",
+        "Parejas",
+        "Astrofotógrafos",
+        "Entusiastas de la astronomía",
+        "Viajeros de aventura",
+        "Grupos privados"
+      ]
+    }
+    </script>
+
+    <!-- LocalBusiness Schema for better local SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Atacama NightSky",
+      "image": "https://www.atacamadarksky.cl/images/Nightskylogo.jpg",
+      "@id": "https://www.atacamadarksky.cl",
+      "url": "https://www.atacamadarksky.cl",
+      "telephone": "+56-9-XXXX-XXXX",
+      "priceRange": "$$",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "San Pedro de Atacama",
+        "addressLocality": "San Pedro de Atacama",
+        "addressRegion": "Región de Antofagasta",
+        "postalCode": "1410000",
+        "addressCountry": "CL"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -22.9087,
+        "longitude": -68.1990
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "20:00",
+        "closes": "02:00"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5",
+        "reviewCount": "2"
+      }
+    }
+    </script>
 </head>
 <body>
     <!-- Header Navigation -->
@@ -213,11 +432,16 @@
                                 <li><i class="fas fa-check"></i> Sesión de fotografías</li>
                             </ul>
                         </div>
-                        
-                        <a href="#reservas" class="btn btn-primary btn-tour">Reservar Tour</a>
+
+                        <div class="tour-buttons">
+                            <button class="btn btn-stripe" data-tour="regular" data-price="30000" data-tour-name="Tour Astronómico Regular">
+                                <i class="fas fa-credit-card"></i> Pagar con Stripe
+                            </button>
+                            <a href="#reservas" class="btn btn-secondary-outline btn-tour">Reservar Después</a>
+                        </div>
                     </div>
                 </div>
-                
+
                 <!-- Tour 2: Astrophotography -->
                 <div class="tour-card">
                     <div class="tour-image">
@@ -250,15 +474,18 @@
                                 <li><i class="fas fa-check"></i> Transporte en camioneta</li>
                                 <li><i class="fas fa-check"></i> Trípodes y accesorios</li>
                                 <li><i class="fas fa-check"></i> Sesión de edición</li>
-                                
-        
                             </ul>
                         </div>
-                        
-                        <a href="#reservas" class="btn btn-primary btn-tour">Reservar Tour</a>
+
+                        <div class="tour-buttons">
+                            <button class="btn btn-stripe" data-tour="astrophoto" data-price="120000" data-tour-name="Tour de Astrofotografía Especializado">
+                                <i class="fas fa-credit-card"></i> Pagar con Stripe
+                            </button>
+                            <a href="#reservas" class="btn btn-secondary-outline btn-tour">Reservar Después</a>
+                        </div>
                     </div>
                 </div>
-                
+
                 <!-- Tour 3: Private VIP -->
                 <div class="tour-card">
                     <div class="tour-image">
@@ -290,16 +517,19 @@
                                 <li><i class="fas fa-check"></i> Guía astronómico exclusivo</li>
                                 <li><i class="fas fa-check"></i> Ubicación privada privilegiada</li>
                                 <li><i class="fas fa-check"></i> Telescopio Unistellar dedicado</li>
-        
                                 <li><i class="fas fa-check"></i> Sesión fotográfica en locaciones únicas</li>
-                    
                             </ul>
                         </div>
-                        
-                        <a href="#reservas" class="btn btn-primary btn-tour">Reservar Tour</a>
+
+                        <div class="tour-buttons">
+                            <button class="btn btn-stripe" data-tour="private" data-price="200000" data-tour-name="Tour Privado VIP">
+                                <i class="fas fa-credit-card"></i> Pagar con Stripe
+                            </button>
+                            <a href="#reservas" class="btn btn-secondary-outline btn-tour">Reservar Después</a>
+                        </div>
                     </div>
                 </div>
-                
+
                 <!-- Tour 4: Educational Study Tours -->
                 <div class="tour-card">
                     <div class="tour-image">
@@ -691,6 +921,460 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Preguntas Frecuentes</h2>
+                <p class="section-subtitle">Todo lo que necesitas saber sobre nuestros tours astronómicos</p>
+            </div>
+
+            <div class="faq-container">
+                <!-- FAQ Item 1 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>¿Cuándo es la mejor época para hacer un tour astronómico en San Pedro de Atacama?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>San Pedro de Atacama ofrece cielos excepcionales durante todo el año, con más de <strong>300 noches despejadas anuales</strong>. Sin embargo, cada época tiene sus ventajas:</p>
+                        <ul>
+                            <li><strong>Abril a Septiembre (Invierno):</strong> Mejor visibilidad del centro galáctico de la Vía Láctea, ideal para astrofotografía. Temperaturas más frías (0-5°C de noche).</li>
+                            <li><strong>Octubre a Marzo (Verano):</strong> Temperaturas más cálidas (10-15°C de noche), excelente para observación de planetas y constelaciones del verano austral.</li>
+                        </ul>
+                        <p>Todos los meses son excelentes para observar estrellas en Atacama gracias a la baja humedad (menos del 10%) y la altitud de 2,400 metros sobre el nivel del mar.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>¿Necesito experiencia previa en astronomía para hacer el tour?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p><strong>No, para nada.</strong> Nuestros tours están diseñados para todos los niveles de conocimiento:</p>
+                        <ul>
+                            <li><strong>Principiantes absolutos:</strong> Te enseñamos desde cero cómo leer el cielo, identificar constelaciones y usar el telescopio.</li>
+                            <li><strong>Entusiastas:</strong> Profundizamos en objetos celestes específicos, mitología estelar y datos astronómicos.</li>
+                            <li><strong>Astrofotógrafos avanzados:</strong> El tour de astrofotografía incluye técnicas profesionales y edición.</li>
+                        </ul>
+                        <p>Nuestro guía experto adapta las explicaciones a tu nivel y responde todas tus preguntas. Los niños y familias son bienvenidos en el tour regular.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>¿Qué incluye el tour?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Todos nuestros tours incluyen TODO lo necesario:</p>
+                        <ul>
+                            <li><i class="fas fa-shuttle-van"></i> <strong>Transfer completo:</strong> Te recogemos en tu hotel/hostal en San Pedro y te traemos de vuelta al finalizar. No tienes que preocuparte por transporte.</li>
+                            <li><i class="fas fa-telescope"></i> <strong>Telescopio profesional:</strong> Unistellar eVscope eQuinox de última generación (valor $5,000 USD)</li>
+                            <li><i class="fas fa-user-astronaut"></i> <strong>Guía astronómico experto:</strong> Astrofotógrafo profesional y conocedor del cielo del hemisferio sur. Explicaciones en español, inglés o portugués.</li>
+                            <li><i class="fas fa-crosshairs"></i> <strong>Puntero láser:</strong> Para señalar constelaciones, estrellas y objetos celestes en el cielo</li>
+                            <li><i class="fas fa-camera"></i> <strong>Fotografías profesionales del tour:</strong> Enviadas por WhatsApp/email al día siguiente</li>
+                            <li><i class="fas fa-utensils"></i> <strong>Comida y bebidas:</strong>
+                                <ul>
+                                    <li>Cóctel de bienvenida</li>
+                                    <li>Té caliente, café, chocolate</li>
+                                    <li>Snacks, galletas, frutas</li>
+                                    <li>Agua</li>
+                                </ul>
+                            </li>
+                            <li><i class="fas fa-blanket"></i> <strong>Mantas térmicas:</strong> Para mantenerte cómodo durante la observación (¡el frío es intenso!)</li>
+                            <li><i class="fas fa-map-marked-alt"></i> <strong>Ubicación privilegiada:</strong> Vamos a lugares oscuros sin contaminación lumínica donde verás el universo completo</li>
+                        </ul>
+                        <p><strong>Tour de Astrofotografía</strong> incluye además: edición en vivo de tus fotos, acceso a locaciones secretas Bortle Class 1-2, y guía personalizada para tu equipo fotográfico.</p>
+                        <p><em>🇧🇷 Tudo incluído: transporte, equipamento, comida, bebidas e fotos profissionais. Você só precisa trazer roupa bem quente!</em></p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>¿Cuánto dura cada tour?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <ul>
+                            <li><strong>Tour Regular:</strong> 2.5 horas (aprox. 21:00 - 23:30)</li>
+                            <li><strong>Tour de Astrofotografía:</strong> 5 horas (aprox. 20:30 - 01:30)</li>
+                            <li><strong>Tour Privado VIP:</strong> 3 horas (horario flexible según tus preferencias)</li>
+                        </ul>
+                        <p>Los horarios exactos varían según la época del año y condiciones climáticas. El tour comienza después del atardecer para aprovechar la oscuridad total del desierto.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 5 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>¿Qué debo llevar? ¿Hace mucho frío? (Importante para brasileños y viajeros tropicales)</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p><strong>⚠️ MUY IMPORTANTE - El frío del desierto es extremo:</strong></p>
+                        <p>Si vienes de Brasil, Argentina (zonas cálidas), o países tropicales: <strong>el frío de noche en Atacama es mucho más intenso de lo que imaginas</strong>. Incluso en verano puede hacer 0°C. En invierno llegamos a -5°C o menos.</p>
+
+                        <p><strong>✅ IMPRESCINDIBLE (no salgas sin esto):</strong></p>
+                        <ul>
+                            <li><i class="fas fa-jacket"></i> <strong>Chaqueta térmica o parka:</strong> La más abrigada que tengas. Tipo esquí.</li>
+                            <li><i class="fas fa-socks"></i> <strong>DOBLE CALCETÍN:</strong> Esto funciona muy bien. Usa dos pares de calcetines (uno fino + uno grueso).</li>
+                            <li><i class="fas fa-mitten"></i> <strong>Guantes térmicos:</strong> Tus manos se congelan rápidamente. Guantes gruesos o de esquí.</li>
+                            <li><i class="fas fa-hat-winter"></i> <strong>Gorro que cubra orejas:</strong> Pierdes mucho calor por la cabeza. Gorro de lana grueso.</li>
+                            <li><i class="fas fa-scarf"></i> <strong>Bufanda o cuello polar:</strong> Para proteger cuello y parte de la cara.</li>
+                            <li><i class="fas fa-shoe-prints"></i> <strong>Zapatos cerrados:</strong> Zapatillas o botas. NUNCA sandalias o calzado abierto.</li>
+                        </ul>
+
+                        <p><strong>💡 Consejos de vestimenta que funcionan:</strong></p>
+                        <ul>
+                            <li><strong>Sistema de capas:</strong> Camiseta térmica + polar/suéter + chaqueta</li>
+                            <li><strong>Pantalón:</strong> Pantalón largo, idealmente de trekking o jeans gruesos</li>
+                            <li><strong>Si no tienes ropa de frío:</strong> En San Pedro hay tiendas donde puedes comprar/rentar ropa térmica. ¡No te arriesgues!</li>
+                        </ul>
+
+                        <p><strong>📱 Opcional pero útil:</strong></p>
+                        <ul>
+                            <li><i class="fas fa-camera-retro"></i> <strong>Cámara:</strong> Si quieres tus propias fotos (nosotros también tomamos fotos profesionales incluidas)</li>
+                            <li><i class="fas fa-phone"></i> <strong>Celular cargado:</strong> Para recibir fotos por WhatsApp</li>
+                            <li><i class="fas fa-battery-full"></i> <strong>Batería externa:</strong> El frío descarga baterías rápido</li>
+                        </ul>
+
+                        <p><strong>☕ Lo que nosotros proveemos:</strong></p>
+                        <ul>
+                            <li>Mantas térmicas</li>
+                            <li>Bebidas calientes (té, café, chocolate)</li>
+                            <li>Snacks y galletas</li>
+                            <li>Todo el equipo astronómico</li>
+                        </ul>
+
+                        <p><em>🇧🇷 Para viajeros brasileños: O frio é MUITO mais intenso do que no inverno do Sul do Brasil. Vista-se como se fosse esquiar! Meias duplas, luvas, gorro e cachecol são essenciais.</em></p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 6 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>¿Qué vamos a ver en el cielo? ¿Se ve mucho?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p><strong>✨ ¡Vas a ver el UNIVERSO completo!</strong></p>
+                        <p>La ubicación donde vamos es <strong>completamente oscura</strong> (Bortle Class 2 - casi negro total). No hay luces de la ciudad, ni de autos, ni de casas. Solo el cielo estrellado más impresionante que verás en tu vida.</p>
+
+                        <p><strong>A simple vista (sin telescopio):</strong></p>
+                        <ul>
+                            <li><i class="fas fa-star"></i> <strong>Vía Láctea completa:</strong> Se ve como una "nube" brillante atravesando todo el cielo. Puedes ver sus colores y estructuras.</li>
+                            <li><i class="fas fa-star"></i> Miles de estrellas - literalmente MILES. Mucho más de lo que has visto nunca.</li>
+                            <li><i class="fas fa-star"></i> Nubes de Magallanes (galaxias vecinas visibles a simple vista)</li>
+                            <li><i class="fas fa-star"></i> Constelaciones del hemisferio sur (Cruz del Sur, etc.)</li>
+                        </ul>
+
+                        <p><strong>Con nuestro telescopio Unistellar eVscope:</strong></p>
+
+                        <p><strong>🌌 Galaxias:</strong></p>
+                        <ul>
+                            <li>Andrómeda (M31) - Galaxia vecina a 2.5 millones de años luz</li>
+                            <li>Galaxia del Sombrero (M104)</li>
+                            <li>NGC 253 (Galaxia del Escultor)</li>
+                            <li>Nubes de Magallanes (solo visibles desde hemisferio sur)</li>
+                        </ul>
+
+                        <p><strong>🌟 Nebulosas (guarderías de estrellas):</strong></p>
+                        <ul>
+                            <li>Nebulosa de Carina - Una de las más brillantes y coloridas</li>
+                            <li>Nebulosa de Orión (M42) - Visible con increíble detalle</li>
+                            <li>Nebulosa del Águila (M16)</li>
+                            <li>Nebulosa de la Tarántula</li>
+                        </ul>
+
+                        <p><strong>🪐 Planetas (si están visibles esa noche):</strong></p>
+                        <ul>
+                            <li><strong>Saturno:</strong> Verás los anillos claramente, como en las fotos de la NASA</li>
+                            <li><strong>Júpiter:</strong> Verás las lunas galileanas (4 lunas) y las bandas de colores</li>
+                            <li>Marte, Venus (según temporada)</li>
+                        </ul>
+
+                        <p><strong>⭐ Cúmulos estelares:</strong></p>
+                        <ul>
+                            <li>Cúmulo del Joyero (NGC 4755) - Estrellas de colores</li>
+                            <li>Pléyades (M45) - Las "siete hermanas"</li>
+                            <li>Omega Centauri - El cúmulo más grande visible</li>
+                        </ul>
+
+                        <p><strong>💫 La experiencia:</strong></p>
+                        <p>La oscuridad total es impresionante. Muchos viajeros nos dicen que es la experiencia más memorable de su viaje. Brasileños que nunca habían visto nieve se sorprenden más con el frío del desierto y las estrellas que con la nieve de Bariloche.</p>
+
+                        <p><em>Los objetos específicos varían según la época del año. Nuestro guía adapta la observación a lo mejor disponible cada noche.</em></p>
+
+                        <p><em>🇧🇷 Você vai ver o UNIVERSO inteiro! A Via Láctea completa, galáxias, nebulosas coloridas, os anéis de Saturno... É impossível descrever, você precisa ver com seus próprios olhos!</em></p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 7 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>¿Los tours están disponibles todos los días?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Sí, ofrecemos tours <strong>todos los días del año</strong>, excepto en casos de:</p>
+                        <ul>
+                            <li><i class="fas fa-cloud-rain"></i> <strong>Mal clima:</strong> Lluvia o nubosidad extrema (raro en Atacama - solo 2-3 días al año)</li>
+                            <li><i class="fas fa-moon"></i> <strong>Luna llena extrema:</strong> Ocasionalmente posponemos el tour de astrofotografía durante luna llena muy brillante</li>
+                        </ul>
+                        <p>Si el clima no permite el tour, te ofrecemos:</p>
+                        <ol>
+                            <li><strong>Reprogramación:</strong> Para otra noche de tu estadía</li>
+                            <li><strong>Reembolso completo:</strong> Si no puedes reprogramar</li>
+                        </ol>
+                        <p><em>Atacama tiene más de 300 noches despejadas al año, por lo que las cancelaciones son extremadamente raras.</em></p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 8 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>¿Cuántas personas hay por tour?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <ul>
+                            <li><strong>Tour Regular:</strong> Máximo <strong>6 personas</strong> por grupo para asegurar atención personalizada</li>
+                            <li><strong>Tour de Astrofotografía:</strong> Máximo <strong>4 personas</strong> para dedicar tiempo a cada fotógrafo</li>
+                            <li><strong>Tour Privado VIP:</strong> <strong>Solo tu grupo</strong> (1-6 personas), experiencia exclusiva</li>
+                        </ul>
+                        <p>Mantenemos grupos pequeños intencionalmente para que cada persona tenga tiempo suficiente con el telescopio y pueda hacer todas las preguntas que desee al guía.</p>
+                        <p><em>Esto nos diferencia de otros operadores que manejan grupos de 15-20 personas donde apenas puedes ver por el telescopio.</em></p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 9 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>¿Cuáles son los precios?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="pricing-faq">
+                            <div class="price-item">
+                                <h4>Tour Regular</h4>
+                                <p class="price"><strong>$30.000 CLP</strong> por persona</p>
+                                <p class="price-usd">(≈ $32 USD)</p>
+                                <p>Duración: 2.5 horas | Máx. 6 personas</p>
+                            </div>
+                            <div class="price-item">
+                                <h4>Tour de Astrofotografía</h4>
+                                <p class="price"><strong>$120.000 CLP</strong> por persona</p>
+                                <p class="price-usd">(≈ $128 USD)</p>
+                                <p>Duración: 5 horas | Máx. 4 personas</p>
+                            </div>
+                            <div class="price-item">
+                                <h4>Tour Privado VIP</h4>
+                                <p class="price"><strong>$200.000 CLP</strong> por grupo</p>
+                                <p class="price-usd">(≈ $215 USD)</p>
+                                <p>Duración: 3 horas | 1-6 personas exclusivo</p>
+                            </div>
+                        </div>
+                        <p><strong>Métodos de pago aceptados:</strong></p>
+                        <ul>
+                            <li><i class="fab fa-cc-stripe"></i> Tarjeta de crédito/débito (Stripe - pago seguro internacional)</li>
+                            <li><i class="fas fa-money-bill-wave"></i> Efectivo (pesos chilenos o dólares)</li>
+                            <li><i class="fas fa-exchange-alt"></i> Transferencia bancaria (Chile)</li>
+                        </ul>
+                        <p><em>Descuentos especiales para grupos de 4+ personas en tour regular. Contáctanos para cotización.</em></p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 10 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>¿Cómo hago la reserva?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p><strong>3 formas fáciles de reservar:</strong></p>
+                        <ol>
+                            <li><strong>Formulario en línea:</strong> Usa nuestro <a href="#reservas">formulario de reserva</a> en esta página. Recibirás confirmación por email en menos de 2 horas.</li>
+                            <li><strong>WhatsApp:</strong> Envíanos un mensaje al <a href="https://wa.me/56XXXXXXXXX" target="_blank">+56 9 XXXX XXXX</a> con:
+                                <ul>
+                                    <li>Nombre</li>
+                                    <li>Fecha deseada</li>
+                                    <li>Número de personas</li>
+                                    <li>Tipo de tour</li>
+                                </ul>
+                            </li>
+                            <li><strong>Pago con tarjeta:</strong> Usa el botón "Pagar con Stripe" en la sección de tours para reserva instantánea con confirmación inmediata.</li>
+                        </ol>
+                        <p><strong>¿Necesitas reservar con anticipación?</strong></p>
+                        <p>Recomendamos reservar con al menos <strong>24-48 horas de anticipación</strong>, especialmente en temporada alta (diciembre-marzo y julio). Sin embargo, a veces aceptamos reservas del mismo día si hay disponibilidad - contáctanos por WhatsApp para confirmar.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 11 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>¿Puedo llevar niños?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p><strong>¡Sí! Los niños son bienvenidos</strong>, especialmente en el tour regular.</p>
+                        <p><strong>Recomendaciones por edad:</strong></p>
+                        <ul>
+                            <li><strong>6-12 años:</strong> Perfecto para el tour regular. Los niños suelen quedar fascinados viendo Saturno y sus anillos, la Luna y cúmulos estelares coloridos.</li>
+                            <li><strong>13+ años:</strong> Pueden disfrutar todos los tours, incluyendo astrofotografía si tienen interés.</li>
+                            <li><strong>Menores de 6 años:</strong> Posible pero depende del niño. El tour dura 2.5 horas de noche y puede ser largo para niños muy pequeños. Consúltanos.</li>
+                        </ul>
+                        <p><strong>Tips para familias:</strong></p>
+                        <ul>
+                            <li>Asegúrate de que tengan <strong>ropa muy abrigada</strong></li>
+                            <li>Trae snacks si tu hijo/a tiene hambre frecuente</li>
+                            <li>Adaptamos las explicaciones para que sean comprensibles y entretenidas para los niños</li>
+                        </ul>
+                        <p><em>Muchas familias nos han dicho que el tour fue la experiencia favorita de sus hijos en todo el viaje a Chile.</em></p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 12 -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>¿Por qué San Pedro de Atacama es el mejor lugar del mundo para ver estrellas?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>San Pedro de Atacama tiene la combinación perfecta de factores que lo hacen <strong>uno de los mejores sitios astronómicos del planeta:</strong></p>
+                        <ul>
+                            <li><i class="fas fa-mountain"></i> <strong>Altitud:</strong> 2,400 metros sobre el nivel del mar - menos atmósfera que distorsione la luz</li>
+                            <li><i class="fas fa-sun"></i> <strong>Cielos despejados:</strong> Más de 300 noches claras al año (82% del tiempo)</li>
+                            <li><i class="fas fa-tint"></i> <strong>Baja humedad:</strong> Menos del 10% - el aire más seco del mundo</li>
+                            <li><i class="fas fa-moon"></i> <strong>Oscuridad extrema:</strong> Bortle Class 2 en nuestras ubicaciones (escala 1-9 de contaminación lumínica, siendo 1 el más oscuro)</li>
+                            <li><i class="fas fa-globe-americas"></i> <strong>Hemisferio Sur:</strong> Acceso visual al centro de la Vía Láctea, Nubes de Magallanes, y objetos únicos no visibles desde el hemisferio norte</li>
+                            <li><i class="fas fa-thermometer-half"></i> <strong>Estabilidad atmosférica:</strong> Aire seco y estable produce imágenes nítidas</li>
+                        </ul>
+                        <p><strong>No es coincidencia que los telescopios más grandes del mundo estén en Atacama:</strong></p>
+                        <ul>
+                            <li>ALMA (Atacama Large Millimeter Array)</li>
+                            <li>VLT (Very Large Telescope)</li>
+                            <li>Observatorio La Silla</li>
+                            <li>Observatorio Paranal</li>
+                        </ul>
+                        <p><em>Si los científicos eligieron Atacama para sus telescopios de millones de dólares, es porque realmente es el mejor cielo del mundo.</em></p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 13 - Para brasileños -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>🇧🇷 Para viajeros brasileños: ¿Hablan portugués? ¿El tour está adaptado para nosotros?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p><strong>Sim! Falamos português.</strong></p>
+                        <p>Recibimos muchos viajeros de Brasil y entendemos perfectamente sus necesidades:</p>
+
+                        <p><strong>🗣️ Idioma:</strong></p>
+                        <ul>
+                            <li>El tour se puede hacer en <strong>portugués</strong>, español o inglés</li>
+                            <li>Nuestro guía habla portugués y conoce bien la cultura brasileña</li>
+                            <li>Todas las explicaciones las adaptamos a tu idioma</li>
+                        </ul>
+
+                        <p><strong>❄️ Sobre el frío (MUITO IMPORTANTE):</strong></p>
+                        <ul>
+                            <li><strong>Faz MUITO mais frio do que vocês imaginam!</strong></li>
+                            <li>Mesmo quem é do Sul do Brasil (Curitiba, Porto Alegre) se surpreende</li>
+                            <li>A temperatura à noite pode chegar a 0°C no verão e -5°C no inverno</li>
+                            <li>É como ir esquiar nos Andes - precisa de roupa MUITO quente</li>
+                            <li><strong>Dica importante:</strong> Meias duplas (duas ao mesmo tempo) funcionam muito bem!</li>
+                        </ul>
+
+                        <p><strong>💰 Pagamento:</strong></p>
+                        <ul>
+                            <li>Aceitamos cartão de crédito internacional (Stripe)</li>
+                            <li>Dinheiro em pesos chilenos ou dólares</li>
+                            <li>Transferência bancaria (Chile)</li>
+                        </ul>
+
+                        <p><strong>🚌 Transfer:</strong></p>
+                        <ul>
+                            <li>Buscamos você no seu hotel/hostel em San Pedro</li>
+                            <li>Levamos você de volta no final do tour</li>
+                            <li>Transporte incluído no preço</li>
+                        </ul>
+
+                        <p><strong>☕ Comida e bebidas:</strong></p>
+                        <ul>
+                            <li>Servimos chá, café, chocolate quente</li>
+                            <li>Snacks e biscoitos</li>
+                            <li>Coquetel de boas-vindas</li>
+                            <li>Tudo incluído no tour</li>
+                        </ul>
+
+                        <p><strong>📱 Reserva:</strong></p>
+                        <ul>
+                            <li>Você pode reservar pelo site (formulário)</li>
+                            <li>WhatsApp: +56 9 XXXX XXXX (respondemos em português)</li>
+                            <li>Email: contacto@atacamadarksky.cl</li>
+                        </ul>
+
+                        <p><em>Muitos brasileiros dizem que o passeio astronômico foi a melhor experiência de toda a viagem ao Chile - melhor que Valle de la Luna, Geysers del Tatio, ou qualquer outro passeio!</em></p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 14 - Transfer -->
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <h3>¿El transfer está incluido? ¿Dónde me recogen?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p><strong>Sí, el transfer está 100% incluido. No tienes que pagar nada extra por transporte.</strong></p>
+
+                        <p><strong>📍 Recogida (Pick-up):</strong></p>
+                        <ul>
+                            <li>Te recogemos en la puerta de tu hotel, hostal o alojamiento en <strong>San Pedro de Atacama</strong></li>
+                            <li>Horario: Aproximadamente 20:00-21:00 (varía según temporada y hora de puesta de sol)</li>
+                            <li>Te confirmamos el horario exacto por WhatsApp/email 24 horas antes</li>
+                            <li>Solo necesitas estar listo en la puerta de tu alojamiento</li>
+                        </ul>
+
+                        <p><strong>🚐 Durante el tour:</strong></p>
+                        <ul>
+                            <li>Viajamos en vehículo cómodo con calefacción</li>
+                            <li>El viaje dura aprox. 15-20 minutos hasta nuestra ubicación en el desierto</li>
+                            <li>La ubicación es completamente oscura, lejos de las luces del pueblo</li>
+                        </ul>
+
+                        <p><strong>🏠 Regreso (Drop-off):</strong></p>
+                        <ul>
+                            <li><strong>Te traemos de vuelta a tu hotel/hostal al finalizar el tour</strong></li>
+                            <li>Te dejamos en la misma puerta donde te recogimos</li>
+                            <li>Horario de regreso:
+                                <ul>
+                                    <li>Tour Regular: Aprox. 23:30-00:00</li>
+                                    <li>Tour Astrofotografía: Aprox. 01:30-02:00</li>
+                                    <li>Tour Privado VIP: Según duración acordada</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <p><strong>💡 Importante:</strong></p>
+                        <ul>
+                            <li>Al reservar, debes indicar el nombre y dirección de tu hotel/hostal</li>
+                            <li>Si cambias de alojamiento, avísanos con anticipación</li>
+                            <li>Recogemos solo en San Pedro de Atacama centro (no en hoteles lejanos tipo Alto Atacama, Explora, etc. - consultar)</li>
+                        </ul>
+
+                        <p><em>🇧🇷 O transporte está incluído! Buscamos você no seu hotel e levamos de volta. Você não precisa se preocupar com nada.</em></p>
                     </div>
                 </div>
             </div>
@@ -2539,5 +3223,38 @@ ${msg.contact}`);
             }
         });
     </script>
+
+    <!-- FAQ Toggle Script -->
+    <script>
+        function toggleFAQ(button) {
+            const faqItem = button.parentElement;
+            const answer = faqItem.querySelector('.faq-answer');
+            const icon = button.querySelector('i');
+
+            // Close all other FAQs
+            document.querySelectorAll('.faq-item').forEach(item => {
+                if (item !== faqItem && item.classList.contains('active')) {
+                    item.classList.remove('active');
+                    item.querySelector('.faq-answer').style.maxHeight = '0';
+                    item.querySelector('i').style.transform = 'rotate(0deg)';
+                }
+            });
+
+            // Toggle current FAQ
+            if (faqItem.classList.contains('active')) {
+                faqItem.classList.remove('active');
+                answer.style.maxHeight = '0';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                faqItem.classList.add('active');
+                answer.style.maxHeight = answer.scrollHeight + 'px';
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+    </script>
+
+    <!-- Reviews System -->
+    <link rel="stylesheet" href="reviews-styles.css">
+    <script src="reviews.js"></script>
 </body>
 </html>

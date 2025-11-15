@@ -136,6 +136,54 @@ p {
     transform: translateY(-2px);
 }
 
+.btn-stripe {
+    background: linear-gradient(135deg, #635bff 0%, #00d4ff 100%);
+    color: white;
+    box-shadow: var(--shadow-md);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+}
+
+.btn-stripe:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg), 0 0 30px rgba(99, 91, 255, 0.4);
+}
+
+.btn-secondary-outline {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.9rem;
+}
+
+.btn-secondary-outline:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.tour-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+    .tour-buttons {
+        flex-direction: row;
+        gap: var(--spacing-md);
+    }
+
+    .tour-buttons .btn {
+        flex: 1;
+    }
+}
+
 .cta-button {
     background: var(--gradient-secondary);
     color: var(--bg-primary);
