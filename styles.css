@@ -202,17 +202,28 @@ p {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm);
-    margin-top: var(--spacing-md);
+    margin-top: auto;
+    padding-top: var(--spacing-md);
+    width: 100%;
 }
 
 @media (min-width: 768px) {
     .tour-buttons {
         flex-direction: row;
         gap: var(--spacing-md);
+        align-items: stretch;
+        justify-content: center;
     }
 
     .tour-buttons .btn {
         flex: 1;
+        max-width: 100%;
+        min-width: 0;
+        white-space: nowrap;
+    }
+
+    .tour-buttons .btn-mercadopago {
+        flex: 1.2;
     }
 }
 
@@ -814,6 +825,8 @@ section {
     transition: all var(--transition-normal);
     border: 1px solid rgba(255, 215, 0, 0.1);
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .tour-card:hover {
@@ -896,6 +909,9 @@ section {
 
 .tour-content {
     padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .tour-content h3 {
@@ -3275,19 +3291,22 @@ blockquote {
 
 /* ===== MERCADO PAGO BOOKING MODAL ===== */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: var(--z-modal);
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: var(--z-modal) !important;
     padding: var(--spacing-sm);
     animation: fadeIn 0.3s ease;
+    overflow-y: auto;
 }
 
 @keyframes fadeIn {
@@ -3308,8 +3327,9 @@ blockquote {
     overflow-y: auto;
     border: 2px solid rgba(0, 158, 227, 0.3);
     box-shadow: 0 20px 60px rgba(0, 158, 227, 0.2);
-    position: relative;
+    position: relative !important;
     animation: slideUp 0.3s ease;
+    margin: auto;
 }
 
 @keyframes slideUp {
@@ -3455,6 +3475,26 @@ blockquote {
     font-size: 1.1rem;
     font-weight: 600;
     margin-top: var(--spacing-sm);
+}
+
+/* Bloquear scroll cuando modal está abierto */
+body.modal-open {
+    overflow: hidden !important;
+}
+
+/* Estilos específicos para el modal de Mercado Pago */
+#mp-booking-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 9999 !important;
 }
 
 /* Responsive adjustments for modal */

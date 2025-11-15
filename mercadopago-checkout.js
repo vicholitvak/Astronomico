@@ -106,6 +106,9 @@ function showBookingModal(tourType, price, tourName) {
     document.body.insertAdjacentHTML('beforeend', modalHTML);
     console.log('Modal added to page');
 
+    // Bloquear scroll del body
+    document.body.classList.add('modal-open');
+
     // Add event listeners
     const form = document.getElementById('mp-booking-form');
     const personsSelect = document.getElementById('mp-persons');
@@ -177,6 +180,8 @@ function closeBookingModal() {
     const modal = document.getElementById('mp-booking-modal');
     if (modal) {
         modal.remove();
+        // Restaurar scroll del body
+        document.body.classList.remove('modal-open');
     }
 }
 
