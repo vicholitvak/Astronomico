@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Pago Exitoso! - Atacama NightSky</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            color: #10b981;
+            margin-bottom: 20px;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .info-box h3 {
+            color: #10b981;
+            margin-bottom: 15px;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-box li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-box li:last-child {
+            border-bottom: none;
+        }
+
+        .info-box i {
+            color: #10b981;
+            margin-right: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes scaleIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+
+        <h1>¡Pago Exitoso!</h1>
+
+        <p>Tu reserva ha sido confirmada exitosamente. Recibirás un email de confirmación en los próximos minutos.</p>
+
+        <div class="info-box">
+            <h3><i class="fas fa-info-circle"></i> Próximos Pasos:</h3>
+            <ul>
+                <li><i class="fas fa-envelope"></i> Revisa tu email para los detalles de tu reserva</li>
+                <li><i class="fab fa-whatsapp"></i> Te contactaremos por WhatsApp 24 horas antes del tour</li>
+                <li><i class="fas fa-map-marker-alt"></i> Confirmaremos el punto de recogida exacto</li>
+                <li><i class="fas fa-star"></i> ¡Prepárate para una experiencia astronómica inolvidable!</li>
+            </ul>
+        </div>
+
+        <p><strong>¿Tienes alguna pregunta?</strong></p>
+        <p>No dudes en contactarnos por WhatsApp al <strong>+56 9 3513 4669</strong></p>
+
+        <div style="margin-top: 30px;">
+            <a href="/" class="btn">
+                <i class="fas fa-home"></i> Volver al Inicio
+            </a>
+            <a href="https://wa.me/56935134669?text=Hola!%20Acabo%20de%20completar%20mi%20reserva" target="_blank" class="btn btn-secondary">
+                <i class="fab fa-whatsapp"></i> Contactar por WhatsApp
+            </a>
+        </div>
+    </div>
+</body>
+</html>

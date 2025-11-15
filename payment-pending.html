@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Pendiente - Atacama NightSky</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .pending-icon {
+            font-size: 5rem;
+            color: #f59e0b;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #f59e0b;
+        }
+
+        p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .info-box h3 {
+            color: #f59e0b;
+            margin-bottom: 15px;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-box li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-box li:last-child {
+            border-bottom: none;
+        }
+
+        .info-box i {
+            color: #f59e0b;
+            margin-right: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="pending-icon">
+            <i class="fas fa-clock"></i>
+        </div>
+
+        <h1>Pago Pendiente</h1>
+
+        <p>Tu pago está siendo procesado. Esto puede tomar unos minutos.</p>
+
+        <div class="info-box">
+            <h3><i class="fas fa-info-circle"></i> ¿Qué significa esto?</h3>
+            <ul>
+                <li><i class="fas fa-hourglass-half"></i> Tu pago está en revisión por el banco</li>
+                <li><i class="fas fa-shield-alt"></i> Es un proceso de seguridad normal</li>
+                <li><i class="fas fa-check-double"></i> Generalmente se aprueba en minutos</li>
+                <li><i class="fas fa-envelope"></i> Te notificaremos por email cuando se confirme</li>
+            </ul>
+        </div>
+
+        <p><strong>Mientras tanto:</strong></p>
+
+        <div class="info-box">
+            <h3><i class="fas fa-tasks"></i> Recomendaciones:</h3>
+            <ul>
+                <li><i class="fas fa-envelope-open-text"></i> Revisa tu email (incluyendo spam)</li>
+                <li><i class="fas fa-ban"></i> No realices otro pago por la misma reserva</li>
+                <li><i class="fab fa-whatsapp"></i> Si no recibes confirmación en 1 hora, contáctanos</li>
+                <li><i class="fas fa-bell"></i> Guarda tu número de orden para referencia</li>
+            </ul>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <a href="/" class="btn">
+                <i class="fas fa-home"></i> Volver al Inicio
+            </a>
+            <a href="https://wa.me/56935134669?text=Hola!%20Mi%20pago%20está%20pendiente" target="_blank" class="btn btn-secondary">
+                <i class="fab fa-whatsapp"></i> Consultar Estado
+            </a>
+        </div>
+    </div>
+</body>
+</html>

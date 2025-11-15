@@ -32,8 +32,8 @@
     <!-- FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet">
 
-    <!-- Stripe.js -->
-    <script src="https://js.stripe.com/v3/"></script>
+    <!-- Mercado Pago SDK -->
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
 
     <!-- Stylesheet -->
     <link rel="stylesheet" href="styles.css?v=4.0">
@@ -434,8 +434,8 @@
                         </div>
 
                         <div class="tour-buttons">
-                            <button class="btn btn-stripe" data-tour="regular" data-price="30000" data-tour-name="Tour Astronómico Regular">
-                                <i class="fas fa-credit-card"></i> Pagar con Stripe
+                            <button class="btn btn-mercadopago" data-tour="regular" data-price="30000" data-tour-name="Tour Astronómico Regular">
+                                <i class="fas fa-credit-card"></i> Pagar con Mercado Pago
                             </button>
                             <a href="#reservas" class="btn btn-secondary-outline btn-tour">Reservar Después</a>
                         </div>
@@ -478,8 +478,8 @@
                         </div>
 
                         <div class="tour-buttons">
-                            <button class="btn btn-stripe" data-tour="astrophoto" data-price="120000" data-tour-name="Tour de Astrofotografía Especializado">
-                                <i class="fas fa-credit-card"></i> Pagar con Stripe
+                            <button class="btn btn-mercadopago" data-tour="astrophoto" data-price="120000" data-tour-name="Tour de Astrofotografía Especializado">
+                                <i class="fas fa-credit-card"></i> Pagar con Mercado Pago
                             </button>
                             <a href="#reservas" class="btn btn-secondary-outline btn-tour">Reservar Después</a>
                         </div>
@@ -522,8 +522,8 @@
                         </div>
 
                         <div class="tour-buttons">
-                            <button class="btn btn-stripe" data-tour="private" data-price="200000" data-tour-name="Tour Privado VIP">
-                                <i class="fas fa-credit-card"></i> Pagar con Stripe
+                            <button class="btn btn-mercadopago" data-tour="private" data-price="200000" data-tour-name="Tour Privado VIP">
+                                <i class="fas fa-credit-card"></i> Pagar con Mercado Pago
                             </button>
                             <a href="#reservas" class="btn btn-secondary-outline btn-tour">Reservar Después</a>
                         </div>
@@ -1177,7 +1177,7 @@
                         </div>
                         <p><strong>Métodos de pago aceptados:</strong></p>
                         <ul>
-                            <li><i class="fab fa-cc-stripe"></i> Tarjeta de crédito/débito (Stripe - pago seguro internacional)</li>
+                            <li><i class="fas fa-credit-card"></i> Tarjeta de crédito/débito (Mercado Pago - aceptamos tarjetas de todo el mundo)</li>
                             <li><i class="fas fa-money-bill-wave"></i> Efectivo (pesos chilenos o dólares)</li>
                             <li><i class="fas fa-exchange-alt"></i> Transferencia bancaria (Chile)</li>
                         </ul>
@@ -1203,7 +1203,7 @@
                                     <li>Tipo de tour</li>
                                 </ul>
                             </li>
-                            <li><strong>Pago con tarjeta:</strong> Usa el botón "Pagar con Stripe" en la sección de tours para reserva instantánea con confirmación inmediata.</li>
+                            <li><strong>Pago con tarjeta:</strong> Usa el botón "Pagar con Mercado Pago" en la sección de tours para reserva instantánea con confirmación inmediata.</li>
                         </ol>
                         <p><strong>¿Necesitas reservar con anticipación?</strong></p>
                         <p>Recomendamos reservar con al menos <strong>24-48 horas de anticipación</strong>, especialmente en temporada alta (diciembre-marzo y julio). Sin embargo, a veces aceptamos reservas del mismo día si hay disponibilidad - contáctanos por WhatsApp para confirmar.</p>
@@ -1289,7 +1289,7 @@
 
                         <p><strong>💰 Pagamento:</strong></p>
                         <ul>
-                            <li>Aceitamos cartão de crédito internacional (Stripe)</li>
+                            <li>Aceitamos cartão de crédito internacional (Mercado Pago)</li>
                             <li>Dinheiro em pesos chilenos ou dólares</li>
                             <li>Transferência bancaria (Chile)</li>
                         </ul>
@@ -3286,5 +3286,8 @@ ${msg.contact}`);
 
     <!-- Translation System -->
     <script src="translations.js"></script>
+
+    <!-- Mercado Pago Checkout -->
+    <script src="mercadopago-checkout.js"></script>
 </body>
 </html>
