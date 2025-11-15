@@ -611,7 +611,7 @@
         <div class="container">
             <div class="section-header">
                 <h2>Reserva Tu Experiencia Astronómica</h2>
-                <p class="section-subtitle">Completa el formulario y te contactaremos para confirmar disponibilidad</p>
+                <p class="section-subtitle">Selecciona tu fecha, completa tus datos y te confirmaremos en 24 horas</p>
             </div>
             
             <div class="booking-content">
@@ -619,37 +619,34 @@
                     <form id="booking-form" class="booking-form" name="booking">
                         
                         <!-- Calendar Section with FullCalendar -->
-                        
+
                         <div class="form-group calendar-section">
-                            <label for="calendar">Selecciona Fecha y Hora *</label>
-                            <div class="calendar-description">
-                                <p><strong>🌕 Fases Lunares:</strong> Los tours no están disponibles 3 días antes y después de luna llena para mejor visibilidad estelar.</p>
-                            </div>
-                            
+                            <label for="calendar">Selecciona tu Fecha *</label>
+
                             <div id="calendar-container">
                                 <div id="fullcalendar"></div>
                             </div>
-                            
+
                             <div class="calendar-legend">
                                 <div class="legend-item">
                                     <span class="legend-dot available"></span>
-                                    <span>Disponible para reserva</span>
+                                    <span>Fechas disponibles</span>
                                 </div>
                                 <div class="legend-item">
                                     <span class="legend-dot unavailable"></span>
-                                    <span>No disponible (luna llena)</span>
+                                    <span>No disponible (luna llena ± 3 días)</span>
                                 </div>
                                 <div class="legend-item">
-                                    <span class="moon-legend">🌑🌒🌓🌔🌕🌖🌗🌘</span>
-                                    <span>Fases lunares</span>
+                                    <span class="moon-legend">🌑🌓🌕🌗</span>
+                                    <span>Fases de la luna</span>
                                 </div>
                             </div>
-                            
+
                             <!-- Selected Date Display -->
                             <div class="selected-date-display" id="selected-date-display">
-                                Haz clic en una fecha disponible para continuar
+                                👆 Selecciona una fecha en el calendario para continuar
                             </div>
-                            
+
                             <input type="hidden" id="selected-date" name="date" required>
                             <input type="hidden" id="selected-time" name="time" required>
                         </div>
@@ -749,25 +746,25 @@
                     <div class="info-card">
                         <i class="fas fa-clock"></i>
                         <h4>Horarios</h4>
-                        <p>Tours nocturnos desde 20:00 hrs<br>Duración: 2.5 - 4+ horas</p>
+                        <p>Tours desde 20:00 hrs<br>Duración según tour elegido</p>
                     </div>
-                    
+
                     <div class="info-card">
                         <i class="fas fa-calendar-alt"></i>
                         <h4>Disponibilidad</h4>
-                        <p>Todos los días del año, excepto 3 dias antes y después de luna llena<br>Sujeto a condiciones climáticas</p>
+                        <p>Todos los días (excepto luna llena)<br>Sujeto a condiciones climáticas</p>
                     </div>
-                    
+
                     <div class="info-card">
                         <i class="fas fa-map-marker-alt"></i>
-                        <h4>Punto de Encuentro</h4>
-                        <p>Recogida en hoteles de San Pedro de Atacama incluida</p>
+                        <h4>Transporte</h4>
+                        <p>Recogida y regreso<br>en tu alojamiento incluidos</p>
                     </div>
-                    
+
                     <div class="info-card">
                         <i class="fas fa-credit-card"></i>
-                        <h4>Formas de Pago</h4>
-                        <p>Efectivo, Transferencia, PayPal<br>50% anticipo - 50% al inicio del tour</p>
+                        <h4>Pago</h4>
+                        <p>Efectivo, Transferencia o Tarjeta<br>Confirmación en 24 horas</p>
                     </div>
                 </div>
             </div>
