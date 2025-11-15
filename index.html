@@ -718,7 +718,15 @@
                             <label for="phone">Teléfono/WhatsApp *</label>
                             <input type="tel" id="phone" name="phone" required aria-required="true" placeholder="+56 9 1234 5678">
                         </div>
-                        
+
+                        <div class="form-group">
+                            <label for="accommodation">Hostal o Dirección de Alojamiento (Opcional)</label>
+                            <input type="text" id="accommodation" name="accommodation" placeholder="Ej: Hostel Luna Atacama, Hotel del Desierto, etc.">
+                            <small class="form-help" style="display: block; margin-top: 0.5rem; color: rgba(255, 255, 255, 0.6); font-size: 0.875rem;">
+                                <i class="fas fa-info-circle"></i> Ayúdanos a planificar mejor la logística del tour (recogida y traslado)
+                            </small>
+                        </div>
+
                         <div class="form-group">
                             <label for="message">Mensaje Adicional</label>
                             <textarea id="message" name="message" rows="4" placeholder="¿Alguna pregunta o requerimiento especial?"></textarea>
@@ -3163,6 +3171,7 @@ ${msg.contact}`);
                         name: formData.get('name'),
                         email: formData.get('email'),
                         phone: formData.get('phone'),
+                        accommodation: formData.get('accommodation') || '',
                         message: formData.get('message') || ''
                     };
                     
