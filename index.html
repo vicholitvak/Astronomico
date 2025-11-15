@@ -437,7 +437,7 @@
                             <button class="btn btn-mercadopago" data-tour="regular" data-price="30000" data-tour-name="Tour Astronómico Regular">
                                 <i class="fas fa-lock"></i> Pagar
                             </button>
-                            <a href="#reservas" class="btn btn-secondary-outline btn-tour">Reservar Después</a>
+                            <a href="#reservas" class="btn btn-secondary-outline btn-tour">Reservar</a>
                         </div>
                     </div>
                 </div>
@@ -481,7 +481,7 @@
                             <button class="btn btn-mercadopago" data-tour="astrophoto" data-price="120000" data-tour-name="Tour de Astrofotografía Especializado">
                                 <i class="fas fa-lock"></i> Pagar
                             </button>
-                            <a href="#reservas" class="btn btn-secondary-outline btn-tour">Reservar Después</a>
+                            <a href="#reservas" class="btn btn-secondary-outline btn-tour">Reservar</a>
                         </div>
                     </div>
                 </div>
@@ -525,7 +525,7 @@
                             <button class="btn btn-mercadopago" data-tour="private" data-price="200000" data-tour-name="Tour Privado VIP">
                                 <i class="fas fa-lock"></i> Pagar
                             </button>
-                            <a href="#reservas" class="btn btn-secondary-outline btn-tour">Reservar Después</a>
+                            <a href="#reservas" class="btn btn-secondary-outline btn-tour">Reservar</a>
                         </div>
                     </div>
                 </div>
@@ -3326,6 +3326,84 @@ ${msg.contact}`);
 
     <!-- Translation System -->
     <script src="translations.js"></script>
+
+    <!-- Reservar Button Handler -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reservarButtons = document.querySelectorAll('.btn-tour');
+
+            reservarButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    // Crear modal personalizado
+                    const modalHTML = `
+                        <div id="reservar-info-modal" style="
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            width: 100vw;
+                            height: 100vh;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            z-index: 99999;
+                            background: rgba(0, 0, 0, 0.85);
+                            backdrop-filter: blur(8px);
+                        ">
+                            <div style="
+                                background: linear-gradient(135deg, #1a1a2e, #16213e);
+                                border-radius: 16px;
+                                max-width: 500px;
+                                width: 90%;
+                                padding: 2rem;
+                                border: 2px solid #FFD700;
+                                box-shadow: 0 20px 60px rgba(255, 215, 0, 0.3);
+                                text-align: center;
+                            ">
+                                <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+                                <h2 style="color: #FFD700; margin-bottom: 1rem; font-size: 1.5rem;">Importante: Reserva vs Pago</h2>
+                                <p style="color: #ffffff; margin-bottom: 1.5rem; line-height: 1.6;">
+                                    <strong>Reservar NO asegura tu cupo.</strong><br><br>
+                                    Solo enviamos tu información y te contactaremos en 24 horas.<br><br>
+                                    <span style="color: #00D4FF; font-weight: bold;">Para ASEGURAR tu cupo inmediatamente, usa el botón "Pagar".</span>
+                                </p>
+                                <div style="display: flex; gap: 1rem; flex-direction: column;">
+                                    <button onclick="document.getElementById('reservar-info-modal').remove(); window.location.href='#reservas'" style="
+                                        background: #FFD700;
+                                        color: #000;
+                                        border: none;
+                                        padding: 1rem 2rem;
+                                        border-radius: 8px;
+                                        font-size: 1rem;
+                                        font-weight: bold;
+                                        cursor: pointer;
+                                    ">
+                                        Entiendo, Continuar con Reserva
+                                    </button>
+                                    <button onclick="document.getElementById('reservar-info-modal').remove()" style="
+                                        background: transparent;
+                                        color: #ffffff;
+                                        border: 1px solid rgba(255, 255, 255, 0.3);
+                                        padding: 0.8rem 2rem;
+                                        border-radius: 8px;
+                                        font-size: 0.9rem;
+                                        cursor: pointer;
+                                    ">
+                                        Cancelar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    document.body.insertAdjacentHTML('beforeend', modalHTML);
+                });
+            });
+        });
+    </script>
 
     <!-- Mercado Pago Checkout -->
     <script src="mercadopago-checkout.js"></script>
