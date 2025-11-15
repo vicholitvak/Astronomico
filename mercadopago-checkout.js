@@ -109,6 +109,12 @@ function showBookingModal(tourType, price, tourName) {
     // Bloquear scroll del body
     document.body.classList.add('modal-open');
 
+    // Scroll to top para que el modal sea visible
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+
     // Add event listeners
     const form = document.getElementById('mp-booking-form');
     const personsSelect = document.getElementById('mp-persons');
