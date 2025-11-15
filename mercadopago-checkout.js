@@ -4,11 +4,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Get all Mercado Pago payment buttons
     const mpButtons = document.querySelectorAll('.btn-mercadopago');
+    console.log('Found MP buttons:', mpButtons.length);
 
     mpButtons.forEach(button => {
-        button.addEventListener('click', async function(e) {
+        button.addEventListener('click', function(e) {
             e.preventDefault();
-            console.log('Mercado Pago button clicked');
+            e.stopPropagation();
+            console.log('Mercado Pago button clicked', {
+                tourType: this.getAttribute('data-tour'),
+                price: this.getAttribute('data-price'),
+                tourName: this.getAttribute('data-tour-name')
+            });
 
             const tourType = this.getAttribute('data-tour');
             const price = this.getAttribute('data-price');
@@ -90,8 +96,15 @@ function showBookingModal(tourType, price, tourName) {
         </div>
     `;
 
+    // Remove any existing modal first
+    const existingModal = document.getElementById('mp-booking-modal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+
     // Add modal to page
     document.body.insertAdjacentHTML('beforeend', modalHTML);
+    console.log('Modal added to page');
 
     // Add event listeners
     const form = document.getElementById('mp-booking-form');
