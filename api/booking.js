@@ -328,7 +328,7 @@ async function sendConfirmationEmail(booking) {
 
       <div style="background: #f7f7f7; padding: 30px; border-radius: 0 0 10px 10px;">
         <p style="color: #333; font-size: 16px;">Hola ${booking.name},</p>
-        <p style="color: #333;">¡Gracias por reservar tu tour astronómico con nosotros! Estamos emocionados de compartir contigo la magia del cielo de Atacama.</p>
+        <p style="color: #333;">¡Gracias por reservar tu tour astronómico con nosotros! Estamos emocionados de compartir contigo la magia del universo de Atacama.</p>
 
         <div style="background: white; padding: 25px; border-radius: 8px; margin: 20px 0;">
           <h2 style="color: #333; margin-top: 0;">📋 Detalles de tu Reserva</h2>

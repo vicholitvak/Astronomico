@@ -181,14 +181,14 @@ function initLanguageToggle() {
             'about-paragraphs': [
                 'Con más de 5 años guiando tours astronómicos en el Desierto de Atacama, he tenido el privilegio de compartir con miles de personas la magia de los cielos más puros del mundo.',
                 'Mi pasión por la astronomía comenzó desde pequeño, y hoy combino conocimiento científico con tecnología de vanguardia para crear experiencias inolvidables bajo las estrellas.',
-                'Utilizo telescopios Unistellar eVscope de última generación que permiten capturar y observar objetos del espacio profundo en tiempo real, transformando cada tour en una ventana hacia el universo.'
+                'Utilizamos telescopios inteligentes de última generación que permiten capturar nebulosas, galaxias y cúmulos estelares a color en una definición impresionante que podrás llevarte en forma de foto digital en tu celular.'
             ],
             
             // Tours Section
             'Nuestros Tours Astronómicos': 'Nuestros Tours Astronómicos',
             'Experiencias únicas bajo el cielo más claro del mundo': 'Experiencias únicas bajo el cielo más claro del mundo',
             'tour-1-title': 'Tour Astronómico Regular',
-            'tour-1-desc': 'Observación a ojo desnudo con puntero láser, charla sobre el universo, observación por telescopio inteligente, cóctel bajo las estrellas y sesión de fotos.',
+            'tour-1-desc': 'Observación a ojo desnudo con puntero láser para identificar constelaciones y planetas visibles e introducir los objetos del espacio profundo. Luego exploramos esas nebulosas y cúmulos estelares con telescopio. Termina con un cóctel mirando las estrellas mientras compartes con turistas de todo el mundo.',
             'tour-2-title': 'Tour de Astrofotografía Especializado',
             'tour-2-desc': 'Aprende técnicas profesionales de astrofotografía con equipos especializados en distintas locaciones alrededor de San Pedro de Atacama.',
             'tour-3-title': 'Tour Privado VIP',
@@ -244,14 +244,14 @@ function initLanguageToggle() {
             'about-paragraphs': [
                 'With more than 5 years guiding astronomical tours in the Atacama Desert, I have had the privilege of sharing with thousands of people the magic of the purest skies in the world.',
                 'My passion for astronomy began as a child, and today I combine scientific knowledge with cutting-edge technology to create unforgettable experiences under the stars.',
-                'I use next-generation Unistellar eVscope telescopes that allow capturing and observing deep space objects in real time, transforming each tour into a window to the universe.'
+                'We use next-generation smart telescopes that allow capturing nebulae, galaxies and star clusters in color with impressive definition that you can take with you as a digital photo on your phone.'
             ],
             
             // Tours Section
             'Nuestros Tours Astronómicos': 'Our Astronomical Tours',
             'Experiencias únicas bajo el cielo más claro del mundo': 'Unique experiences under the clearest sky in the world',
             'tour-1-title': 'Regular Astronomical Tour',
-            'tour-1-desc': 'Naked eye observation with laser pointer, talk about the universe, observation through smart telescope, cocktail under the stars and photo session.',
+            'tour-1-desc': 'Naked eye observation with laser pointer to identify constellations and visible planets, introducing deep space objects. Then we explore those nebulae and star clusters through the telescope. Ends with a cocktail gazing at the stars while sharing with tourists from around the world.',
             'tour-2-title': 'Specialized Astrophotography Tour',
             'tour-2-desc': 'Learn professional astrophotography techniques with specialized equipment in different locations around San Pedro de Atacama.',
             'tour-3-title': 'Private VIP Tour',
@@ -307,14 +307,14 @@ function initLanguageToggle() {
             'about-paragraphs': [
                 'Com mais de 5 anos guiando passeios astronômicos no Deserto de Atacama, tive o privilégio de compartilhar com milhares de pessoas a magia dos céus mais puros do mundo.',
                 'Minha paixão pela astronomia começou desde pequeno, e hoje combino conhecimento científico com tecnologia de ponta para criar experiências inesquecíveis sob as estrelas.',
-                'Utilizo telescópios Unistellar eVscope de última geração que permitem capturar e observar objetos do espaço profundo em tempo real, transformando cada passeio em uma janela para o universo.'
+                'Utilizamos telescópios inteligentes de última geração que permitem capturar nebulosas, galáxias e aglomerados estelares em cores com uma definição impressionante que você poderá levar em forma de foto digital no seu celular.'
             ],
             
             // Tours Section
             'Nuestros Tours Astronómicos': 'Nossos Passeios Astronômicos',
             'Experiencias únicas bajo el cielo más claro del mundo': 'Experiências únicas sob o céu mais claro do mundo',
             'tour-1-title': 'Passeio Astronômico Regular',
-            'tour-1-desc': 'Observação a olho nu com ponteiro laser, palestra sobre o universo, observação por telescópio inteligente, coquetel sob as estrelas e sessão de fotos.',
+            'tour-1-desc': 'Observação a olho nu com ponteiro laser para identificar constelações e planetas visíveis, introduzindo os objetos do espaço profundo. Depois exploramos essas nebulosas e aglomerados estelares através do telescópio. Termina com um coquetel olhando as estrelas enquanto compartilha com turistas de todo o mundo.',
             'tour-2-title': 'Passeio de Astrofotografia Especializado',
             'tour-2-desc': 'Aprenda técnicas profissionais de astrofotografia com equipamentos especializados em diferentes locais ao redor de San Pedro de Atacama.',
             'tour-3-title': 'Passeio Privado VIP',
