@@ -66,12 +66,12 @@ export default async function handler(req, res) {
                 }
             },
             back_urls: {
-                success: `${process.env.VERCEL_URL || 'https://atacamadarksky.cl'}/payment-success`,
-                failure: `${process.env.VERCEL_URL || 'https://atacamadarksky.cl'}/payment-failure`,
-                pending: `${process.env.VERCEL_URL || 'https://atacamadarksky.cl'}/payment-pending`
+                success: 'https://atacamadarksky.cl/payment-success',
+                failure: 'https://atacamadarksky.cl/payment-failure',
+                pending: 'https://atacamadarksky.cl/payment-pending'
             },
             auto_return: 'approved',
-            notification_url: `${process.env.VERCEL_URL || 'https://atacamadarksky.cl'}/api/mercadopago-webhook`,
+            notification_url: 'https://atacamadarksky.cl/api/mercadopago-webhook',
             metadata: {
                 tour_type: tourType,
                 tour_date: date,
