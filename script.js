@@ -158,7 +158,7 @@ function initLanguageToggle() {
         es: {
             // Page meta
             'page-title': 'Atacama NightSky | Tours Astronómicos en San Pedro de Atacama',
-            'meta-description': 'Atacama NightSky: Tours guiados con telescopio Unistellar en el desierto más claro del mundo. Observación de estrellas, astrofotografía y experiencias únicas.',
+            'meta-description': 'Atacama NightSky: Tours guiados con telescopio inteligente en el desierto más claro del mundo. Captura nebulosas y galaxias a color. Observación de estrellas, astrofotografía y experiencias únicas.',
             
             // Navigation
             'Inicio': 'Inicio',
@@ -179,7 +179,7 @@ function initLanguageToggle() {
             'about-title': 'Vicente Litvak',
             'about-subtitle': 'Sobre mí',
             'about-paragraphs': [
-                'Con más de 5 años guiando tours astronómicos en el Desierto de Atacama, he tenido el privilegio de compartir con miles de personas la magia de los cielos más puros del mundo.',
+                'Con más de 6 años guiando tours astronómicos en el Desierto de Atacama, he tenido el privilegio de compartir con miles de personas la magia del universo desde los cielos más puros del mundo.',
                 'Mi pasión por la astronomía comenzó desde pequeño, y hoy combino conocimiento científico con tecnología de vanguardia para crear experiencias inolvidables bajo las estrellas.',
                 'Utilizamos telescopios inteligentes de última generación que permiten capturar nebulosas, galaxias y cúmulos estelares a color en una definición impresionante que podrás llevarte en forma de foto digital en tu celular.'
             ],
@@ -221,7 +221,7 @@ function initLanguageToggle() {
         en: {
             // Page meta
             'page-title': 'Atacama NightSky | Astronomical Tours in San Pedro de Atacama',
-            'meta-description': 'Atacama NightSky: Guided tours with Unistellar telescope in the clearest desert in the world. Star observation, astrophotography and unique experiences.',
+            'meta-description': 'Atacama NightSky: Guided tours with smart telescope in the clearest desert in the world. Capture nebulae and galaxies in color. Star observation, astrophotography and unique experiences.',
             
             // Navigation
             'Inicio': 'Home',
@@ -242,7 +242,7 @@ function initLanguageToggle() {
             'about-title': 'Vicente Litvak',
             'about-subtitle': 'About Me',
             'about-paragraphs': [
-                'With more than 5 years guiding astronomical tours in the Atacama Desert, I have had the privilege of sharing with thousands of people the magic of the purest skies in the world.',
+                'With more than 6 years guiding astronomical tours in the Atacama Desert, I have had the privilege of sharing with thousands of people the magic of the universe from the purest skies in the world.',
                 'My passion for astronomy began as a child, and today I combine scientific knowledge with cutting-edge technology to create unforgettable experiences under the stars.',
                 'We use next-generation smart telescopes that allow capturing nebulae, galaxies and star clusters in color with impressive definition that you can take with you as a digital photo on your phone.'
             ],
@@ -284,7 +284,7 @@ function initLanguageToggle() {
         pt: {
             // Page meta
             'page-title': 'Atacama NightSky | Passeios Astronômicos em San Pedro de Atacama',
-            'meta-description': 'Atacama NightSky: Passeios guiados com telescópio Unistellar no deserto mais claro do mundo. Observação de estrelas, astrofotografia e experiências únicas.',
+            'meta-description': 'Atacama NightSky: Passeios guiados com telescópio inteligente no deserto mais claro do mundo. Capture nebulosas e galáxias em cores. Observação de estrelas, astrofotografia e experiências únicas.',
             
             // Navigation
             'Inicio': 'Início',
@@ -305,7 +305,7 @@ function initLanguageToggle() {
             'about-title': 'Vicente Litvak',
             'about-subtitle': 'Sobre Mim',
             'about-paragraphs': [
-                'Com mais de 5 anos guiando passeios astronômicos no Deserto de Atacama, tive o privilégio de compartilhar com milhares de pessoas a magia dos céus mais puros do mundo.',
+                'Com mais de 6 anos guiando passeios astronômicos no Deserto de Atacama, tive o privilégio de compartilhar com milhares de pessoas a magia do universo desde os céus mais puros do mundo.',
                 'Minha paixão pela astronomia começou desde pequeno, e hoje combino conhecimento científico com tecnologia de ponta para criar experiências inesquecíveis sob as estrelas.',
                 'Utilizamos telescópios inteligentes de última geração que permitem capturar nebulosas, galáxias e aglomerados estelares em cores com uma definição impressionante que você poderá levar em forma de foto digital no seu celular.'
             ],
@@ -642,7 +642,7 @@ function setLanguage(lang) {
 
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
-        metaDesc.content = translations[lang]['meta-description'] || 'Atacama NightSky: Tours guiados con telescopio Unistellar en el desierto más claro del mundo.';
+        metaDesc.content = translations[lang]['meta-description'] || 'Atacama NightSky: Tours guiados con telescopio inteligente en el desierto más claro del mundo.';
     }
 
     // Update navigation
