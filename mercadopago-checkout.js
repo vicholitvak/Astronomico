@@ -143,11 +143,31 @@ function showBookingModal(tourType, price, tourName) {
     console.log('[MP DEBUG] Modal position:', modal ? window.getComputedStyle(modal).position : 'N/A');
     console.log('[MP DEBUG] Modal z-index:', modal ? window.getComputedStyle(modal).zIndex : 'N/A');
 
-    // Asegurar que el modal sea visible
+    // Asegurar que el modal sea visible y esté en la posición correcta
     if (modal) {
-        modal.style.display = 'flex';
-        modal.style.visibility = 'visible';
-        modal.style.opacity = '1';
+        // Forzar estilos inline para asegurar que se apliquen
+        modal.style.cssText = `
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            z-index: 99999 !important;
+            background: rgba(0, 0, 0, 0.85) !important;
+            backdrop-filter: blur(8px);
+            visibility: visible !important;
+            opacity: 1 !important;
+        `;
+        console.log('[MP DEBUG] Inline styles applied to modal');
+
+        // Verificar estilos después de aplicarlos
+        console.log('[MP DEBUG] After inline - Position:', window.getComputedStyle(modal).position);
+        console.log('[MP DEBUG] After inline - Z-index:', window.getComputedStyle(modal).zIndex);
     }
 
     // Bloquear scroll del body y mantener posición
