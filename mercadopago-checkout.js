@@ -127,12 +127,18 @@ function showBookingModal(tourType, price, tourName) {
         existingModal.remove();
     }
 
+    // Guardar la posición actual del scroll
+    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+
     // Add modal to page
     document.body.insertAdjacentHTML('beforeend', modalHTML);
     console.log('Modal added to page');
 
-    // Bloquear scroll del body
+    // Bloquear scroll del body y mantener posición
     document.body.classList.add('modal-open');
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollPosition}px`;
+    document.body.style.width = '100%';
 
     // Add event listeners
     const form = document.getElementById('mp-booking-form');
@@ -204,9 +210,20 @@ async function processMercadoPagoCheckout(form) {
 function closeBookingModal() {
     const modal = document.getElementById('mp-booking-modal');
     if (modal) {
+        // Obtener la posición guardada antes de remover el modal
+        const scrollY = document.body.style.top;
+        const scrollPosition = parseInt(scrollY || '0') * -1;
+
         modal.remove();
+
         // Restaurar scroll del body
         document.body.classList.remove('modal-open');
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+
+        // Restaurar posición del scroll
+        window.scrollTo(0, scrollPosition);
     }
 }
 
