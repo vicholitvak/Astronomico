@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparte tu Experiencia - Atacama NightSky</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        label .required {
+            color: #ff6b6b;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: 'Roboto', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .rating-group {
+            margin-bottom: 20px;
+        }
+
+        .rating-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .star-rating input[type="radio"] {
+            display: none;
+        }
+
+        .star-rating label {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 0;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input[type="radio"]:checked ~ label {
+            color: #fbbf24;
+            transform: scale(1.1);
+        }
+
+        .star-rating {
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #10b981;
+            margin-bottom: 20px;
+        }
+
+        .success-message h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #10b981;
+        }
+
+        .success-message p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .form-help {
+            display: block;
+            margin-top: 5px;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .star-rating label {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🌌</div>
+            <h1>¡Gracias por tu visita!</h1>
+            <p class="subtitle">Tu opinión nos ayuda a mejorar y a que más personas descubran el cielo de Atacama</p>
+        </div>
+
+        <div id="error-message" class="error-message"></div>
+
+        <form id="review-form">
+            <!-- Información del Cliente -->
+            <div class="form-group">
+                <label for="reviewer-name">Nombre Completo <span class="required">*</span></label>
+                <input type="text" id="reviewer-name" name="reviewer_name" required placeholder="Tu nombre">
+            </div>
+
+            <div class="form-group">
+                <label for="reviewer-email">Email <span class="required">*</span></label>
+                <input type="email" id="reviewer-email" name="reviewer_email" required placeholder="tu@email.com">
+            </div>
+
+            <div class="form-group">
+                <label for="reviewer-country">País (opcional)</label>
+                <input type="text" id="reviewer-country" name="reviewer_country" placeholder="Ej: Brasil, Argentina, Chile">
+            </div>
+
+            <div class="form-group">
+                <label for="tour-date">Fecha del Tour <span class="required">*</span></label>
+                <input type="date" id="tour-date" name="tour_date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tour-type">Tipo de Tour <span class="required">*</span></label>
+                <select id="tour-type" name="tour_type" required>
+                    <option value="">Selecciona...</option>
+                    <option value="regular">Tour Regular</option>
+                    <option value="private">Tour Privado</option>
+                    <option value="astrophoto">Tour Astrofotografía</option>
+                </select>
+            </div>
+
+            <!-- Calificaciones -->
+            <div class="rating-group">
+                <label class="rating-label">Calificación General <span class="required">*</span></label>
+                <div class="star-rating" id="overall-rating">
+                    <input type="radio" id="overall-5" name="overall_rating" value="5" required>
+                    <label for="overall-5"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="overall-4" name="overall_rating" value="4">
+                    <label for="overall-4"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="overall-3" name="overall_rating" value="3">
+                    <label for="overall-3"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="overall-2" name="overall_rating" value="2">
+                    <label for="overall-2"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="overall-1" name="overall_rating" value="1">
+                    <label for="overall-1"><i class="fas fa-star"></i></label>
+                </div>
+            </div>
+
+            <div class="rating-group">
+                <label class="rating-label">Guía (opcional)</label>
+                <div class="star-rating" id="guide-rating">
+                    <input type="radio" id="guide-5" name="guide_rating" value="5">
+                    <label for="guide-5"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="guide-4" name="guide_rating" value="4">
+                    <label for="guide-4"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="guide-3" name="guide_rating" value="3">
+                    <label for="guide-3"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="guide-2" name="guide_rating" value="2">
+                    <label for="guide-2"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="guide-1" name="guide_rating" value="1">
+                    <label for="guide-1"><i class="fas fa-star"></i></label>
+                </div>
+            </div>
+
+            <div class="rating-group">
+                <label class="rating-label">Equipamiento (opcional)</label>
+                <div class="star-rating" id="equipment-rating">
+                    <input type="radio" id="equipment-5" name="equipment_rating" value="5">
+                    <label for="equipment-5"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="equipment-4" name="equipment_rating" value="4">
+                    <label for="equipment-4"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="equipment-3" name="equipment_rating" value="3">
+                    <label for="equipment-3"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="equipment-2" name="equipment_rating" value="2">
+                    <label for="equipment-2"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="equipment-1" name="equipment_rating" value="1">
+                    <label for="equipment-1"><i class="fas fa-star"></i></label>
+                </div>
+            </div>
+
+            <div class="rating-group">
+                <label class="rating-label">Ubicación (opcional)</label>
+                <div class="star-rating" id="location-rating">
+                    <input type="radio" id="location-5" name="location_rating" value="5">
+                    <label for="location-5"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="location-4" name="location_rating" value="4">
+                    <label for="location-4"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="location-3" name="location_rating" value="3">
+                    <label for="location-3"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="location-2" name="location_rating" value="2">
+                    <label for="location-2"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="location-1" name="location_rating" value="1">
+                    <label for="location-1"><i class="fas fa-star"></i></label>
+                </div>
+            </div>
+
+            <div class="rating-group">
+                <label class="rating-label">Relación Calidad-Precio (opcional)</label>
+                <div class="star-rating" id="value-rating">
+                    <input type="radio" id="value-5" name="value_rating" value="5">
+                    <label for="value-5"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="value-4" name="value_rating" value="4">
+                    <label for="value-4"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="value-3" name="value_rating" value="3">
+                    <label for="value-3"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="value-2" name="value_rating" value="2">
+                    <label for="value-2"><i class="fas fa-star"></i></label>
+                    <input type="radio" id="value-1" name="value_rating" value="1">
+                    <label for="value-1"><i class="fas fa-star"></i></label>
+                </div>
+            </div>
+
+            <!-- Comentarios -->
+            <div class="form-group">
+                <label for="title">Título de tu Review (opcional)</label>
+                <input type="text" id="title" name="title" placeholder="Ej: ¡Experiencia inolvidable bajo las estrellas!">
+            </div>
+
+            <div class="form-group">
+                <label for="comment">Cuéntanos tu Experiencia</label>
+                <textarea id="comment" name="comment" placeholder="¿Qué fue lo que más te gustó? ¿Qué consejo le darías a otros viajeros?"></textarea>
+                <small class="form-help">Tu experiencia ayuda a otros viajeros a decidirse</small>
+            </div>
+
+            <input type="hidden" id="booking-id" name="booking_id">
+            <input type="hidden" name="language" value="es">
+
+            <button type="submit" class="btn">
+                <i class="fas fa-paper-plane"></i>
+                Enviar Review
+            </button>
+        </form>
+
+        <div id="success-message" class="success-message">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>¡Gracias por tu review!</h2>
+            <p>Tu opinión ha sido recibida y será publicada después de una breve revisión.</p>
+            <p style="margin-top: 15px;">¡Esperamos verte nuevamente bajo las estrellas del Atacama! 🌟</p>
+        </div>
+    </div>
+
+    <script>
+        // Obtener booking_id de la URL si existe
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookingId = urlParams.get('booking_id');
+        if (bookingId) {
+            document.getElementById('booking-id').value = bookingId;
+        }
+
+        // Manejar envío del formulario
+        const form = document.getElementById('review-form');
+        const successMessage = document.getElementById('success-message');
+        const errorMessage = document.getElementById('error-message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+
+            errorMessage.classList.remove('show');
+
+            try {
+                const formData = new FormData(form);
+                const data = {};
+
+                formData.forEach((value, key) => {
+                    if (value) {
+                        data[key] = value;
+                    }
+                });
+
+                // Generar review_id único
+                data.review_id = 'REV-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+
+                // Si no hay booking_id, usar uno genérico
+                if (!data.booking_id) {
+                    data.booking_id = 'WEB-' + Date.now();
+                }
+
+                console.log('Enviando review:', data);
+
+                const response = await fetch('/api/reviews', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Error al enviar la review');
+                }
+
+                console.log('Review enviada exitosamente:', result);
+
+                // Mostrar mensaje de éxito
+                form.style.display = 'none';
+                successMessage.classList.add('show');
+
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.textContent = error.message || 'Hubo un error al enviar tu review. Por favor intenta nuevamente.';
+                errorMessage.classList.add('show');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+
+        // Efecto visual para las estrellas
+        document.querySelectorAll('.star-rating').forEach(container => {
+            const labels = container.querySelectorAll('label');
+            labels.forEach(label => {
+                label.addEventListener('mouseenter', () => {
+                    const value = label.previousElementSibling.value;
+                    labels.forEach((l, index) => {
+                        if (index >= labels.length - value) {
+                            l.style.color = '#fbbf24';
+                        } else {
+                            l.style.color = 'rgba(255, 255, 255, 0.2)';
+                        }
+                    });
+                });
+            });
+
+            container.addEventListener('mouseleave', () => {
+                const checked = container.querySelector('input:checked');
+                labels.forEach((l, index) => {
+                    if (checked && index >= labels.length - checked.value) {
+                        l.style.color = '#fbbf24';
+                    } else {
+                        l.style.color = 'rgba(255, 255, 255, 0.2)';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
