@@ -292,14 +292,14 @@
                 
                 <!-- Desktop Menu -->
                 <ul class="nav-menu">
-                    <li class="nav-item"><a href="#inicio" class="nav-link">Inicio</a></li>
-                    <li class="nav-item"><a href="#nosotros" class="nav-link">Sobre Nosotros</a></li>
-                    <li class="nav-item"><a href="#tours" class="nav-link">Tours</a></li>
+                    <li class="nav-item"><a href="#inicio" class="nav-link" data-i18n="nav.home">Inicio</a></li>
+                    <li class="nav-item"><a href="#nosotros" class="nav-link" data-i18n="nav.about">Sobre Nosotros</a></li>
+                    <li class="nav-item"><a href="#tours" class="nav-link" data-i18n="nav.tours">Tours</a></li>
                     <li class="nav-item"><a href="#telescopio" class="nav-link">Telescopio</a></li>
-                    <li class="nav-item"><a href="#reservas" class="nav-link">Reservas</a></li>
-                    <li class="nav-item"><a href="#contacto" class="nav-link">Contacto</a></li>
+                    <li class="nav-item"><a href="#reservas" class="nav-link" data-i18n="nav.booking">Reservas</a></li>
+                    <li class="nav-item"><a href="#contacto" class="nav-link" data-i18n="nav.contact">Contacto</a></li>
                     <li class="nav-item">
-                        <a href="#reservas" class="cta-button">Reserva Ahora</a>
+                        <a href="#reservas" class="cta-button" data-i18n="hero.cta">Reserva Ahora</a>
                     </li>
                 </ul>
                 
@@ -610,8 +610,8 @@
     <section id="reservas" class="booking">
         <div class="container">
             <div class="section-header">
-                <h2>Reserva Tu Experiencia Astronómica</h2>
-                <p class="section-subtitle">Selecciona tu fecha, completa tus datos y te confirmaremos en 24 horas</p>
+                <h2 data-i18n="booking.title">Reserva Tu Experiencia Astronómica</h2>
+                <p class="section-subtitle" data-i18n="booking.subtitle">Selecciona tu fecha, completa tus datos y te confirmaremos en 24 horas</p>
             </div>
             
             <div class="booking-content">
@@ -621,7 +621,7 @@
                         <!-- Calendar Section with FullCalendar -->
 
                         <div class="form-group calendar-section">
-                            <label for="calendar">Selecciona tu Fecha *</label>
+                            <label for="calendar" data-i18n="booking.selectDate">Selecciona tu Fecha *</label>
 
                             <div id="calendar-container">
                                 <div id="fullcalendar"></div>
@@ -630,20 +630,20 @@
                             <div class="calendar-legend">
                                 <div class="legend-item">
                                     <span class="legend-dot available"></span>
-                                    <span>Fechas disponibles</span>
+                                    <span data-i18n="booking.availableDates">Fechas disponibles</span>
                                 </div>
                                 <div class="legend-item">
                                     <span class="legend-dot unavailable"></span>
-                                    <span>No disponible (luna llena ± 3 días)</span>
+                                    <span data-i18n="booking.unavailable">No disponible (luna llena ± 3 días)</span>
                                 </div>
                                 <div class="legend-item">
                                     <span class="moon-legend">🌑🌓🌕🌗</span>
-                                    <span>Fases de la luna</span>
+                                    <span data-i18n="booking.moonPhases">Fases de la luna</span>
                                 </div>
                             </div>
 
                             <!-- Selected Date Display -->
-                            <div class="selected-date-display" id="selected-date-display">
+                            <div class="selected-date-display" id="selected-date-display" data-i18n="booking.selectDateMsg">
                                 👆 Selecciona una fecha en el calendario para continuar
                             </div>
 
@@ -653,14 +653,14 @@
                         
                         <!-- Datos de la reserva -->
                         <div class="form-section">
-                            <h4>Datos de tu Reserva</h4>
+                            <h4 data-i18n="booking.yourData">Datos de tu Reserva</h4>
                         </div>
-                        
+
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="persons">Número de Personas *</label>
+                                <label for="persons" data-i18n="booking.persons">Número de Personas *</label>
                                 <select id="persons" name="persons" required aria-required="true">
-                                    <option value="">Selecciona cantidad</option>
+                                    <option value="" data-i18n="booking.selectQuantity">Selecciona cantidad</option>
                                     <option value="1">1 persona</option>
                                     <option value="2">2 personas</option>
                                     <option value="3">3 personas</option>
@@ -685,59 +685,59 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="tour-type">Tipo de Tour *</label>
+                                <label for="tour-type" data-i18n="booking.tourType">Tipo de Tour *</label>
                                 <select id="tour-type" name="tour-type" required>
-                                    <option value="">Selecciona tipo de tour</option>
-                                    <option value="regular">Tour Regular (Grupo)</option>
-                                    <option value="private">Tour Privado (Solo tu grupo)</option>
-                                    <option value="astrophoto">Tour Astrofotográfico (Especializado)</option>
+                                    <option value="" data-i18n="booking.selectTour">Selecciona tipo de tour</option>
+                                    <option value="regular" data-i18n="booking.tourRegular">Tour Regular (Grupo)</option>
+                                    <option value="private" data-i18n="booking.tourPrivate">Tour Privado (Solo tu grupo)</option>
+                                    <option value="astrophoto" data-i18n="booking.tourAstro">Tour Astrofotográfico (Especializado)</option>
                                 </select>
                             </div>
                         </div>
                         
                         <!-- Información de contacto -->
                         <div class="form-section">
-                            <h4>Información de Contacto</h4>
+                            <h4 data-i18n="booking.contactInfo">Información de Contacto</h4>
                         </div>
-                        
+
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="name">Nombre Completo *</label>
+                                <label for="name" data-i18n="booking.fullName">Nombre Completo *</label>
                                 <input type="text" id="name" name="name" required aria-required="true" placeholder="Tu nombre completo">
                             </div>
                             <div class="form-group">
-                                <label for="email">Email *</label>
+                                <label for="email" data-i18n="booking.email">Email *</label>
                                 <input type="email" id="email" name="email" required aria-required="true" placeholder="tu@email.com">
                             </div>
                         </div>
-                        
+
                         <div class="form-group">
-                            <label for="phone">Teléfono/WhatsApp *</label>
+                            <label for="phone" data-i18n="booking.phone">Teléfono/WhatsApp *</label>
                             <input type="tel" id="phone" name="phone" required aria-required="true" placeholder="+56 9 1234 5678">
                         </div>
 
                         <div class="form-group">
-                            <label for="accommodation">Hostal o Dirección de Alojamiento (Opcional)</label>
-                            <input type="text" id="accommodation" name="accommodation" placeholder="Ej: Hostel Luna Atacama, Hotel del Desierto, etc.">
+                            <label for="accommodation" data-i18n="booking.accommodation">Hostal o Dirección de Alojamiento (Opcional)</label>
+                            <input type="text" id="accommodation" name="accommodation" data-i18n="booking.accommodationPlaceholder" placeholder="Ej: Hostel Luna Atacama, Hotel del Desierto, etc.">
                             <small class="form-help" style="display: block; margin-top: 0.5rem; color: rgba(255, 255, 255, 0.6); font-size: 0.875rem;">
-                                <i class="fas fa-info-circle"></i> Ayúdanos a planificar mejor la logística del tour (recogida y traslado)
+                                <i class="fas fa-info-circle"></i> <span data-i18n="booking.accommodationHelp">Ayúdanos a planificar mejor la logística del tour (recogida y traslado)</span>
                             </small>
                         </div>
 
                         <div class="form-group">
-                            <label for="message">Mensaje Adicional</label>
-                            <textarea id="message" name="message" rows="4" placeholder="¿Alguna pregunta o requerimiento especial?"></textarea>
+                            <label for="message" data-i18n="booking.additionalMsg">Mensaje Adicional</label>
+                            <textarea id="message" name="message" rows="4" data-i18n="booking.messagePlaceholder" placeholder="¿Alguna pregunta o requerimiento especial?"></textarea>
                         </div>
-                        
+
                         <button type="submit" class="btn btn-primary btn-submit">
                             <i class="fas fa-paper-plane"></i>
-                            Enviar Reserva
+                            <span data-i18n="booking.submit">Enviar Reserva</span>
                         </button>
                         
                         <div class="form-success" id="form-success">
                             <i class="fas fa-check-circle"></i>
-                            <h3>¡Reserva Enviada!</h3>
-                            <p>Te contactaremos dentro de 24 horas para confirmar disponibilidad y detalles del pago.</p>
+                            <h3 data-i18n="booking.success">¡Reserva Enviada!</h3>
+                            <p data-i18n="booking.successMsg">Te contactaremos dentro de 24 horas para confirmar disponibilidad y detalles del pago.</p>
                         </div>
                     </form>
                 </div>
@@ -745,26 +745,26 @@
                 <div class="booking-info">
                     <div class="info-card">
                         <i class="fas fa-clock"></i>
-                        <h4>Horarios</h4>
-                        <p>Tours desde 20:00 hrs<br>Duración según tour elegido</p>
+                        <h4 data-i18n="info.schedule">Horarios</h4>
+                        <p data-i18n="info.scheduleText">Tours desde 20:00 hrs<br>Duración según tour elegido</p>
                     </div>
 
                     <div class="info-card">
                         <i class="fas fa-calendar-alt"></i>
-                        <h4>Disponibilidad</h4>
-                        <p>Todos los días (excepto luna llena)<br>Sujeto a condiciones climáticas</p>
+                        <h4 data-i18n="info.availability">Disponibilidad</h4>
+                        <p data-i18n="info.availabilityText">Todos los días (excepto luna llena)<br>Sujeto a condiciones climáticas</p>
                     </div>
 
                     <div class="info-card">
                         <i class="fas fa-map-marker-alt"></i>
-                        <h4>Transporte</h4>
-                        <p>Recogida y regreso<br>en tu alojamiento incluidos</p>
+                        <h4 data-i18n="info.transport">Transporte</h4>
+                        <p data-i18n="info.transportText">Recogida y regreso<br>en tu alojamiento incluidos</p>
                     </div>
 
                     <div class="info-card">
                         <i class="fas fa-credit-card"></i>
-                        <h4>Pago</h4>
-                        <p>Efectivo, Transferencia o Tarjeta<br>Confirmación en 24 horas</p>
+                        <h4 data-i18n="info.payment">Pago</h4>
+                        <p data-i18n="info.paymentText">Efectivo, Transferencia o Tarjeta<br>Confirmación en 24 horas</p>
                     </div>
                 </div>
             </div>
@@ -3262,5 +3262,8 @@ ${msg.contact}`);
     <!-- Reviews System -->
     <link rel="stylesheet" href="reviews-styles.css">
     <script src="reviews.js"></script>
+
+    <!-- Translation System -->
+    <script src="translations.js"></script>
 </body>
 </html>
