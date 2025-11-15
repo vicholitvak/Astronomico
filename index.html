@@ -627,21 +627,6 @@
                                 <div id="fullcalendar"></div>
                             </div>
 
-                            <div class="calendar-legend">
-                                <div class="legend-item">
-                                    <span class="legend-dot available"></span>
-                                    <span data-i18n="booking.availableDates">Fechas disponibles</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-dot unavailable"></span>
-                                    <span data-i18n="booking.unavailable">No disponible (luna llena ± 3 días)</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="moon-legend">🌑🌓🌕🌗</span>
-                                    <span data-i18n="booking.moonPhases">Fases de la luna</span>
-                                </div>
-                            </div>
-
                             <!-- Selected Date Display -->
                             <div class="selected-date-display" id="selected-date-display" data-i18n="booking.selectDateMsg">
                                 👆 Selecciona una fecha en el calendario para continuar
@@ -3257,6 +3242,42 @@ ${msg.contact}`);
                 icon.style.transform = 'rotate(180deg)';
             }
         }
+    </script>
+
+    <!-- Mobile Menu Toggle Script -->
+    <script>
+        // Mobile hamburger menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.querySelector('.hamburger');
+            const navMenu = document.querySelector('.nav-menu');
+
+            if (hamburger && navMenu) {
+                hamburger.addEventListener('click', function() {
+                    hamburger.classList.toggle('active');
+                    navMenu.classList.toggle('active');
+                });
+
+                // Close menu when clicking on a nav link
+                const navLinks = document.querySelectorAll('.nav-link, .cta-button');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        hamburger.classList.remove('active');
+                        navMenu.classList.remove('active');
+                    });
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', function(event) {
+                    const isClickInsideMenu = navMenu.contains(event.target);
+                    const isClickOnHamburger = hamburger.contains(event.target);
+
+                    if (!isClickInsideMenu && !isClickOnHamburger && navMenu.classList.contains('active')) {
+                        hamburger.classList.remove('active');
+                        navMenu.classList.remove('active');
+                    }
+                });
+            }
+        });
     </script>
 
     <!-- Reviews System -->
