@@ -3013,6 +3013,123 @@ blockquote {
         background: var(--primary-color);
     }
 
+/* ===== REFUND POLICY STYLES ===== */
+.refund-policy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    margin: var(--spacing-lg) 0;
+}
+
+.policy-case {
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 4px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    transition: all var(--transition-normal);
+}
+
+.policy-case:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(5px);
+}
+
+.policy-case h4 {
+    color: var(--text-primary);
+    font-size: 1.3rem;
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.policy-case h4 i {
+    font-size: 1.5rem;
+}
+
+.highlight-success {
+    color: #10b981;
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: var(--border-radius);
+    display: inline-block;
+}
+
+.highlight-warning {
+    color: #f59e0b;
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: rgba(245, 158, 11, 0.1);
+    border-radius: var(--border-radius);
+    display: inline-block;
+}
+
+.highlight-info {
+    color: #3b82f6;
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: var(--border-radius);
+    display: inline-block;
+}
+
+.policy-case ul {
+    margin-left: var(--spacing-md);
+    margin-top: var(--spacing-sm);
+}
+
+.policy-case li {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xs);
+    line-height: 1.6;
+}
+
+.refund-contact {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(123, 104, 238, 0.1));
+    border: 2px solid rgba(0, 212, 255, 0.3);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-md);
+    margin: var(--spacing-lg) 0;
+    text-align: center;
+}
+
+.refund-contact p {
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.refund-contact a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.refund-contact a:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
+/* Responsive adjustments for refund policy */
+@media (max-width: 768px) {
+    .policy-case {
+        padding: var(--spacing-sm);
+    }
+
+    .policy-case h4 {
+        font-size: 1.1rem;
+    }
+
+    .highlight-success,
+    .highlight-warning,
+    .highlight-info {
+        font-size: 1rem;
+    }
+}
+
 /* ===== BOOKING MODALS ===== */
 .booking-success-overlay,
 .booking-error-overlay {
