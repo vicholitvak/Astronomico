@@ -136,20 +136,52 @@ p {
     transform: translateY(-2px);
 }
 
-.btn-stripe {
-    background: linear-gradient(135deg, #635bff 0%, #00d4ff 100%);
+/* Mercado Pago Official Button Styles */
+.btn-mercadopago {
+    background: #009EE3;
     color: white;
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 12px rgba(0, 158, 227, 0.3);
     font-weight: 600;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: var(--spacing-xs);
+    border-radius: 6px;
+    padding: 14px 24px;
+    font-size: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
 }
 
-.btn-stripe:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-lg), 0 0 30px rgba(99, 91, 255, 0.4);
+.btn-mercadopago::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-mercadopago:hover::before {
+    left: 100%;
+}
+
+.btn-mercadopago:hover {
+    background: #008CCC;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 158, 227, 0.4);
+}
+
+.btn-mercadopago:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 158, 227, 0.3);
+}
+
+.btn-mercadopago i {
+    font-size: 18px;
 }
 
 .btn-secondary-outline {
@@ -3122,4 +3154,209 @@ blockquote {
 .btn-success:hover {
     background: linear-gradient(135deg, #128C7E, #25D366);
     transform: translateY(-2px);
+}
+
+/* ===== MERCADO PAGO BOOKING MODAL ===== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-modal);
+    padding: var(--spacing-sm);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-overlay .modal-content {
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+    border-radius: 16px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 2px solid rgba(0, 158, 227, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 158, 227, 0.2);
+    position: relative;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--text-primary);
+    font-size: 28px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.modal-close:hover {
+    background: rgba(255, 68, 68, 0.2);
+    color: #FF4444;
+    transform: rotate(90deg);
+}
+
+.modal-overlay h2 {
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+    padding: var(--spacing-lg) var(--spacing-md) 0;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.modal-subtitle {
+    color: var(--text-secondary);
+    padding: 0 var(--spacing-md) var(--spacing-md);
+    margin: 0;
+    font-size: 0.95rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.secure-payment-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 158, 227, 0.15);
+    border: 1px solid rgba(0, 158, 227, 0.3);
+    padding: 8px 16px;
+    border-radius: 20px;
+    margin: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.9rem;
+    color: #009EE3;
+    font-weight: 500;
+}
+
+.secure-payment-badge i {
+    font-size: 16px;
+}
+
+#mp-booking-form {
+    padding: var(--spacing-md);
+}
+
+#mp-booking-form .form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+#mp-booking-form label {
+    display: block;
+    color: var(--text-primary);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--spacing-xs);
+    font-size: 0.95rem;
+}
+
+#mp-booking-form input,
+#mp-booking-form select,
+#mp-booking-form textarea {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: var(--font-primary);
+    transition: all 0.3s ease;
+}
+
+#mp-booking-form input:focus,
+#mp-booking-form select:focus,
+#mp-booking-form textarea:focus {
+    outline: none;
+    border-color: #009EE3;
+    background: rgba(0, 158, 227, 0.1);
+    box-shadow: 0 0 0 3px rgba(0, 158, 227, 0.1);
+}
+
+#mp-booking-form input::placeholder {
+    color: var(--text-muted);
+}
+
+.price-summary {
+    background: rgba(0, 158, 227, 0.1);
+    border: 2px solid rgba(0, 158, 227, 0.3);
+    border-radius: 12px;
+    padding: var(--spacing-md);
+    margin: var(--spacing-md) 0;
+}
+
+.price-summary p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.price-summary p:last-child {
+    margin-bottom: 0;
+    padding-top: var(--spacing-xs);
+    border-top: 2px solid rgba(0, 158, 227, 0.3);
+    font-size: 1.25rem;
+    color: #009EE3;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: var(--spacing-sm);
+}
+
+/* Responsive adjustments for modal */
+@media (max-width: 768px) {
+    .modal-overlay .modal-content {
+        margin: var(--spacing-sm);
+        max-height: 95vh;
+    }
+
+    #mp-booking-form {
+        padding: var(--spacing-sm);
+    }
+
+    .modal-overlay h2 {
+        font-size: 1.5rem;
+        padding: var(--spacing-md) var(--spacing-sm) 0;
+    }
+
+    .modal-subtitle {
+        padding: 0 var(--spacing-sm) var(--spacing-sm);
+    }
 }

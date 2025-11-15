@@ -26,8 +26,12 @@ function showBookingModal(tourType, price, tourName) {
         <div id="mp-booking-modal" class="modal-overlay">
             <div class="modal-content">
                 <button class="modal-close" onclick="closeBookingModal()">&times;</button>
-                <h2>Completar Reserva</h2>
-                <p class="modal-subtitle">Completa tus datos para proceder al pago</p>
+                <h2>🌟 Asegura tu Cupo Ahora</h2>
+                <p class="modal-subtitle">Completa el pago para confirmar tu reserva instantáneamente</p>
+                <div class="secure-payment-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Pago 100% Seguro con Mercado Pago</span>
+                </div>
 
                 <form id="mp-booking-form">
                     <div class="form-group">
@@ -78,8 +82,8 @@ function showBookingModal(tourType, price, tourName) {
                         <p id="total-price"><strong>Total:</strong> $0 CLP</p>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-submit">
-                        <i class="fas fa-credit-card"></i> Ir a Pagar
+                    <button type="submit" class="btn btn-mercadopago btn-submit">
+                        <i class="fas fa-lock"></i> Pagar y Asegurar mi Cupo
                     </button>
                 </form>
             </div>
@@ -112,7 +116,7 @@ async function processMercadoPagoCheckout(form) {
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Redirigiendo a Mercado Pago...';
 
     try {
         const formData = new FormData(form);
@@ -142,6 +146,7 @@ async function processMercadoPagoCheckout(form) {
 
         // Redirect to Mercado Pago checkout
         if (result.init_point) {
+            submitBtn.innerHTML = '<i class="fas fa-check"></i> Redirigiendo a pago seguro...';
             window.location.href = result.init_point;
         } else {
             throw new Error('No se recibió URL de pago');
@@ -149,7 +154,7 @@ async function processMercadoPagoCheckout(form) {
 
     } catch (error) {
         console.error('Error:', error);
-        alert('Error al procesar el pago: ' + error.message);
+        alert('❌ Error al procesar el pago: ' + error.message + '\n\nPor favor intenta nuevamente o contáctanos por WhatsApp.');
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalText;
     }
