@@ -191,7 +191,7 @@ async function sendAdminNotificationEmail(booking) {
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0;">
         <h1 style="color: white; margin: 0; font-size: 28px;">🌟 Nueva Reserva Recibida</h1>
-        <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">Atacama NightSky Tours</p>
+        <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">Atacama Dark Sky Tours</p>
       </div>
 
       <div style="background: #f7f7f7; padding: 30px; border-radius: 0 0 10px 10px;">
@@ -273,7 +273,7 @@ async function sendAdminNotificationEmail(booking) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: 'Atacama NightSky <onboarding@resend.dev>',
+        from: 'Atacama Dark Sky <onboarding@resend.dev>',
         to: [adminEmail],
         subject: `🌟 Nueva Reserva: ${booking.name} - ${formattedDate}`,
         html: emailHtml,
@@ -323,7 +323,7 @@ async function sendConfirmationEmail(booking) {
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
         <h1 style="color: white; margin: 0;">✨ ¡Reserva Confirmada!</h1>
-        <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">Atacama NightSky Tours</p>
+        <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">Atacama Dark Sky Tours</p>
       </div>
 
       <div style="background: #f7f7f7; padding: 30px; border-radius: 0 0 10px 10px;">
@@ -383,7 +383,7 @@ async function sendConfirmationEmail(booking) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: 'Atacama NightSky <onboarding@resend.dev>',
+        from: 'Atacama Dark Sky <onboarding@resend.dev>',
         to: [booking.email],
         subject: `✨ Reserva Confirmada - ${formattedDate} - Código: ${booking.bookingId}`,
         html: emailHtml

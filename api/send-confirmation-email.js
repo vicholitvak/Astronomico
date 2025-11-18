@@ -143,7 +143,7 @@ export default async function handler(req, res) {
 <body>
     <div class="header">
         <h1>🌟 ¡Reserva Confirmada!</h1>
-        <p>Atacama NightSky</p>
+        <p>Atacama Dark Sky</p>
     </div>
 
     <div class="content">
@@ -183,7 +183,6 @@ export default async function handler(req, res) {
                 <li>Te contactaremos por WhatsApp <strong>24 horas antes</strong> del tour</li>
                 <li>Confirmaremos la <strong>hora exacta de recogida</strong> en tu hotel/alojamiento</li>
                 <li>Recibirás instrucciones de qué llevar al tour</li>
-                <li>Prepara tu cámara para capturar las estrellas ⭐</li>
             </ul>
         </div>
 
@@ -207,14 +206,14 @@ export default async function handler(req, res) {
 
         <p style="margin-top: 30px;">¡Nos vemos bajo las estrellas!</p>
         <p><strong>Vicente Litvak</strong><br>
-        Atacama NightSky<br>
+        Atacama Dark Sky<br>
         <a href="https://atacamadarksky.cl">www.atacamadarksky.cl</a></p>
     </div>
 
     <div class="footer">
         <p>Este email confirma tu reserva y pago para un tour astronómico en San Pedro de Atacama.</p>
         <p>Si no realizaste esta reserva, por favor contáctanos inmediatamente.</p>
-        <p>© 2024 Atacama NightSky. Todos los derechos reservados.</p>
+        <p>© 2024 Atacama Dark Sky. Todos los derechos reservados.</p>
     </div>
 </body>
 </html>
@@ -222,7 +221,7 @@ export default async function handler(req, res) {
 
         // Send email using Resend
         const data = await resend.emails.send({
-            from: 'Atacama NightSky <reservas@atacamadarksky.cl>',
+            from: 'Atacama Dark Sky <reservas@atacamadarksky.cl>',
             to: [customerEmail],
             subject: `✅ Reserva Confirmada - ${tourName} - ${new Date(tourDate).toLocaleDateString('es-CL')}`,
             html: emailHTML

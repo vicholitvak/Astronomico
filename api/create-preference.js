@@ -66,9 +66,9 @@ export default async function handler(req, res) {
                 }
             },
             back_urls: {
-                success: 'https://atacamadarksky.cl/payment-success',
-                failure: 'https://atacamadarksky.cl/payment-failure',
-                pending: 'https://atacamadarksky.cl/payment-pending'
+                success: 'https://atacamadarksky.cl/payment-success.html',
+                failure: 'https://atacamadarksky.cl/payment-failure.html',
+                pending: 'https://atacamadarksky.cl/payment-pending.html'
             },
             auto_return: 'approved',
             notification_url: 'https://atacamadarksky.cl/api/mercadopago-webhook',
@@ -82,7 +82,7 @@ export default async function handler(req, res) {
                 customer_message: message || '',
                 persons: persons
             },
-            statement_descriptor: 'Atacama NightSky Tour',
+            statement_descriptor: 'Atacama Dark Sky Tour',
             external_reference: `ATK-${Date.now()}`,
             expires: true,
             expiration_date_from: new Date().toISOString(),
