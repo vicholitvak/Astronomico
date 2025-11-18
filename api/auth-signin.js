@@ -4,24 +4,23 @@ import { OAuth2Client } from 'google-auth-library';
 const client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  `${process.env.NEXTAUTH_URL}/api/auth?action=callback`
+  `${process.env.NEXTAUTH_URL}/api/auth-callback`
 );
 
 export default async function handler(req, res) {
-  const { action } = req.query;
+  const url = new URL(req.url, `http://${req.headers.host}`);
+  const path = url.pathname;
 
-  switch (action) {
-    case 'signin':
-      return handleSignIn(req, res);
-    case 'callback':
-      return handleCallback(req, res);
-    case 'session':
-      return handleSession(req, res);
-    case 'signout':
-      return handleSignOut(req, res);
-    default:
-      return res.status(404).json({ error: 'Not found' });
+  // Route based on path
+  if (path.endsWith('/auth-signin') || path.endsWith('/auth/signin')) {
+    return handleSignIn(req, res);
+  } else if (path.endsWith('/auth-session') || path.endsWith('/auth/session')) {
+    return handleSession(req, res);
+  } else if (path.endsWith('/auth-signout') || path.endsWith('/auth/signout')) {
+    return handleSignOut(req, res);
   }
+
+  return res.status(404).json({ error: 'Not found' });
 }
 
 // Initiate Google OAuth
