@@ -24,7 +24,7 @@ export default async function handler(req, res) {
       search,
       page = '1',
       limit = '50',
-      sort = 'date_desc'
+      sort = 'date_asc'
     } = req.query;
 
     // Build WHERE clause dynamically

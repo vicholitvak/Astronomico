@@ -723,12 +723,26 @@
 
         // Helper functions
         function formatDate(dateString) {
-            const date = new Date(dateString + 'T00:00:00');
-            return date.toLocaleDateString('es-CL', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
+            if (!dateString) return 'Sin fecha';
+            try {
+                // Try parsing as-is first
+                let date = new Date(dateString);
+                // If invalid, try adding time
+                if (isNaN(date.getTime())) {
+                    date = new Date(dateString + 'T00:00:00');
+                }
+                // Still invalid?
+                if (isNaN(date.getTime())) {
+                    return 'Fecha inválida';
+                }
+                return date.toLocaleDateString('es-CL', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            } catch (e) {
+                return 'Fecha inválida';
+            }
         }
 
         function formatDateTime(dateString) {
