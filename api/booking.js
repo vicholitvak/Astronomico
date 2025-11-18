@@ -383,7 +383,7 @@ async function sendConfirmationEmail(booking) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: 'Atacama Dark Sky <onboarding@resend.dev>',
+        from: 'Atacama Dark Sky <reservas@atacamadarksky.cl>',
         to: [booking.email],
         subject: `✨ Reserva Confirmada - ${formattedDate} - Código: ${booking.bookingId}`,
         html: emailHtml
