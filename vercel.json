@@ -5,9 +5,6 @@
   "functions": {
     "api/*.js": {
       "maxDuration": 10
-    },
-    "api/auth/[...nextauth].js": {
-      "maxDuration": 10
     }
   },
   "rewrites": [
@@ -17,11 +14,7 @@
     },
     {
       "source": "/api/auth/:path*",
-      "destination": "/api/auth/[...nextauth].js"
-    },
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "destination": "/api/auth.js"
     }
   ]
 }
