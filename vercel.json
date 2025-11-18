@@ -12,6 +12,10 @@
   },
   "rewrites": [
     {
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
       "source": "/api/auth/:path*",
       "destination": "/api/auth/[...nextauth].js"
     },
