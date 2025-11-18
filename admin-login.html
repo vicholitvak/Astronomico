@@ -174,14 +174,14 @@
             const loadingIndicator = document.getElementById('loadingIndicator');
             loadingIndicator.classList.add('active');
 
-            // Redirect to NextAuth Google sign in
-            window.location.href = '/api/auth/signin/google?callbackUrl=/admin';
+            // Redirect to Google OAuth
+            window.location.href = '/api/auth-google';
         }
 
         // Check if already authenticated
         async function checkAuth() {
             try {
-                const response = await fetch('/api/auth/session');
+                const response = await fetch('/api/auth-session');
                 const session = await response.json();
 
                 if (session && session.user) {
