@@ -486,7 +486,7 @@
         // Check if user is authenticated
         async function checkAuthentication() {
             try {
-                const response = await fetch('/api/auth-session');
+                const response = await fetch('/api/auth?action=session');
                 const session = await response.json();
 
                 if (!session || !session.user) {
@@ -764,7 +764,7 @@
         // Logout function
         async function logout() {
             if (confirm('¿Seguro que quieres cerrar sesión?')) {
-                await fetch('/api/auth-signout', { method: 'POST' });
+                await fetch('/api/auth?action=signout', { method: 'POST' });
                 window.location.href = '/admin-login.html';
             }
         }

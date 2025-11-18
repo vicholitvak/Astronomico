@@ -175,13 +175,13 @@
             loadingIndicator.classList.add('active');
 
             // Redirect to Google OAuth
-            window.location.href = '/api/auth-google';
+            window.location.href = '/api/auth?action=signin';
         }
 
         // Check if already authenticated
         async function checkAuth() {
             try {
-                const response = await fetch('/api/auth-session');
+                const response = await fetch('/api/auth?action=session');
                 const session = await response.json();
 
                 if (session && session.user) {
