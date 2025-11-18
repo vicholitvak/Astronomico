@@ -204,6 +204,37 @@
             border-bottom: 2px solid rgba(96, 165, 250, 0.3);
         }
 
+        th.sortable {
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            padding-right: 30px;
+        }
+
+        th.sortable:hover {
+            color: #93c5fd;
+        }
+
+        th.sortable::after {
+            content: '⇅';
+            position: absolute;
+            right: 10px;
+            opacity: 0.3;
+            font-size: 0.9rem;
+        }
+
+        th.sortable.sort-asc::after {
+            content: '↑';
+            opacity: 1;
+            color: #60a5fa;
+        }
+
+        th.sortable.sort-desc::after {
+            content: '↓';
+            opacity: 1;
+            color: #60a5fa;
+        }
+
         td {
             padding: 15px;
             border-bottom: 1px solid rgba(71, 85, 105, 0.3);
@@ -449,14 +480,14 @@
                     <thead>
                         <tr>
                             <th>ID Reserva</th>
-                            <th>Fecha Tour</th>
+                            <th class="sortable sort-asc" data-sort="date" onclick="changeSorting('date')">Fecha Tour</th>
                             <th>Cliente</th>
                             <th>Contacto</th>
                             <th>Tour</th>
                             <th>Personas</th>
                             <th>Estado</th>
                             <th>Origen</th>
-                            <th>Creada</th>
+                            <th class="sortable" data-sort="created" onclick="changeSorting('created')">Creada</th>
                         </tr>
                     </thead>
                     <tbody id="bookingsTableBody">
@@ -472,6 +503,7 @@
         let currentPage = 1;
         let currentFilters = {};
         let allBookings = [];
+        let currentSort = 'date_asc'; // Default: fecha tour ascendente
 
         // Check authentication on page load
         document.addEventListener('DOMContentLoaded', async () => {
@@ -509,6 +541,7 @@
                 const params = new URLSearchParams({
                     page: page,
                     limit: 50,
+                    sort: currentSort,
                     ...currentFilters
                 });
 
@@ -550,6 +583,35 @@
             document.getElementById('statConfirmed').textContent = stats.confirmed || 0;
             document.getElementById('statPending').textContent = stats.pending || 0;
             document.getElementById('statPersons').textContent = stats.total_persons || 0;
+        }
+
+        function changeSorting(field) {
+            // Determinar nuevo orden
+            let newSort;
+            if (field === 'date') {
+                // Alternar entre date_asc y date_desc
+                newSort = currentSort === 'date_asc' ? 'date_desc' : 'date_asc';
+            } else if (field === 'created') {
+                // Alternar entre created_asc y created_desc
+                newSort = currentSort === 'created_asc' ? 'created_desc' : 'created_asc';
+            }
+
+            currentSort = newSort;
+
+            // Actualizar clases de los encabezados
+            document.querySelectorAll('th.sortable').forEach(th => {
+                th.classList.remove('sort-asc', 'sort-desc');
+            });
+
+            const sortField = newSort.split('_')[0];
+            const sortDirection = newSort.split('_')[1];
+            const th = document.querySelector(`th[data-sort="${sortField}"]`);
+            if (th) {
+                th.classList.add(`sort-${sortDirection}`);
+            }
+
+            // Recargar datos
+            loadBookings(1);
         }
 
         function renderBookings(bookings) {
