@@ -135,6 +135,12 @@ export default async function handler(req, res) {
       [...values, limitNum, offset]
     );
 
+    // Format dates to YYYY-MM-DD for frontend
+    const formattedBookings = bookingsResult.rows.map(booking => ({
+      ...booking,
+      date: booking.date ? new Date(booking.date).toISOString().split('T')[0] : null
+    }));
+
     // Get summary statistics
     const statsQuery = `
       SELECT
@@ -154,7 +160,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success: true,
       data: {
-        bookings: bookingsResult.rows,
+        bookings: formattedBookings,
         pagination: {
           page: pageNum,
           limit: limitNum,
