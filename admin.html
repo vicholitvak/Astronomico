@@ -350,9 +350,14 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1><i class="fas fa-telescope"></i> Portal de Administración</h1>
-            <p class="subtitle">Sistema de gestión de reservas - Atacama Dark Sky</p>
+        <header style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1><i class="fas fa-telescope"></i> Portal de Administración</h1>
+                <p class="subtitle">Sistema de gestión de reservas - Atacama Dark Sky</p>
+            </div>
+            <button onclick="logout()" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </button>
         </header>
 
         <div id="errorContainer"></div>
@@ -468,10 +473,32 @@
         let currentFilters = {};
         let allBookings = [];
 
-        // Load bookings on page load
-        document.addEventListener('DOMContentLoaded', () => {
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            const isAuthenticated = await checkAuthentication();
+            if (!isAuthenticated) {
+                window.location.href = '/admin-login.html';
+                return;
+            }
             loadBookings();
         });
+
+        // Check if user is authenticated
+        async function checkAuthentication() {
+            try {
+                const response = await fetch('/api/auth/session');
+                const session = await response.json();
+
+                if (!session || !session.user) {
+                    return false;
+                }
+
+                return true;
+            } catch (error) {
+                console.error('Auth check error:', error);
+                return false;
+            }
+        }
 
         async function loadBookings(page = 1) {
             try {
@@ -732,6 +759,14 @@
                 'completed': 'Completado'
             };
             return names[status] || status;
+        }
+
+        // Logout function
+        async function logout() {
+            if (confirm('¿Seguro que quieres cerrar sesión?')) {
+                await fetch('/api/auth/signout', { method: 'POST' });
+                window.location.href = '/admin-login.html';
+            }
         }
 
         // Auto-refresh every 2 minutes

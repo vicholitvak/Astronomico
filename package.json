@@ -16,7 +16,8 @@
     "google-auth-library": "^9.4.0",
     "googleapis": "^155.0.0",
     "mercadopago": "^2.0.15",
-    "node-fetch": "^3.3.2",
+    "next-auth": "^4.24.13",
+    "node-fetch": "^2.7.0",
     "pg": "^8.16.3",
     "resend": "^6.4.2"
   },
