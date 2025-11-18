@@ -6,7 +6,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const redirectUri = `${process.env.NEXTAUTH_URL}/api/auth-callback`;
+  // Hardcode the domain to avoid env var issues
+  const redirectUri = 'https://atacamadarksky.cl/api/auth-callback';
 
   const client = new OAuth2Client(
     process.env.GOOGLE_CLIENT_ID,
@@ -18,7 +19,7 @@ export default async function handler(req, res) {
     access_type: 'offline',
     scope: ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile'],
     prompt: 'consent',
-    redirect_uri: redirectUri // Explicitly specify redirect_uri
+    redirect_uri: redirectUri
   });
 
   res.redirect(authorizeUrl);
