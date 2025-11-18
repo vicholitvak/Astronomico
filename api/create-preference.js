@@ -43,8 +43,29 @@ export default async function handler(req, res) {
 
         const preference = new Preference(client);
 
-        // Calculate total amount
-        const totalAmount = parseInt(price) * parseInt(persons);
+        // Calculate total with Mercado Pago commission (5.94%)
+        const MP_COMMISSION = 0.0594;
+        const basePrice = parseInt(price);
+        const personsCount = parseInt(persons);
+
+        let subtotal;
+        let quantity;
+        let unitPrice;
+        let description;
+
+        if (tourType === 'private') {
+            // Tour privado: precio fijo sin importar personas
+            subtotal = basePrice;
+            quantity = 1;
+            unitPrice = basePrice + Math.ceil(basePrice * MP_COMMISSION);
+            description = `Tour Privado VIP para ${personsCount} persona(s) - Fecha: ${date}`;
+        } else {
+            // Tours regular y astrofoto: precio por persona
+            subtotal = basePrice * personsCount;
+            quantity = personsCount;
+            unitPrice = basePrice + Math.ceil(basePrice * MP_COMMISSION);
+            description = `Tour para ${personsCount} persona(s) - Fecha: ${date}`;
+        }
 
         // Create preference
         const preferenceData = {
@@ -52,9 +73,9 @@ export default async function handler(req, res) {
                 {
                     id: tourType,
                     title: tourName || `Tour Astronómico - ${tourType}`,
-                    description: `Tour para ${persons} persona(s) - Fecha: ${date}`,
-                    quantity: parseInt(persons),
-                    unit_price: parseInt(price),
+                    description: description,
+                    quantity: quantity,
+                    unit_price: unitPrice,
                     currency_id: 'CLP'
                 }
             ],
