@@ -39,7 +39,10 @@ export default async function handler(req, res) {
     // Check if user is authorized
     const allowedEmail = process.env.ADMIN_EMAIL || 'vicente.litvak@gmail.com';
 
+    console.log('Auth attempt:', { userEmail, allowedEmail, match: userEmail === allowedEmail });
+
     if (userEmail !== allowedEmail) {
+      console.log('Access denied for:', userEmail);
       return res.redirect('/admin-login.html?error=AccessDenied');
     }
 
