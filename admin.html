@@ -453,8 +453,20 @@
         }
 
         .calendar-day.today {
-            border: 2px solid #60a5fa;
-            background: rgba(96, 165, 250, 0.15);
+            border: 3px solid #60a5fa;
+            background: rgba(96, 165, 250, 0.25);
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.4);
+        }
+
+        .calendar-day.today .day-number {
+            color: #60a5fa;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .calendar-day.today .day-number::before {
+            content: '• ';
+            color: #60a5fa;
         }
 
         .calendar-day.has-bookings {
@@ -539,35 +551,299 @@
             border: 1px solid rgba(71, 85, 105, 0.5);
         }
 
+        /* Day Detail Modal */
+        .day-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .day-modal.active {
+            display: flex;
+        }
+
+        .day-modal-content {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 16px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .day-modal-header {
+            padding: 25px;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .day-modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #60a5fa;
+        }
+
+        .day-modal-close {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .day-modal-close:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .day-modal-body {
+            padding: 25px;
+        }
+
+        .day-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .day-summary-item {
+            text-align: center;
+        }
+
+        .day-summary-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .day-summary-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        .booking-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .booking-card:hover {
+            background: rgba(96, 165, 250, 0.1);
+            border-color: #60a5fa;
+            transform: translateX(5px);
+        }
+
+        .booking-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .booking-card-id {
+            font-family: monospace;
+            font-weight: 600;
+            color: #60a5fa;
+            font-size: 0.9rem;
+        }
+
+        .booking-card-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .info-item i {
+            color: #60a5fa;
+            width: 16px;
+        }
+
+        .info-label {
+            color: #94a3b8;
+        }
+
+        .info-value {
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
             h1 {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
+            }
+
+            header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
             }
 
             .stats-container {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .filters-section {
+                padding: 15px;
             }
 
             .filters-grid {
                 grid-template-columns: 1fr;
             }
 
+            .calendar-section {
+                padding: 15px;
+                overflow-x: auto;
+            }
+
+            .calendar-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .calendar-title {
+                font-size: 1.1rem;
+            }
+
+            .calendar-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .calendar-nav button {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+
+            #currentMonthYear {
+                width: 100%;
+                text-align: center;
+                order: -1;
+                margin-bottom: 8px;
+            }
+
             .calendar-grid {
-                gap: 4px;
+                gap: 3px;
+                min-width: 100%;
             }
 
             .calendar-day {
-                min-height: 60px;
-                padding: 5px;
+                min-height: 55px;
+                padding: 4px;
+                font-size: 0.75rem;
+            }
+
+            .calendar-day.today {
+                border-width: 2px;
             }
 
             .day-number {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
+                margin-bottom: 3px;
             }
 
             .booking-indicator {
+                font-size: 0.6rem;
+                padding: 2px 3px;
+                gap: 2px;
+            }
+
+            .booking-indicator i {
+                font-size: 0.55rem;
+            }
+
+            .day-total {
                 font-size: 0.65rem;
-                padding: 2px 4px;
+                margin-top: 3px;
+            }
+
+            .calendar-legend {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .legend-item {
+                font-size: 0.8rem;
+            }
+
+            .bookings-table-container {
+                padding: 15px;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 10px 8px;
+            }
+
+            .day-modal-content {
+                margin: 10px;
+                max-height: 85vh;
+            }
+
+            .day-modal-header {
+                padding: 20px;
+            }
+
+            .day-modal-title {
+                font-size: 1.2rem;
+            }
+
+            .day-modal-body {
+                padding: 20px;
+            }
+
+            .booking-card {
+                padding: 15px;
+            }
+
+            .booking-card-info {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -639,7 +915,7 @@
                     <span>Hoy</span>
                 </div>
                 <div class="legend-item">
-                    <span style="font-size: 0.75rem; color: #60a5fa;"><i class="fas fa-info-circle"></i> Click en una fecha para filtrar la tabla</span>
+                    <span style="font-size: 0.75rem; color: #60a5fa;"><i class="fas fa-info-circle"></i> Click en una fecha para ver detalles</span>
                 </div>
             </div>
         </div>
@@ -728,6 +1004,18 @@
 
                 <div class="pagination" id="paginationContainer"></div>
             </div>
+        </div>
+    </div>
+
+    <!-- Day Modal -->
+    <div id="dayModal" class="day-modal">
+        <div class="day-modal-content">
+            <div class="day-modal-header">
+                <h3 id="modalDateTitle">Reservas del Día</h3>
+                <button class="modal-close" onclick="closeDayModal()">&times;</button>
+            </div>
+            <div class="day-summary" id="modalSummary"></div>
+            <div id="modalBookingsList"></div>
         </div>
     </div>
 
@@ -885,12 +1173,13 @@
 
             // Days of the month
             const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0); // Normalize to midnight
+            const todayStr = today.toISOString().split('T')[0];
 
             for (let day = 1; day <= daysInMonth; day++) {
                 const currentDate = new Date(year, month, day);
                 const dateStr = currentDate.toISOString().split('T')[0];
-                const isToday = currentDate.getTime() === today.getTime();
+                const isToday = dateStr === todayStr;
                 const isSelected = selectedDate === dateStr;
                 const dayBookings = bookingsByDate[dateStr] || [];
                 const hasBookings = dayBookings.length > 0;
@@ -980,19 +1269,174 @@
         }
 
         function selectDate(dateStr) {
-            if (selectedDate === dateStr) {
-                // Deselect
-                selectedDate = null;
-                document.getElementById('filterDateFrom').value = '';
-                document.getElementById('filterDateTo').value = '';
-            } else {
-                // Select
-                selectedDate = dateStr;
-                document.getElementById('filterDateFrom').value = dateStr;
-                document.getElementById('filterDateTo').value = dateStr;
+            // Open modal with day information
+            showDayModal(dateStr);
+        }
+
+        function showDayModal(dateStr) {
+            const dayBookings = bookingsByDate[dateStr] || [];
+
+            if (dayBookings.length === 0) {
+                alert('No hay reservas para esta fecha');
+                return;
             }
-            renderCalendar();
-            applyFilters();
+
+            // Format date in Spanish
+            const date = new Date(dateStr + 'T12:00:00');
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = date.toLocaleDateString('es-CL', options);
+
+            // Set modal title
+            document.getElementById('modalDateTitle').textContent =
+                formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+
+            // Calculate summary statistics
+            const totalBookings = dayBookings.length;
+            const totalPersons = dayBookings.reduce((sum, b) => sum + b.persons, 0);
+            const byType = {
+                regular: dayBookings.filter(b => b.tour_type === 'regular'),
+                private: dayBookings.filter(b => b.tour_type === 'private'),
+                astrophoto: dayBookings.filter(b => b.tour_type === 'astrophoto')
+            };
+
+            // Build summary HTML
+            let summaryHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #60a5fa;">${totalBookings}</div>
+                        <div style="font-size: 0.85rem; color: #94a3b8;">Total Reservas</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #34d399;">${totalPersons}</div>
+                        <div style="font-size: 0.85rem; color: #94a3b8;">Total Personas</div>
+                    </div>
+            `;
+
+            if (byType.regular.length > 0) {
+                const persons = byType.regular.reduce((sum, b) => sum + b.persons, 0);
+                summaryHTML += `
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: #10b981;">${byType.regular.length}</div>
+                        <div style="font-size: 0.85rem; color: #94a3b8;">Regular (${persons}p)</div>
+                    </div>
+                `;
+            }
+
+            if (byType.private.length > 0) {
+                const persons = byType.private.reduce((sum, b) => sum + b.persons, 0);
+                summaryHTML += `
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: #a78bfa;">${byType.private.length}</div>
+                        <div style="font-size: 0.85rem; color: #94a3b8;">Privado (${persons}p)</div>
+                    </div>
+                `;
+            }
+
+            if (byType.astrophoto.length > 0) {
+                const persons = byType.astrophoto.reduce((sum, b) => sum + b.persons, 0);
+                summaryHTML += `
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: #fbbf24;">${byType.astrophoto.length}</div>
+                        <div style="font-size: 0.85rem; color: #94a3b8;">Astrofoto (${persons}p)</div>
+                    </div>
+                `;
+            }
+
+            summaryHTML += '</div>';
+            document.getElementById('modalSummary').innerHTML = summaryHTML;
+
+            // Build bookings list HTML
+            let bookingsHTML = '';
+            dayBookings.forEach(booking => {
+                const tourTypeColors = {
+                    regular: '#10b981',
+                    private: '#a78bfa',
+                    astrophoto: '#fbbf24'
+                };
+                const statusColors = {
+                    confirmed: '#10b981',
+                    pending: '#fbbf24',
+                    cancelled: '#ef4444',
+                    completed: '#60a5fa'
+                };
+
+                bookingsHTML += `
+                    <div class="booking-card">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                            <div>
+                                <div style="font-size: 1.1rem; font-weight: bold; color: #f1f5f9; margin-bottom: 4px;">
+                                    ${booking.name}
+                                </div>
+                                <div style="font-size: 0.75rem; color: #94a3b8;">
+                                    ID: ${booking.booking_id}
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; background: ${tourTypeColors[booking.tour_type]}33; color: ${tourTypeColors[booking.tour_type]}; border: 1px solid ${tourTypeColors[booking.tour_type]}55; margin-bottom: 4px;">
+                                    ${getTourTypeName(booking.tour_type)}
+                                </div>
+                                <div style="display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; background: ${statusColors[booking.status]}33; color: ${statusColors[booking.status]}; border: 1px solid ${statusColors[booking.status]}55;">
+                                    ${getStatusName(booking.status)}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; gap: 8px; font-size: 0.9rem;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-users" style="color: #60a5fa; width: 20px;"></i>
+                                <span style="color: #cbd5e1;">${booking.persons} persona${booking.persons > 1 ? 's' : ''}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-clock" style="color: #60a5fa; width: 20px;"></i>
+                                <span style="color: #cbd5e1;">${booking.time || 'Sin horario especificado'}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-envelope" style="color: #60a5fa; width: 20px;"></i>
+                                <span style="color: #cbd5e1;">${booking.email}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-phone" style="color: #60a5fa; width: 20px;"></i>
+                                <span style="color: #cbd5e1;">${booking.phone}</span>
+                            </div>
+                            ${booking.accommodation ? `
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-hotel" style="color: #60a5fa; width: 20px;"></i>
+                                    <span style="color: #cbd5e1;">${booking.accommodation}</span>
+                                </div>
+                            ` : ''}
+                            ${booking.message ? `
+                                <div style="display: flex; align-items: start; gap: 8px; margin-top: 4px;">
+                                    <i class="fas fa-comment" style="color: #60a5fa; width: 20px; margin-top: 2px;"></i>
+                                    <span style="color: #cbd5e1; font-style: italic;">${booking.message}</span>
+                                </div>
+                            ` : ''}
+                            ${booking.reminder_sent ? `
+                                <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                                    <i class="fas fa-bell" style="color: #34d399; width: 20px;"></i>
+                                    <span style="color: #34d399; font-size: 0.85rem;">Recordatorio enviado</span>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(71, 85, 105, 0.5); font-size: 0.75rem; color: #64748b;">
+                            Creado: ${formatDateTime(booking.created_at)} | Fuente: ${booking.source || 'web'}
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('modalBookingsList').innerHTML = bookingsHTML;
+
+            // Show modal
+            const modal = document.getElementById('dayModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDayModal() {
+            const modal = document.getElementById('dayModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
         }
 
         function renderBookings(bookings) {
@@ -1225,6 +1669,19 @@
                 window.location.href = '/admin-login.html';
             }
         }
+
+        // Modal event listeners
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDayModal();
+            }
+        });
+
+        document.getElementById('dayModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDayModal();
+            }
+        });
 
         // Auto-refresh every 2 minutes
         setInterval(() => {
