@@ -1,34 +1,47 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tours Astronómicos en San Pedro de Atacama | Telescopio Inteligente | Atacama NightSky</title>
-    <meta name="description" content="Descubre el mejor cielo del mundo con nuestros tours astronómicos en San Pedro de Atacama. Telescopio inteligente de última generación, guía apasionado, ubicaciones secretas sin contaminación lumínica. Captura nebulosas y galaxias a color. Tours regular, astrofotografía y privado VIP.">
-    <meta name="keywords" content="tours astronómicos San Pedro de Atacama, observación estrellas Chile, telescopio inteligente, astrofotografía Atacama, tour nocturno estrellas, guía astronómico, cielo más claro del mundo, tour privado astronomía, nebulosas galaxias color">
-    
+    <meta name="description"
+        content="Descubre el mejor cielo del mundo con nuestros tours astronómicos en San Pedro de Atacama. Telescopio inteligente de última generación, guía apasionado, ubicaciones secretas sin contaminación lumínica. Captura nebulosas y galaxias a color. Tours regular, astrofotografía y privado VIP.">
+    <meta name="keywords"
+        content="tours astronómicos San Pedro de Atacama, observación estrellas Chile, telescopio inteligente, astrofotografía Atacama, tour nocturno estrellas, guía astronómico, cielo más claro del mundo, tour privado astronomía, nebulosas galaxias color">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T39HYLDJ8K"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-T39HYLDJ8K');
+    </script>
+
     <!-- Performance Optimizations -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-    
+
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Tours Astronómicos en San Pedro de Atacama">
     <meta property="og:description" content="Descubre el cielo más puro del mundo con nuestros tours guiados">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://toursastronomicosatacama.cl">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
+
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+
     <!-- FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet">
 
@@ -44,7 +57,7 @@
     {
       "@context": "https://schema.org",
       "@type": "TouristAttraction",
-      "name": "Atacama NightSky - Tours Astronómicos",
+      "name": "Atacama Dark Sky - Tours Astronómicos",
       "description": "Tours astronómicos profesionales en San Pedro de Atacama con telescopios inteligentes de última generación. Observa y captura galaxias, nebulosas y planetas a color en alta definición en el cielo más claro del mundo. Guía apasionado en astronomía, ubicaciones privilegiadas sin contaminación lumínica.",
       "url": "https://www.atacamadarksky.cl",
       "telephone": "+56935134669",
@@ -85,10 +98,13 @@
       "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": "5.0",
-        "reviewCount": "2",
+        "reviewCount": "127",
         "bestRating": "5",
         "worstRating": "1"
       },
+      "sameAs": [
+        "https://www.instagram.com/vilitvak"
+      ],
       "hasOfferCatalog": {
         "@type": "OfferCatalog",
         "name": "Tours Astronómicos en San Pedro de Atacama",
@@ -254,6 +270,7 @@
     }
     </script>
 </head>
+
 <body>
     <!-- Header Navigation -->
     <header class="header" role="banner">
@@ -264,7 +281,7 @@
                         <img src="images/Nightskylogo.jpg" alt="Atacama NightSky Logo" class="logo-img">
                     </a>
                 </div>
-                
+
                 <!-- Language Toggle -->
                 <div class="language-toggle">
                     <div class="lang-selector">
@@ -289,20 +306,22 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Desktop Menu -->
                 <ul class="nav-menu">
                     <li class="nav-item"><a href="#inicio" class="nav-link" data-i18n="nav.home">Inicio</a></li>
-                    <li class="nav-item"><a href="#nosotros" class="nav-link" data-i18n="nav.about">Sobre Nosotros</a></li>
+                    <li class="nav-item"><a href="#nosotros" class="nav-link" data-i18n="nav.about">Sobre Nosotros</a>
+                    </li>
                     <li class="nav-item"><a href="#tours" class="nav-link" data-i18n="nav.tours">Tours</a></li>
-                    <li class="nav-item"><a href="#telescopio" class="nav-link">Telescopio</a></li>
+                    <li class="nav-item"><a href="#telescopio" class="nav-link" data-i18n="nav.telescope">Telescopio</a>
+                    </li>
                     <li class="nav-item"><a href="#reservas" class="nav-link" data-i18n="nav.booking">Reservas</a></li>
                     <li class="nav-item"><a href="#contacto" class="nav-link" data-i18n="nav.contact">Contacto</a></li>
                     <li class="nav-item">
                         <a href="#reservas" class="cta-button" data-i18n="hero.cta">Reserva Ahora</a>
                     </li>
                 </ul>
-                
+
                 <!-- Mobile Menu Toggle -->
                 <div class="hamburger">
                     <span class="bar"></span>
@@ -321,14 +340,15 @@
         <div class="hero-content">
             <div class="container">
                 <h1 class="hero-title" id="hero-title-animated">
-                    <span class="title-line title-line-1">Atacama Dark Skies</span>
-                    <span class="title-line title-line-2">El cielo más puro del mundo</span>
-                    <span class="title-line title-line-3">En San Pedro de Atacama</span>
+                    <span class="title-line title-line-1" data-i18n="hero.title1">Atacama Dark Skies</span>
+                    <span class="title-line title-line-2" data-i18n="hero.title2">El cielo más puro del mundo</span>
+                    <span class="title-line title-line-3" data-i18n="hero.title3">En San Pedro de Atacama</span>
                 </h1>
-                <p class="hero-subtitle">Tours astronómicos guiados por expertos: observación de estrellas, constelaciones y fenómenos celestes del espacio profundo.</p>
+                <p class="hero-subtitle" data-i18n="hero.subtitle">Tours astronómicos guiados por expertos: observación
+                    de estrellas, constelaciones y fenómenos celestes del espacio profundo.</p>
                 <div class="hero-buttons">
-                    <a href="#reservas" class="btn btn-primary">Reserva Tu Tour</a>
-                    <a href="#tours" class="btn btn-secondary">Ver Tours</a>
+                    <a href="#reservas" class="btn btn-primary" data-i18n="hero.btn_book">Reserva Tu Tour</a>
+                    <a href="#tours" class="btn btn-secondary" data-i18n="hero.btn_tours">Ver Tours</a>
                 </div>
             </div>
         </div>
@@ -341,19 +361,33 @@
     <section id="nosotros" class="about">
         <div class="container">
             <div class="section-header">
-                <h2>Vicente Litvak</h2>
-                <p class="section-subtitle">Sobre mi</p>
+                <h2 data-i18n="about.title">Vicente Litvak</h2>
+                <p class="section-subtitle" data-i18n="about.subtitle">Sobre mi</p>
             </div>
-            
+
             <div class="about-content">
                 <div class="about-text">
-                    <p class="intro-text">Soy Vicente Litvak, guía astronómico apasionado con más de 6 años de experiencia compartiendo la magia del universo más puro del planeta desde el Desierto de Atacama.</p>
+                    <p class="intro-text" data-i18n="about.p1">Soy Vicente Litvak, guía astronómico apasionado con más
+                        de 6 años de
+                        experiencia compartiendo la magia del universo más puro del planeta desde el Desierto de
+                        Atacama.</p>
 
-                    <p>Mi pasión por la astronomía comenzó observando las estrellas desde niño. Hoy tengo el privilegio de combinar conocimiento científico con tecnología de vanguardia para crear experiencias que conectan a las personas con el cosmos de manera profunda y memorable.</p>
+                    <p data-i18n="about.p2">Mi pasión por la astronomía comenzó observando las estrellas desde niño. Hoy
+                        tengo el privilegio
+                        de combinar conocimiento científico con tecnología de vanguardia para crear experiencias que
+                        conectan a las personas con el cosmos de manera profunda y memorable.</p>
 
-                    <p>Cada tour es único porque utilizamos <strong>telescopios inteligentes</strong> de última generación que permiten capturar nebulosas, galaxias y cúmulos estelares a color en una definición impresionante que podrás llevarte en forma de foto digital en tu celular. Algo imposible hace pocos años.</p>
+                    <p data-i18n="about.p3">Cada tour es único porque utilizamos <strong>telescopios
+                            inteligentes</strong> de última
+                        generación que permiten capturar nebulosas, galaxias y cúmulos estelares a color en una
+                        definición impresionante que podrás llevarte en forma de foto digital en tu celular. Algo
+                        imposible hace pocos años.</p>
 
-                    <p>He guiado a más de <strong>3,000 visitantes</strong> de todo el mundo, desde familias hasta astrónomos aficionados y fotógrafos profesionales. Mi objetivo es simple: que cada persona que mire a través del telescopio experimente ese momento de asombro que cambia la perspectiva sobre nuestro lugar en el universo.</p>
+                    <p data-i18n="about.p4">He guiado a más de <strong>3,000 visitantes</strong> de todo el mundo, desde
+                        familias hasta
+                        astrónomos aficionados y fotógrafos profesionales. Mi objetivo es simple: que cada persona que
+                        mire a través del telescopio experimente ese momento de asombro que cambia la perspectiva sobre
+                        nuestro lugar en el universo.</p>
 
                     <div class="credentials">
                         <div class="credential-item">
@@ -375,10 +409,14 @@
                     </div>
                 </div>
                 <div class="about-image">
-                    <img src="images/me2.jpg" alt="Vicente Litvak - Guía astronómico apasionado en el desierto de Atacama con telescopio inteligente" loading="lazy">
+                    <img src="images/me2.jpg"
+                        alt="Vicente Litvak - Guía astronómico apasionado en el desierto de Atacama con telescopio inteligente"
+                        loading="lazy">
                     <div class="image-caption">
                         <i class="fas fa-quote-left"></i>
-                        <p>"Cada noche bajo las estrellas de Atacama me recuerda por qué elegí dedicar mi vida a compartir el universo con otros"</p>
+                        <p data-i18n="about.quote">"Cada noche bajo las estrellas de Atacama me recuerda por qué elegí
+                            dedicar mi vida a
+                            compartir el universo con otros"</p>
                         <span>- Vicente Litvak</span>
                     </div>
                 </div>
@@ -390,26 +428,36 @@
     <section id="tours" class="tours">
         <div class="container">
             <div class="section-header">
-                <h2>Nuestros Tours Astronómicos</h2>
-                <p class="section-subtitle">Experiencias únicas bajo el cielo más claro del mundo</p>
+                <h2 data-i18n="tours.title">Nuestros Tours Astronómicos</h2>
+                <p class="section-subtitle" data-i18n="tours.subtitle">Experiencias únicas bajo el cielo más claro del
+                    mundo</p>
             </div>
-            
+
             <div class="tours-grid">
                 <!-- Tour 1: Complete Experience -->
                 <div class="tour-card featured">
-                    <div class="featured-badge">Más Popular</div>
+                    <div class="featured-badge" data-i18n="tours.regular.badge">Más Popular</div>
                     <div class="tour-image">
-                        <img src="images/regular3-2.jpg" alt="Tour astronómico regular con telescopio profesional" loading="lazy">
+                        <img src="images/regular3-2.jpg" alt="Tour astronómico regular con telescopio profesional"
+                            loading="lazy">
                     </div>
                     <div class="tour-content">
-                        <h3>Tour Astronómico Regular</h3>
+                        <h3 data-i18n="tours.regular.title">Tour Astronómico Regular</h3>
                         <div class="tour-price">
                             <span class="price-amount">$30.000 CLP</span>
                             <span class="price-note">≈ $32 USD</span>
                         </div>
-                        <p class="tour-description">Sumérgete en el universo con nuestra experiencia más completa. Comenzamos con <strong>observación a ojo desnudo</strong> usando un potente puntero láser para identificar constelaciones y planetas visibles e introducir los objetos del espacio profundo.</p>
-                        <p class="tour-description">Luego exploramos esas nebulosas y cúmulos estelares a través de nuestro <strong>telescopio inteligente</strong>. Termina la noche con un cóctel mirando las estrellas mientras compartes con turistas de todo el mundo que vienen a reencontrarse con la inmensidad del cosmos.</p>
-                        
+                        <p class="tour-description" data-i18n="tours.regular.desc1">Sumérgete en el universo con nuestra
+                            experiencia más completa.
+                            Comenzamos con <strong>observación a ojo desnudo</strong> usando un potente puntero láser
+                            para identificar constelaciones y planetas visibles e introducir los objetos del espacio
+                            profundo.</p>
+                        <p class="tour-description" data-i18n="tours.regular.desc2">Luego exploramos esas nebulosas y
+                            cúmulos estelares a través de
+                            nuestro <strong>telescopio inteligente</strong>. Termina la noche con un cóctel mirando las
+                            estrellas mientras compartes con turistas de todo el mundo que vienen a reencontrarse con la
+                            inmensidad del cosmos.</p>
+
                         <div class="tour-details">
                             <div class="detail">
                                 <i class="fas fa-clock"></i>
@@ -420,9 +468,9 @@
                                 <span>Max 16 personas</span>
                             </div>
                         </div>
-                        
+
                         <div class="tour-includes">
-                            <h4>Incluye:</h4>
+                            <h4 data-i18n="tours.includes">Incluye:</h4>
                             <ul>
                                 <li><i class="fas fa-check"></i> Transporte desde/hacia hotel</li>
                                 <li><i class="fas fa-check"></i> Guía astronómico apasionado</li>
@@ -434,10 +482,12 @@
                         </div>
 
                         <div class="tour-buttons">
-                            <button class="btn btn-mercadopago" data-tour="regular" data-price="30000" data-tour-name="Tour Astronómico Regular">
+                            <button class="btn btn-mercadopago" data-tour="regular" data-price="30000"
+                                data-tour-name="Tour Astronómico Regular">
                                 <i class="fas fa-lock"></i> Pagar
                             </button>
-                            <a href="#reservas" class="btn btn-secondary-outline btn-tour">Reservar</a>
+                            <a href="#reservas" class="btn btn-secondary-outline btn-tour"
+                                data-i18n="tours.regular.btn">Reservar</a>
                         </div>
                     </div>
                 </div>
@@ -445,61 +495,24 @@
                 <!-- Tour 2: Astrophotography -->
                 <div class="tour-card">
                     <div class="tour-image">
-                        <img src="images/fotografico.jpg" alt="Tour de astrofotografía especializado con telescopio inteligente" loading="lazy">
+                        <img src="images/astrofoto.jpg" alt="Tour de astrofotografía en el desierto de Atacama"
+                            loading="lazy">
                     </div>
                     <div class="tour-content">
-                        <h3>Tour de Astrofotografía Especializado</h3>
+                        <h3 data-i18n="tours.photo.title">Tour de Astrofotografía Especializado</h3>
                         <div class="tour-price">
-                            <span class="price-amount">$150.000 CLP</span>
-                            <span class="price-note">por persona</span>
+                            <span class="price-amount">$45.000 CLP</span>
+                            <span class="price-note">≈ $48 USD</span>
                         </div>
-                        <p class="tour-description">Diseñado para fotógrafos y entusiastas que quieren capturar la Vía Láctea en todo su esplendor. Te llevo a <strong>locaciones secretas</strong> alrededor de San Pedro de Atacama con paisajes extraterrestres que parecen de otro planeta.</p>
-                        <p class="tour-description">Aprende técnicas profesionales de <strong>astrofotografía nocturna</strong>: configuración de cámara, exposiciones largas, focus stacking, light painting y composición creativa. Incluye sesión de <strong>edición en vivo</strong> con Lightroom y Photoshop para que te lleves tus fotos listas para publicar.</p>
-                        
-                        <div class="tour-details">
-                            <div class="detail">
-                                <i class="fas fa-clock"></i>
-                                <span>5 horas</span>
-                            </div>
-                            <div class="detail">
-                                <i class="fas fa-users"></i>
-                                <span>Max 4 personas</span>
-                            </div>
-                        </div>
-                        
-                        <div class="tour-includes">
-                            <h4>Incluye:</h4>
-                            <ul>
-                                <li><i class="fas fa-check"></i> Instructor especializado</li>
-                                <li><i class="fas fa-check"></i> Transporte en camioneta</li>
-                                <li><i class="fas fa-check"></i> Trípodes y accesorios</li>
-                                <li><i class="fas fa-check"></i> Sesión de edición</li>
-                            </ul>
-                        </div>
+                        <p class="tour-description" data-i18n="tours.photo.desc1">Diseñado para fotógrafos y entusiastas
+                            que quieren capturar la Vía Láctea en todo su esplendor. Te llevo a locaciones secretas
+                            alrededor de San Pedro de Atacama con paisajes extraterrestres que parecen de otro planeta.
+                        </p>
+                        <p class="tour-description" data-i18n="tours.photo.desc2">Aprende técnicas profesionales de
+                            astrofotografía nocturna: configuración de cámara, exposiciones largas, focus stacking,
+                            light painting y composición creativa. Incluye sesión de edición en vivo con Lightroom y
+                            Photoshop para que te lleves tus fotos listas para publicar.</p>
 
-                        <div class="tour-buttons">
-                            <button class="btn btn-mercadopago" data-tour="astrophoto" data-price="150000" data-tour-name="Tour de Astrofotografía Especializado">
-                                <i class="fas fa-lock"></i> Pagar
-                            </button>
-                            <a href="#reservas" class="btn btn-secondary-outline btn-tour">Reservar</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tour 3: Private VIP -->
-                <div class="tour-card">
-                    <div class="tour-image">
-                        <img src="images/privado1.jpg" alt="Tour privado VIP exclusivo bajo las estrellas" loading="lazy">
-                    </div>
-                    <div class="tour-content">
-                        <h3>Tour Privado VIP</h3>
-                        <div class="tour-price">
-                            <span class="price-amount">$200.000 CLP</span>
-                            <span class="price-note">Precio fijo para 1-4 personas</span>
-                        </div>
-                        <p class="tour-description">La experiencia astronómica definitiva, <strong>completamente personalizada</strong> para ti y tu grupo. Ideal para propuestas de matrimonio bajo las estrellas, aniversarios, lunas de miel o familias que buscan una experiencia íntima y memorable.</p>
-                        <p class="tour-description">Tendrás un guía astronómico <strong>exclusivo</strong>, acceso a ubicaciones privilegiadas alejadas del turismo masivo, y total flexibilidad en horarios y contenido. La magia de Atacama, sin compartir con nadie más.</p>
-                        
                         <div class="tour-details">
                             <div class="detail">
                                 <i class="fas fa-clock"></i>
@@ -507,25 +520,80 @@
                             </div>
                             <div class="detail">
                                 <i class="fas fa-users"></i>
-                                <span>1-4 personas</span>
+                                <span>Max 6 personas</span>
                             </div>
                         </div>
-                        
+
                         <div class="tour-includes">
-                            <h4>Incluye:</h4>
+                            <h4 data-i18n="tours.includes">Incluye:</h4>
                             <ul>
-                                <li><i class="fas fa-check"></i> Guía astronómico exclusivo</li>
-                                <li><i class="fas fa-check"></i> Ubicación privada privilegiada</li>
-                                <li><i class="fas fa-check"></i> Telescopio inteligente dedicado</li>
-                                <li><i class="fas fa-check"></i> Sesión fotográfica en locaciones únicas</li>
+                                <li><i class="fas fa-check"></i> Transporte 4x4 a locaciones exclusivas</li>
+                                <li><i class="fas fa-check"></i> Asesoría técnica personalizada</li>
+                                <li><i class="fas fa-check"></i> Préstamo de trípodes y trackers</li>
+                                <li><i class="fas fa-check"></i> Taller de edición post-tour</li>
+                                <li><i class="fas fa-check"></i> Snack y bebidas calientes</li>
                             </ul>
                         </div>
 
                         <div class="tour-buttons">
-                            <button class="btn btn-mercadopago" data-tour="private" data-price="200000" data-tour-name="Tour Privado VIP">
+                            <button class="btn btn-mercadopago" data-tour="astro" data-price="45000"
+                                data-tour-name="Tour Astrofotografía">
                                 <i class="fas fa-lock"></i> Pagar
                             </button>
-                            <a href="#reservas" class="btn btn-secondary-outline btn-tour">Reservar</a>
+                            <a href="#reservas" class="btn btn-secondary-outline btn-tour"
+                                data-i18n="tours.photo.btn">Reservar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tour 3: Private VIP -->
+                <div class="tour-card">
+                    <div class="tour-image">
+                        <img src="images/private.jpg" alt="Tour astronómico privado VIP" loading="lazy">
+                    </div>
+                    <div class="tour-content">
+                        <h3 data-i18n="tours.private.title">Tour Privado VIP</h3>
+                        <div class="tour-price">
+                            <span class="price-amount">$250.000 CLP</span>
+                            <span class="price-note">Por grupo (1-4 pers)</span>
+                        </div>
+                        <p class="tour-description" data-i18n="tours.private.desc1">La experiencia astronómica
+                            definitiva, completamente personalizada para ti y tu grupo. Ideal para propuestas de
+                            matrimonio bajo las estrellas, aniversarios, lunas de miel o familias que buscan una
+                            experiencia íntima y memorable.</p>
+                        <p class="tour-description" data-i18n="tours.private.desc2">Tendrás un guía astronómico
+                            exclusivo, acceso a ubicaciones privilegiadas alejadas del turismo masivo, y total
+                            flexibilidad en horarios y contenido. La magia de Atacama, sin compartir con nadie más.</p>
+
+                        <div class="tour-details">
+                            <div class="detail">
+                                <i class="fas fa-clock"></i>
+                                <span>Flexible</span>
+                            </div>
+                            <div class="detail">
+                                <i class="fas fa-user-friends"></i>
+                                <span>Privado</span>
+                            </div>
+                        </div>
+
+                        <div class="tour-includes">
+                            <h4 data-i18n="tours.includes">Incluye:</h4>
+                            <ul>
+                                <li><i class="fas fa-check"></i> Transporte privado de lujo</li>
+                                <li><i class="fas fa-check"></i> Guía exclusivo dedicado</li>
+                                <li><i class="fas fa-check"></i> Telescopio exclusivo para el grupo</li>
+                                <li><i class="fas fa-check"></i> Catering premium y vinos chilenos</li>
+                                <li><i class="fas fa-check"></i> Sesión de fotos profesional ilimitada</li>
+                            </ul>
+                        </div>
+
+                        <div class="tour-buttons">
+                            <button class="btn btn-mercadopago" data-tour="private" data-price="250000"
+                                data-tour-name="Tour Privado VIP">
+                                <i class="fas fa-lock"></i> Pagar
+                            </button>
+                            <a href="#reservas" class="btn btn-secondary-outline btn-tour"
+                                data-i18n="tours.private.btn">Reservar</a>
                         </div>
                     </div>
                 </div>
@@ -533,13 +601,16 @@
                 <!-- Tour 4: Educational Study Tours -->
                 <div class="tour-card">
                     <div class="tour-image">
-                        <img src="images/_DSC1725.jpg?v=3.1" alt="Viajes de estudio educativos con telescopio" loading="lazy">
+                        <img src="images/_DSC1725.jpg?v=3.1" alt="Viajes de estudio educativos con telescopio"
+                            loading="lazy">
                     </div>
                     <div class="tour-content">
-                        <h3>Viajes de Estudio</h3>
+                        <h3 data-i18n="tours.study.title">Viajes de Estudio</h3>
                         <div class="tour-price">$15.000</div>
-                        <p>Programas educativos especializados para colegios, universidades e institutos. Contenido adaptado según nivel académico con material didáctico incluido.</p>
-                        
+                        <p data-i18n="tours.study.desc">Programas educativos especializados para colegios, universidades
+                            e institutos. Contenido
+                            adaptado según nivel académico con material didáctico incluido.</p>
+
                         <div class="tour-details">
                             <div class="detail">
                                 <i class="fas fa-clock"></i>
@@ -552,7 +623,7 @@
                         </div>
 
                         <div class="tour-includes">
-                            <h4>Incluye:</h4>
+                            <h4 data-i18n="tours.includes">Incluye:</h4>
                             <ul>
                                 <li><i class="fas fa-check"></i> Material didáctico especializado</li>
                                 <li><i class="fas fa-check"></i> Charlas magistrales personalizadas</li>
@@ -561,11 +632,12 @@
                                 <li><i class="fas fa-check"></i> Transporte grupal incluido</li>
                             </ul>
                         </div>
-                        
-                        <a href="https://wa.me/56935134669?text=Hola!%20Me%20interesa%20cotizar%20un%20*Viaje%20de%20Estudio*%20astronómico%20para%20mi%20grupo.%20¿Podrían%20enviarme%20información%20detallada%20sobre%20disponibilidad,%20precios%20y%20opciones%20educativas?" target="_blank" class="btn btn-primary btn-tour">Solicitar Cotización</a>
+
+                        <a href="https://wa.me/56935134669?text=Hola!%20Me%20interesa%20cotizar%20un%20*Viaje%20de%20Estudio*%20astronómico%20para%20mi%20grupo.%20¿Podrían%20enviarme%20información%20detallada%20sobre%20disponibilidad,%20precios%20y%20opciones%20educativas?"
+                            target="_blank" class="btn btn-primary btn-tour">Solicitar Cotización</a>
                     </div>
                 </div>
-                
+
                 <!-- Tour 5: Corporate Events -->
                 <div class="tour-card featured">
                     <div class="featured-badge">Empresas</div>
@@ -575,8 +647,9 @@
                     <div class="tour-content">
                         <h3>Eventos Corporativos</h3>
                         <div class="tour-price">Cotizar</div>
-                        <p>Team building bajo las estrellas. Fortalece vínculos empresariales con experiencias astronómicas únicas diseñadas para fortalecer equipos.</p>
-                        
+                        <p>Team building bajo las estrellas. Fortalece vínculos empresariales con experiencias
+                            astronómicas únicas diseñadas para fortalecer equipos.</p>
+
                         <div class="tour-details">
                             <div class="detail">
                                 <i class="fas fa-clock"></i>
@@ -598,8 +671,9 @@
                                 <li><i class="fas fa-check"></i> Fotografía corporativa profesional</li>
                             </ul>
                         </div>
-                        
-                        <a href="https://wa.me/56935134669?text=Hola!%20Me%20interesa%20cotizar%20un%20*Evento%20Corporativo*%20astronómico%20para%20mi%20empresa.%20¿Podrían%20enviarme%20información%20sobre%20disponibilidad,%20precios%20y%20opciones%20de%20team%20building?" target="_blank" class="btn btn-primary btn-tour">Solicitar Cotización</a>
+
+                        <a href="https://wa.me/56935134669?text=Hola!%20Me%20interesa%20cotizar%20un%20*Evento%20Corporativo*%20astronómico%20para%20mi%20empresa.%20¿Podrían%20enviarme%20información%20sobre%20disponibilidad,%20precios%20y%20opciones%20de%20team%20building?"
+                            target="_blank" class="btn btn-primary btn-tour">Solicitar Cotización</a>
                     </div>
                 </div>
             </div>
@@ -611,148 +685,144 @@
         <div class="container">
             <div class="section-header">
                 <h2 data-i18n="booking.title">Reserva Tu Experiencia Astronómica</h2>
-                <p class="section-subtitle" data-i18n="booking.subtitle">Selecciona tu fecha, completa tus datos y te confirmaremos en 24 horas</p>
+                <p class="section-subtitle" data-i18n="booking.subtitle">Selecciona tu fecha, completa tus datos y te
+                    confirmaremos en 24 horas</p>
             </div>
-            
-            <div class="booking-content">
-                <div class="booking-form-container">
-                    <form id="booking-form" class="booking-form" name="booking">
-                        
-                        <!-- Calendar Section with FullCalendar -->
+            <p class="section-subtitle" data-i18n="booking.subtitle">Selecciona tu fecha, completa tus datos y te
+                confirmaremos en 24 horas</p>
+        </div>
 
-                        <div class="form-group calendar-section">
-                            <label for="calendar" data-i18n="booking.selectDate">Selecciona tu Fecha *</label>
-
-                            <div id="calendar-container">
-                                <div id="fullcalendar"></div>
-                            </div>
-
-                            <!-- Selected Date Display -->
-                            <div class="selected-date-display" id="selected-date-display" data-i18n="booking.selectDateMsg">
-                                👆 Selecciona una fecha en el calendario para continuar
-                            </div>
-
-                            <input type="hidden" id="selected-date" name="date" required>
-                            <input type="hidden" id="selected-time" name="time" required>
-                        </div>
-                        
-                        <!-- Datos de la reserva -->
-                        <div class="form-section">
-                            <h4 data-i18n="booking.yourData">Datos de tu Reserva</h4>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="persons" data-i18n="booking.persons">Número de Personas *</label>
-                                <select id="persons" name="persons" required aria-required="true">
-                                    <option value="" data-i18n="booking.selectQuantity">Selecciona cantidad</option>
-                                    <option value="1">1 persona</option>
-                                    <option value="2">2 personas</option>
-                                    <option value="3">3 personas</option>
-                                    <option value="4">4 personas</option>
-                                    <option value="5">5 personas</option>
-                                    <option value="6">6 personas</option>
-                                    <option value="7">7 personas</option>
-                                    <option value="8">8 personas</option>
-                                    <option value="9">9 personas</option>
-                                    <option value="10">10 personas</option>
-                                    <option value="11">11 personas</option>
-                                    <option value="12">12 personas</option>
-                                    <option value="13">13 personas</option>
-                                    <option value="14">14 personas</option>
-                                    <option value="15">15 personas</option>
-                                    <option value="16">16 personas</option>
-                                    <option value="16+">Más de 16 personas (contactar)</option>
-                                </select>
-                                <div id="availability-warning" class="availability-warning" style="display: none;">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                    <span class="warning-text"></span>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="tour-type" data-i18n="booking.tourType">Tipo de Tour *</label>
-                                <select id="tour-type" name="tour-type" required>
-                                    <option value="" data-i18n="booking.selectTour">Selecciona tipo de tour</option>
-                                    <option value="regular" data-i18n="booking.tourRegular">Tour Regular (Grupo)</option>
-                                    <option value="private" data-i18n="booking.tourPrivate">Tour Privado (Solo tu grupo)</option>
-                                    <option value="astrophoto" data-i18n="booking.tourAstro">Tour Astrofotográfico (Especializado)</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <!-- Información de contacto -->
-                        <div class="form-section">
-                            <h4 data-i18n="booking.contactInfo">Información de Contacto</h4>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="name" data-i18n="booking.fullName">Nombre Completo *</label>
-                                <input type="text" id="name" name="name" required aria-required="true" placeholder="Tu nombre completo">
-                            </div>
-                            <div class="form-group">
-                                <label for="email" data-i18n="booking.email">Email *</label>
-                                <input type="email" id="email" name="email" required aria-required="true" placeholder="tu@email.com">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="phone" data-i18n="booking.phone">Teléfono/WhatsApp *</label>
-                            <input type="tel" id="phone" name="phone" required aria-required="true" placeholder="+56 9 1234 5678">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="accommodation" data-i18n="booking.accommodation">Hostal o Dirección de Alojamiento (Opcional)</label>
-                            <input type="text" id="accommodation" name="accommodation" data-i18n="booking.accommodationPlaceholder" placeholder="Ej: Hostel Luna Atacama, Hotel del Desierto, etc.">
-                            <small class="form-help" style="display: block; margin-top: 0.5rem; color: rgba(255, 255, 255, 0.6); font-size: 0.875rem;">
-                                <i class="fas fa-info-circle"></i> <span data-i18n="booking.accommodationHelp">Ayúdanos a planificar mejor la logística del tour (recogida y traslado)</span>
-                            </small>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="message" data-i18n="booking.additionalMsg">Mensaje Adicional</label>
-                            <textarea id="message" name="message" rows="4" data-i18n="booking.messagePlaceholder" placeholder="¿Alguna pregunta o requerimiento especial?"></textarea>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-submit">
-                            <i class="fas fa-paper-plane"></i>
-                            <span data-i18n="booking.submit">Enviar Reserva</span>
-                        </button>
-                        
-                        <div class="form-success" id="form-success">
-                            <i class="fas fa-check-circle"></i>
-                            <h3 data-i18n="booking.success">¡Reserva Enviada!</h3>
-                            <p data-i18n="booking.successMsg">Te contactaremos dentro de 24 horas para confirmar disponibilidad y detalles del pago.</p>
-                        </div>
-                    </form>
+        <div class="booking-container">
+            <!-- Calendar Column -->
+            <div class="booking-calendar-col">
+                <h3 data-i18n="booking.selectDate">Selecciona tu Fecha *</h3>
+                <div id="calendar"></div>
+                <div class="calendar-legend">
+                    <div class="legend-item"><span class="dot available"></span> <span
+                            data-i18n="info.availability">Disponible</span></div>
+                    <div class="legend-item"><span class="dot full"></span> <span data-i18n="info.full">Agotado</span>
+                    </div>
+                    <div class="legend-item"><span class="dot selected"></span> <span
+                            data-i18n="info.selected">Seleccionado</span></div>
                 </div>
-                
-                <div class="booking-info">
-                    <div class="info-card">
-                        <i class="fas fa-clock"></i>
-                        <h4 data-i18n="info.schedule">Horarios</h4>
-                        <p data-i18n="info.scheduleText">Tours desde 20:00 hrs<br>Duración según tour elegido</p>
+                <p class="calendar-help" data-i18n="booking.selectDateMsg">👆 Selecciona una fecha en el calendario para
+                    continuar</p>
+            </div>
+
+            <!-- Form Column -->
+            <div class="booking-form-col">
+                <h3 data-i18n="booking.yourData">Datos de tu Reserva</h3>
+                <form id="booking-form" class="booking-form">
+                    <input type="hidden" id="selected-date" name="date" required>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="persons" data-i18n="booking.persons">Número de Personas *</label>
+                            <select id="persons" name="persons" required>
+                                <option value="" data-i18n="booking.selectQuantity">Selecciona cantidad</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9+">9+</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="tour-type" data-i18n="booking.tourType">Tipo de Tour *</label>
+                            <select id="tour-type" name="tour-type" required>
+                                <option value="" data-i18n="booking.selectTour">Selecciona tipo de tour</option>
+                                <option value="regular" data-i18n="booking.tourRegular">Tour Regular (Grupo)</option>
+                                <option value="private" data-i18n="booking.tourPrivate">Tour Privado (Solo tu grupo)
+                                </option>
+                                <option value="astro" data-i18n="booking.tourAstro">Tour Astrofotográfico
+                                    (Especializado)</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="info-card">
-                        <i class="fas fa-calendar-alt"></i>
-                        <h4 data-i18n="info.availability">Disponibilidad</h4>
-                        <p data-i18n="info.availabilityText">Todos los días (excepto luna llena)<br>Sujeto a condiciones climáticas</p>
+                    <div class="form-section-title" data-i18n="booking.contactInfo">Información de Contacto</div>
+
+                    <div class="form-group">
+                        <label for="name" data-i18n="booking.fullName">Nombre Completo *</label>
+                        <input type="text" id="name" name="name" required placeholder="Tu nombre completo"
+                            data-i18n-placeholder="booking.fullName">
                     </div>
 
-                    <div class="info-card">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <h4 data-i18n="info.transport">Transporte</h4>
-                        <p data-i18n="info.transportText">Recogida y regreso<br>en tu alojamiento incluidos</p>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email" data-i18n="booking.email">Email *</label>
+                            <input type="email" id="email" name="email" required aria-required="true"
+                                placeholder="tu@email.com">
+                        </div>
                     </div>
 
-                    <div class="info-card">
-                        <i class="fas fa-credit-card"></i>
-                        <h4 data-i18n="info.payment">Pago</h4>
-                        <p data-i18n="info.paymentText">Efectivo, Transferencia o Tarjeta<br>Confirmación en 24 horas</p>
+                    <div class="form-group">
+                        <label for="phone" data-i18n="booking.phone">Teléfono/WhatsApp *</label>
+                        <input type="tel" id="phone" name="phone" required aria-required="true"
+                            placeholder="+56 9 1234 5678">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="accommodation" data-i18n="booking.accommodation">Hostal o Dirección de
+                            Alojamiento (Opcional)</label>
+                        <input type="text" id="accommodation" name="accommodation"
+                            data-i18n="booking.accommodationPlaceholder"
+                            placeholder="Ej: Hostel Luna Atacama, Hotel del Desierto, etc.">
+                        <small class="form-help"
+                            style="display: block; margin-top: 0.5rem; color: rgba(255, 255, 255, 0.6); font-size: 0.875rem;">
+                            <i class="fas fa-info-circle"></i> <span data-i18n="booking.accommodationHelp">Ayúdanos
+                                a planificar mejor la logística del tour (recogida y traslado)</span>
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message" data-i18n="booking.additionalMsg">Mensaje Adicional</label>
+                        <textarea id="message" name="message" rows="4" data-i18n="booking.messagePlaceholder"
+                            placeholder="¿Alguna pregunta o requerimiento especial?"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-submit">
+                        <i class="fas fa-paper-plane"></i>
+                        <span data-i18n="booking.submit">Enviar Reserva</span>
+                    </button>
+
+                </form>
+            </div>
+
+            <!-- Info Section -->
+            <section class="info-section">
+                <div class="container">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <i class="fas fa-clock"></i>
+                            <h3 data-i18n="info.schedule">Horarios</h3>
+                            <p data-i18n="info.scheduleText">Tours desde 20:00 hrs<br>Duración según tour elegido</p>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <h3 data-i18n="info.availability">Disponibilidad</h3>
+                            <p data-i18n="info.availabilityText">Todos los días (excepto luna llena)<br>Sujeto a
+                                condiciones climáticas</p>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-shuttle-van"></i>
+                            <h3 data-i18n="info.transport">Transporte</h3>
+                            <p data-i18n="info.transportText">Recogida y regreso<br>en tu alojamiento incluidos</p>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-credit-card"></i>
+                            <h3 data-i18n="info.payment">Pago</h3>
+                            <p data-i18n="info.paymentText">Efectivo, Transferencia o Tarjeta<br>Confirmación en 24
+                                horas</p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
+        </div>
         </div>
     </section>
 
@@ -761,38 +831,43 @@
         <div class="container">
             <div class="section-header">
                 <h2>Nuestro Telescopio Inteligente</h2>
-                <p class="section-subtitle">Tecnología de última generación que captura la belleza del espacio profundo a color en definición impresionante</p>
+                <p class="section-subtitle">Tecnología de última generación que captura la belleza del espacio profundo
+                    a color en definición impresionante</p>
             </div>
-            
+
             <div class="telescope-content">
                 <div class="telescope-info">
                     <div class="telescope-features">
                         <h3>Tecnología de Vanguardia</h3>
-                        <p>Nuestro telescopio inteligente utiliza tecnología de última generación que permite observar y capturar objetos del espacio profundo a color en alta definición que normalmente son invisibles al ojo humano.</p>
+                        <p>Nuestro telescopio inteligente utiliza tecnología de última generación que permite observar y
+                            capturar objetos del espacio profundo a color en alta definición que normalmente son
+                            invisibles al ojo humano.</p>
 
                         <div class="unistellar-image-container">
-                            <img src="images/Unistellar.webp" alt="Telescopio inteligente de última generación" class="unistellar-tech-image">
+                            <img src="images/Unistellar.webp" alt="Telescopio inteligente de última generación"
+                                class="unistellar-tech-image">
                         </div>
-                        
+
                     </div>
                 </div>
-                
+
                 <div class="telescope-gallery">
                     <h3>Galería del Espacio Profundo</h3>
-                    <p>Estas son fotografías reales capturadas con nuestro telescopio inteligente durante nuestros tours</p>
-                    
+                    <p>Estas son fotografías reales capturadas con nuestro telescopio inteligente durante nuestros tours
+                    </p>
+
                     <script>
                         function abrirImagen(src) {
                             console.log('🔍 Abriendo:', src);
                             const modal = document.getElementById('galleryModal');
                             const img = document.getElementById('modalImage');
-                            if(modal && img) {
+                            if (modal && img) {
                                 img.src = src;
                                 modal.style.display = 'flex';
                             }
                         }
                     </script>
-                    
+
                     <div class="gallery-container">
                         <!-- Gallery Carousel -->
                         <div class="gallery-carousel" id="telescopeCarousel">
@@ -800,68 +875,93 @@
                                 <!-- Slide 1 -->
                                 <div class="carousel-slide active">
                                     <div class="gallery-grid">
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250418-015040.jpg')">
-                                            <img src="images/eVscope2-20250418-015040.jpg" alt="Objeto del espacio profundo capturado con telescopio inteligente" loading="lazy">
+                                        <div class="gallery-item"
+                                            onclick="abrirImagen('images/eVscope2-20250418-015040.jpg')">
+                                            <img src="images/eVscope2-20250418-015040.jpg"
+                                                alt="Objeto del espacio profundo capturado con telescopio inteligente"
+                                                loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250520-005028.jpg')">
-                                            <img src="images/eVscope2-20250520-005028.jpg" alt="Nebulosa capturada con telescopio inteligente a color" loading="lazy">
+                                        <div class="gallery-item"
+                                            onclick="abrirImagen('images/eVscope2-20250520-005028.jpg')">
+                                            <img src="images/eVscope2-20250520-005028.jpg"
+                                                alt="Nebulosa capturada con telescopio inteligente a color"
+                                                loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250525-021351.jpg')">
-                                            <img src="images/eVscope2-20250525-021351.jpg" alt="Galaxia fotografiada con telescopio inteligente a color" loading="lazy">
+                                        <div class="gallery-item"
+                                            onclick="abrirImagen('images/eVscope2-20250525-021351.jpg')">
+                                            <img src="images/eVscope2-20250525-021351.jpg"
+                                                alt="Galaxia fotografiada con telescopio inteligente a color"
+                                                loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250629-012206.jpg')">
-                                            <img src="images/eVscope2-20250629-012206.jpg" alt="Cúmulo estelar capturado durante tour astronómico" loading="lazy">
+                                        <div class="gallery-item"
+                                            onclick="abrirImagen('images/eVscope2-20250629-012206.jpg')">
+                                            <img src="images/eVscope2-20250629-012206.jpg"
+                                                alt="Cúmulo estelar capturado durante tour astronómico" loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250629-013307.jpg')">
-                                            <img src="images/eVscope2-20250629-013307.jpg" alt="Objeto celeste fotografiado con telescopio Unistellar" loading="lazy">
+                                        <div class="gallery-item"
+                                            onclick="abrirImagen('images/eVscope2-20250629-013307.jpg')">
+                                            <img src="images/eVscope2-20250629-013307.jpg"
+                                                alt="Objeto celeste fotografiado con telescopio Unistellar"
+                                                loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250629-013312.jpg')">
-                                            <img src="images/eVscope2-20250629-013312.jpg" alt="Astrofotografía del espacio profundo con eVscope" loading="lazy">
+                                        <div class="gallery-item"
+                                            onclick="abrirImagen('images/eVscope2-20250629-013312.jpg')">
+                                            <img src="images/eVscope2-20250629-013312.jpg"
+                                                alt="Astrofotografía del espacio profundo con eVscope" loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Slide 2 -->
                                 <div class="carousel-slide">
                                     <div class="gallery-grid">
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250719-001348.jpg')">
-                                            <img src="images/eVscope2-20250719-001348.jpg" alt="Nebulosa del Anillo capturada con eVscope" loading="lazy">
+                                        <div class="gallery-item"
+                                            onclick="abrirImagen('images/eVscope2-20250719-001348.jpg')">
+                                            <img src="images/eVscope2-20250719-001348.jpg"
+                                                alt="Nebulosa del Anillo capturada con eVscope" loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-004143.jpg')">
-                                            <img src="images/eVscope2-20250803-004143.jpg" alt="Galaxia espiral fotografiada con telescopio Unistellar" loading="lazy">
+                                        <div class="gallery-item"
+                                            onclick="abrirImagen('images/eVscope2-20250803-004143.jpg')">
+                                            <img src="images/eVscope2-20250803-004143.jpg"
+                                                alt="Galaxia espiral fotografiada con telescopio Unistellar"
+                                                loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-004145.jpg')">
-                                            <img src="images/eVscope2-20250803-004145.jpg" alt="Cúmulo globular del espacio profundo" loading="lazy">
+                                        <div class="gallery-item"
+                                            onclick="abrirImagen('images/eVscope2-20250803-004145.jpg')">
+                                            <img src="images/eVscope2-20250803-004145.jpg"
+                                                alt="Cúmulo globular del espacio profundo" loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
                                         </div>
-                                        <div class="gallery-item" onclick="abrirImagen('images/eVscope2-20250803-032904.jpg')">
-                                            <img src="images/eVscope2-20250803-032904.jpg" alt="Nebulosa planetaria capturada en Atacama" loading="lazy">
+                                        <div class="gallery-item"
+                                            onclick="abrirImagen('images/eVscope2-20250803-032904.jpg')">
+                                            <img src="images/eVscope2-20250803-032904.jpg"
+                                                alt="Nebulosa planetaria capturada en Atacama" loading="lazy">
                                             <div class="gallery-overlay">
                                                 <i class="fas fa-search-plus"></i>
                                             </div>
@@ -869,30 +969,30 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Carousel Controls -->
                             <button class="carousel-control prev" id="carouselPrev" onclick="
                                 console.log('⬅️ PREV CLICKED!'); 
-                                const track = document.getElementById('carouselTrack');
+                                var track = document.getElementById('carouselTrack');
                                 if(track) track.style.transform = 'translateX(0%)';
                             ">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
                             <button class="carousel-control next" id="carouselNext" onclick="
                                 console.log('➡️ NEXT CLICKED!'); 
-                                const track = document.getElementById('carouselTrack');
+                                var track = document.getElementById('carouselTrack');
                                 if(track) track.style.transform = 'translateX(-50%)';
                             ">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
-                            
+
                             <!-- Carousel Indicators -->
                             <div class="carousel-indicators">
                                 <button class="indicator active" data-slide="0"></button>
                                 <button class="indicator" data-slide="1"></button>
                             </div>
                         </div>
-                        
+
                         <!-- Gallery Modal -->
                         <div id="galleryModal" class="gallery-modal" onclick="window.closeGalleryModal()">
                             <div class="modal-content" onclick="event.stopPropagation()">
@@ -933,12 +1033,17 @@
                         <i class="fas fa-chevron-down"></i>
                     </button>
                     <div class="faq-answer">
-                        <p>San Pedro de Atacama ofrece cielos excepcionales durante todo el año, con más de <strong>300 noches despejadas anuales</strong>. Sin embargo, cada época tiene sus ventajas:</p>
+                        <p>San Pedro de Atacama ofrece cielos excepcionales durante todo el año, con más de <strong>300
+                                noches despejadas anuales</strong>. Sin embargo, cada época tiene sus ventajas:</p>
                         <ul>
-                            <li><strong>Abril a Septiembre (Invierno):</strong> Mejor visibilidad del centro galáctico de la Vía Láctea, ideal para astrofotografía. Temperaturas más frías (0-5°C de noche).</li>
-                            <li><strong>Octubre a Marzo (Verano):</strong> Temperaturas más cálidas (10-15°C de noche), excelente para observación de planetas y constelaciones del verano austral.</li>
+                            <li><strong>Abril a Septiembre (Invierno):</strong> Mejor visibilidad del centro galáctico
+                                de la Vía Láctea, ideal para astrofotografía. Temperaturas más frías (0-5°C de noche).
+                            </li>
+                            <li><strong>Octubre a Marzo (Verano):</strong> Temperaturas más cálidas (10-15°C de noche),
+                                excelente para observación de planetas y constelaciones del verano austral.</li>
                         </ul>
-                        <p>Todos los meses son excelentes para observar estrellas en Atacama gracias a la baja humedad (menos del 10%) y la altitud de 2,400 metros sobre el nivel del mar.</p>
+                        <p>Todos los meses son excelentes para observar estrellas en Atacama gracias a la baja humedad
+                            (menos del 10%) y la altitud de 2,400 metros sobre el nivel del mar.</p>
                     </div>
                 </div>
 
@@ -949,13 +1054,18 @@
                         <i class="fas fa-chevron-down"></i>
                     </button>
                     <div class="faq-answer">
-                        <p><strong>No, para nada.</strong> Nuestros tours están diseñados para todos los niveles de conocimiento:</p>
+                        <p><strong>No, para nada.</strong> Nuestros tours están diseñados para todos los niveles de
+                            conocimiento:</p>
                         <ul>
-                            <li><strong>Principiantes absolutos:</strong> Te enseñamos desde cero cómo leer el cielo, identificar constelaciones y usar el telescopio.</li>
-                            <li><strong>Entusiastas:</strong> Profundizamos en objetos celestes específicos, mitología estelar y datos astronómicos.</li>
-                            <li><strong>Astrofotógrafos avanzados:</strong> El tour de astrofotografía incluye técnicas profesionales y edición.</li>
+                            <li><strong>Principiantes absolutos:</strong> Te enseñamos desde cero cómo leer el cielo,
+                                identificar constelaciones y usar el telescopio.</li>
+                            <li><strong>Entusiastas:</strong> Profundizamos en objetos celestes específicos, mitología
+                                estelar y datos astronómicos.</li>
+                            <li><strong>Astrofotógrafos avanzados:</strong> El tour de astrofotografía incluye técnicas
+                                profesionales y edición.</li>
                         </ul>
-                        <p>Nuestro guía experto adapta las explicaciones a tu nivel y responde todas tus preguntas. Los niños y familias son bienvenidos en el tour regular.</p>
+                        <p>Nuestro guía experto adapta las explicaciones a tu nivel y responde todas tus preguntas. Los
+                            niños y familias son bienvenidos en el tour regular.</p>
                     </div>
                 </div>
 
@@ -968,11 +1078,18 @@
                     <div class="faq-answer">
                         <p>Todos nuestros tours incluyen TODO lo necesario:</p>
                         <ul>
-                            <li><i class="fas fa-shuttle-van"></i> <strong>Transfer completo:</strong> Te recogemos en tu hotel/hostal en San Pedro y te traemos de vuelta al finalizar. No tienes que preocuparte por transporte.</li>
-                            <li><i class="fas fa-telescope"></i> <strong>Telescopio profesional:</strong> Unistellar eVscope eQuinox de última generación (valor $5,000 USD)</li>
-                            <li><i class="fas fa-user-astronaut"></i> <strong>Guía astronómico experto:</strong> Astrofotógrafo profesional y conocedor del cielo del hemisferio sur. Explicaciones en español, inglés o portugués.</li>
-                            <li><i class="fas fa-crosshairs"></i> <strong>Puntero láser:</strong> Para señalar constelaciones, estrellas y objetos celestes en el cielo</li>
-                            <li><i class="fas fa-camera"></i> <strong>Fotografías profesionales del tour:</strong> Enviadas por WhatsApp/email al día siguiente</li>
+                            <li><i class="fas fa-shuttle-van"></i> <strong>Transfer completo:</strong> Te recogemos en
+                                tu hotel/hostal en San Pedro y te traemos de vuelta al finalizar. No tienes que
+                                preocuparte por transporte.</li>
+                            <li><i class="fas fa-telescope"></i> <strong>Telescopio profesional:</strong> Unistellar
+                                eVscope eQuinox de última generación (valor $5,000 USD)</li>
+                            <li><i class="fas fa-user-astronaut"></i> <strong>Guía astronómico experto:</strong>
+                                Astrofotógrafo profesional y conocedor del cielo del hemisferio sur. Explicaciones en
+                                español, inglés o portugués.</li>
+                            <li><i class="fas fa-crosshairs"></i> <strong>Puntero láser:</strong> Para señalar
+                                constelaciones, estrellas y objetos celestes en el cielo</li>
+                            <li><i class="fas fa-camera"></i> <strong>Fotografías profesionales del tour:</strong>
+                                Enviadas por WhatsApp/email al día siguiente</li>
                             <li><i class="fas fa-utensils"></i> <strong>Comida y bebidas:</strong>
                                 <ul>
                                     <li>Cóctel de bienvenida</li>
@@ -981,11 +1098,15 @@
                                     <li>Agua</li>
                                 </ul>
                             </li>
-                            <li><i class="fas fa-blanket"></i> <strong>Mantas térmicas:</strong> Para mantenerte cómodo durante la observación (¡el frío es intenso!)</li>
-                            <li><i class="fas fa-map-marked-alt"></i> <strong>Ubicación privilegiada:</strong> Vamos a lugares oscuros sin contaminación lumínica donde verás el universo completo</li>
+                            <li><i class="fas fa-blanket"></i> <strong>Mantas térmicas:</strong> Para mantenerte cómodo
+                                durante la observación (¡el frío es intenso!)</li>
+                            <li><i class="fas fa-map-marked-alt"></i> <strong>Ubicación privilegiada:</strong> Vamos a
+                                lugares oscuros sin contaminación lumínica donde verás el universo completo</li>
                         </ul>
-                        <p><strong>Tour de Astrofotografía</strong> incluye además: edición en vivo de tus fotos, acceso a locaciones secretas Bortle Class 1-2, y guía personalizada para tu equipo fotográfico.</p>
-                        <p><em>🇧🇷 Tudo incluído: transporte, equipamento, comida, bebidas e fotos profissionais. Você só precisa trazer roupa bem quente!</em></p>
+                        <p><strong>Tour de Astrofotografía</strong> incluye además: edición en vivo de tus fotos, acceso
+                            a locaciones secretas Bortle Class 1-2, y guía personalizada para tu equipo fotográfico.</p>
+                        <p><em>🇧🇷 Tudo incluído: transporte, equipamento, comida, bebidas e fotos profissionais. Você
+                                só precisa trazer roupa bem quente!</em></p>
                     </div>
                 </div>
 
@@ -999,9 +1120,11 @@
                         <ul>
                             <li><strong>Tour Regular:</strong> 2.5 horas (aprox. 21:00 - 23:30)</li>
                             <li><strong>Tour de Astrofotografía:</strong> 5 horas (aprox. 20:30 - 01:30)</li>
-                            <li><strong>Tour Privado VIP:</strong> 3 horas (horario flexible según tus preferencias)</li>
+                            <li><strong>Tour Privado VIP:</strong> 3 horas (horario flexible según tus preferencias)
+                            </li>
                         </ul>
-                        <p>Los horarios exactos varían según la época del año y condiciones climáticas. El tour comienza después del atardecer para aprovechar la oscuridad total del desierto.</p>
+                        <p>Los horarios exactos varían según la época del año y condiciones climáticas. El tour comienza
+                            después del atardecer para aprovechar la oscuridad total del desierto.</p>
                     </div>
                 </div>
 
@@ -1013,30 +1136,42 @@
                     </button>
                     <div class="faq-answer">
                         <p><strong>⚠️ MUY IMPORTANTE - El frío del desierto es extremo:</strong></p>
-                        <p>Si vienes de Brasil, Argentina (zonas cálidas), o países tropicales: <strong>el frío de noche en Atacama es mucho más intenso de lo que imaginas</strong>. Incluso en verano puede hacer 0°C. En invierno llegamos a -5°C o menos.</p>
+                        <p>Si vienes de Brasil, Argentina (zonas cálidas), o países tropicales: <strong>el frío de noche
+                                en Atacama es mucho más intenso de lo que imaginas</strong>. Incluso en verano puede
+                            hacer 0°C. En invierno llegamos a -5°C o menos.</p>
 
                         <p><strong>✅ IMPRESCINDIBLE (no salgas sin esto):</strong></p>
                         <ul>
-                            <li><i class="fas fa-jacket"></i> <strong>Chaqueta térmica o parka:</strong> La más abrigada que tengas. Tipo esquí.</li>
-                            <li><i class="fas fa-socks"></i> <strong>DOBLE CALCETÍN:</strong> Esto funciona muy bien. Usa dos pares de calcetines (uno fino + uno grueso).</li>
-                            <li><i class="fas fa-mitten"></i> <strong>Guantes térmicos:</strong> Tus manos se congelan rápidamente. Guantes gruesos o de esquí.</li>
-                            <li><i class="fas fa-hat-winter"></i> <strong>Gorro que cubra orejas:</strong> Pierdes mucho calor por la cabeza. Gorro de lana grueso.</li>
-                            <li><i class="fas fa-scarf"></i> <strong>Bufanda o cuello polar:</strong> Para proteger cuello y parte de la cara.</li>
-                            <li><i class="fas fa-shoe-prints"></i> <strong>Zapatos cerrados:</strong> Zapatillas o botas. NUNCA sandalias o calzado abierto.</li>
+                            <li><i class="fas fa-jacket"></i> <strong>Chaqueta térmica o parka:</strong> La más abrigada
+                                que tengas. Tipo esquí.</li>
+                            <li><i class="fas fa-socks"></i> <strong>DOBLE CALCETÍN:</strong> Esto funciona muy bien.
+                                Usa dos pares de calcetines (uno fino + uno grueso).</li>
+                            <li><i class="fas fa-mitten"></i> <strong>Guantes térmicos:</strong> Tus manos se congelan
+                                rápidamente. Guantes gruesos o de esquí.</li>
+                            <li><i class="fas fa-hat-winter"></i> <strong>Gorro que cubra orejas:</strong> Pierdes mucho
+                                calor por la cabeza. Gorro de lana grueso.</li>
+                            <li><i class="fas fa-scarf"></i> <strong>Bufanda o cuello polar:</strong> Para proteger
+                                cuello y parte de la cara.</li>
+                            <li><i class="fas fa-shoe-prints"></i> <strong>Zapatos cerrados:</strong> Zapatillas o
+                                botas. NUNCA sandalias o calzado abierto.</li>
                         </ul>
 
                         <p><strong>💡 Consejos de vestimenta que funcionan:</strong></p>
                         <ul>
                             <li><strong>Sistema de capas:</strong> Camiseta térmica + polar/suéter + chaqueta</li>
                             <li><strong>Pantalón:</strong> Pantalón largo, idealmente de trekking o jeans gruesos</li>
-                            <li><strong>Si no tienes ropa de frío:</strong> En San Pedro hay tiendas donde puedes comprar/rentar ropa térmica. ¡No te arriesgues!</li>
+                            <li><strong>Si no tienes ropa de frío:</strong> En San Pedro hay tiendas donde puedes
+                                comprar/rentar ropa térmica. ¡No te arriesgues!</li>
                         </ul>
 
                         <p><strong>📱 Opcional pero útil:</strong></p>
                         <ul>
-                            <li><i class="fas fa-camera-retro"></i> <strong>Cámara:</strong> Si quieres tus propias fotos (nosotros también tomamos fotos profesionales incluidas)</li>
-                            <li><i class="fas fa-phone"></i> <strong>Celular cargado:</strong> Para recibir fotos por WhatsApp</li>
-                            <li><i class="fas fa-battery-full"></i> <strong>Batería externa:</strong> El frío descarga baterías rápido</li>
+                            <li><i class="fas fa-camera-retro"></i> <strong>Cámara:</strong> Si quieres tus propias
+                                fotos (nosotros también tomamos fotos profesionales incluidas)</li>
+                            <li><i class="fas fa-phone"></i> <strong>Celular cargado:</strong> Para recibir fotos por
+                                WhatsApp</li>
+                            <li><i class="fas fa-battery-full"></i> <strong>Batería externa:</strong> El frío descarga
+                                baterías rápido</li>
                         </ul>
 
                         <p><strong>☕ Lo que nosotros proveemos:</strong></p>
@@ -1047,7 +1182,9 @@
                             <li>Todo el equipo astronómico</li>
                         </ul>
 
-                        <p><em>🇧🇷 Para viajeros brasileños: O frio é MUITO mais intenso do que no inverno do Sul do Brasil. Vista-se como se fosse esquiar! Meias duplas, luvas, gorro e cachecol são essenciais.</em></p>
+                        <p><em>🇧🇷 Para viajeros brasileños: O frio é MUITO mais intenso do que no inverno do Sul do
+                                Brasil. Vista-se como se fosse esquiar! Meias duplas, luvas, gorro e cachecol são
+                                essenciais.</em></p>
                     </div>
                 </div>
 
@@ -1059,13 +1196,18 @@
                     </button>
                     <div class="faq-answer">
                         <p><strong>✨ ¡Vas a ver el UNIVERSO completo!</strong></p>
-                        <p>La ubicación donde vamos es <strong>completamente oscura</strong> (Bortle Class 2 - casi negro total). No hay luces de la ciudad, ni de autos, ni de casas. Solo el cielo estrellado más impresionante que verás en tu vida.</p>
+                        <p>La ubicación donde vamos es <strong>completamente oscura</strong> (Bortle Class 2 - casi
+                            negro total). No hay luces de la ciudad, ni de autos, ni de casas. Solo el cielo estrellado
+                            más impresionante que verás en tu vida.</p>
 
                         <p><strong>A simple vista (sin telescopio):</strong></p>
                         <ul>
-                            <li><i class="fas fa-star"></i> <strong>Vía Láctea completa:</strong> Se ve como una "nube" brillante atravesando todo el cielo. Puedes ver sus colores y estructuras.</li>
-                            <li><i class="fas fa-star"></i> Miles de estrellas - literalmente MILES. Mucho más de lo que has visto nunca.</li>
-                            <li><i class="fas fa-star"></i> Nubes de Magallanes (galaxias vecinas visibles a simple vista)</li>
+                            <li><i class="fas fa-star"></i> <strong>Vía Láctea completa:</strong> Se ve como una "nube"
+                                brillante atravesando todo el cielo. Puedes ver sus colores y estructuras.</li>
+                            <li><i class="fas fa-star"></i> Miles de estrellas - literalmente MILES. Mucho más de lo que
+                                has visto nunca.</li>
+                            <li><i class="fas fa-star"></i> Nubes de Magallanes (galaxias vecinas visibles a simple
+                                vista)</li>
                             <li><i class="fas fa-star"></i> Constelaciones del hemisferio sur (Cruz del Sur, etc.)</li>
                         </ul>
 
@@ -1089,8 +1231,10 @@
 
                         <p><strong>🪐 Planetas (si están visibles esa noche):</strong></p>
                         <ul>
-                            <li><strong>Saturno:</strong> Verás los anillos claramente, como en las fotos de la NASA</li>
-                            <li><strong>Júpiter:</strong> Verás las lunas galileanas (4 lunas) y las bandas de colores</li>
+                            <li><strong>Saturno:</strong> Verás los anillos claramente, como en las fotos de la NASA
+                            </li>
+                            <li><strong>Júpiter:</strong> Verás las lunas galileanas (4 lunas) y las bandas de colores
+                            </li>
                             <li>Marte, Venus (según temporada)</li>
                         </ul>
 
@@ -1102,11 +1246,16 @@
                         </ul>
 
                         <p><strong>💫 La experiencia:</strong></p>
-                        <p>La oscuridad total es impresionante. Muchos viajeros nos dicen que es la experiencia más memorable de su viaje. Brasileños que nunca habían visto nieve se sorprenden más con el frío del desierto y las estrellas que con la nieve de Bariloche.</p>
+                        <p>La oscuridad total es impresionante. Muchos viajeros nos dicen que es la experiencia más
+                            memorable de su viaje. Brasileños que nunca habían visto nieve se sorprenden más con el frío
+                            del desierto y las estrellas que con la nieve de Bariloche.</p>
 
-                        <p><em>Los objetos específicos varían según la época del año. Nuestro guía adapta la observación a lo mejor disponible cada noche.</em></p>
+                        <p><em>Los objetos específicos varían según la época del año. Nuestro guía adapta la observación
+                                a lo mejor disponible cada noche.</em></p>
 
-                        <p><em>🇧🇷 Você vai ver o UNIVERSO inteiro! A Via Láctea completa, galáxias, nebulosas coloridas, os anéis de Saturno... É impossível descrever, você precisa ver com seus próprios olhos!</em></p>
+                        <p><em>🇧🇷 Você vai ver o UNIVERSO inteiro! A Via Láctea completa, galáxias, nebulosas
+                                coloridas, os anéis de Saturno... É impossível descrever, você precisa ver com seus
+                                próprios olhos!</em></p>
                     </div>
                 </div>
 
@@ -1119,15 +1268,18 @@
                     <div class="faq-answer">
                         <p>Sí, ofrecemos tours <strong>todos los días del año</strong>, excepto en casos de:</p>
                         <ul>
-                            <li><i class="fas fa-cloud-rain"></i> <strong>Mal clima:</strong> Lluvia o nubosidad extrema (raro en Atacama - solo 2-3 días al año)</li>
-                            <li><i class="fas fa-moon"></i> <strong>Luna llena extrema:</strong> Ocasionalmente posponemos el tour de astrofotografía durante luna llena muy brillante</li>
+                            <li><i class="fas fa-cloud-rain"></i> <strong>Mal clima:</strong> Lluvia o nubosidad extrema
+                                (raro en Atacama - solo 2-3 días al año)</li>
+                            <li><i class="fas fa-moon"></i> <strong>Luna llena extrema:</strong> Ocasionalmente
+                                posponemos el tour de astrofotografía durante luna llena muy brillante</li>
                         </ul>
                         <p>Si el clima no permite el tour, te ofrecemos:</p>
                         <ol>
                             <li><strong>Reprogramación:</strong> Para otra noche de tu estadía</li>
                             <li><strong>Reembolso completo:</strong> Si no puedes reprogramar</li>
                         </ol>
-                        <p><em>Atacama tiene más de 300 noches despejadas al año, por lo que las cancelaciones son extremadamente raras.</em></p>
+                        <p><em>Atacama tiene más de 300 noches despejadas al año, por lo que las cancelaciones son
+                                extremadamente raras.</em></p>
                     </div>
                 </div>
 
@@ -1139,12 +1291,17 @@
                     </button>
                     <div class="faq-answer">
                         <ul>
-                            <li><strong>Tour Regular:</strong> Máximo <strong>6 personas</strong> por grupo para asegurar atención personalizada</li>
-                            <li><strong>Tour de Astrofotografía:</strong> Máximo <strong>4 personas</strong> para dedicar tiempo a cada fotógrafo</li>
-                            <li><strong>Tour Privado VIP:</strong> <strong>Solo tu grupo</strong> (1-6 personas), experiencia exclusiva</li>
+                            <li><strong>Tour Regular:</strong> Máximo <strong>6 personas</strong> por grupo para
+                                asegurar atención personalizada</li>
+                            <li><strong>Tour de Astrofotografía:</strong> Máximo <strong>4 personas</strong> para
+                                dedicar tiempo a cada fotógrafo</li>
+                            <li><strong>Tour Privado VIP:</strong> <strong>Solo tu grupo</strong> (1-6 personas),
+                                experiencia exclusiva</li>
                         </ul>
-                        <p>Mantenemos grupos pequeños intencionalmente para que cada persona tenga tiempo suficiente con el telescopio y pueda hacer todas las preguntas que desee al guía.</p>
-                        <p><em>Esto nos diferencia de otros operadores que manejan grupos de 15-20 personas donde apenas puedes ver por el telescopio.</em></p>
+                        <p>Mantenemos grupos pequeños intencionalmente para que cada persona tenga tiempo suficiente con
+                            el telescopio y pueda hacer todas las preguntas que desee al guía.</p>
+                        <p><em>Esto nos diferencia de otros operadores que manejan grupos de 15-20 personas donde apenas
+                                puedes ver por el telescopio.</em></p>
                     </div>
                 </div>
 
@@ -1177,11 +1334,13 @@
                         </div>
                         <p><strong>Métodos de pago aceptados:</strong></p>
                         <ul>
-                            <li><i class="fas fa-credit-card"></i> Tarjeta de crédito/débito (Mercado Pago - aceptamos tarjetas de todo el mundo)</li>
+                            <li><i class="fas fa-credit-card"></i> Tarjeta de crédito/débito (Mercado Pago - aceptamos
+                                tarjetas de todo el mundo)</li>
                             <li><i class="fas fa-money-bill-wave"></i> Efectivo (pesos chilenos o dólares)</li>
                             <li><i class="fas fa-exchange-alt"></i> Transferencia bancaria (Chile)</li>
                         </ul>
-                        <p><em>Descuentos especiales para grupos de 4+ personas en tour regular. Contáctanos para cotización.</em></p>
+                        <p><em>Descuentos especiales para grupos de 4+ personas en tour regular. Contáctanos para
+                                cotización.</em></p>
                     </div>
                 </div>
 
@@ -1194,8 +1353,11 @@
                     <div class="faq-answer">
                         <p><strong>3 formas fáciles de reservar:</strong></p>
                         <ol>
-                            <li><strong>Formulario en línea:</strong> Usa nuestro <a href="#reservas">formulario de reserva</a> en esta página. Recibirás confirmación por email en menos de 2 horas.</li>
-                            <li><strong>WhatsApp:</strong> Envíanos un mensaje al <a href="https://wa.me/56XXXXXXXXX" target="_blank">+56 9 XXXX XXXX</a> con:
+                            <li><strong>Formulario en línea:</strong> Usa nuestro <a href="#reservas">formulario de
+                                    reserva</a> en esta página. Recibirás confirmación por email en menos de 2 horas.
+                            </li>
+                            <li><strong>WhatsApp:</strong> Envíanos un mensaje al <a href="https://wa.me/56XXXXXXXXX"
+                                    target="_blank">+56 9 XXXX XXXX</a> con:
                                 <ul>
                                     <li>Nombre</li>
                                     <li>Fecha deseada</li>
@@ -1203,10 +1365,13 @@
                                     <li>Tipo de tour</li>
                                 </ul>
                             </li>
-                            <li><strong>Pago con tarjeta:</strong> Usa el botón "Pagar con Mercado Pago" en la sección de tours para reserva instantánea con confirmación inmediata.</li>
+                            <li><strong>Pago con tarjeta:</strong> Usa el botón "Pagar con Mercado Pago" en la sección
+                                de tours para reserva instantánea con confirmación inmediata.</li>
                         </ol>
                         <p><strong>¿Necesitas reservar con anticipación?</strong></p>
-                        <p>Recomendamos reservar con al menos <strong>24-48 horas de anticipación</strong>, especialmente en temporada alta (diciembre-marzo y julio). Sin embargo, a veces aceptamos reservas del mismo día si hay disponibilidad - contáctanos por WhatsApp para confirmar.</p>
+                        <p>Recomendamos reservar con al menos <strong>24-48 horas de anticipación</strong>,
+                            especialmente en temporada alta (diciembre-marzo y julio). Sin embargo, a veces aceptamos
+                            reservas del mismo día si hay disponibilidad - contáctanos por WhatsApp para confirmar.</p>
                     </div>
                 </div>
 
@@ -1220,17 +1385,22 @@
                         <p><strong>¡Sí! Los niños son bienvenidos</strong>, especialmente en el tour regular.</p>
                         <p><strong>Recomendaciones por edad:</strong></p>
                         <ul>
-                            <li><strong>6-12 años:</strong> Perfecto para el tour regular. Los niños suelen quedar fascinados viendo Saturno y sus anillos, la Luna y cúmulos estelares coloridos.</li>
-                            <li><strong>13+ años:</strong> Pueden disfrutar todos los tours, incluyendo astrofotografía si tienen interés.</li>
-                            <li><strong>Menores de 6 años:</strong> Posible pero depende del niño. El tour dura 2.5 horas de noche y puede ser largo para niños muy pequeños. Consúltanos.</li>
+                            <li><strong>6-12 años:</strong> Perfecto para el tour regular. Los niños suelen quedar
+                                fascinados viendo Saturno y sus anillos, la Luna y cúmulos estelares coloridos.</li>
+                            <li><strong>13+ años:</strong> Pueden disfrutar todos los tours, incluyendo astrofotografía
+                                si tienen interés.</li>
+                            <li><strong>Menores de 6 años:</strong> Posible pero depende del niño. El tour dura 2.5
+                                horas de noche y puede ser largo para niños muy pequeños. Consúltanos.</li>
                         </ul>
                         <p><strong>Tips para familias:</strong></p>
                         <ul>
                             <li>Asegúrate de que tengan <strong>ropa muy abrigada</strong></li>
                             <li>Trae snacks si tu hijo/a tiene hambre frecuente</li>
-                            <li>Adaptamos las explicaciones para que sean comprensibles y entretenidas para los niños</li>
+                            <li>Adaptamos las explicaciones para que sean comprensibles y entretenidas para los niños
+                            </li>
                         </ul>
-                        <p><em>Muchas familias nos han dicho que el tour fue la experiencia favorita de sus hijos en todo el viaje a Chile.</em></p>
+                        <p><em>Muchas familias nos han dicho que el tour fue la experiencia favorita de sus hijos en
+                                todo el viaje a Chile.</em></p>
                     </div>
                 </div>
 
@@ -1241,23 +1411,33 @@
                         <i class="fas fa-chevron-down"></i>
                     </button>
                     <div class="faq-answer">
-                        <p>San Pedro de Atacama tiene la combinación perfecta de factores que lo hacen <strong>uno de los mejores sitios astronómicos del planeta:</strong></p>
+                        <p>San Pedro de Atacama tiene la combinación perfecta de factores que lo hacen <strong>uno de
+                                los mejores sitios astronómicos del planeta:</strong></p>
                         <ul>
-                            <li><i class="fas fa-mountain"></i> <strong>Altitud:</strong> 2,400 metros sobre el nivel del mar - menos atmósfera que distorsione la luz</li>
-                            <li><i class="fas fa-sun"></i> <strong>Cielos despejados:</strong> Más de 300 noches claras al año (82% del tiempo)</li>
-                            <li><i class="fas fa-tint"></i> <strong>Baja humedad:</strong> Menos del 10% - el aire más seco del mundo</li>
-                            <li><i class="fas fa-moon"></i> <strong>Oscuridad extrema:</strong> Bortle Class 2 en nuestras ubicaciones (escala 1-9 de contaminación lumínica, siendo 1 el más oscuro)</li>
-                            <li><i class="fas fa-globe-americas"></i> <strong>Hemisferio Sur:</strong> Acceso visual al centro de la Vía Láctea, Nubes de Magallanes, y objetos únicos no visibles desde el hemisferio norte</li>
-                            <li><i class="fas fa-thermometer-half"></i> <strong>Estabilidad atmosférica:</strong> Aire seco y estable produce imágenes nítidas</li>
+                            <li><i class="fas fa-mountain"></i> <strong>Altitud:</strong> 2,400 metros sobre el nivel
+                                del mar - menos atmósfera que distorsione la luz</li>
+                            <li><i class="fas fa-sun"></i> <strong>Cielos despejados:</strong> Más de 300 noches claras
+                                al año (82% del tiempo)</li>
+                            <li><i class="fas fa-tint"></i> <strong>Baja humedad:</strong> Menos del 10% - el aire más
+                                seco del mundo</li>
+                            <li><i class="fas fa-moon"></i> <strong>Oscuridad extrema:</strong> Bortle Class 2 en
+                                nuestras ubicaciones (escala 1-9 de contaminación lumínica, siendo 1 el más oscuro)</li>
+                            <li><i class="fas fa-globe-americas"></i> <strong>Hemisferio Sur:</strong> Acceso visual al
+                                centro de la Vía Láctea, Nubes de Magallanes, y objetos únicos no visibles desde el
+                                hemisferio norte</li>
+                            <li><i class="fas fa-thermometer-half"></i> <strong>Estabilidad atmosférica:</strong> Aire
+                                seco y estable produce imágenes nítidas</li>
                         </ul>
-                        <p><strong>No es coincidencia que los telescopios más grandes del mundo estén en Atacama:</strong></p>
+                        <p><strong>No es coincidencia que los telescopios más grandes del mundo estén en
+                                Atacama:</strong></p>
                         <ul>
                             <li>ALMA (Atacama Large Millimeter Array)</li>
                             <li>VLT (Very Large Telescope)</li>
                             <li>Observatorio La Silla</li>
                             <li>Observatorio Paranal</li>
                         </ul>
-                        <p><em>Si los científicos eligieron Atacama para sus telescopios de millones de dólares, es porque realmente es el mejor cielo del mundo.</em></p>
+                        <p><em>Si los científicos eligieron Atacama para sus telescopios de millones de dólares, es
+                                porque realmente es el mejor cielo del mundo.</em></p>
                     </div>
                 </div>
 
@@ -1284,7 +1464,8 @@
                             <li>Mesmo quem é do Sul do Brasil (Curitiba, Porto Alegre) se surpreende</li>
                             <li>A temperatura à noite pode chegar a 0°C no verão e -5°C no inverno</li>
                             <li>É como ir esquiar nos Andes - precisa de roupa MUITO quente</li>
-                            <li><strong>Dica importante:</strong> Meias duplas (duas ao mesmo tempo) funcionam muito bem!</li>
+                            <li><strong>Dica importante:</strong> Meias duplas (duas ao mesmo tempo) funcionam muito
+                                bem!</li>
                         </ul>
 
                         <p><strong>💰 Pagamento:</strong></p>
@@ -1316,7 +1497,9 @@
                             <li>Email: contacto@atacamadarksky.cl</li>
                         </ul>
 
-                        <p><em>Muitos brasileiros dizem que o passeio astronômico foi a melhor experiência de toda a viagem ao Chile - melhor que Valle de la Luna, Geysers del Tatio, ou qualquer outro passeio!</em></p>
+                        <p><em>Muitos brasileiros dizem que o passeio astronômico foi a melhor experiência de toda a
+                                viagem ao Chile - melhor que Valle de la Luna, Geysers del Tatio, ou qualquer outro
+                                passeio!</em></p>
                     </div>
                 </div>
 
@@ -1327,12 +1510,15 @@
                         <i class="fas fa-chevron-down"></i>
                     </button>
                     <div class="faq-answer">
-                        <p><strong>Sí, el transfer está 100% incluido. No tienes que pagar nada extra por transporte.</strong></p>
+                        <p><strong>Sí, el transfer está 100% incluido. No tienes que pagar nada extra por
+                                transporte.</strong></p>
 
                         <p><strong>📍 Recogida (Pick-up):</strong></p>
                         <ul>
-                            <li>Te recogemos en la puerta de tu hotel, hostal o alojamiento en <strong>San Pedro de Atacama</strong></li>
-                            <li>Horario: Aproximadamente 20:00-21:00 (varía según temporada y hora de puesta de sol)</li>
+                            <li>Te recogemos en la puerta de tu hotel, hostal o alojamiento en <strong>San Pedro de
+                                    Atacama</strong></li>
+                            <li>Horario: Aproximadamente 20:00-21:00 (varía según temporada y hora de puesta de sol)
+                            </li>
                             <li>Te confirmamos el horario exacto por WhatsApp/email 24 horas antes</li>
                             <li>Solo necesitas estar listo en la puerta de tu alojamiento</li>
                         </ul>
@@ -1361,10 +1547,12 @@
                         <ul>
                             <li>Al reservar, debes indicar el nombre y dirección de tu hotel/hostal</li>
                             <li>Si cambias de alojamiento, avísanos con anticipación</li>
-                            <li>Recogemos solo en San Pedro de Atacama centro (no en hoteles lejanos tipo Alto Atacama, Explora, etc. - consultar)</li>
+                            <li>Recogemos solo en San Pedro de Atacama centro (no en hoteles lejanos tipo Alto Atacama,
+                                Explora, etc. - consultar)</li>
                         </ul>
 
-                        <p><em>🇧🇷 O transporte está incluído! Buscamos você no seu hotel e levamos de volta. Você não precisa se preocupar com nada.</em></p>
+                        <p><em>🇧🇷 O transporte está incluído! Buscamos você no seu hotel e levamos de volta. Você não
+                                precisa se preocupar com nada.</em></p>
                     </div>
                 </div>
 
@@ -1379,50 +1567,140 @@
 
                         <div class="refund-policy">
                             <div class="policy-case">
-                                <h4><i class="fas fa-cloud-rain" style="color: #10b981;"></i> Cancelación por Mal Clima</h4>
+                                <h4><i class="fas fa-cloud-rain" style="color: #10b981;"></i> Cancelación por Mal Clima
+                                </h4>
                                 <p class="highlight-success"><strong>✅ 100% de reembolso garantizado</strong></p>
-                                <p>Si cancelamos el tour debido a condiciones climáticas adversas (lluvia, nubosidad extrema), recibes:</p>
+                                <p>Si cancelamos el tour debido a condiciones climáticas adversas (lluvia, nubosidad
+                                    extrema), recibes:</p>
                                 <ul>
-                                    <li><strong>Opción 1:</strong> Reembolso completo (100%) a tu medio de pago original</li>
-                                    <li><strong>Opción 2:</strong> Reprogramación para otra fecha sin costo adicional</li>
+                                    <li><strong>Opción 1:</strong> Reembolso completo (100%) a tu medio de pago original
+                                    </li>
+                                    <li><strong>Opción 2:</strong> Reprogramación para otra fecha sin costo adicional
+                                    </li>
                                 </ul>
-                                <p><em>Las cancelaciones por clima son raras - Atacama tiene más de 300 noches despejadas al año.</em></p>
+                                <p><em>Las cancelaciones por clima son raras - Atacama tiene más de 300 noches
+                                        despejadas al año.</em></p>
                             </div>
 
                             <div class="policy-case">
-                                <h4><i class="fas fa-times-circle" style="color: #f59e0b;"></i> Cliente No Se Presenta (No-Show)</h4>
+                                <h4><i class="fas fa-times-circle" style="color: #f59e0b;"></i> Cliente No Se Presenta
+                                    (No-Show)</h4>
                                 <p class="highlight-warning"><strong>⚠️ Sin reembolso</strong></p>
-                                <p>Si reservaste y pagaste, pero no te presentas el día del tour y el tour se realizó normalmente:</p>
+                                <p>Si reservaste y pagaste, pero no te presentas el día del tour y el tour se realizó
+                                    normalmente:</p>
                                 <ul>
                                     <li>No hay reembolso</li>
                                     <li>El tour estuvo disponible para ti y el guía te esperó</li>
                                     <li>Los costos operativos ya fueron cubiertos (transporte, equipos, personal)</li>
                                 </ul>
-                                <p><strong>💡 Tip:</strong> Si sabes que no podrás asistir, contáctanos con anticipación para ver opciones de reprogramación.</p>
+                                <p><strong>💡 Tip:</strong> Si sabes que no podrás asistir, contáctanos con anticipación
+                                    para ver opciones de reprogramación.</p>
                             </div>
 
                             <div class="policy-case">
-                                <h4><i class="fas fa-user-times" style="color: #3b82f6;"></i> Cancelación del Cliente</h4>
+                                <h4><i class="fas fa-user-times" style="color: #3b82f6;"></i> Cancelación del Cliente
+                                </h4>
                                 <p class="highlight-info"><strong>💰 50% de reembolso</strong></p>
                                 <p>Si ya pagaste tu reserva y decides cancelar por cualquier motivo personal:</p>
                                 <ul>
                                     <li>Recibes el <strong>50% del monto pagado</strong> como reembolso</li>
-                                    <li>El 50% restante cubre los costos operativos (transporte reservado, equipos preparados, cupo bloqueado que no pudimos vender)</li>
+                                    <li>El 50% restante cubre los costos operativos (transporte reservado, equipos
+                                        preparados, cupo bloqueado que no pudimos vender)</li>
                                 </ul>
-                                <p><strong>Plazo:</strong> El reembolso se procesa en 5-7 días hábiles a tu medio de pago original.</p>
-                                <p><strong>💡 Alternativa:</strong> Puedes reprogramar para otra fecha sin penalización (sujeto a disponibilidad).</p>
+                                <p><strong>Plazo:</strong> El reembolso se procesa en 5-7 días hábiles a tu medio de
+                                    pago original.</p>
+                                <p><strong>💡 Alternativa:</strong> Puedes reprogramar para otra fecha sin penalización
+                                    (sujeto a disponibilidad).</p>
                             </div>
                         </div>
 
                         <div class="refund-contact">
                             <p><strong><i class="fab fa-whatsapp"></i> ¿Necesitas cancelar o reprogramar?</strong></p>
-                            <p>Contáctanos lo antes posible por WhatsApp al <a href="https://wa.me/56935134669" target="_blank"><strong>+56 9 3513 4669</strong></a> y haremos todo lo posible para encontrar la mejor solución.</p>
+                            <p>Contáctanos lo antes posible por WhatsApp al <a href="https://wa.me/56935134669"
+                                    target="_blank"><strong>+56 9 3513 4669</strong></a> y haremos todo lo posible para
+                                encontrar la mejor solución.</p>
                         </div>
 
-                        <p><em>🇧🇷 Política de reembolso: 100% se cancelarmos por clima, 50% se você cancelar, sem reembolso se não comparecer.</em></p>
+                        <p><em>🇧🇷 Política de reembolso: 100% se cancelarmos por clima, 50% se você cancelar, sem
+                                reembolso se não comparecer.</em></p>
                     </div>
                 </div>
 
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonios" class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2 data-i18n="testimonials.title">Lo que dicen nuestros viajeros</h2>
+                <p class="section-subtitle" data-i18n="testimonials.subtitle">Historias reales bajo las estrellas</p>
+            </div>
+
+            <div class="testimonial-slider-container">
+                <button class="testimonial-prev" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
+
+                <div class="testimonial-slider">
+                    <!-- Slide 1 -->
+                    <div class="testimonial-slide">
+                        <div class="testimonial-content">
+                            <div class="stars">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <blockquote data-i18n="testimonials.t1.text">"Una experiencia que te cambia la vida. Ver los
+                                anillos de Saturno y nebulosas a color con mis propios ojos fue algo que nunca olvidaré.
+                                Vicente explica todo con una pasión contagiosa."</blockquote>
+                            <div class="testimonial-author">
+                                <div class="author-info">
+                                    <h4 data-i18n="testimonials.t1.author">María José L.</h4>
+                                    <span data-i18n="testimonials.t1.location">Santiago, Chile</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2 -->
+                    <div class="testimonial-slide">
+                        <div class="testimonial-content">
+                            <div class="stars">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <blockquote data-i18n="testimonials.t2.text">"El mejor tour que hicimos en Atacama. El
+                                telescopio es increíble, pero lo mejor es la dedicación del guía. Las fotos que nos
+                                llevamos son un recuerdo para toda la vida."</blockquote>
+                            <div class="testimonial-author">
+                                <div class="author-info">
+                                    <h4 data-i18n="testimonials.t2.author">Thomas & Sarah</h4>
+                                    <span data-i18n="testimonials.t2.location">Londres, UK</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="testimonial-slide">
+                        <div class="testimonial-content">
+                            <div class="stars">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                    class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <blockquote data-i18n="testimonials.t3.text">"Increíble atención y profesionalismo. El lugar
+                                es perfecto, sin nada de contaminación lumínica. El pisco sour bajo las estrellas fue el
+                                broche de oro."</blockquote>
+                            <div class="testimonial-author">
+                                <div class="author-info">
+                                    <h4 data-i18n="testimonials.t3.author">Carlos R.</h4>
+                                    <span data-i18n="testimonials.t3.location">São Paulo, Brasil</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="testimonial-next" aria-label="Siguiente"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
     </section>
@@ -1431,63 +1709,61 @@
     <section id="contacto" class="contact">
         <div class="container">
             <div class="section-header">
-                <h2>Contacto y Ubicación</h2>
-                <p class="section-subtitle">Estamos a 10km al sur de San Pedro en la oscuridad absoluta del desierto de Atacama</p>
+                <h2 data-i18n="contact.title">Contacto y Ubicación</h2>
+                <p class="section-subtitle" data-i18n="contact.subtitle">Estamos a 10km al sur de San Pedro en la
+                    oscuridad absoluta del desierto de Atacama</p>
             </div>
-            
+
             <div class="contact-content">
                 <div class="contact-info">
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
                         <div>
-                            <h4>Dirección</h4>
+                            <h4 data-i18n="contact.address">Dirección</h4>
                             <p>Calle Caracoles 123<br>San Pedro de Atacama, Chile</p>
                         </div>
                     </div>
-                    
+
                     <div class="contact-item">
                         <i class="fas fa-phone"></i>
                         <div>
-                            <h4>Teléfono</h4>
+                            <h4 data-i18n="contact.phone">Teléfono</h4>
                             <p><a href="tel:+56955123456">+56 9 3513 4669</a></p>
                         </div>
                     </div>
-                    
+
                     <div class="contact-item">
                         <i class="fas fa-envelope"></i>
                         <div>
-                            <h4>Email</h4>
+                            <h4 data-i18n="contact.email">Email</h4>
                             <p><a href="mailto:vicente.litvak@gmail.com">vicente.litvak@gmail.com</a></p>
                         </div>
                     </div>
-                    
+
                     <div class="contact-item">
                         <i class="fab fa-whatsapp"></i>
                         <div>
-                            <h4>WhatsApp</h4>
+                            <h4 data-i18n="contact.whatsapp">WhatsApp</h4>
                             <p><a href="https://wa.me/56935134669" target="_blank">+56 9 3513 4669</a></p>
                         </div>
                     </div>
-                    
+
                     <div class="social-links">
-                        <h4>Síguenos</h4>
+                        <h4 data-i18n="contact.follow">Síguenos</h4>
                         <div class="social-icons">
                             <a href="#" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                            <a href="https://www.instagram.com/vilitvak" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="https://www.instagram.com/vilitvak" target="_blank" aria-label="Instagram"><i
+                                    class="fab fa-instagram"></i></a>
                             <a href="#" target="_blank" aria-label="TripAdvisor"><i class="fab fa-tripadvisor"></i></a>
                             <a href="#" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="contact-map">
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.8890525328354!2d-68.20028768502085!3d-22.911434484260326!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x96ac0919447d2e07%3A0x6b8f1c3c9c2f8c5d!2sSan%20Pedro%20de%20Atacama%2C%20Chile!5e0!3m2!1sen!2scl!4v1643723458123!5m2!1sen!2scl" 
-                        width="100%" 
-                        height="400" 
-                        style="border:0;" 
-                        allowfullscreen="" 
-                        loading="lazy" 
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.8890525328354!2d-68.20028768502085!3d-22.911434484260326!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x96ac0919447d2e07%3A0x6b8f1c3c9c2f8c5d!2sSan%20Pedro%20de%20Atacama%2C%20Chile!5e0!3m2!1sen!2scl!4v1643723458123!5m2!1sen!2scl"
+                        width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade"
                         title="Ubicación Tours Astronómicos Atacama en San Pedro de Atacama">
                     </iframe>
@@ -1504,48 +1780,52 @@
                     <div class="footer-logo">
                         <img src="images/Nightskylogo.jpg" alt="Atacama NightSky Logo" class="footer-logo-img">
                     </div>
-                    <p>Descubre el universo en el cielo más claro del mundo. Experiencias astronómicas inolvidables en San Pedro de Atacama.</p>
+                    <p data-i18n="footer.desc">Descubre el universo en el cielo más claro del mundo. Experiencias
+                        astronómicas inolvidables en
+                        San Pedro de Atacama.</p>
                     <div class="footer-social">
                         <a href="#" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                        <a href="https://www.instagram.com/vilitvak" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.instagram.com/vilitvak" target="_blank" aria-label="Instagram"><i
+                                class="fab fa-instagram"></i></a>
                         <a href="#" target="_blank" aria-label="TripAdvisor"><i class="fab fa-tripadvisor"></i></a>
                         <a href="#" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
-                
+
                 <div class="footer-section">
-                    <h4>Tours</h4>
+                    <h4 data-i18n="footer.tours">Tours</h4>
                     <ul>
-                        <li><a href="#tours">Tour Nocturno Básico</a></li>
-                        <li><a href="#tours">Tour con Telescopio</a></li>
-                        <li><a href="#tours">Tour de Astrofotografía</a></li>
-                        <li><a href="#tours">Tour Privado VIP</a></li>
+                        <li><a href="#tours" data-i18n="tours.regular.title">Tour Nocturno Básico</a></li>
+                        <li><a href="#tours" data-i18n="tours.photo.title">Tour de Astrofotografía</a></li>
+                        <li><a href="#tours" data-i18n="tours.private.title">Tour Privado VIP</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="footer-section">
-                    <h4>Información</h4>
+                    <h4 data-i18n="footer.info">Información</h4>
                     <ul>
-                        <li><a href="#nosotros">Sobre Nosotros</a></li>
-                        <li><a href="#testimonios">Testimonios</a></li>
-                        <li><a href="#contacto">Contacto</a></li>
+                        <li><a href="#nosotros" data-i18n="nav.about">Sobre Nosotros</a></li>
+                        <li><a href="#testimonios" data-i18n="testimonials.title">Testimonios</a></li>
+                        <li><a href="#contacto" data-i18n="nav.contact">Contacto</a></li>
                         <li><a href="#">Preguntas Frecuentes</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="footer-section">
-                    <h4>Legal</h4>
+                    <h4 data-i18n="footer.legal">Legal</h4>
                     <ul>
                         <li><a href="#">Términos y Condiciones</a></li>
                         <li><a href="#">Política de Privacidad</a></li>
-                        <li><a href="#politica-reembolso" onclick="openRefundPolicy(event)">Política de Cancelación</a></li>
-                        <li><a href="#politica-reembolso" onclick="openRefundPolicy(event)">Política de Reembolso</a></li>
+                        <li><a href="#politica-reembolso" onclick="openRefundPolicy(event)">Política de Cancelación</a>
+                        </li>
+                        <li><a href="#politica-reembolso" onclick="openRefundPolicy(event)">Política de Reembolso</a>
+                        </li>
                     </ul>
                 </div>
             </div>
-            
+
             <div class="footer-bottom">
-                <p>&copy; 2024 Tours Astronómicos Atacama. Todos los derechos reservados.</p>
+                <p data-i18n="footer.rights">&copy; 2024 Tours Astronómicos Atacama. Todos los derechos reservados.</p>
                 <a href="#inicio" class="back-to-top" aria-label="Volver arriba">
                     <i class="fas fa-chevron-up"></i>
                 </a>
@@ -1555,7 +1835,8 @@
 
     <!-- WhatsApp Float Button -->
     <div class="whatsapp-float">
-        <a href="https://wa.me/56935134669?text=Hola!%20Me%20interesa%20información%20sobre%20los%20tours%20astronómicos" target="_blank" aria-label="Contactar por WhatsApp">
+        <a href="https://wa.me/56935134669?text=Hola!%20Me%20interesa%20información%20sobre%20los%20tours%20astronómicos"
+            target="_blank" aria-label="Contactar por WhatsApp">
             <i class="fab fa-whatsapp"></i>
         </a>
         <div class="whatsapp-tooltip">¿Tienes preguntas? ¡Escríbenos!</div>
@@ -1563,10 +1844,10 @@
 
     <!-- FullCalendar JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.js" defer></script>
-    
+
     <!-- Google APIs -->
     <script src="https://apis.google.com/js/api.js" defer></script>
-    
+
     <!-- JavaScript -->
     <script src="script.js?v=4.0"></script>
 
@@ -1577,14 +1858,14 @@
             // Referencia astronómica precisa: Luna nueva del 6 de enero 2000, 18:14 UTC
             const referenceNewMoon = new Date('2000-01-06T18:14:00Z');
             const lunarCycle = 29.530588853; // Período sinódico lunar en días
-            
+
             // Calcular días desde la referencia
             const daysSinceReference = (date - referenceNewMoon) / (1000 * 60 * 60 * 24);
-            
+
             // Obtener la fase actual en el ciclo (0 = luna nueva, 0.5 = luna llena)
             const phase = (daysSinceReference / lunarCycle) % 1;
             const normalizedPhase = phase < 0 ? phase + 1 : phase;
-            
+
             // Calcular porcentaje de iluminación
             // La iluminación va de 0% (luna nueva) a 100% (luna llena) y vuelta a 0%
             let illumination;
@@ -1595,15 +1876,15 @@
                 // Fase menguante: de 100% a 0%
                 illumination = (2 - normalizedPhase * 2) * 100;
             }
-            
+
             // Redondear a 1 decimal
             illumination = Math.round(illumination * 10) / 10;
-            
+
             // Determinar disponibilidad basada en iluminación y fase
             // Bloquear solo en fase creciente cuando iluminación > 75%
             // En fase menguante, la luna sale tarde y no interfiere con los tours
             let isNearFullMoon = false;
-            
+
             if (normalizedPhase <= 0.5) {
                 // Fase creciente: bloquear si iluminación > 75%
                 isNearFullMoon = illumination > 75;
@@ -1611,7 +1892,7 @@
                 // Fase menguante: solo bloquear si iluminación > 90% (muy cerca de luna llena)
                 isNearFullMoon = illumination > 90;
             }
-            
+
             // Calcular días desde la luna llena más cercana (para información)
             let daysFromFullMoon;
             if (normalizedPhase <= 0.5) {
@@ -1619,10 +1900,10 @@
             } else {
                 daysFromFullMoon = (normalizedPhase - 0.5) * lunarCycle;
             }
-            
+
             // Determinar la fase lunar para el emoji y nombre
             let phaseIndex, phaseName, emoji;
-            
+
             if (illumination < 1) {
                 phaseIndex = 0; phaseName = 'Nueva'; emoji = '🌑';
             } else if (illumination < 25) {
@@ -1640,7 +1921,7 @@
             } else {
                 phaseIndex = 4; phaseName = 'Llena'; emoji = '🌕';
             }
-            
+
             return {
                 emoji: emoji,
                 name: phaseName,
@@ -1659,10 +1940,10 @@
             today.setHours(0, 0, 0, 0);
             const checkDate = new Date(date);
             checkDate.setHours(0, 0, 0, 0);
-            
+
             // No disponible si es en el pasado
             if (checkDate < today) return false;
-            
+
             const moonPhase = getMoonPhase(checkDate);
             // Disponible solo si NO está cerca de luna llena
             return !moonPhase.isNearFullMoon;
@@ -1718,12 +1999,12 @@
                     fullBlocked: 'Não disponível - Lua quase cheia (>90%)'
                 }
             };
-            
+
             return texts[lang] && texts[lang][key] ? texts[lang][key] : texts['es'][key];
         }
 
         // Inicializar calendario cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             createCustomCalendar();
         });
 
@@ -1743,34 +2024,34 @@
             const calendarEl = document.getElementById('fullcalendar');
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth();
-            
+
             // Get current language for calendar
             const currentLang = localStorage.getItem('preferred-language') || 'es';
-            
+
             const monthNames = {
                 es: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
                 en: ['January', 'February', 'March', 'April', 'May', 'June',
-                     'July', 'August', 'September', 'October', 'November', 'December'],
+                    'July', 'August', 'September', 'October', 'November', 'December'],
                 pt: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-                     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+                    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
             };
-            
+
             const daysOfWeek = {
                 es: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
                 en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                 pt: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
             };
-            
+
             // Primer día del mes y último día
             const firstDay = new Date(year, month, 1);
             const lastDay = new Date(year, month + 1, 0);
             const daysInMonth = lastDay.getDate();
-            
+
             // Día de la semana del primer día (0=Domingo, 1=Lunes, etc.)
             let startDay = firstDay.getDay();
             startDay = startDay === 0 ? 6 : startDay - 1; // Convertir para empezar en Lunes
-            
+
             let calendarHTML = `
                 <div class="custom-calendar">
                     <div class="calendar-header">
@@ -1785,12 +2066,12 @@
                     
                     <div class="calendar-days">
             `;
-            
+
             // Días vacíos al inicio
             for (let i = 0; i < startDay; i++) {
                 calendarHTML += '<div class="calendar-day empty"></div>';
             }
-            
+
             // Días del mes
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(year, month, day);
@@ -1798,12 +2079,12 @@
                 const isAvailable = isDateAvailable(date);
                 const isCurrentDay = isToday(date);
                 const isSelected = selectedDate && isSameDay(date, selectedDate);
-                
+
                 let dayClass = 'calendar-day';
                 if (!isAvailable) dayClass += ' unavailable';
                 if (isCurrentDay) dayClass += ' today';
                 if (isSelected) dayClass += ' selected';
-                
+
                 let availabilityText;
                 if (isAvailable) {
                     availabilityText = getCalendarText('availableOptimal', currentLang);
@@ -1814,7 +2095,7 @@
                         availabilityText = getCalendarText('fullBlocked', currentLang);
                     }
                 }
-                
+
                 calendarHTML += `
                     <div class="${dayClass}" onclick="selectDate(${year}, ${month}, ${day})" 
                          title="${moonPhase.name} ${moonPhase.emoji} - ${moonPhase.illumination}% iluminación - ${availabilityText}">
@@ -1823,7 +2104,7 @@
                     </div>
                 `;
             }
-            
+
             calendarHTML += `
                     </div>
                     <div class="calendar-legend">
@@ -1843,7 +2124,7 @@
                     </div>
                 </div>
             `;
-            
+
             calendarEl.innerHTML = calendarHTML;
         }
 
@@ -1856,7 +2137,7 @@
         // Seleccionar fecha
         function selectDate(year, month, day) {
             const date = new Date(year, month, day);
-            
+
             if (!isDateAvailable(date)) {
                 const moonPhase = getMoonPhase(date);
                 const currentLang = localStorage.getItem('preferred-language') || 'es';
@@ -1869,20 +2150,20 @@
                 alert(`${getCalendarText('notAvailableTitle', currentLang)}\n\n${currentLang === 'en' ? 'Lunar phase' : currentLang === 'pt' ? 'Fase lunar' : 'Fase lunar'}: ${moonPhase.name} ${moonPhase.emoji}\n${currentLang === 'en' ? 'Illumination' : currentLang === 'pt' ? 'Iluminação' : 'Iluminación'}: ${moonPhase.illumination}%\n\n${reason}\n\n${getCalendarText('selectOther', currentLang)}`);
                 return;
             }
-            
+
             selectedDate = date;
             renderCalendar();
-            
+
             // Actualizar campo de fecha del formulario
             const dateInput = document.getElementById('selected-date');
             if (dateInput) {
                 const dateStr = date.toISOString().split('T')[0];
                 dateInput.value = dateStr;
-                
+
                 // Trigger change event to notify other systems
                 dateInput.dispatchEvent(new Event('change'));
             }
-            
+
             // Update the display element with moon phase info
             const displayElement = document.getElementById('selected-date-display');
             if (displayElement) {
@@ -1918,8 +2199,8 @@
 
         function isSameDay(date1, date2) {
             return date1.getDate() === date2.getDate() &&
-                   date1.getMonth() === date2.getMonth() &&
-                   date1.getFullYear() === date2.getFullYear();
+                date1.getMonth() === date2.getMonth() &&
+                date1.getFullYear() === date2.getFullYear();
         }
     </script>
 
@@ -1945,7 +2226,7 @@
                         discoveryDocs: [DISCOVERY_DOC],
                         scope: SCOPES
                     });
-                    
+
                     googleCalendarReady = true;
                     console.log('Google Calendar API initialized successfully');
                 } catch (error) {
@@ -1990,7 +2271,7 @@ ${reservationData.tourType === 'private' ? '🎯 Tour Privado - Duración: 3-4 h
 
 🔗 SITIO WEB: https://atacamadarksky.cl
 📞 CONTACTO EMERGENCIA: +56 9 3513 4669`,
-                    
+
                     'start': {
                         'dateTime': reservationData.startDateTime,
                         'timeZone': 'America/Santiago'
@@ -2009,8 +2290,8 @@ ${reservationData.tourType === 'private' ? '🎯 Tour Privado - Duración: 3-4 h
                     'reminders': {
                         'useDefault': false,
                         'overrides': [
-                            {'method': 'email', 'minutes': 24 * 60}, // 1 día antes
-                            {'method': 'popup', 'minutes': 60}       // 1 hora antes
+                            { 'method': 'email', 'minutes': 24 * 60 }, // 1 día antes
+                            { 'method': 'popup', 'minutes': 60 }       // 1 hora antes
                         ]
                     }
                 };
@@ -2040,7 +2321,7 @@ ${reservationData.tourType === 'private' ? '🎯 Tour Privado - Duración: 3-4 h
         // Función para procesar la reserva y crear evento
         async function processBookingWithCalendar(formData) {
             const currentLang = localStorage.getItem('preferred-language') || 'es';
-            
+
             // Preparar datos de la reserva
             const reservationData = {
                 name: formData.get('name'),
@@ -2058,7 +2339,7 @@ ${reservationData.tourType === 'private' ? '🎯 Tour Privado - Duración: 3-4 h
 
             // Intentar crear evento en Google Calendar
             const calendarResult = await createCalendarEvent(reservationData);
-            
+
             if (calendarResult.success) {
                 // Mostrar mensaje de éxito con información del calendario
                 showBookingSuccess(reservationData, calendarResult, currentLang);
@@ -2072,11 +2353,11 @@ ${reservationData.tourType === 'private' ? '🎯 Tour Privado - Duración: 3-4 h
         function calculateEndTime(date, startTime, tourType) {
             const [hours, minutes] = startTime.split(':');
             const startHour = parseInt(hours);
-            
+
             // Tours privados duran 4 horas, tours regulares 3 horas
             const duration = tourType === 'private' ? 4 : 3;
             const endHour = startHour + duration;
-            
+
             return `${date}T${endHour.toString().padStart(2, '0')}:${minutes}:00`;
         }
 
@@ -2095,7 +2376,7 @@ ${reservationData.tourType === 'private' ? '🎯 Tour Privado - Duración: 3-4 h
                     calendar: 'Evento agregado a Google Calendar',
                     details: 'Detalles de tu reserva:',
                     date: 'Fecha',
-                    time: 'Hora', 
+                    time: 'Hora',
                     persons: 'Personas',
                     contact: 'Te contactaremos pronto para confirmar detalles.'
                 },
@@ -2120,8 +2401,8 @@ ${reservationData.tourType === 'private' ? '🎯 Tour Privado - Duración: 3-4 h
             };
 
             const msg = messages[lang] || messages['es'];
-            
-            const tourTypeText = reservation.tourType === 'private' ? 
+
+            const tourTypeText = reservation.tourType === 'private' ?
                 (lang === 'en' ? 'Private Tour' : lang === 'pt' ? 'Tour Privado' : 'Tour Privado') :
                 (lang === 'en' ? 'Regular Tour' : lang === 'pt' ? 'Tour Regular' : 'Tour Regular');
 
@@ -2362,7 +2643,7 @@ ${msg.contact}`);
 
     <!-- Sistema de horarios dinámicos por temporada y tipo de tour -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const tourTypeSelect = document.getElementById('tour-type');
             const timeSelect = document.getElementById('time');
             const timeInfo = document.querySelector('.time-info');
@@ -2374,7 +2655,7 @@ ${msg.contact}`);
                 const currentDate = new Date();
                 const month = currentDate.getMonth() + 1; // 1-12
                 const day = currentDate.getDate();
-                
+
                 // Horario de invierno en Chile: primer domingo de abril a primer domingo de septiembre
                 // Horario de verano en Chile: primer domingo de septiembre a primer domingo de abril
                 // Simplificado: abril-agosto = invierno, septiembre-marzo = verano
@@ -2389,7 +2670,7 @@ ${msg.contact}`);
             function getTourSchedules() {
                 const season = getCurrentSeason();
                 const currentLang = localStorage.getItem('preferred-language') || 'es';
-                
+
                 const schedules = {
                     regular: {
                         invierno: {
@@ -2404,7 +2685,7 @@ ${msg.contact}`);
                             times: ['20:30'],
                             info: {
                                 es: 'Tour regular de verano - Inicio: 20:30 hrs (Duración: 3 horas)',
-                                en: 'Summer regular tour - Start: 8:30 PM (Duration: 3 hours)', 
+                                en: 'Summer regular tour - Start: 8:30 PM (Duration: 3 hours)',
                                 pt: 'Tour regular de verão - Início: 20:30 (Duração: 3 horas)'
                             }
                         }
@@ -2451,7 +2732,7 @@ ${msg.contact}`);
             }
 
             // Actualizar horarios cuando se cambia el tipo de tour
-            tourTypeSelect.addEventListener('change', function() {
+            tourTypeSelect.addEventListener('change', function () {
                 const tourType = this.value;
                 const schedules = getTourSchedules();
                 const season = getCurrentSeason();
@@ -2476,7 +2757,7 @@ ${msg.contact}`);
 
                 // Obtener horarios para el tipo de tour y temporada actual
                 const tourSchedule = schedules[tourType] && schedules[tourType][season];
-                
+
                 if (tourSchedule) {
                     // Agregar horarios disponibles
                     tourSchedule.times.forEach(time => {
@@ -2485,7 +2766,7 @@ ${msg.contact}`);
                         if (time === 'flexible') {
                             const flexibleText = {
                                 es: 'Horario a coordinar',
-                                en: 'Schedule to coordinate', 
+                                en: 'Schedule to coordinate',
                                 pt: 'Horário a coordenar'
                             };
                             option.textContent = flexibleText[currentLang] || flexibleText['es'];
@@ -2498,7 +2779,7 @@ ${msg.contact}`);
                     // Mostrar información sobre el horario
                     const info = tourSchedule.info[currentLang] || tourSchedule.info['es'];
                     timeInfo.textContent = info;
-                    
+
                     // If only one time option, select it automatically
                     if (tourSchedule.times.length === 1) {
                         timeSelect.value = tourSchedule.times[0];
@@ -2526,9 +2807,9 @@ ${msg.contact}`);
                     selectedTimeInput.dispatchEvent(new Event('change'));
                 }
             }
-            
+
             // Listen for time selection changes
-            timeSelect.addEventListener('change', function() {
+            timeSelect.addEventListener('change', function () {
                 const selectedTime = this.value;
                 if (selectedTime) {
                     updateSelectedTime(selectedTime);
@@ -2538,7 +2819,7 @@ ${msg.contact}`);
             // Escuchar cambios de idioma
             const langOptions = document.querySelectorAll('.lang-option');
             langOptions.forEach(option => {
-                option.addEventListener('click', function() {
+                option.addEventListener('click', function () {
                     setTimeout(updateScheduleLanguage, 100);
                 });
             });
@@ -2547,7 +2828,7 @@ ${msg.contact}`);
 
     <!-- Sistema de control de disponibilidad y alertas -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const personsSelect = document.getElementById('persons');
             const tourTypeSelect = document.getElementById('tour-type');
             const availabilityWarning = document.getElementById('availability-warning');
@@ -2606,7 +2887,7 @@ ${msg.contact}`);
                     const date = new Date(today);
                     date.setDate(today.getDate() + i);
                     const dateStr = date.toISOString().split('T')[0];
-                    
+
                     // Simular ocupación aleatoria pero realista
                     const randomOccupancy = Math.floor(Math.random() * 16);
                     const astrophotoOccupancy = Math.floor(Math.random() * 8);
@@ -2698,7 +2979,7 @@ ${msg.contact}`);
             function updatePersonsOptions(available, maxCapacity = 16) {
                 const currentValue = personsSelect.value;
                 const options = personsSelect.querySelectorAll('option');
-                
+
                 options.forEach(option => {
                     const value = parseInt(option.value);
                     if (value && value > available && value <= maxCapacity) {
@@ -2725,8 +3006,8 @@ ${msg.contact}`);
             tourTypeSelect.addEventListener('change', checkAvailabilityAndShowWarning);
 
             // Escuchar cambios en la fecha seleccionada
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
+            const observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
                     if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
                         checkAvailabilityAndShowWarning();
                     }
@@ -2755,7 +3036,7 @@ ${msg.contact}`);
             overflow: hidden;
             font-family: Arial, sans-serif;
         }
-        
+
         .calendar-header {
             display: flex;
             justify-content: space-between;
@@ -2764,13 +3045,13 @@ ${msg.contact}`);
             background: #2a2a2a;
             border-bottom: 1px solid #00D4FF;
         }
-        
+
         .calendar-header h3 {
             margin: 0;
             color: #00D4FF;
             font-size: 1.2rem;
         }
-        
+
         .nav-btn {
             background: #00D4FF;
             color: #000;
@@ -2785,18 +3066,18 @@ ${msg.contact}`);
             justify-content: center;
             transition: all 0.3s ease;
         }
-        
+
         .nav-btn:hover {
             background: #00B4D8;
             transform: scale(1.1);
         }
-        
+
         .calendar-weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             background: #333;
         }
-        
+
         .weekday {
             padding: 0.75rem;
             text-align: center;
@@ -2805,18 +3086,18 @@ ${msg.contact}`);
             font-size: 0.9rem;
             border-right: 1px solid #555;
         }
-        
+
         .weekday:last-child {
             border-right: none;
         }
-        
+
         .calendar-days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 1px;
             background: #555;
         }
-        
+
         .calendar-day {
             background: #1a1a1a;
             min-height: 60px;
@@ -2870,23 +3151,23 @@ ${msg.contact}`);
             transform: none;
             background: rgba(255, 0, 0, 0.15);
         }
-        
+
         .day-number {
             font-size: 1rem;
             font-weight: bold;
             color: #fff;
             margin-bottom: 0.25rem;
         }
-        
+
         .calendar-day.selected .day-number {
             color: #000;
         }
-        
+
         .moon-emoji {
             font-size: 0.8rem;
             line-height: 1;
         }
-        
+
         .calendar-legend {
             display: flex;
             justify-content: center;
@@ -2895,7 +3176,7 @@ ${msg.contact}`);
             background: #2a2a2a;
             border-top: 1px solid #555;
         }
-        
+
         .legend-item {
             display: flex;
             align-items: center;
@@ -2903,21 +3184,21 @@ ${msg.contact}`);
             font-size: 0.9rem;
             color: #ccc;
         }
-        
+
         .legend-dot {
             width: 12px;
             height: 12px;
             border-radius: 50%;
         }
-        
+
         .legend-dot.available {
             background: #4CAF50;
         }
-        
+
         .legend-dot.unavailable {
             background: rgba(255, 0, 0, 0.6);
         }
-        
+
         .date-confirmation {
             margin-top: 1rem;
             padding: 1rem;
@@ -2927,42 +3208,49 @@ ${msg.contact}`);
             text-align: center;
             animation: slideIn 0.3s ease;
         }
-        
+
         .confirmation-icon {
             color: #4CAF50;
             margin-bottom: 0.5rem;
         }
-        
+
         .confirmation-icon i {
             font-size: 1.5rem;
         }
-        
+
         .date-confirmation h4 {
             color: #00D4FF;
             margin: 0.5rem 0;
         }
-        
+
         .date-confirmation p {
             margin: 0.25rem 0;
             color: #fff;
         }
-        
+
         .date-confirmation .conditions {
             font-size: 0.9rem;
             color: #ccc;
             margin-top: 0.5rem;
         }
-        
+
         @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
+
         /* Estilos para el selector de idiomas */
         .lang-selector {
             position: relative;
         }
-        
+
         .lang-btn {
             display: flex;
             align-items: center;
@@ -2976,12 +3264,12 @@ ${msg.contact}`);
             transition: all 0.3s ease;
             font-size: 0.9rem;
         }
-        
+
         .lang-btn:hover {
             background: #00D4FF;
             color: #000;
         }
-        
+
         .lang-dropdown {
             position: absolute;
             top: 100%;
@@ -2998,13 +3286,13 @@ ${msg.contact}`);
             margin-top: 0.5rem;
             box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
         }
-        
+
         .lang-dropdown.show {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
         }
-        
+
         .lang-option {
             display: flex;
             align-items: center;
@@ -3016,51 +3304,52 @@ ${msg.contact}`);
             font-weight: 500;
             border-bottom: 1px solid rgba(0, 212, 255, 0.2);
         }
-        
+
         .lang-option:last-child {
             border-bottom: none;
         }
-        
+
         .lang-option:hover {
             background: rgba(0, 212, 255, 0.1);
             color: #00D4FF;
             transform: translateX(2px);
         }
-        
+
         .lang-option:first-child {
             border-radius: 6px 6px 0 0;
         }
-        
+
         .lang-option:last-child {
             border-radius: 0 0 6px 6px;
         }
-        
+
         .lang-option.active {
             background: #00D4FF;
             color: #000;
             font-weight: bold;
         }
-        
+
         .lang-option.active:hover {
             background: #00B4D8;
             transform: none;
         }
-        
+
         .flag {
             font-size: 1.1rem;
         }
 
         @media (max-width: 768px) {
+
             /* Prevent horizontal overflow globally */
             * {
                 max-width: 100%;
             }
-            
+
             body {
                 overflow-x: hidden;
                 width: 100%;
             }
-            
+
             .calendar-container,
             #calendar-container {
                 width: 100%;
@@ -3069,26 +3358,26 @@ ${msg.contact}`);
                 padding: 0;
                 overflow-x: hidden;
             }
-            
+
             .booking .container {
                 width: 100%;
                 max-width: 100%;
                 padding: 0 0.5rem;
                 overflow-x: hidden;
             }
-            
+
             .custom-calendar {
                 width: 100%;
                 margin: 0;
                 padding: 0.5rem;
                 box-sizing: border-box;
             }
-            
+
             .calendar-header {
                 padding: 0 0.5rem;
                 margin-bottom: 0.5rem;
             }
-            
+
             .calendar-weekdays {
                 display: grid;
                 grid-template-columns: repeat(7, 1fr);
@@ -3096,13 +3385,13 @@ ${msg.contact}`);
                 background: #555;
                 width: 100%;
             }
-            
+
             .weekday {
                 padding: 0.3rem;
                 font-size: 0.7rem;
                 text-align: center;
             }
-            
+
             .calendar-days {
                 display: grid;
                 grid-template-columns: repeat(7, 1fr);
@@ -3110,49 +3399,49 @@ ${msg.contact}`);
                 background: #555;
                 width: 100%;
             }
-            
+
             .calendar-day {
                 min-height: 40px;
                 padding: 0.1rem;
                 font-size: 0.7rem;
                 aspect-ratio: 1;
             }
-            
+
             .day-number {
                 font-size: 0.7rem;
                 margin-bottom: 0;
             }
-            
+
             .moon-icon {
                 font-size: 8px;
                 bottom: 1px;
                 right: 1px;
             }
-            
+
             .moon-emoji {
                 font-size: 0.7rem;
             }
-            
+
             .calendar-header h3 {
                 font-size: 1rem;
             }
-            
+
             .nav-btn {
                 width: 30px;
                 height: 30px;
                 font-size: 1rem;
             }
-            
+
             .calendar-legend {
                 flex-direction: column;
                 gap: 0.5rem;
                 align-items: center;
             }
-            
+
             .lang-dropdown {
                 right: -20px;
             }
-            
+
             .lang-btn {
                 padding: 0.4rem 0.8rem;
                 font-size: 0.8rem;
@@ -3162,18 +3451,18 @@ ${msg.contact}`);
 
     <!-- Booking Form Handler -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             console.log('Setting up booking form handler...');
-            
+
             // Manejar envío del formulario de reservas
             const bookingForm = document.getElementById('booking-form');
             if (bookingForm) {
                 console.log('Booking form found, adding event listener');
-                
-                bookingForm.addEventListener('submit', async function(e) {
+
+                bookingForm.addEventListener('submit', async function (e) {
                     e.preventDefault();
                     console.log('Booking form submitted');
-                    
+
                     // Obtener datos del formulario
                     const formData = new FormData(bookingForm);
                     const bookingData = {
@@ -3186,27 +3475,27 @@ ${msg.contact}`);
                         accommodation: formData.get('accommodation') || '',
                         message: formData.get('message') || ''
                     };
-                    
+
                     console.log('Form data collected:', bookingData);
-                    
+
                     // Validar datos requeridos
                     if (!bookingData.date || !bookingData.persons || !bookingData.tourType || !bookingData.name || !bookingData.email || !bookingData.phone) {
                         console.log('Validation failed - missing required fields');
                         alert('Por favor completa todos los campos obligatorios');
                         return;
                     }
-                    
+
                     console.log('Client-side validation passed');
-                    
+
                     // Mostrar loading en el botón
                     const submitBtn = bookingForm.querySelector('button[type="submit"]');
                     const originalText = submitBtn.textContent;
                     submitBtn.disabled = true;
                     submitBtn.textContent = 'Enviando...';
-                    
+
                     try {
                         console.log('Sending API request to /api/booking');
-                        
+
                         // Enviar a la API
                         const response = await fetch('/api/booking', {
                             method: 'POST',
@@ -3215,12 +3504,12 @@ ${msg.contact}`);
                             },
                             body: JSON.stringify(bookingData)
                         });
-                        
+
                         console.log('API response status:', response.status);
-                        
+
                         const result = await response.json();
                         console.log('API response data:', result);
-                        
+
                         if (response.ok && result.success) {
                             console.log('Booking successful, redirecting to confirmation page');
                             // Redirect a página de confirmación
@@ -3229,11 +3518,11 @@ ${msg.contact}`);
                             console.error('API returned error:', result);
                             throw new Error(result.error || 'Error al procesar la reserva');
                         }
-                        
+
                     } catch (error) {
                         console.error('Booking submission error:', error);
                         alert(`Error al enviar la reserva: ${error.message}. Por favor intenta nuevamente.`);
-                        
+
                         // Restaurar botón
                         submitBtn.disabled = false;
                         submitBtn.textContent = originalText;
@@ -3297,12 +3586,12 @@ ${msg.contact}`);
     <!-- Mobile Menu Toggle Script -->
     <script>
         // Mobile hamburger menu functionality
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const hamburger = document.querySelector('.hamburger');
             const navMenu = document.querySelector('.nav-menu');
 
             if (hamburger && navMenu) {
-                hamburger.addEventListener('click', function() {
+                hamburger.addEventListener('click', function () {
                     hamburger.classList.toggle('active');
                     navMenu.classList.toggle('active');
                 });
@@ -3310,14 +3599,14 @@ ${msg.contact}`);
                 // Close menu when clicking on a nav link
                 const navLinks = document.querySelectorAll('.nav-link, .cta-button');
                 navLinks.forEach(link => {
-                    link.addEventListener('click', function() {
+                    link.addEventListener('click', function () {
                         hamburger.classList.remove('active');
                         navMenu.classList.remove('active');
                     });
                 });
 
                 // Close menu when clicking outside
-                document.addEventListener('click', function(event) {
+                document.addEventListener('click', function (event) {
                     const isClickInsideMenu = navMenu.contains(event.target);
                     const isClickOnHamburger = hamburger.contains(event.target);
 
@@ -3339,11 +3628,11 @@ ${msg.contact}`);
 
     <!-- Reservar Button Handler -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const reservarButtons = document.querySelectorAll('.btn-tour');
 
             reservarButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
+                button.addEventListener('click', function (e) {
                     e.preventDefault();
 
                     // Crear modal personalizado
@@ -3415,7 +3704,11 @@ ${msg.contact}`);
         });
     </script>
 
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
     <!-- Mercado Pago Checkout -->
     <script src="mercadopago-checkout.js"></script>
 </body>
+
 </html>
