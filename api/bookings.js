@@ -136,10 +136,26 @@ export default async function handler(req, res) {
     );
 
     // Format dates to YYYY-MM-DD for frontend
-    const formattedBookings = bookingsResult.rows.map(booking => ({
-      ...booking,
-      date: booking.date ? new Date(booking.date).toISOString().split('T')[0] : null
-    }));
+    // Use direct string manipulation to avoid timezone issues
+    const formattedBookings = bookingsResult.rows.map(booking => {
+      let formattedDate = null;
+      if (booking.date) {
+        // If date is already a Date object, format it without timezone conversion
+        if (booking.date instanceof Date) {
+          const year = booking.date.getFullYear();
+          const month = String(booking.date.getMonth() + 1).padStart(2, '0');
+          const day = String(booking.date.getDate()).padStart(2, '0');
+          formattedDate = `${year}-${month}-${day}`;
+        } else {
+          // If it's already a string in YYYY-MM-DD format, use it directly
+          formattedDate = String(booking.date).split('T')[0];
+        }
+      }
+      return {
+        ...booking,
+        date: formattedDate
+      };
+    });
 
     // Get summary statistics
     const statsQuery = `
