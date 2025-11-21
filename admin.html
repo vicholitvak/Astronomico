@@ -2409,7 +2409,7 @@
 
             // Show selected tab
             document.getElementById(tab + 'Tab').classList.add('active');
-            event.target.closest('.tab-btn').classList.add('active');
+            document.querySelector(`.tab-btn[onclick*="${tab}"]`).classList.add('active');
 
             // Load data for tab
             if (tab === 'photos') {
