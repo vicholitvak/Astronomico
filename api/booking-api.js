@@ -281,6 +281,124 @@ async function sendConfirmationEmail(booking) {
   const dateObj = new Date(booking.date);
   const formattedDate = dateObj.toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   const tourTypes = { 'regular': 'Tour Astronómico Regular', 'private': 'Tour Privado Exclusivo', 'astrophoto': 'Tour Astrofotográfico' };
+  const tourPrices = { 'regular': 30000, 'private': 200000, 'astrophoto': 120000 };
+
+  // Get price and calculate total
+  const basePrice = tourPrices[booking.tourType] || 30000;
+  const personsCount = parseInt(booking.persons);
+  let totalPrice;
+  let priceDisplay;
+
+  if (booking.tourType === 'private') {
+    totalPrice = basePrice;
+    priceDisplay = `$${basePrice.toLocaleString('es-CL')} CLP (grupo completo)`;
+  } else {
+    totalPrice = basePrice * personsCount;
+    priceDisplay = `$${basePrice.toLocaleString('es-CL')} CLP × ${personsCount} persona(s) = $${totalPrice.toLocaleString('es-CL')} CLP`;
+  }
+
+  // Create payment link
+  const paymentUrl = `https://atacamadarksky.cl/?tour=${booking.tourType}&date=${booking.date}&persons=${booking.persons}&email=${encodeURIComponent(booking.email)}&name=${encodeURIComponent(booking.name)}#reservas`;
+
+  const paymentButtonHtml = `
+    <div style="text-align: center; margin: 30px 0;">
+      <a href="${paymentUrl}" style="display: inline-block; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: #000; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 18px; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);">
+        💳 Pagar Ahora - $${totalPrice.toLocaleString('es-CL')} CLP
+      </a>
+      <p style="margin-top: 15px; color: #666; font-size: 14px;">Paga con seguridad usando MercadoPago</p>
+    </div>
+  `;
+
+  const emailHtml = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .content { background: #fff; padding: 30px; border: 1px solid #e0e0e0; }
+        .booking-details { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e0e0e0; }
+        .detail-label { font-weight: bold; color: #555; }
+        .detail-value { color: #000; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; border-radius: 0 0 10px 10px; font-size: 14px; color: #666; }
+        .whatsapp { display: inline-block; background: #25D366; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 15px 0; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1 style="margin: 0; font-size: 28px;">✨ ¡Reserva Confirmada!</h1>
+          <p style="margin: 10px 0 0 0; opacity: 0.9;">Atacama Dark Sky - Tours Astronómicos</p>
+        </div>
+
+        <div class="content">
+          <p style="font-size: 18px;">Hola <strong>${booking.name}</strong>,</p>
+          <p>Tu reserva ha sido recibida exitosamente. ¡Nos emociona compartir el universo contigo!</p>
+
+          <div class="booking-details">
+            <div class="detail-row">
+              <span class="detail-label">Código de Reserva:</span>
+              <span class="detail-value"><strong>${booking.bookingId}</strong></span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Fecha:</span>
+              <span class="detail-value">${formattedDate}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Hora:</span>
+              <span class="detail-value">${booking.time}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Tour:</span>
+              <span class="detail-value">${tourTypes[booking.tourType]}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Personas:</span>
+              <span class="detail-value">${booking.persons}</span>
+            </div>
+            <div class="detail-row" style="border-bottom: none; font-size: 18px;">
+              <span class="detail-label">Precio Total:</span>
+              <span class="detail-value" style="color: #FFD700; font-weight: bold;">${priceDisplay}</span>
+            </div>
+          </div>
+
+          ${paymentButtonHtml}
+
+          <div style="background: #fff3cd; border-left: 4px solid #FFD700; padding: 15px; margin: 20px 0;">
+            <strong>📍 Punto de Encuentro:</strong><br>
+            ${booking.tourType === 'private'
+              ? 'Te recogeremos en tu hotel'
+              : 'Plaza Apacheta (extremo este de calle Caracoles)'}
+          </div>
+
+          <p><strong>¿Necesitas ayuda o tienes preguntas?</strong><br>
+          Contáctanos por WhatsApp y te responderemos inmediatamente:</p>
+
+          <div style="text-align: center;">
+            <a href="https://wa.me/56935134669?text=Hola!%20Tengo%20una%20consulta%20sobre%20mi%20reserva%20${booking.bookingId}" class="whatsapp">
+              💬 Contactar por WhatsApp
+            </a>
+          </div>
+
+          <p style="margin-top: 30px; font-size: 14px; color: #666;">
+            <strong>Importante:</strong> Te contactaremos pronto para confirmar todos los detalles finales del tour.
+            Por favor revisa también tu carpeta de spam.
+          </p>
+        </div>
+
+        <div class="footer">
+          <p style="margin: 5px 0;"><strong>Atacama Dark Sky Tours</strong></p>
+          <p style="margin: 5px 0;">WhatsApp: +56 9 3513 4669</p>
+          <p style="margin: 5px 0;">Email: reservas@atacamadarksky.cl</p>
+          <p style="margin: 15px 0 5px 0; font-size: 12px;">¡Gracias por elegirnos para explorar el universo! 🌌⭐</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
 
   await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -289,7 +407,7 @@ async function sendConfirmationEmail(booking) {
       from: 'Atacama Dark Sky <reservas@atacamadarksky.cl>',
       to: [booking.email],
       subject: `✨ Reserva Confirmada - ${formattedDate} - Código: ${booking.bookingId}`,
-      html: `<h2>¡Reserva Confirmada!</h2><p>Hola ${booking.name},</p><p>Tu reserva ha sido recibida.</p><p><strong>Código:</strong> ${booking.bookingId}</p><p><strong>Fecha:</strong> ${formattedDate}</p><p><strong>Tour:</strong> ${tourTypes[booking.tourType]}</p><p><strong>Personas:</strong> ${booking.persons}</p><p>Te contactaremos pronto para confirmar los detalles.</p><p>WhatsApp: +56 9 5055 8761</p>`
+      html: emailHtml
     })
   });
 }
