@@ -1352,13 +1352,19 @@
                 renderBookings(data.data.bookings);
                 renderPagination(data.data.pagination);
                 updateCalendarWithBookings(data.data.bookings);
-                renderUpcomingAndPastBookings(data.data.bookings);
+
+                try {
+                    renderUpcomingAndPastBookings(data.data.bookings);
+                } catch (e) {
+                    console.error('Error rendering upcoming/past bookings:', e);
+                }
 
                 currentPage = page;
 
                 document.getElementById('loadingIndicator').style.display = 'none';
                 document.getElementById('bookingsContent').style.display = 'block';
-                document.getElementById('calendarSection').style.display = 'block';
+                const calSection = document.getElementById('calendarSection');
+                if (calSection) calSection.style.display = 'block';
 
             } catch (error) {
                 console.error('Error loading bookings:', error);
