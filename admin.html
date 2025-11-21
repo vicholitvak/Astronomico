@@ -1549,6 +1549,14 @@
             showDayModal(dateStr);
         }
 
+        function isPastDate(dateStr) {
+            const now = new Date();
+            const todayStr = now.getFullYear() + '-' +
+                           String(now.getMonth() + 1).padStart(2, '0') + '-' +
+                           String(now.getDate()).padStart(2, '0');
+            return dateStr < todayStr;
+        }
+
         function showDayModal(dateStr) {
             const dayBookings = bookingsByDate[dateStr] || [];
             const isBlocked = blockedDates.has(dateStr);
@@ -1701,19 +1709,24 @@
 
                         <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(71, 85, 105, 0.5);">
                             <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 8px;">
-                                Creado: ${formatDateTime(booking.created_at)} | Fuente: ${booking.source || 'web'}
+                                Creado: ${formatDateTime(booking.created_at)} | Fuente: ${booking.source === 'mercadopago' ? '<span style="color: #10b981; font-weight: bold;"><i class="fas fa-credit-card"></i> PAGADO (MercadoPago)</span>' : (booking.source || 'web')}
                             </div>
+                            ${isPastDate(dateStr) || booking.source === 'mercadopago' ? `
+                                <div style="padding: 8px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 4px; margin-bottom: 8px; font-size: 0.75rem; color: #fca5a5;">
+                                    <i class="fas fa-lock"></i> ${booking.source === 'mercadopago' ? 'No se puede modificar - Pago confirmado' : 'No se puede modificar - Fecha pasada'}
+                                </div>
+                            ` : ''}
                             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                                <button onclick="changeBookingStatus(${booking.id}, 'confirmed')" style="background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'confirmed' ? 'disabled' : ''}>
+                                <button onclick="changeBookingStatus(${booking.id}, 'confirmed')" style="background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'confirmed' || booking.source === 'mercadopago' || isPastDate(dateStr) ? 'disabled' : ''}>
                                     <i class="fas fa-check"></i> Confirmar
                                 </button>
-                                <button onclick="changeBookingStatus(${booking.id}, 'pending')" style="background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'pending' ? 'disabled' : ''}>
+                                <button onclick="changeBookingStatus(${booking.id}, 'pending')" style="background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'pending' || booking.source === 'mercadopago' || isPastDate(dateStr) ? 'disabled' : ''}>
                                     <i class="fas fa-clock"></i> Pendiente
                                 </button>
-                                <button onclick="changeBookingStatus(${booking.id}, 'cancelled')" style="background: #6b7280; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'cancelled' ? 'disabled' : ''}>
+                                <button onclick="changeBookingStatus(${booking.id}, 'cancelled')" style="background: #6b7280; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'cancelled' || booking.source === 'mercadopago' || isPastDate(dateStr) ? 'disabled' : ''}>
                                     <i class="fas fa-times"></i> Cancelar
                                 </button>
-                                <button onclick="deleteBooking(${booking.id}, '${booking.name.replace(/'/g, "\\'")}')" style="background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">
+                                <button onclick="deleteBooking(${booking.id}, '${booking.name.replace(/'/g, "\\'")}')" style="background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;" ${booking.source === 'mercadopago' ? 'disabled' : ''}>
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -2077,19 +2090,20 @@
         let pastBookingsFiltered = [];
 
         function renderUpcomingAndPastBookings(bookings) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            // Get today's date in YYYY-MM-DD format
+            const now = new Date();
+            const todayStr = now.getFullYear() + '-' +
+                           String(now.getMonth() + 1).padStart(2, '0') + '-' +
+                           String(now.getDate()).padStart(2, '0');
 
             // Separar upcoming y past
             const upcoming = bookings.filter(b => {
-                const bookingDate = new Date(b.date + 'T00:00:00');
-                return bookingDate >= today;
-            }).sort((a, b) => new Date(a.date) - new Date(b.date));
+                return b.date >= todayStr;
+            }).sort((a, b) => a.date.localeCompare(b.date));
 
             const past = bookings.filter(b => {
-                const bookingDate = new Date(b.date + 'T00:00:00');
-                return bookingDate < today;
-            }).sort((a, b) => new Date(b.date) - new Date(a.date));
+                return b.date < todayStr;
+            }).sort((a, b) => b.date.localeCompare(a.date));
 
             pastBookingsFiltered = past;
 
