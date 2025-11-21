@@ -393,9 +393,10 @@
             <h2>¡Gracias por tu review!</h2>
             <p>Tu opinión ha sido recibida y será publicada después de una breve revisión.</p>
 
-            <div style="margin-top: 25px; padding: 20px; background: rgba(102, 126, 234, 0.2); border-radius: 15px; border: 1px solid rgba(102, 126, 234, 0.3);">
+            <div id="photos-section" style="display: none; margin-top: 25px; padding: 20px; background: rgba(102, 126, 234, 0.2); border-radius: 15px; border: 1px solid rgba(102, 126, 234, 0.3);">
                 <p style="font-size: 1.2rem; margin-bottom: 15px;"><i class="fas fa-camera"></i> ¡Tus fotos del tour están listas!</p>
-                <a href="https://drive.google.com/drive/folders/1Ds9sdDbtiSjcLaKiTcUqj48gkCMLOhg8?usp=sharing"
+                <a id="photos-link"
+                   href="#"
                    target="_blank"
                    class="btn"
                    style="display: inline-flex; width: auto; padding: 12px 25px; text-decoration: none;">
@@ -469,6 +470,22 @@
                 // Mostrar mensaje de éxito
                 form.style.display = 'none';
                 successMessage.classList.add('show');
+
+                // Buscar link de fotos para la fecha del tour
+                const tourDate = data.tour_date;
+                if (tourDate) {
+                    try {
+                        const photoResponse = await fetch(`/api/photo-links?date=${tourDate}`);
+                        const photoData = await photoResponse.json();
+
+                        if (photoData.success && photoData.data && photoData.data.photo_url) {
+                            document.getElementById('photos-link').href = photoData.data.photo_url;
+                            document.getElementById('photos-section').style.display = 'block';
+                        }
+                    } catch (photoError) {
+                        console.log('No photo link found for this date');
+                    }
+                }
 
                 // Scroll to top
                 window.scrollTo({ top: 0, behavior: 'smooth' });

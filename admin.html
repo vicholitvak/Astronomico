@@ -963,6 +963,9 @@
             <button class="tab-btn" onclick="switchTab('reviews')">
                 <i class="fas fa-star"></i> Reseñas <span id="pendingReviewsBadge" style="background:#fbbf24;color:#000;padding:2px 8px;border-radius:10px;font-size:0.75rem;margin-left:5px;display:none;">0</span>
             </button>
+            <button class="tab-btn" onclick="switchTab('photos')">
+                <i class="fas fa-images"></i> Links Fotos
+            </button>
         </div>
 
         <!-- Bookings Tab -->
@@ -1112,6 +1115,54 @@
             </div>
         </div>
     </div>
+
+        <!-- Photos Tab -->
+        <div id="photosTab" class="tab-content">
+            <div class="filters-section">
+                <h3 style="color: #60a5fa; margin-bottom: 20px;"><i class="fas fa-images"></i> Gestionar Links de Fotos por Fecha</h3>
+                <p style="color: #94a3b8; margin-bottom: 20px;">Agrega el link de Google Drive para cada día de tour. Los clientes verán este link después de dejar su reseña.</p>
+
+                <div class="filters-grid" style="max-width: 800px;">
+                    <div class="filter-group">
+                        <label for="photoDate">Fecha del Tour</label>
+                        <input type="date" id="photoDate" required>
+                    </div>
+                    <div class="filter-group" style="grid-column: span 2;">
+                        <label for="photoUrl">Link de Google Drive</label>
+                        <input type="text" id="photoUrl" placeholder="https://drive.google.com/drive/folders/..." required>
+                    </div>
+                    <div class="filter-group">
+                        <label for="photoDesc">Descripción (opcional)</label>
+                        <input type="text" id="photoDesc" placeholder="Ej: Tour nocturno luna nueva">
+                    </div>
+                </div>
+
+                <div class="filter-buttons" style="margin-top: 20px;">
+                    <button class="btn-primary" onclick="savePhotoLink()">
+                        <i class="fas fa-save"></i> Guardar Link
+                    </button>
+                </div>
+            </div>
+
+            <div class="bookings-table-container">
+                <h3 style="color: #60a5fa; margin-bottom: 20px;">Links Guardados</h3>
+                <div id="photoLinksLoading" class="loading">
+                    <i class="fas fa-spinner"></i> Cargando links...
+                </div>
+                <table id="photoLinksTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Link</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="photoLinksBody"></tbody>
+                </table>
+                <p id="noPhotoLinks" style="display: none; text-align: center; color: #94a3b8; padding: 40px;">No hay links guardados aún.</p>
+            </div>
+        </div>
 
     <!-- Day Modal -->
     <div id="dayModal" class="day-modal">
@@ -1793,6 +1844,133 @@
         setInterval(() => {
             loadBookings(currentPage);
         }, 120000);
+
+        // ============ PHOTO LINKS FUNCTIONS ============
+
+        function switchTab(tab) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tab + 'Tab').classList.add('active');
+            event.target.closest('.tab-btn').classList.add('active');
+
+            // Load data for tab
+            if (tab === 'photos') {
+                loadPhotoLinks();
+            }
+        }
+
+        async function loadPhotoLinks() {
+            try {
+                document.getElementById('photoLinksLoading').style.display = 'block';
+                document.getElementById('photoLinksTable').style.display = 'none';
+                document.getElementById('noPhotoLinks').style.display = 'none';
+
+                const response = await fetch('/api/photo-links');
+                const data = await response.json();
+
+                document.getElementById('photoLinksLoading').style.display = 'none';
+
+                if (!data.success || data.data.length === 0) {
+                    document.getElementById('noPhotoLinks').style.display = 'block';
+                    return;
+                }
+
+                renderPhotoLinks(data.data);
+                document.getElementById('photoLinksTable').style.display = 'table';
+
+            } catch (error) {
+                console.error('Error loading photo links:', error);
+                document.getElementById('photoLinksLoading').style.display = 'none';
+                document.getElementById('noPhotoLinks').textContent = 'Error al cargar links: ' + error.message;
+                document.getElementById('noPhotoLinks').style.display = 'block';
+            }
+        }
+
+        function renderPhotoLinks(links) {
+            const tbody = document.getElementById('photoLinksBody');
+            tbody.innerHTML = links.map(link => `
+                <tr>
+                    <td><strong>${formatDate(link.tour_date)}</strong></td>
+                    <td>
+                        <a href="${link.photo_url}" target="_blank" style="color: #60a5fa; text-decoration: none;">
+                            <i class="fas fa-external-link-alt"></i> ${link.photo_url.substring(0, 50)}...
+                        </a>
+                    </td>
+                    <td>${link.description || '-'}</td>
+                    <td>
+                        <button class="btn-secondary btn-icon" onclick="editPhotoLink('${link.tour_date}', '${link.photo_url}', '${link.description || ''}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-reject btn-icon" onclick="deletePhotoLink('${link.tour_date}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function savePhotoLink() {
+            const tour_date = document.getElementById('photoDate').value;
+            const photo_url = document.getElementById('photoUrl').value;
+            const description = document.getElementById('photoDesc').value;
+
+            if (!tour_date || !photo_url) {
+                alert('Por favor completa la fecha y el link');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/photo-links', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tour_date, photo_url, description })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Link guardado exitosamente');
+                    document.getElementById('photoDate').value = '';
+                    document.getElementById('photoUrl').value = '';
+                    document.getElementById('photoDesc').value = '';
+                    loadPhotoLinks();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error al guardar: ' + error.message);
+            }
+        }
+
+        function editPhotoLink(date, url, desc) {
+            document.getElementById('photoDate').value = date;
+            document.getElementById('photoUrl').value = url;
+            document.getElementById('photoDesc').value = desc;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function deletePhotoLink(date) {
+            if (!confirm('¿Eliminar este link de fotos?')) return;
+
+            try {
+                const response = await fetch(`/api/photo-links?date=${date}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    loadPhotoLinks();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error al eliminar: ' + error.message);
+            }
+        }
     </script>
 </body>
 </html>
