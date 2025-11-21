@@ -3791,6 +3791,79 @@ ${msg.contact}`);
 
     <!-- Mercado Pago Checkout -->
     <script src="mercadopago-checkout.js"></script>
+
+    <!-- GA4 Enhanced Tracking -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Track WhatsApp clicks
+        document.querySelectorAll('a[href*="wa.me"], .whatsapp-float a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (typeof gtag === 'function') {
+                    gtag('event', 'contact', {
+                        method: 'whatsapp',
+                        link_url: this.href
+                    });
+                }
+            });
+        });
+
+        // 2. Track tour card interactions
+        document.querySelectorAll('.tour-card, .pricing-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                const tourType = this.querySelector('[data-tour]')?.dataset.tour ||
+                                 this.querySelector('h3')?.textContent || 'unknown';
+                if (typeof gtag === 'function') {
+                    gtag('event', 'select_item', {
+                        item_list_name: 'Tours',
+                        items: [{ item_name: tourType }]
+                    });
+                }
+            });
+        });
+
+        // Track "Reservar" button clicks
+        document.querySelectorAll('.btn-mercadopago, [data-tour]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tourType = this.dataset.tour || 'unknown';
+                const price = this.dataset.price || 0;
+                if (typeof gtag === 'function') {
+                    gtag('event', 'view_item', {
+                        currency: 'CLP',
+                        value: parseInt(price),
+                        items: [{ item_name: 'Tour ' + tourType, price: parseInt(price) }]
+                    });
+                }
+            });
+        });
+
+        // 3. Track language changes
+        document.querySelectorAll('[data-lang]').forEach(langBtn => {
+            langBtn.addEventListener('click', function() {
+                const lang = this.dataset.lang;
+                if (typeof gtag === 'function') {
+                    gtag('event', 'select_content', {
+                        content_type: 'language',
+                        item_id: lang
+                    });
+                }
+            });
+        });
+
+        // Track scroll depth
+        let scrollMarks = { 25: false, 50: false, 75: false, 100: false };
+        window.addEventListener('scroll', function() {
+            const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+            [25, 50, 75, 100].forEach(mark => {
+                if (scrollPercent >= mark && !scrollMarks[mark]) {
+                    scrollMarks[mark] = true;
+                    if (typeof gtag === 'function') {
+                        gtag('event', 'scroll', { percent_scrolled: mark });
+                    }
+                }
+            });
+        });
+    });
+    </script>
 </body>
 
 </html>
