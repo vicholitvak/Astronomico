@@ -622,16 +622,40 @@ function initBookingForm() {
     const successMessage = document.getElementById('success-message');
     const errorMessage = document.getElementById('error-message');
     
-    // Initialize date picker
+    // Initialize date picker with blocked dates
     if (flatpickr) {
-        flatpickr(dateInput, {
-            enableTime: false,
-            dateFormat: 'Y-m-d',
-            minDate: 'today',
-            locale: {
-                firstDayOfWeek: 1 // Start week on Monday
-            }
-        });
+        // Load blocked dates and initialize picker
+        fetch('/api/blocked-dates')
+            .then(res => res.json())
+            .then(data => {
+                const blockedDates = data.success ? data.data.map(d => d.blocked_date.split('T')[0]) : [];
+
+                flatpickr(dateInput, {
+                    enableTime: false,
+                    dateFormat: 'Y-m-d',
+                    minDate: 'today',
+                    locale: {
+                        firstDayOfWeek: 1
+                    },
+                    disable: blockedDates,
+                    onDayCreate: function(dObj, dStr, fp, dayElem) {
+                        const dateStr = dayElem.dateObj.toISOString().split('T')[0];
+                        if (blockedDates.includes(dateStr)) {
+                            dayElem.classList.add('blocked-date');
+                            dayElem.title = 'Fecha no disponible';
+                        }
+                    }
+                });
+            })
+            .catch(() => {
+                // Fallback without blocked dates
+                flatpickr(dateInput, {
+                    enableTime: false,
+                    dateFormat: 'Y-m-d',
+                    minDate: 'today',
+                    locale: { firstDayOfWeek: 1 }
+                });
+            });
     }
     
     // Form submission handler

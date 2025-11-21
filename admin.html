@@ -479,6 +479,20 @@
             border-color: #3b82f6;
         }
 
+        .calendar-day.blocked {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: #ef4444;
+            position: relative;
+        }
+
+        .calendar-day.blocked::after {
+            content: '🚫';
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            font-size: 0.7rem;
+        }
+
         .day-number {
             font-size: 0.9rem;
             font-weight: 600;
@@ -1024,7 +1038,11 @@
                     <span>Hoy</span>
                 </div>
                 <div class="legend-item">
-                    <span style="font-size: 0.75rem; color: #60a5fa;"><i class="fas fa-info-circle"></i> Click en una fecha para ver detalles</span>
+                    <div class="legend-color" style="background: rgba(239, 68, 68, 0.3); border-color: #ef4444;"></div>
+                    <span>Fecha Bloqueada</span>
+                </div>
+                <div class="legend-item">
+                    <span style="font-size: 0.75rem; color: #60a5fa;"><i class="fas fa-info-circle"></i> Click = ver detalles | Doble click = bloquear/desbloquear</span>
                 </div>
             </div>
         </div>
@@ -1184,6 +1202,7 @@
         let currentCalendarMonth = new Date();
         let selectedDate = null;
         let bookingsByDate = {};
+        let blockedDates = new Set();
 
         // Check authentication on page load
         document.addEventListener('DOMContentLoaded', async () => {
@@ -1193,7 +1212,7 @@
                 return;
             }
             loadBookings();
-            renderCalendar();
+            loadBlockedDates();
         });
 
         // Check if user is authenticated
@@ -1341,10 +1360,13 @@
                 const dayBookings = bookingsByDate[dateStr] || [];
                 const hasBookings = dayBookings.length > 0;
 
+                const isBlocked = blockedDates.has(dateStr);
+
                 let classes = 'calendar-day';
                 if (isToday) classes += ' today';
                 if (hasBookings) classes += ' has-bookings';
                 if (isSelected) classes += ' selected';
+                if (isBlocked) classes += ' blocked';
 
                 let bookingsHTML = '';
                 if (hasBookings) {
@@ -1376,7 +1398,7 @@
                 }
 
                 calendarHTML += `
-                    <div class="${classes}" onclick="selectDate('${dateStr}')">
+                    <div class="${classes}" onclick="selectDate('${dateStr}')" ondblclick="toggleBlockDate('${dateStr}')">
                         <div class="day-number">${day}</div>
                         <div class="day-bookings">${bookingsHTML}</div>
                     </div>
@@ -1969,6 +1991,57 @@
                 }
             } catch (error) {
                 alert('Error al eliminar: ' + error.message);
+            }
+        }
+
+        // ============ BLOCKED DATES FUNCTIONS ============
+
+        async function loadBlockedDates() {
+            try {
+                const response = await fetch('/api/blocked-dates');
+                const data = await response.json();
+
+                if (data.success) {
+                    blockedDates = new Set(data.data.map(d => d.blocked_date.split('T')[0]));
+                    renderCalendar();
+                }
+            } catch (error) {
+                console.error('Error loading blocked dates:', error);
+            }
+        }
+
+        async function toggleBlockDate(dateStr) {
+            event.stopPropagation();
+
+            const isBlocked = blockedDates.has(dateStr);
+
+            if (isBlocked) {
+                // Desbloquear
+                if (!confirm(`¿Desbloquear la fecha ${formatDate(dateStr)}?`)) return;
+
+                try {
+                    await fetch(`/api/blocked-dates?date=${dateStr}`, { method: 'DELETE' });
+                    blockedDates.delete(dateStr);
+                    renderCalendar();
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            } else {
+                // Bloquear
+                const reason = prompt(`Bloquear ${formatDate(dateStr)}\n\nRazón (opcional):`, '');
+                if (reason === null) return; // Canceló
+
+                try {
+                    await fetch('/api/blocked-dates', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ blocked_date: dateStr, reason })
+                    });
+                    blockedDates.add(dateStr);
+                    renderCalendar();
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
             }
         }
     </script>
