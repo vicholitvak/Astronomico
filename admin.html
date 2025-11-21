@@ -1566,15 +1566,6 @@
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             const formattedDate = date.toLocaleDateString('es-CL', options);
 
-            // If no bookings, show option to block/unblock
-            if (dayBookings.length === 0) {
-                const action = isBlocked ? 'desbloquear' : 'bloquear';
-                if (confirm(`No hay reservas para esta fecha.\n\n¿Deseas ${action} el ${formattedDate}?`)) {
-                    toggleBlockDate(dateStr);
-                }
-                return;
-            }
-
             // Set modal title
             document.getElementById('modalDateTitle').textContent =
                 formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
@@ -1636,6 +1627,17 @@
 
             // Build bookings list HTML
             let bookingsHTML = '';
+
+            if (dayBookings.length === 0) {
+                bookingsHTML += `
+                    <div style="padding: 30px; text-align: center; background: rgba(71, 85, 105, 0.2); border-radius: 8px; margin-bottom: 20px;">
+                        <i class="fas fa-calendar-plus" style="font-size: 3rem; color: #60a5fa; margin-bottom: 10px;"></i>
+                        <div style="font-size: 1.1rem; color: #cbd5e1; margin-bottom: 5px;">Sin reservas para esta fecha</div>
+                        <div style="font-size: 0.85rem; color: #94a3b8;">Puedes agregar una reserva manual usando el botón de abajo</div>
+                    </div>
+                `;
+            }
+
             dayBookings.forEach(booking => {
                 const tourTypeColors = {
                     regular: '#10b981',
