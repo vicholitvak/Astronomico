@@ -1099,6 +1099,86 @@ blockquote {
     font-size: 0.9rem;
 }
 
+/* Booking Section Layout */
+.booking-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.booking-calendar-col {
+    max-width: 450px;
+}
+
+.booking-calendar-col h3 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-sm);
+}
+
+.booking-form-col {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+}
+
+.booking-form-col h3 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-md);
+}
+
+.calendar-legend {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.legend-item .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.legend-item .dot.available {
+    background: #4CAF50;
+}
+
+.legend-item .dot.full {
+    background: #f44336;
+}
+
+.legend-item .dot.selected {
+    background: var(--primary-color);
+}
+
+.calendar-help {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: var(--spacing-sm);
+}
+
+/* Responsive booking layout */
+@media (max-width: 900px) {
+    .booking-container {
+        grid-template-columns: 1fr;
+    }
+
+    .booking-calendar-col {
+        max-width: 100%;
+    }
+}
+
 #calendar-container {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(0, 212, 255, 0.2);

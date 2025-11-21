@@ -350,58 +350,219 @@ function initLanguageToggle() {
     let currentLang = document.documentElement.lang || 'es';
     currentLangSpan.textContent = currentLang.toUpperCase();
     
+    // data-i18n translations mapping
+    const i18n = {
+        es: {
+            'nav.home': 'Inicio',
+            'nav.about': 'Sobre Nosotros',
+            'nav.tours': 'Tours',
+            'nav.telescope': 'Telescopio',
+            'nav.booking': 'Reservas',
+            'nav.contact': 'Contacto',
+            'hero.cta': 'Reserva Ahora',
+            'hero.title1': 'Atacama Dark Skies',
+            'hero.title2': 'El cielo más puro del mundo',
+            'hero.title3': 'En San Pedro de Atacama',
+            'hero.subtitle': 'Tours astronómicos guiados por expertos: observación de estrellas, constelaciones y fenómenos celestes del espacio profundo.',
+            'hero.btn_book': 'Reserva Tu Tour',
+            'hero.btn_tours': 'Ver Tours',
+            'about.title': 'Vicente Litvak',
+            'about.subtitle': 'Sobre mi',
+            'about.p1': 'Soy Vicente Litvak, guía astronómico apasionado con más de 6 años de experiencia en el Desierto de Atacama.',
+            'about.p2': 'Mi pasión por la astronomía comenzó observando las estrellas desde niño. Hoy combino conocimiento científico con tecnología de vanguardia.',
+            'about.p3': 'Cada tour es único porque utilizamos telescopios inteligentes de última generación.',
+            'about.p4': 'He guiado a más de 3,000 visitantes de todo el mundo.',
+            'about.quote': '"Cada noche bajo las estrellas de Atacama me recuerda por qué elegí este camino"',
+            'tours.title': 'Nuestros Tours Astronómicos',
+            'tours.subtitle': 'Experiencias únicas bajo el cielo más claro del mundo',
+            'tours.regular.badge': 'Más Popular',
+            'tours.regular.title': 'Tour Astronómico Regular',
+            'tours.regular.desc1': 'Sumérgete en el universo con nuestra experiencia más popular.',
+            'tours.regular.desc2': 'Luego exploramos esas nebulosas y cúmulos estelares a través del telescopio.',
+            'tours.regular.btn': 'Reservar',
+            'tours.photo.title': 'Tour de Astrofotografía Especializado',
+            'tours.photo.desc1': 'Diseñado para fotógrafos y entusiastas que desean capturar la majestuosidad del cosmos.',
+            'tours.photo.desc2': 'Aprende técnicas profesionales de astrofotografía con equipo especializado.',
+            'tours.photo.btn': 'Reservar',
+            'tours.private.title': 'Tour Privado VIP',
+            'tours.private.desc1': 'La experiencia astronómica más exclusiva y personalizada.',
+            'tours.private.desc2': 'Perfecto para parejas, familias o grupos que buscan una experiencia íntima.',
+            'tours.private.btn': 'Reservar',
+            'tours.includes': 'Incluye:',
+            'testimonials.title': 'Lo que dicen nuestros viajeros',
+            'testimonials.subtitle': 'Historias reales bajo las estrellas',
+            'contact.title': 'Contacto y Ubicación',
+            'booking.title': 'Reserva Tu Experiencia Astronómica',
+            'booking.subtitle': 'Selecciona tu fecha, completa tus datos y te confirmaremos en 24 horas',
+            'booking.selectDate': 'Selecciona tu Fecha *',
+            'booking.selectDateMsg': '👆 Selecciona una fecha en el calendario para continuar',
+            'booking.yourData': 'Datos de tu Reserva',
+            'booking.persons': 'Número de Personas *',
+            'booking.selectQuantity': 'Selecciona cantidad',
+            'booking.tourType': 'Tipo de Tour *',
+            'booking.selectTour': 'Selecciona tipo de tour',
+            'booking.tourRegular': 'Tour Regular (Grupo)',
+            'booking.tourPrivate': 'Tour Privado (Solo tu grupo)',
+            'booking.tourAstro': 'Tour Astrofotográfico (Especializado)',
+            'booking.name': 'Nombre Completo *',
+            'booking.email': 'Email *',
+            'booking.phone': 'Teléfono / WhatsApp *',
+            'booking.accommodation': 'Hotel / Hospedaje',
+            'booking.message': 'Mensaje o solicitud especial',
+            'booking.submit': 'Confirmar Reserva',
+            'footer.desc': 'Descubre el universo en el cielo más claro del mundo. Experiencias astronómicas inolvidables en San Pedro de Atacama.',
+            'info.availability': 'Disponible',
+            'info.full': 'Agotado',
+            'info.selected': 'Seleccionado'
+        },
+        en: {
+            'nav.home': 'Home',
+            'nav.about': 'About Us',
+            'nav.tours': 'Tours',
+            'nav.telescope': 'Telescope',
+            'nav.booking': 'Bookings',
+            'nav.contact': 'Contact',
+            'hero.cta': 'Book Now',
+            'hero.title1': 'Atacama Dark Skies',
+            'hero.title2': 'The Purest Sky in the World',
+            'hero.title3': 'In San Pedro de Atacama',
+            'hero.subtitle': 'Expert-guided astronomical tours: star observation, constellations and deep space celestial phenomena.',
+            'hero.btn_book': 'Book Your Tour',
+            'hero.btn_tours': 'View Tours',
+            'about.title': 'Vicente Litvak',
+            'about.subtitle': 'About Me',
+            'about.p1': 'I am Vicente Litvak, passionate astronomical guide with over 6 years of experience in the Atacama Desert.',
+            'about.p2': 'My passion for astronomy began observing the stars as a child. Today I combine scientific knowledge with cutting-edge technology.',
+            'about.p3': 'Each tour is unique because we use next-generation smart telescopes.',
+            'about.p4': 'I have guided more than 3,000 visitors from around the world.',
+            'about.quote': '"Every night under the Atacama stars reminds me why I chose this path"',
+            'tours.title': 'Our Astronomical Tours',
+            'tours.subtitle': 'Unique experiences under the clearest sky in the world',
+            'tours.regular.badge': 'Most Popular',
+            'tours.regular.title': 'Regular Astronomical Tour',
+            'tours.regular.desc1': 'Immerse yourself in the universe with our most popular experience.',
+            'tours.regular.desc2': 'Then we explore those nebulae and star clusters through the telescope.',
+            'tours.regular.btn': 'Book',
+            'tours.photo.title': 'Specialized Astrophotography Tour',
+            'tours.photo.desc1': 'Designed for photographers and enthusiasts who want to capture the majesty of the cosmos.',
+            'tours.photo.desc2': 'Learn professional astrophotography techniques with specialized equipment.',
+            'tours.photo.btn': 'Book',
+            'tours.private.title': 'Private VIP Tour',
+            'tours.private.desc1': 'The most exclusive and personalized astronomical experience.',
+            'tours.private.desc2': 'Perfect for couples, families or groups seeking an intimate experience.',
+            'tours.private.btn': 'Book',
+            'tours.includes': 'Includes:',
+            'testimonials.title': 'What Our Travelers Say',
+            'testimonials.subtitle': 'Real stories under the stars',
+            'contact.title': 'Contact and Location',
+            'booking.title': 'Book Your Astronomical Experience',
+            'booking.subtitle': 'Select your date, complete your details and we will confirm within 24 hours',
+            'booking.selectDate': 'Select Your Date *',
+            'booking.selectDateMsg': '👆 Select a date on the calendar to continue',
+            'booking.yourData': 'Your Booking Details',
+            'booking.persons': 'Number of People *',
+            'booking.selectQuantity': 'Select quantity',
+            'booking.tourType': 'Tour Type *',
+            'booking.selectTour': 'Select tour type',
+            'booking.tourRegular': 'Regular Tour (Group)',
+            'booking.tourPrivate': 'Private Tour (Your group only)',
+            'booking.tourAstro': 'Astrophotography Tour (Specialized)',
+            'booking.name': 'Full Name *',
+            'booking.email': 'Email *',
+            'booking.phone': 'Phone / WhatsApp *',
+            'booking.accommodation': 'Hotel / Accommodation',
+            'booking.message': 'Message or special request',
+            'booking.submit': 'Confirm Booking',
+            'footer.desc': 'Discover the universe under the clearest sky in the world. Unforgettable astronomical experiences in San Pedro de Atacama.',
+            'info.availability': 'Available',
+            'info.full': 'Sold Out',
+            'info.selected': 'Selected'
+        },
+        pt: {
+            'nav.home': 'Início',
+            'nav.about': 'Sobre Nós',
+            'nav.tours': 'Tours',
+            'nav.telescope': 'Telescópio',
+            'nav.booking': 'Reservas',
+            'nav.contact': 'Contato',
+            'hero.cta': 'Reserve Agora',
+            'hero.title1': 'Atacama Dark Skies',
+            'hero.title2': 'O céu mais puro do mundo',
+            'hero.title3': 'Em San Pedro de Atacama',
+            'hero.subtitle': 'Tours astronômicos guiados por especialistas: observação de estrelas, constelações e fenômenos celestes do espaço profundo.',
+            'hero.btn_book': 'Reserve Seu Tour',
+            'hero.btn_tours': 'Ver Tours',
+            'about.title': 'Vicente Litvak',
+            'about.subtitle': 'Sobre Mim',
+            'about.p1': 'Sou Vicente Litvak, guia astronômico apaixonado com mais de 6 anos de experiência no Deserto de Atacama.',
+            'about.p2': 'Minha paixão pela astronomia começou observando as estrelas quando criança. Hoje combino conhecimento científico com tecnologia de ponta.',
+            'about.p3': 'Cada tour é único porque usamos telescópios inteligentes de última geração.',
+            'about.p4': 'Já guiei mais de 3.000 visitantes de todo o mundo.',
+            'about.quote': '"Cada noite sob as estrelas de Atacama me lembra por que escolhi este caminho"',
+            'tours.title': 'Nossos Tours Astronômicos',
+            'tours.subtitle': 'Experiências únicas sob o céu mais limpo do mundo',
+            'tours.regular.badge': 'Mais Popular',
+            'tours.regular.title': 'Tour Astronômico Regular',
+            'tours.regular.desc1': 'Mergulhe no universo com nossa experiência mais popular.',
+            'tours.regular.desc2': 'Depois exploramos essas nebulosas e aglomerados estelares através do telescópio.',
+            'tours.regular.btn': 'Reservar',
+            'tours.photo.title': 'Tour de Astrofotografia Especializado',
+            'tours.photo.desc1': 'Projetado para fotógrafos e entusiastas que desejam capturar a majestade do cosmos.',
+            'tours.photo.desc2': 'Aprenda técnicas profissionais de astrofotografia com equipamentos especializados.',
+            'tours.photo.btn': 'Reservar',
+            'tours.private.title': 'Tour Privado VIP',
+            'tours.private.desc1': 'A experiência astronômica mais exclusiva e personalizada.',
+            'tours.private.desc2': 'Perfeito para casais, famílias ou grupos que buscam uma experiência íntima.',
+            'tours.private.btn': 'Reservar',
+            'tours.includes': 'Inclui:',
+            'testimonials.title': 'O Que Nossos Viajantes Dizem',
+            'testimonials.subtitle': 'Histórias reais sob as estrelas',
+            'contact.title': 'Contato e Localização',
+            'booking.title': 'Reserve Sua Experiência Astronômica',
+            'booking.subtitle': 'Selecione sua data, preencha seus dados e confirmaremos em 24 horas',
+            'booking.selectDate': 'Selecione Sua Data *',
+            'booking.selectDateMsg': '👆 Selecione uma data no calendário para continuar',
+            'booking.yourData': 'Dados da Sua Reserva',
+            'booking.persons': 'Número de Pessoas *',
+            'booking.selectQuantity': 'Selecione quantidade',
+            'booking.tourType': 'Tipo de Tour *',
+            'booking.selectTour': 'Selecione tipo de tour',
+            'booking.tourRegular': 'Tour Regular (Grupo)',
+            'booking.tourPrivate': 'Tour Privado (Só seu grupo)',
+            'booking.tourAstro': 'Tour de Astrofotografia (Especializado)',
+            'booking.name': 'Nome Completo *',
+            'booking.email': 'Email *',
+            'booking.phone': 'Telefone / WhatsApp *',
+            'booking.accommodation': 'Hotel / Hospedagem',
+            'booking.message': 'Mensagem ou pedido especial',
+            'booking.submit': 'Confirmar Reserva',
+            'footer.desc': 'Descubra o universo sob o céu mais limpo do mundo. Experiências astronômicas inesquecíveis em San Pedro de Atacama.',
+            'info.availability': 'Disponível',
+            'info.full': 'Esgotado',
+            'info.selected': 'Selecionado'
+        }
+    };
+
     function updateContent(lang) {
         // Update page meta tags
         document.title = translations[lang]['page-title'];
-        document.querySelector('meta[name="description"]').setAttribute('content', translations[lang]['meta-description']);
-        
-        // Navigation
-        navLinks.forEach(link => {
-            const key = link.textContent.trim();
-            if (translations[lang][key]) {
-                link.textContent = translations[lang][key];
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) {
+            metaDesc.setAttribute('content', translations[lang]['meta-description']);
+        }
+
+        // Update all elements with data-i18n attribute
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            if (i18n[lang] && i18n[lang][key]) {
+                element.textContent = i18n[lang][key];
             }
         });
-        
-        // Hero Section
-        document.querySelector('.hero-title').innerHTML = translations[lang]['hero-title'].map((line, idx) => 
-            `<span class="line" style="display: ${idx === 0 ? 'block' : 'none'};">${line}</span>`
-        ).join('');
-        document.querySelector('.hero-subtitle').textContent = translations[lang]['hero-subtitle'];
-        
-        // About Section
-        document.querySelector('.about-title').textContent = translations[lang]['about-title'];
-        document.querySelector('.about-subtitle').textContent = translations[lang]['about-subtitle'];
-        const aboutParagraphs = document.querySelectorAll('.about-paragraph');
-        aboutParagraphs.forEach((p, idx) => {
-            p.textContent = translations[lang]['about-paragraphs'][idx];
-        });
-        
-        // Tours Section
-        document.querySelector('.tours-title').textContent = translations[lang]['Nuestros Tours Astronómicos'];
-        document.querySelector('.tours-subtitle').textContent = translations[lang]['Experiencias únicas bajo el cielo más claro del mundo'];
-        const tourElements = document.querySelectorAll('.tour');
-        tourElements.forEach((tour, idx) => {
-            tour.querySelector('.tour-title').textContent = translations[lang][`tour-${idx+1}-title`];
-            tour.querySelector('.tour-desc').textContent = translations[lang][`tour-${idx+1}-desc`];
-        });
-        
-        // Testimonials
-        document.querySelector('.testimonials-title').textContent = translations[lang]['testimonials-title'];
-        
-        // Contact Section
-        document.querySelector('.contact-title').textContent = translations[lang]['contact-title'];
-        document.querySelector('.contact-form-title').textContent = translations[lang]['contact-form-title'];
-        document.querySelector('label[for="nombre"]').textContent = translations[lang]['placeholder-tu-nombre'];
-        document.querySelector('label[for="email"]').textContent = translations[lang]['placeholder-tu-email'];
-        document.querySelector('label[for="telefono"]').textContent = translations[lang]['placeholder-tu-teléfono'];
-        document.querySelector('label[for="mensaje"]').textContent = translations[lang]['placeholder-tu-mensaje'];
-        document.querySelector('label[for="fecha-hora"]').textContent = translations[lang]['label-calendar'];
-        
-        // Footer
-        document.querySelector('.footer-atacama-nightsky').textContent = translations[lang]['footer-atacama-nightsky'];
-        document.querySelector('.footer-enlaces-rápidos').textContent = translations[lang]['footer-enlaces-rápidos'];
-        document.querySelector('.footer-servicios').textContent = translations[lang]['footer-servicios'];
+
+        // Update HTML lang attribute
+        document.documentElement.lang = lang;
+
+        console.log('Language changed to:', lang);
     }
     
     langToggle.addEventListener('click', function() {
