@@ -3,8 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¡Pago Exitoso! - Atacama NightSky</title>
+    <title>¡Pago Exitoso! - Atacama Dark Sky</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T39HYLDJ8K"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-T39HYLDJ8K');
+
+        // Get payment details from URL params (Mercado Pago returns these)
+        const urlParams = new URLSearchParams(window.location.search);
+        const paymentId = urlParams.get('payment_id') || urlParams.get('collection_id');
+        const externalRef = urlParams.get('external_reference');
+        const status = urlParams.get('collection_status') || urlParams.get('status');
+
+        // Track purchase event
+        gtag('event', 'purchase', {
+            transaction_id: paymentId || externalRef || Date.now().toString(),
+            value: 30000, // Default value in CLP
+            currency: 'CLP',
+            items: [{
+                item_name: 'Tour Astronómico',
+                item_category: 'Tours',
+                quantity: 1
+            }]
+        });
+
+        // Also track as conversion
+        gtag('event', 'conversion', {
+            send_to: 'G-T39HYLDJ8K',
+            value: 30000,
+            currency: 'CLP'
+        });
+    </script>
     <style>
         * {
             margin: 0;

@@ -263,6 +263,23 @@ async function processMercadoPagoCheckout(form) {
 
         // Redirect to Mercado Pago checkout
         if (result.init_point) {
+            // Track begin_checkout event in GA4
+            if (typeof gtag === 'function') {
+                gtag('event', 'begin_checkout', {
+                    currency: 'CLP',
+                    value: parseInt(data.price) || 30000,
+                    items: [{
+                        item_name: data.tourName || 'Tour Astronómico',
+                        item_category: data.tourType || 'regular',
+                        quantity: parseInt(data.persons) || 1,
+                        price: parseInt(data.price) || 30000
+                    }]
+                });
+                gtag('event', 'generate_lead', {
+                    currency: 'CLP',
+                    value: parseInt(data.price) || 30000
+                });
+            }
             submitBtn.innerHTML = '<i class="fas fa-check"></i> Redirigiendo a pago seguro...';
             window.location.href = result.init_point;
         } else {
