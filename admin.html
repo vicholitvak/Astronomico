@@ -1047,6 +1047,51 @@
             </div>
         </div>
 
+        <!-- Upcoming Bookings Section -->
+        <div class="filters-section" style="margin-bottom: 20px;">
+            <h3 style="color: #60a5fa; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-clock"></i> Próximas Reservas
+            </h3>
+            <div id="upcomingBookings" style="display: grid; gap: 15px;">
+                <!-- Will be populated by JS -->
+            </div>
+            <div id="noUpcomingBookings" style="display: none; text-align: center; padding: 30px; color: #94a3b8;">
+                <i class="fas fa-calendar-check" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                <p>No hay tours próximos programados</p>
+            </div>
+        </div>
+
+        <!-- Past Bookings Accordion -->
+        <div class="filters-section" style="margin-bottom: 30px;">
+            <div onclick="togglePastBookings()" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(15, 23, 42, 0.5); border-radius: 8px; transition: all 0.3s;">
+                <h3 style="color: #94a3b8; margin: 0; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-history"></i> Tours Pasados
+                    <span id="pastBookingsCount" style="background: rgba(148, 163, 184, 0.2); padding: 4px 12px; border-radius: 12px; font-size: 0.85rem;">0</span>
+                </h3>
+                <i id="pastBookingsIcon" class="fas fa-chevron-down" style="color: #94a3b8; transition: transform 0.3s;"></i>
+            </div>
+            <div id="pastBookingsSection" style="display: none; margin-top: 20px;">
+                <div class="filters-grid" style="margin-bottom: 20px;">
+                    <div class="filter-group">
+                        <label for="pastSearchFilter">Buscar en pasados</label>
+                        <input type="text" id="pastSearchFilter" placeholder="Nombre, email, ID, fecha...">
+                    </div>
+                    <div class="filter-group">
+                        <button class="btn-primary" onclick="searchPastBookings()" style="margin-top: 23px;">
+                            <i class="fas fa-search"></i> Buscar
+                        </button>
+                    </div>
+                </div>
+                <div id="pastBookingsList" style="display: grid; gap: 15px; max-height: 600px; overflow-y: auto;">
+                    <!-- Will be populated by JS -->
+                </div>
+                <div id="noPastBookings" style="display: none; text-align: center; padding: 30px; color: #94a3b8;">
+                    <i class="fas fa-calendar-times" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                    <p>No hay tours pasados</p>
+                </div>
+            </div>
+        </div>
+
         <div class="filters-section">
             <div class="filters-grid">
                 <div class="filter-group">
@@ -1307,6 +1352,7 @@
                 renderBookings(data.data.bookings);
                 renderPagination(data.data.pagination);
                 updateCalendarWithBookings(data.data.bookings);
+                renderUpcomingAndPastBookings(data.data.bookings);
 
                 currentPage = page;
 
@@ -2021,6 +2067,135 @@
                     </td>
                 </tr>
             `).join('');
+        }
+
+        let pastBookingsFiltered = [];
+
+        function renderUpcomingAndPastBookings(bookings) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Separar upcoming y past
+            const upcoming = bookings.filter(b => {
+                const bookingDate = new Date(b.date + 'T00:00:00');
+                return bookingDate >= today;
+            }).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            const past = bookings.filter(b => {
+                const bookingDate = new Date(b.date + 'T00:00:00');
+                return bookingDate < today;
+            }).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            pastBookingsFiltered = past;
+
+            // Render upcoming
+            const upcomingContainer = document.getElementById('upcomingBookings');
+            const noUpcoming = document.getElementById('noUpcomingBookings');
+
+            if (upcoming.length === 0) {
+                upcomingContainer.style.display = 'none';
+                noUpcoming.style.display = 'block';
+            } else {
+                upcomingContainer.style.display = 'grid';
+                noUpcoming.style.display = 'none';
+                upcomingContainer.innerHTML = upcoming.slice(0, 5).map(booking => renderBookingCard(booking)).join('');
+            }
+
+            // Update past count
+            document.getElementById('pastBookingsCount').textContent = past.length;
+        }
+
+        function renderBookingCard(booking) {
+            const tourTypeColors = { regular: '#10b981', private: '#a78bfa', astrophoto: '#fbbf24' };
+            const statusColors = { confirmed: '#10b981', pending: '#fbbf24', cancelled: '#ef4444', completed: '#60a5fa' };
+
+            return `
+                <div class="booking-card" onclick="showDayModal('${booking.date}')" style="cursor: pointer; transition: all 0.3s;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-size: 1.1rem; font-weight: bold; color: #f1f5f9; margin-bottom: 4px;">
+                                ${booking.name}
+                            </div>
+                            <div style="font-size: 0.75rem; color: #94a3b8;">
+                                ID: ${booking.booking_id}
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; background: ${tourTypeColors[booking.tour_type]}33; color: ${tourTypeColors[booking.tour_type]}; border: 1px solid ${tourTypeColors[booking.tour_type]}55; margin-bottom: 4px;">
+                                ${getTourTypeName(booking.tour_type)}
+                            </div>
+                            <div style="display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; background: ${statusColors[booking.status]}33; color: ${statusColors[booking.status]}; border: 1px solid ${statusColors[booking.status]}55;">
+                                ${getStatusName(booking.status)}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; font-size: 0.9rem;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-calendar" style="color: #60a5fa; width: 20px;"></i>
+                            <span style="color: #cbd5e1;">${formatDate(booking.date)} - ${booking.time || 'Sin horario'}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-users" style="color: #60a5fa; width: 20px;"></i>
+                            <span style="color: #cbd5e1;">${booking.persons} persona${booking.persons > 1 ? 's' : ''}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-envelope" style="color: #60a5fa; width: 20px;"></i>
+                            <span style="color: #cbd5e1;">${booking.email}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-phone" style="color: #60a5fa; width: 20px;"></i>
+                            <span style="color: #cbd5e1;">${booking.phone}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function togglePastBookings() {
+            const section = document.getElementById('pastBookingsSection');
+            const icon = document.getElementById('pastBookingsIcon');
+
+            if (section.style.display === 'none') {
+                section.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+                renderPastBookings(pastBookingsFiltered);
+            } else {
+                section.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function renderPastBookings(bookings) {
+            const container = document.getElementById('pastBookingsList');
+            const noResults = document.getElementById('noPastBookings');
+
+            if (bookings.length === 0) {
+                container.style.display = 'none';
+                noResults.style.display = 'block';
+            } else {
+                container.style.display = 'grid';
+                noResults.style.display = 'none';
+                container.innerHTML = bookings.map(booking => renderBookingCard(booking)).join('');
+            }
+        }
+
+        function searchPastBookings() {
+            const searchTerm = document.getElementById('pastSearchFilter').value.toLowerCase();
+
+            if (!searchTerm) {
+                renderPastBookings(pastBookingsFiltered);
+                return;
+            }
+
+            const filtered = pastBookingsFiltered.filter(b =>
+                b.name.toLowerCase().includes(searchTerm) ||
+                b.email.toLowerCase().includes(searchTerm) ||
+                b.phone.includes(searchTerm) ||
+                b.booking_id.toLowerCase().includes(searchTerm) ||
+                b.date.includes(searchTerm)
+            );
+
+            renderPastBookings(filtered);
         }
 
         function renderPagination(pagination) {
