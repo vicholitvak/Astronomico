@@ -62,7 +62,7 @@ export default async function handler(req, res) {
 async function getReviews(req, res) {
   const {
     tour_type,
-    status = 'approved',
+    status,
     limit = 20,
     offset = 0,
     featured,
@@ -90,6 +90,7 @@ async function getReviews(req, res) {
       r.title,
       r.comment,
       r.reviewer_name,
+      r.reviewer_email,
       r.reviewer_country,
       r.language,
       r.tour_type,
@@ -97,6 +98,7 @@ async function getReviews(req, res) {
       r.photos,
       r.helpful_count,
       r.is_featured,
+      r.status,
       r.created_at,
       rr.response_text as owner_response,
       rr.created_at as response_date
@@ -161,14 +163,16 @@ async function createReview(req, res) {
     reviewer_email,
     reviewer_country,
     language = 'es',
+    tour_type,
+    tour_date,
     photos
   } = req.body;
 
   // Validaciones
-  if (!booking_id || !overall_rating || !reviewer_name || !reviewer_email) {
+  if (!overall_rating || !reviewer_name || !reviewer_email) {
     return res.status(400).json({
       error: 'Missing required fields',
-      required: ['booking_id', 'overall_rating', 'reviewer_name', 'reviewer_email']
+      required: ['overall_rating', 'reviewer_name', 'reviewer_email']
     });
   }
 
@@ -178,17 +182,19 @@ async function createReview(req, res) {
     });
   }
 
-  // Verificar que el booking existe y está completado
+  // Buscar booking por nombre y/o email (más reciente primero)
   const bookingCheck = await pool.query(
-    `SELECT booking_id, tour_type, date, status
+    `SELECT booking_id, tour_type, date, status, name, email
      FROM bookings
-     WHERE booking_id = $1`,
-    [booking_id]
+     WHERE LOWER(name) = LOWER($1) OR LOWER(email) = LOWER($2)
+     ORDER BY created_at DESC
+     LIMIT 1`,
+    [reviewer_name, reviewer_email]
   );
 
   if (bookingCheck.rows.length === 0) {
     return res.status(404).json({
-      error: 'Booking not found'
+      error: 'No booking found for this name or email'
     });
   }
 
@@ -197,7 +203,7 @@ async function createReview(req, res) {
   // Verificar que no existe ya un review para este booking
   const existingReview = await pool.query(
     'SELECT review_id FROM reviews WHERE booking_id = $1',
-    [booking_id]
+    [booking.booking_id]
   );
 
   if (existingReview.rows.length > 0) {
@@ -233,7 +239,7 @@ async function createReview(req, res) {
     RETURNING *`,
     [
       review_id,
-      booking_id,
+      booking.booking_id,
       overall_rating,
       guide_rating || null,
       equipment_rating || null,

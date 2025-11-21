@@ -974,8 +974,72 @@ section {
 .testimonials {
     background: var(--gradient-primary);
     position: relative;
+    padding: var(--spacing-xl) 0;
 }
 
+/* Slider Container */
+.testimonial-slider-container {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.testimonial-slider {
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+    min-height: 280px;
+}
+
+.testimonial-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.testimonial-slide:first-child {
+    position: relative;
+    opacity: 1;
+}
+
+.testimonial-content {
+    text-align: center;
+    padding: var(--spacing-lg);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Navigation Buttons */
+.testimonial-prev,
+.testimonial-next {
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    color: var(--primary-color);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.testimonial-prev:hover,
+.testimonial-next:hover {
+    background: rgba(255, 215, 0, 0.2);
+    transform: scale(1.1);
+}
+
+/* Legacy support */
 .testimonials-slider {
     position: relative;
     max-width: 800px;
@@ -997,6 +1061,45 @@ section {
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+
+/* Mobile testimonials */
+@media (max-width: 768px) {
+    .testimonial-slider-container {
+        flex-direction: column;
+        padding: 0 15px;
+    }
+
+    .testimonial-prev,
+    .testimonial-next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        z-index: 10;
+    }
+
+    .testimonial-prev {
+        left: 5px;
+    }
+
+    .testimonial-next {
+        right: 5px;
+    }
+
+    .testimonial-slider {
+        min-height: 320px;
+    }
+
+    .testimonial-content {
+        padding: var(--spacing-md);
+        margin: 0 40px;
+    }
+
+    .testimonial-content blockquote {
+        font-size: 1rem;
+    }
 }
 
 .stars {
@@ -1156,6 +1259,10 @@ blockquote {
 
 .legend-item .dot.full {
     background: #f44336;
+}
+
+.legend-item .dot.blocked {
+    background: #ef4444;
 }
 
 .legend-item .dot.selected {
@@ -1399,12 +1506,70 @@ blockquote {
     cursor: not-allowed;
 }
 
+.calendar-day.sold-out {
+    background: rgba(239, 68, 68, 0.25);
+    border: 2px solid #ef4444;
+    color: var(--text-muted);
+    cursor: not-allowed;
+    position: relative;
+}
+
+.sold-out-label {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.5rem;
+    font-weight: bold;
+    padding: 1px 3px;
+    border-radius: 3px;
+    line-height: 1;
+}
+
+.legend-dot.sold-out {
+    background: #ef4444;
+    border: 1px solid #ef4444;
+}
+
+/* Solo privado tardío - fecha con tour privado reservado, solo disponible VIP 00:00 */
+.calendar-day.late-private-only {
+    background: rgba(245, 158, 11, 0.25);
+    border: 2px solid #f59e0b;
+    color: var(--text-color);
+    cursor: pointer;
+    position: relative;
+}
+
+.late-private-label {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: #f59e0b;
+    color: #000;
+    font-size: 0.45rem;
+    font-weight: bold;
+    padding: 1px 2px;
+    border-radius: 3px;
+    line-height: 1;
+}
+
+.legend-dot.late-private {
+    background: #f59e0b;
+    border: 1px solid #f59e0b;
+}
+
 .calendar-day.selected {
-    background: var(--primary-color);
-    color: var(--bg-primary);
+    background: rgba(0, 212, 255, 0.2);
+    border: 2px solid var(--primary-color);
     font-weight: var(--font-weight-bold);
-    transform: scale(1.1);
+    transform: scale(1.05);
     box-shadow: var(--glow-primary);
+}
+
+.calendar-day.selected .day-number {
+    color: var(--primary-color);
+    font-weight: bold;
 }
 
 .calendar-day.today {
@@ -1461,6 +1626,85 @@ blockquote {
 .legend-dot.selected {
     background: var(--primary-color);
     border: 1px solid var(--primary-color);
+}
+
+/* Flatpickr custom styles */
+.flatpickr-day.blocked-date {
+    background: rgba(239, 68, 68, 0.3) !important;
+    border-color: #ef4444 !important;
+    color: #f87171 !important;
+    text-decoration: line-through;
+}
+
+.flatpickr-day.blocked-date:hover {
+    background: rgba(239, 68, 68, 0.4) !important;
+}
+
+.flatpickr-day.selected {
+    background: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: #000 !important;
+}
+
+.flatpickr-day.selected:hover {
+    background: var(--primary-color) !important;
+}
+
+.flatpickr-calendar {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.flatpickr-months .flatpickr-month,
+.flatpickr-current-month .flatpickr-monthDropdown-months,
+.flatpickr-current-month input.cur-year {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.flatpickr-weekdays {
+    background: var(--bg-secondary);
+}
+
+.flatpickr-weekday {
+    color: var(--text-muted);
+}
+
+.flatpickr-day {
+    color: var(--text-primary);
+}
+
+.flatpickr-day:hover {
+    background: rgba(255, 215, 0, 0.2);
+    border-color: var(--primary-color);
+}
+
+.flatpickr-day.today {
+    border-color: var(--primary-color);
+}
+
+/* Reviews rating summary */
+.reviews-rating-summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-radius: 8px;
+}
+
+.reviews-rating-summary .rating-stars {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.reviews-rating-summary .rating-text {
+    color: var(--text-muted);
+    font-size: 0.9rem;
 }
 
 .selected-date-display {

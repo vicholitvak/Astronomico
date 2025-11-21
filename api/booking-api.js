@@ -8,7 +8,7 @@ import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
@@ -24,6 +24,14 @@ export default async function handler(req, res) {
       return await listBookings(req, res);
     }
 
+    if (req.method === 'PATCH') {
+      return await updateBooking(req, res);
+    }
+
+    if (req.method === 'DELETE') {
+      return await deleteBooking(req, res);
+    }
+
     return res.status(405).json({ error: 'Method not allowed' });
   } catch (error) {
     console.error('Booking API error:', error);
@@ -31,12 +39,68 @@ export default async function handler(req, res) {
   }
 }
 
+// ============ UPDATE BOOKING (PATCH) ============
+async function updateBooking(req, res) {
+  const { id } = req.query;
+  const { status, tour_type, persons, time, date } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ success: false, error: 'Booking ID is required' });
+  }
+
+  const updates = [];
+  const values = [];
+  let paramCount = 1;
+
+  if (status) { updates.push(`status = $${paramCount++}`); values.push(status); }
+  if (tour_type) { updates.push(`tour_type = $${paramCount++}`); values.push(tour_type); }
+  if (persons) { updates.push(`persons = $${paramCount++}`); values.push(parseInt(persons)); }
+  if (time) { updates.push(`time = $${paramCount++}`); values.push(time); }
+  if (date) { updates.push(`date = $${paramCount++}`); values.push(date); }
+
+  if (updates.length === 0) {
+    return res.status(400).json({ success: false, error: 'No fields to update' });
+  }
+
+  updates.push(`updated_at = $${paramCount++}`);
+  values.push(new Date().toISOString());
+  values.push(id);
+
+  const result = await query(
+    `UPDATE bookings SET ${updates.join(', ')} WHERE id = $${paramCount} RETURNING *`,
+    values
+  );
+
+  if (result.rows.length === 0) {
+    return res.status(404).json({ success: false, error: 'Booking not found' });
+  }
+
+  return res.status(200).json({ success: true, data: result.rows[0] });
+}
+
+// ============ DELETE BOOKING ============
+async function deleteBooking(req, res) {
+  const { id } = req.query;
+
+  if (!id) {
+    return res.status(400).json({ success: false, error: 'Booking ID is required' });
+  }
+
+  const result = await query('DELETE FROM bookings WHERE id = $1 RETURNING *', [id]);
+
+  if (result.rows.length === 0) {
+    return res.status(404).json({ success: false, error: 'Booking not found' });
+  }
+
+  return res.status(200).json({ success: true, message: 'Booking deleted' });
+}
+
 // ============ CREATE BOOKING (POST) ============
 async function createBooking(req, res) {
   console.log('Received booking request:', req.body);
 
   const {
-    date, persons, tourType, time, name, email, phone, message, source = 'web'
+    date, persons, tourType, time, name, email, phone, message, source = 'web', accommodation, status = 'pending'
   } = req.body;
 
   if (!date || !persons || !tourType || !name || !email || !phone) {
@@ -74,7 +138,8 @@ async function createBooking(req, res) {
     email,
     phone,
     message: message || null,
-    status: 'pending',
+    accommodation: accommodation || null,
+    status: status || 'pending',
     source,
     created_at: new Date().toISOString()
   });

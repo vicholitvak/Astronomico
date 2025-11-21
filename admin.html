@@ -1134,6 +1134,49 @@
         </div>
     </div>
 
+        <!-- Reviews Tab -->
+        <div id="reviewsTab" class="tab-content">
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-label">Pendientes</div>
+                    <div class="stat-value" id="reviewsPending" style="color: #fbbf24;">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Aprobadas</div>
+                    <div class="stat-value" id="reviewsApproved" style="color: #4ade80;">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Rating Promedio</div>
+                    <div class="stat-value" id="reviewsAvgRating" style="color: #60a5fa;">-</div>
+                </div>
+            </div>
+
+            <div class="filters-section">
+                <div class="filters-grid" style="max-width: 600px;">
+                    <div class="filter-group">
+                        <label for="reviewStatusFilter">Estado</label>
+                        <select id="reviewStatusFilter" onchange="loadReviews()">
+                            <option value="pending">Pendientes</option>
+                            <option value="approved">Aprobadas</option>
+                            <option value="rejected">Rechazadas</option>
+                            <option value="">Todas</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="reviewsLoading" class="loading">
+                <i class="fas fa-spinner"></i> Cargando reseñas...
+            </div>
+
+            <div id="reviewsList" style="display: none;"></div>
+
+            <div id="noReviews" style="display: none; text-align: center; padding: 40px; color: #94a3b8;">
+                <i class="fas fa-star" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                <p>No hay reseñas en esta categoría</p>
+            </div>
+        </div>
+
         <!-- Photos Tab -->
         <div id="photosTab" class="tab-content">
             <div class="filters-section">
@@ -1203,6 +1246,7 @@
         let selectedDate = null;
         let bookingsByDate = {};
         let blockedDates = new Set();
+        let blockedDatesInfo = {}; // { '2025-12-07': { block_type: 'full' | 'late_private_only', reason: '...' } }
 
         // Check authentication on page load
         document.addEventListener('DOMContentLoaded', async () => {
@@ -1213,6 +1257,7 @@
             }
             loadBookings();
             loadBlockedDates();
+            loadReviewStats(); // Load review badge count
         });
 
         // Check if user is authenticated
@@ -1454,16 +1499,21 @@
 
         function showDayModal(dateStr) {
             const dayBookings = bookingsByDate[dateStr] || [];
-
-            if (dayBookings.length === 0) {
-                alert('No hay reservas para esta fecha');
-                return;
-            }
+            const isBlocked = blockedDates.has(dateStr);
 
             // Format date in Spanish
             const date = new Date(dateStr + 'T12:00:00');
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             const formattedDate = date.toLocaleDateString('es-CL', options);
+
+            // If no bookings, show option to block/unblock
+            if (dayBookings.length === 0) {
+                const action = isBlocked ? 'desbloquear' : 'bloquear';
+                if (confirm(`No hay reservas para esta fecha.\n\n¿Deseas ${action} el ${formattedDate}?`)) {
+                    toggleBlockDate(dateStr);
+                }
+                return;
+            }
 
             // Set modal title
             document.getElementById('modalDateTitle').textContent =
@@ -1597,12 +1647,73 @@
                             ` : ''}
                         </div>
 
-                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(71, 85, 105, 0.5); font-size: 0.75rem; color: #64748b;">
-                            Creado: ${formatDateTime(booking.created_at)} | Fuente: ${booking.source || 'web'}
+                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(71, 85, 105, 0.5);">
+                            <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 8px;">
+                                Creado: ${formatDateTime(booking.created_at)} | Fuente: ${booking.source || 'web'}
+                            </div>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button onclick="changeBookingStatus(${booking.id}, 'confirmed')" style="background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'confirmed' ? 'disabled' : ''}>
+                                    <i class="fas fa-check"></i> Confirmar
+                                </button>
+                                <button onclick="changeBookingStatus(${booking.id}, 'pending')" style="background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'pending' ? 'disabled' : ''}>
+                                    <i class="fas fa-clock"></i> Pendiente
+                                </button>
+                                <button onclick="changeBookingStatus(${booking.id}, 'cancelled')" style="background: #6b7280; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'cancelled' ? 'disabled' : ''}>
+                                    <i class="fas fa-times"></i> Cancelar
+                                </button>
+                                <button onclick="deleteBooking(${booking.id}, '${booking.name.replace(/'/g, "\\'")}')" style="background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
             });
+
+            // Add block date button
+            const hasPrivate = byType.private.length > 0;
+            const isBlocked = blockedDates.has(dateStr);
+            const blockInfo = blockedDatesInfo[dateStr];
+            const isLatePrivateOnly = blockInfo?.block_type === 'late_private_only';
+
+            // Mostrar estado de bloqueo si existe
+            if (isBlocked) {
+                bookingsHTML += `
+                    <div style="margin-top: 15px; padding: 12px; background: ${isLatePrivateOnly ? 'rgba(245, 158, 11, 0.2)' : 'rgba(239, 68, 68, 0.2)'}; border: 1px solid ${isLatePrivateOnly ? '#f59e0b' : '#ef4444'}; border-radius: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span style="color: ${isLatePrivateOnly ? '#f59e0b' : '#ef4444'}; font-weight: bold;">
+                                    <i class="fas ${isLatePrivateOnly ? 'fa-moon' : 'fa-ban'}"></i>
+                                    ${isLatePrivateOnly ? 'Solo 2do turno privado (00:00)' : 'Fecha bloqueada'}
+                                </span>
+                                ${blockInfo?.reason ? `<div style="color: #94a3b8; font-size: 0.85rem; margin-top: 4px;">${blockInfo.reason}</div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            bookingsHTML += `
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(71, 85, 105, 0.5); display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn-primary" onclick="showAddBookingForm('${dateStr}')" style="flex: 1;">
+                        <i class="fas fa-plus"></i> Agregar reserva manual
+                    </button>
+                </div>
+                <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    ${!isBlocked ? `
+                        <button class="btn-reject" onclick="blockDateFromModal('${dateStr}')" style="flex: 1;">
+                            <i class="fas fa-ban"></i> Bloquear completo
+                        </button>
+                        <button class="btn-secondary" onclick="blockExceptLatePrivate('${dateStr}')" style="flex: 1;">
+                            <i class="fas fa-moon"></i> Solo 2do turno (00:00)
+                        </button>
+                    ` : `
+                        <button class="btn-approve" onclick="unblockDateFromModal('${dateStr}')" style="flex: 1;">
+                            <i class="fas fa-lock-open"></i> Desbloquear fecha
+                        </button>
+                    `}
+                </div>
+            `;
 
             document.getElementById('modalBookingsList').innerHTML = bookingsHTML;
 
@@ -1612,10 +1723,257 @@
             document.body.style.overflow = 'hidden';
         }
 
+        async function blockDateFromModal(dateStr) {
+            const reason = prompt('Razón del bloqueo (opcional):', 'Tour completo');
+            if (reason === null) return;
+
+            try {
+                const response = await fetch('/api/admin-data?type=blocked', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        tour_date: dateStr,
+                        reason: reason || 'Tour completo',
+                        block_type: 'full'
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    blockedDates.add(dateStr);
+                    closeDayModal();
+                    renderCalendar();
+                    alert('Fecha bloqueada exitosamente');
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error al bloquear: ' + error.message);
+            }
+        }
+
+        async function unblockDateFromModal(dateStr) {
+            if (!confirm('¿Desbloquear esta fecha?')) return;
+
+            try {
+                const response = await fetch(`/api/admin-data?type=blocked&tour_date=${dateStr}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.json();
+                if (data.success) {
+                    blockedDates.delete(dateStr);
+                    closeDayModal();
+                    renderCalendar();
+                    alert('Fecha desbloqueada');
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function blockExceptLatePrivate(dateStr) {
+            try {
+                const response = await fetch('/api/admin-data?type=blocked', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        tour_date: dateStr,
+                        reason: 'Solo privado tardío disponible',
+                        block_type: 'late_private_only'
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    blockedDates.add(dateStr);
+                    closeDayModal();
+                    renderCalendar();
+                    alert('Fecha configurada: solo privado tardío (00:00) disponible');
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
         function closeDayModal() {
             const modal = document.getElementById('dayModal');
             modal.classList.remove('active');
             document.body.style.overflow = '';
+        }
+
+        async function deleteBooking(bookingId, customerName) {
+            if (!confirm(`¿Eliminar reserva de "${customerName}"?\n\nEsta acción no se puede deshacer.`)) {
+                return;
+            }
+            try {
+                const response = await fetch(`/api/booking-api?id=${bookingId}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert('Reserva eliminada');
+                    closeDayModal();
+                    loadBookings();
+                    renderCalendar();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        function showAddBookingForm(dateStr) {
+            const formHTML = `
+                <div style="background: #1e293b; padding: 20px; border-radius: 8px; margin-top: 15px;">
+                    <h4 style="color: #f1f5f9; margin: 0 0 15px 0;"><i class="fas fa-plus"></i> Nueva Reserva - ${formatDate(dateStr)}</h4>
+                    <form id="manualBookingForm" style="display: grid; gap: 12px;">
+                        <input type="hidden" name="date" value="${dateStr}">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label style="color: #94a3b8; font-size: 0.85rem;">Nombre *</label>
+                                <input type="text" name="name" required style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
+                            </div>
+                            <div>
+                                <label style="color: #94a3b8; font-size: 0.85rem;">Email *</label>
+                                <input type="email" name="email" required style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label style="color: #94a3b8; font-size: 0.85rem;">Teléfono *</label>
+                                <input type="tel" name="phone" required style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
+                            </div>
+                            <div>
+                                <label style="color: #94a3b8; font-size: 0.85rem;">Personas *</label>
+                                <input type="number" name="persons" min="1" max="20" value="2" required style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label style="color: #94a3b8; font-size: 0.85rem;">Tipo de Tour *</label>
+                                <select name="tourType" required style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
+                                    <option value="regular">Regular (Grupo)</option>
+                                    <option value="private">Privado VIP</option>
+                                    <option value="astrophoto">Astrofotografía</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="color: #94a3b8; font-size: 0.85rem;">Horario</label>
+                                <select name="time" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
+                                    <option value="21:00">21:00 (1er turno)</option>
+                                    <option value="00:00">00:00 (2do turno)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label style="color: #94a3b8; font-size: 0.85rem;">Alojamiento</label>
+                            <input type="text" name="accommodation" placeholder="Hotel/Hostal" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
+                        </div>
+                        <div>
+                            <label style="color: #94a3b8; font-size: 0.85rem;">Notas</label>
+                            <textarea name="message" rows="2" placeholder="Notas adicionales..." style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white; resize: vertical;"></textarea>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label style="color: #94a3b8; font-size: 0.85rem;">Estado</label>
+                                <select name="status" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
+                                    <option value="confirmed">Confirmado</option>
+                                    <option value="pending">Pendiente</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="color: #94a3b8; font-size: 0.85rem;">Fuente</label>
+                                <select name="source" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
+                                    <option value="manual">Manual (Admin)</option>
+                                    <option value="whatsapp">WhatsApp</option>
+                                    <option value="email">Email</option>
+                                    <option value="phone">Teléfono</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <button type="submit" class="btn-approve" style="flex: 1;">
+                                <i class="fas fa-save"></i> Guardar Reserva
+                            </button>
+                            <button type="button" onclick="showDayModal('${dateStr}')" class="btn-secondary" style="flex: 1;">
+                                <i class="fas fa-times"></i> Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            `;
+
+            document.getElementById('modalBookingsList').innerHTML += formHTML;
+
+            // Add form submit handler
+            document.getElementById('manualBookingForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await createManualBooking(new FormData(e.target));
+            });
+        }
+
+        async function createManualBooking(formData) {
+            const data = {
+                date: formData.get('date'),
+                name: formData.get('name'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                persons: formData.get('persons'),
+                tourType: formData.get('tourType'),
+                time: formData.get('time'),
+                accommodation: formData.get('accommodation'),
+                message: formData.get('message'),
+                status: formData.get('status'),
+                source: formData.get('source')
+            };
+
+            try {
+                const response = await fetch('/api/booking-api', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Reserva creada: ' + result.bookingId);
+                    await loadBookings();
+                    renderCalendar();
+                    showDayModal(data.date);
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function changeBookingStatus(bookingId, newStatus) {
+            try {
+                const response = await fetch(`/api/booking-api?id=${bookingId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    // Recargar datos y refrescar modal
+                    await loadBookings();
+                    renderCalendar();
+                    // Buscar la fecha del booking para reabrir el modal
+                    const booking = allBookings.find(b => b.id === bookingId);
+                    if (booking) {
+                        showDayModal(booking.date);
+                    }
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
         }
 
         function renderBookings(bookings) {
@@ -1881,6 +2239,165 @@
             // Load data for tab
             if (tab === 'photos') {
                 loadPhotoLinks();
+            } else if (tab === 'reviews') {
+                loadReviews();
+            }
+        }
+
+        // ============ REVIEWS FUNCTIONS ============
+
+        async function loadReviews() {
+            try {
+                document.getElementById('reviewsLoading').style.display = 'block';
+                document.getElementById('reviewsList').style.display = 'none';
+                document.getElementById('noReviews').style.display = 'none';
+
+                const status = document.getElementById('reviewStatusFilter').value;
+                const url = `/api/reviews?status=${status}&limit=50`;
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                document.getElementById('reviewsLoading').style.display = 'none';
+
+                if (!data.reviews || data.reviews.length === 0) {
+                    document.getElementById('noReviews').style.display = 'block';
+                    return;
+                }
+
+                renderReviews(data.reviews);
+                document.getElementById('reviewsList').style.display = 'block';
+
+                // Load stats
+                loadReviewStats();
+
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+                document.getElementById('reviewsLoading').style.display = 'none';
+                document.getElementById('noReviews').innerHTML = `<p>Error al cargar reseñas: ${error.message}</p>`;
+                document.getElementById('noReviews').style.display = 'block';
+            }
+        }
+
+        async function loadReviewStats() {
+            try {
+                const response = await fetch('/api/reviews?stats=true');
+                const stats = await response.json();
+
+                document.getElementById('reviewsPending').textContent = stats.pending_count || 0;
+                document.getElementById('reviewsApproved').textContent = stats.approved_count || 0;
+                document.getElementById('reviewsAvgRating').textContent = stats.average_rating ? parseFloat(stats.average_rating).toFixed(1) + ' ⭐' : '-';
+
+                // Update badge
+                const badge = document.getElementById('pendingReviewsBadge');
+                if (stats.pending_count > 0) {
+                    badge.textContent = stats.pending_count;
+                    badge.style.display = 'inline';
+                } else {
+                    badge.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error loading review stats:', error);
+            }
+        }
+
+        function renderReviews(reviews) {
+            const container = document.getElementById('reviewsList');
+            container.innerHTML = reviews.map(review => `
+                <div class="review-card ${review.is_featured ? 'featured' : ''}" id="review-${review.review_id}">
+                    <div class="review-header">
+                        <div>
+                            <strong style="color: #e2e8f0;">${review.reviewer_name}</strong>
+                            ${review.reviewer_country ? `<span style="color: #94a3b8; margin-left: 8px;">${review.reviewer_country}</span>` : ''}
+                            ${review.is_featured ? '<span style="background: #fbbf24; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; margin-left: 8px;">⭐ Destacada</span>' : ''}
+                        </div>
+                        <div class="review-rating">${'★'.repeat(review.overall_rating)}${'☆'.repeat(5 - review.overall_rating)}</div>
+                    </div>
+                    ${review.comment ? `<div class="review-text">"${review.comment}"</div>` : '<div class="review-text" style="color: #64748b; font-style: italic;">Sin comentario</div>'}
+                    <div class="review-meta">
+                        <span><i class="fas fa-calendar"></i> Tour: ${formatDate(review.tour_date)}</span>
+                        <span><i class="fas fa-clock"></i> Enviada: ${formatDate(review.created_at)}</span>
+                        <span><i class="fas fa-tag"></i> ${review.tour_type || 'regular'}</span>
+                    </div>
+                    <div class="review-actions">
+                        ${review.status === 'pending' ? `
+                            <button class="btn-approve" onclick="updateReviewStatus('${review.review_id}', 'approved')">
+                                <i class="fas fa-check"></i> Aprobar
+                            </button>
+                            <button class="btn-reject" onclick="updateReviewStatus('${review.review_id}', 'rejected')">
+                                <i class="fas fa-times"></i> Rechazar
+                            </button>
+                        ` : ''}
+                        ${review.status === 'approved' ? `
+                            <button class="btn-secondary" onclick="toggleFeatured('${review.review_id}', ${!review.is_featured})">
+                                <i class="fas fa-star"></i> ${review.is_featured ? 'Quitar destacado' : 'Destacar'}
+                            </button>
+                        ` : ''}
+                        <button class="btn-secondary btn-icon" onclick="deleteReview('${review.review_id}')" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function updateReviewStatus(reviewId, status) {
+            try {
+                const response = await fetch(`/api/reviews?review_id=${reviewId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    loadReviews();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error al actualizar: ' + error.message);
+            }
+        }
+
+        async function toggleFeatured(reviewId, featured) {
+            try {
+                const response = await fetch(`/api/reviews?review_id=${reviewId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ is_featured: featured })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    loadReviews();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error al actualizar: ' + error.message);
+            }
+        }
+
+        async function deleteReview(reviewId) {
+            if (!confirm('¿Seguro que quieres eliminar esta reseña?')) return;
+
+            try {
+                const response = await fetch(`/api/reviews?review_id=${reviewId}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    loadReviews();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error al eliminar: ' + error.message);
             }
         }
 
@@ -2003,6 +2520,15 @@
 
                 if (data.success) {
                     blockedDates = new Set(data.data.map(d => d.blocked_date.split('T')[0]));
+                    // Guardar info completa de bloqueos
+                    blockedDatesInfo = {};
+                    data.data.forEach(d => {
+                        const dateStr = d.blocked_date.split('T')[0];
+                        blockedDatesInfo[dateStr] = {
+                            block_type: d.block_type || 'full',
+                            reason: d.reason
+                        };
+                    });
                     renderCalendar();
                 }
             } catch (error) {

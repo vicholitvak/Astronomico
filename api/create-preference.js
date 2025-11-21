@@ -74,7 +74,7 @@ export default async function handler(req, res) {
                     id: tourType,
                     title: tourName || `Tour Astronómico - ${tourType}`,
                     description: description,
-                    category_id: 'tickets', // Mejora tasa de aprobación según recomendación de Mercado Pago
+                    category_id: 'travels',
                     quantity: quantity,
                     unit_price: unitPrice,
                     currency_id: 'CLP'

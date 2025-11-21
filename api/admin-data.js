@@ -77,18 +77,19 @@ export default async function handler(req, res) {
       }
 
       if (req.method === 'POST') {
-        const { blocked_date, reason } = req.body;
+        const { blocked_date, tour_date, reason, block_type } = req.body;
+        const dateToBlock = blocked_date || tour_date;
 
-        if (!blocked_date) {
+        if (!dateToBlock) {
           return res.status(400).json({ success: false, error: 'blocked_date is required' });
         }
 
         const result = await pool.query(`
-          INSERT INTO blocked_dates (blocked_date, reason)
-          VALUES ($1, $2)
-          ON CONFLICT (blocked_date) DO UPDATE SET reason = EXCLUDED.reason
+          INSERT INTO blocked_dates (blocked_date, reason, block_type)
+          VALUES ($1, $2, $3)
+          ON CONFLICT (blocked_date) DO UPDATE SET reason = EXCLUDED.reason, block_type = EXCLUDED.block_type
           RETURNING *
-        `, [blocked_date, reason || null]);
+        `, [dateToBlock, reason || null, block_type || 'full']);
 
         return res.status(200).json({ success: true, data: result.rows[0] });
       }

@@ -577,34 +577,191 @@ function initLanguageToggle() {
 
 // ===== TESTIMONIAL SLIDER =====
 function initTestimonialSlider() {
-    const slider = document.querySelector('.testimonial-slider');
+    // Load reviews from API first
+    loadReviewsForTestimonials();
+}
+
+async function loadReviewsForTestimonials() {
+    const slider = document.getElementById('testimonialSlider');
+    const summaryDiv = document.getElementById('reviewsRatingSummary');
+    const schemaScript = document.getElementById('reviewsSchema');
+
+    try {
+        // Fetch approved reviews
+        const response = await fetch('/api/reviews?status=approved&limit=10');
+        const data = await response.json();
+
+        // Fetch stats
+        const statsResponse = await fetch('/api/reviews?stats=true');
+        const stats = await statsResponse.json();
+
+        if (data.reviews && data.reviews.length > 0) {
+            // Render reviews
+            renderTestimonials(slider, data.reviews);
+
+            // Show rating summary
+            if (stats.average_rating && stats.total_count > 0) {
+                const avgRating = parseFloat(stats.average_rating).toFixed(1);
+                summaryDiv.innerHTML = `
+                    <div class="rating-stars">${generateStars(Math.round(stats.average_rating))}</div>
+                    <span class="rating-text">${avgRating} / 5 basado en ${stats.total_count} reseñas verificadas</span>
+                `;
+                summaryDiv.style.display = 'flex';
+            }
+
+            // Generate Schema markup for SEO
+            generateReviewSchema(schemaScript, data.reviews, stats);
+
+            // Initialize slider functionality
+            initSliderControls();
+        } else {
+            // Fallback to static testimonials
+            renderFallbackTestimonials(slider);
+            initSliderControls();
+        }
+    } catch (error) {
+        console.error('Error loading reviews:', error);
+        renderFallbackTestimonials(slider);
+        initSliderControls();
+    }
+}
+
+function generateStars(rating) {
+    let stars = '';
+    for (let i = 0; i < 5; i++) {
+        stars += i < rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+    }
+    return stars;
+}
+
+function renderTestimonials(container, reviews) {
+    container.innerHTML = reviews.map(review => `
+        <div class="testimonial-slide">
+            <div class="testimonial-content">
+                <div class="stars">${generateStars(review.overall_rating)}</div>
+                <blockquote>"${review.comment || 'Excelente experiencia astronómica en Atacama.'}"</blockquote>
+                <div class="testimonial-author">
+                    <div class="author-info">
+                        <h4>${review.reviewer_name}</h4>
+                        <span>${review.reviewer_country || 'Cliente verificado'}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderFallbackTestimonials(container) {
+    container.innerHTML = `
+        <div class="testimonial-slide">
+            <div class="testimonial-content">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <blockquote>"Increíble experiencia. Vicente nos llevó a un lugar alejado, sin contaminación lumínica. Vimos la Nebulosa de Orión en colores que jamás imaginé."</blockquote>
+                <div class="testimonial-author">
+                    <div class="author-info">
+                        <h4>Andrea M. y familia</h4>
+                        <span>Buenos Aires, Argentina</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-slide">
+            <div class="testimonial-content">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <blockquote>"He hecho tours astronómicos en Hawái, Islas Canarias y Nueva Zelanda. Este fue lejos el mejor."</blockquote>
+                <div class="testimonial-author">
+                    <div class="author-info">
+                        <h4>Marcus & Emma</h4>
+                        <span>Ámsterdam, Países Bajos</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-slide">
+            <div class="testimonial-content">
+                <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <blockquote>"Pedí matrimonio bajo las estrellas de Atacama. Vicente organizó todo perfecto. Un recuerdo para siempre."</blockquote>
+                <div class="testimonial-author">
+                    <div class="author-info">
+                        <h4>Felipe G.</h4>
+                        <span>Ciudad de México, México</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function generateReviewSchema(scriptElement, reviews, stats) {
+    const schema = {
+        "@context": "https://schema.org",
+        "@type": "TouristAttraction",
+        "name": "Atacama Night Sky - Tours Astronómicos",
+        "description": "Tours astronómicos privados en el Desierto de Atacama con telescopios inteligentes",
+        "url": "https://atacamadarksky.cl",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "San Pedro de Atacama",
+            "addressRegion": "Antofagasta",
+            "addressCountry": "CL"
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": stats.average_rating || "5",
+            "reviewCount": stats.total_count || reviews.length,
+            "bestRating": "5",
+            "worstRating": "1"
+        },
+        "review": reviews.slice(0, 5).map(r => ({
+            "@type": "Review",
+            "author": {
+                "@type": "Person",
+                "name": r.reviewer_name
+            },
+            "datePublished": r.created_at ? r.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
+            "reviewBody": r.comment || "Excelente experiencia",
+            "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": r.overall_rating,
+                "bestRating": "5",
+                "worstRating": "1"
+            }
+        }))
+    };
+
+    scriptElement.textContent = JSON.stringify(schema);
+}
+
+function initSliderControls() {
     const slides = document.querySelectorAll('.testimonial-slide');
     const prevBtn = document.querySelector('.testimonial-prev');
     const nextBtn = document.querySelector('.testimonial-next');
     let currentIndex = 0;
-    
+
+    if (slides.length === 0) return;
+
     function showSlide(index) {
         slides.forEach((slide, idx) => {
             slide.style.transform = `translateX(${(idx - index) * 100}%)`;
         });
     }
-    
+
     function nextSlide() {
         currentIndex = (currentIndex + 1) % slides.length;
         showSlide(currentIndex);
     }
-    
+
     function prevSlide() {
         currentIndex = (currentIndex - 1 + slides.length) % slides.length;
         showSlide(currentIndex);
     }
-    
-    nextBtn.addEventListener('click', nextSlide);
-    prevBtn.addEventListener('click', prevSlide);
-    
+
+    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+
     // Auto-slide every 8 seconds
     setInterval(nextSlide, 8000);
-    
+
     // Initial display
     showSlide(currentIndex);
 }
@@ -859,6 +1016,11 @@ function setLanguage(lang) {
 
     // Save preference
     localStorage.setItem('preferred-language', lang);
+
+    // Re-render calendar with new language
+    if (typeof renderCalendar === 'function') {
+        renderCalendar();
+    }
 
     console.log('Language changed to:', lang);
 }

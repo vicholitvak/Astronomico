@@ -785,14 +785,7 @@
             <div class="booking-calendar-col">
                 <h3 data-i18n="booking.selectDate">Selecciona tu Fecha *</h3>
                 <div id="fullcalendar"></div>
-                <div class="calendar-legend">
-                    <div class="legend-item"><span class="dot available"></span> <span
-                            data-i18n="info.availability">Disponible</span></div>
-                    <div class="legend-item"><span class="dot full"></span> <span data-i18n="info.full">Agotado</span>
-                    </div>
-                    <div class="legend-item"><span class="dot selected"></span> <span
-                            data-i18n="info.selected">Seleccionado</span></div>
-                </div>
+                <!-- Leyenda movida dentro del calendario generado dinámicamente -->
                 <p class="calendar-help" data-i18n="booking.selectDateMsg">👆 Selecciona una fecha en el calendario para
                     continuar</p>
             </div>
@@ -1724,68 +1717,23 @@
             <div class="section-header">
                 <h2 data-i18n="testimonials.title">Lo que dicen nuestros viajeros</h2>
                 <p class="section-subtitle" data-i18n="testimonials.subtitle">Historias reales bajo las estrellas</p>
+                <div id="reviewsRatingSummary" class="reviews-rating-summary" style="display:none;"></div>
             </div>
 
             <div class="testimonial-slider-container">
                 <button class="testimonial-prev" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
 
-                <div class="testimonial-slider">
-                    <!-- Slide 1 -->
-                    <div class="testimonial-slide">
-                        <div class="testimonial-content">
-                            <div class="stars">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                    class="fas fa-star"></i><i class="fas fa-star"></i>
-                            </div>
-                            <blockquote data-i18n="testimonials.t1.text">"Increíble experiencia. Vicente nos llevó a un lugar alejado, sin contaminación lumínica. Vimos la Nebulosa de Orión en colores que jamás imaginé. Mi hija de 8 años no paraba de llorar de emoción al ver Saturno con sus anillos. El telescopio inteligente es una maravilla tecnológica."</blockquote>
-                            <div class="testimonial-author">
-                                <div class="author-info">
-                                    <h4 data-i18n="testimonials.t1.author">Andrea M. y familia</h4>
-                                    <span data-i18n="testimonials.t1.location">Buenos Aires, Argentina</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Slide 2 -->
-                    <div class="testimonial-slide">
-                        <div class="testimonial-content">
-                            <div class="stars">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                    class="fas fa-star"></i><i class="fas fa-star"></i>
-                            </div>
-                            <blockquote data-i18n="testimonials.t2.text">"He hecho tours astronómicos en Hawái, Islas Canarias y Nueva Zelanda. Este fue lejos el mejor. Vicente es un verdadero apasionado, nos mostró más de 20 objetos diferentes: galaxias, nebulosas, cúmulos. Las fotos que capturamos con el telescopio son impresionantes. Vale cada peso."</blockquote>
-                            <div class="testimonial-author">
-                                <div class="author-info">
-                                    <h4 data-i18n="testimonials.t2.author">Marcus & Emma</h4>
-                                    <span data-i18n="testimonials.t2.location">Ámsterdam, Países Bajos</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Slide 3 -->
-                    <div class="testimonial-slide">
-                        <div class="testimonial-content">
-                            <div class="stars">
-                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                    class="fas fa-star"></i><i class="fas fa-star"></i>
-                            </div>
-                            <blockquote data-i18n="testimonials.t3.text">"Pedí matrimonio bajo las estrellas de Atacama. Vicente organizó todo perfecto: ubicación privada, champagne frío, música suave. Cuando ella dijo que sí, pudimos ver juntos la Vía Láctea completa. Nos dio las fotos editadas al otro día. Un recuerdo para siempre."</blockquote>
-                            <div class="testimonial-author">
-                                <div class="author-info">
-                                    <h4 data-i18n="testimonials.t3.author">Felipe G.</h4>
-                                    <span data-i18n="testimonials.t3.location">Ciudad de México, México</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="testimonial-slider" id="testimonialSlider">
+                    <!-- Reviews will be loaded dynamically -->
                 </div>
 
                 <button class="testimonial-next" aria-label="Siguiente"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
     </section>
+
+    <!-- Reviews Schema Markup for SEO -->
+    <script id="reviewsSchema" type="application/ld+json"></script>
 
     <!-- Contact Section -->
     <section id="contacto" class="contact">
@@ -2085,10 +2033,36 @@
             return texts[lang] && texts[lang][key] ? texts[lang][key] : texts['es'][key];
         }
 
+        // Fechas bloqueadas desde el admin (con información de tipo de bloqueo)
+        let blockedDatesFromAdmin = [];
+        let blockedDatesData = {}; // { '2025-01-15': { block_type: 'full' | 'late_private_only', reason: '...' } }
+
         // Inicializar calendario cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', function () {
-            createCustomCalendar();
+            loadBlockedDatesAndInitCalendar();
         });
+
+        // Cargar fechas bloqueadas y luego inicializar calendario
+        async function loadBlockedDatesAndInitCalendar() {
+            try {
+                const response = await fetch('/api/admin-data?type=blocked');
+                const data = await response.json();
+                if (data.success && data.data) {
+                    blockedDatesFromAdmin = data.data.map(d => d.blocked_date.split('T')[0]);
+                    // Guardar datos completos incluyendo block_type
+                    data.data.forEach(d => {
+                        const dateStr = d.blocked_date.split('T')[0];
+                        blockedDatesData[dateStr] = {
+                            block_type: d.block_type || 'full',
+                            reason: d.reason
+                        };
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading blocked dates:', error);
+            }
+            createCustomCalendar();
+        }
 
         // Crear calendario personalizado
         function createCustomCalendar() {
@@ -2099,6 +2073,25 @@
             }
 
             renderCalendar();
+        }
+
+        // Verificar si fecha está bloqueada por admin
+        function isBlockedByAdmin(date) {
+            const dateStr = date.toISOString().split('T')[0];
+            return blockedDatesFromAdmin.includes(dateStr);
+        }
+
+        // Verificar si fecha es solo privado tardío
+        function isLatePrivateOnly(date) {
+            const dateStr = date.toISOString().split('T')[0];
+            return blockedDatesData[dateStr]?.block_type === 'late_private_only';
+        }
+
+        // Verificar si es bloqueo total (no late_private_only)
+        function isFullyBlocked(date) {
+            const dateStr = date.toISOString().split('T')[0];
+            const data = blockedDatesData[dateStr];
+            return data && data.block_type !== 'late_private_only';
         }
 
         // Renderizar calendario
@@ -2161,14 +2154,23 @@
                 const isAvailable = isDateAvailable(date);
                 const isCurrentDay = isToday(date);
                 const isSelected = selectedDate && isSameDay(date, selectedDate);
+                const isAdminBlocked = isBlockedByAdmin(date);
+                const latePrivateOnly = isLatePrivateOnly(date);
+                const fullyBlocked = isFullyBlocked(date);
 
                 let dayClass = 'calendar-day';
-                if (!isAvailable) dayClass += ' unavailable';
+                if (fullyBlocked) dayClass += ' sold-out';
+                else if (latePrivateOnly) dayClass += ' late-private-only';
+                else if (!isAvailable) dayClass += ' unavailable';
                 if (isCurrentDay) dayClass += ' today';
                 if (isSelected) dayClass += ' selected';
 
                 let availabilityText;
-                if (isAvailable) {
+                if (fullyBlocked) {
+                    availabilityText = currentLang === 'en' ? 'Sold out' : currentLang === 'pt' ? 'Esgotado' : 'Lleno';
+                } else if (latePrivateOnly) {
+                    availabilityText = currentLang === 'en' ? '1st slot full - 2nd slot available (00:00)' : currentLang === 'pt' ? '1º turno cheio - 2º turno disponível (00:00)' : '1er turno lleno - 2do turno disponible (00:00)';
+                } else if (isAvailable) {
                     availabilityText = getCalendarText('availableOptimal', currentLang);
                 } else {
                     if (moonPhase.phase <= 0.5) {
@@ -2178,31 +2180,46 @@
                     }
                 }
 
+                let statusLabel = '';
+                const secondTurnTexts = {
+                    es: '2do turno',
+                    en: '2nd slot',
+                    pt: '2º turno'
+                };
+                if (fullyBlocked) {
+                    statusLabel = `<span class="sold-out-label">${currentLang === 'en' ? 'FULL' : currentLang === 'pt' ? 'CHEIO' : 'LLENO'}</span>`;
+                } else if (latePrivateOnly) {
+                    statusLabel = `<span class="late-private-label">${secondTurnTexts[currentLang]}</span>`;
+                }
+
+                // latePrivateOnly es clickeable, fullyBlocked no
+                const clickAction = fullyBlocked ? '' : `selectDate(${year}, ${month}, ${day})`;
+
                 calendarHTML += `
-                    <div class="${dayClass}" onclick="selectDate(${year}, ${month}, ${day})" 
+                    <div class="${dayClass}" onclick="${clickAction}"
                          title="${moonPhase.name} ${moonPhase.emoji} - ${moonPhase.illumination}% iluminación - ${availabilityText}">
                         <span class="day-number">${day}</span>
+                        ${statusLabel}
                         <span class="moon-emoji">${moonPhase.emoji}</span>
                     </div>
                 `;
             }
 
+            const legendTexts = {
+                es: { available: 'Disponible', full: 'Lleno', secondSlot: '2do turno disponible', unavailable: 'No disponible', selected: 'Seleccionado' },
+                en: { available: 'Available', full: 'Sold out', secondSlot: '2nd slot available', unavailable: 'Unavailable', selected: 'Selected' },
+                pt: { available: 'Disponível', full: 'Esgotado', secondSlot: '2º turno disponível', unavailable: 'Indisponível', selected: 'Selecionado' }
+            };
+            const lt = legendTexts[currentLang];
+
             calendarHTML += `
                     </div>
                     <div class="calendar-legend">
-                        <div class="legend-item">
-                            <span class="legend-dot available"></span>
-                            <span>${getCalendarText('available', currentLang)}</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="legend-dot unavailable"></span>
-                            <span>${getCalendarText('unavailable', currentLang)}</span>
-                        </div>
-                    </div>
-                    <div class="calendar-info">
-                        <p style="font-size: 0.8rem; color: #ccc; margin: 0.5rem 0; text-align: center;">
-                            ${getCalendarText('info', currentLang)}
-                        </p>
+                        <div class="legend-item"><span class="legend-dot available"></span><span>${lt.available}</span></div>
+                        <div class="legend-item"><span class="legend-dot selected"></span><span>${lt.selected}</span></div>
+                        <div class="legend-item"><span class="legend-dot late-private"></span><span>${lt.secondSlot}</span></div>
+                        <div class="legend-item"><span class="legend-dot sold-out"></span><span>${lt.full}</span></div>
+                        <div class="legend-item"><span class="legend-dot unavailable"></span><span>${lt.unavailable}</span></div>
                     </div>
                 </div>
             `;
@@ -2219,8 +2236,49 @@
         // Seleccionar fecha
         function selectDate(year, month, day) {
             const date = new Date(year, month, day);
+            const dateStr = date.toISOString().split('T')[0];
+            const isLatePrivate = isLatePrivateOnly(date);
 
-            if (!isDateAvailable(date)) {
+            // Configurar opciones de tour según disponibilidad
+            const tourTypeSelect = document.getElementById('tour-type');
+            if (tourTypeSelect) {
+                if (isLatePrivate) {
+                    // Solo mostrar opción de privado tardío
+                    const currentLang = localStorage.getItem('preferred-language') || 'es';
+                    const latePrivateTexts = {
+                        es: 'Tour Privado 2do Turno (00:00)',
+                        en: 'Private Tour 2nd Slot (00:00)',
+                        pt: 'Tour Privado 2º Turno (00:00)'
+                    };
+                    tourTypeSelect.innerHTML = `
+                        <option value="private_late">${latePrivateTexts[currentLang]}</option>
+                    `;
+                    tourTypeSelect.value = 'private_late';
+                    // Mostrar aviso informativo
+                    const infoMsg = {
+                        es: '📅 El primer turno (21:00) ya está reservado.\n\n✨ Disponible: Tour Privado en segundo turno a medianoche (00:00).\n\nEsta es una experiencia exclusiva VIP bajo las estrellas.',
+                        en: '📅 The first slot (9:00 PM) is already booked.\n\n✨ Available: Private Tour second slot at midnight (00:00).\n\nThis is an exclusive VIP experience under the stars.',
+                        pt: '📅 O primeiro turno (21:00) já está reservado.\n\n✨ Disponível: Tour Privado no segundo turno à meia-noite (00:00).\n\nEsta é uma experiência VIP exclusiva sob as estrelas.'
+                    };
+                    alert(infoMsg[currentLang]);
+                } else {
+                    // Restaurar opciones normales
+                    const currentLang = localStorage.getItem('preferred-language') || 'es';
+                    const tourOptions = {
+                        es: ['Selecciona tipo de tour', 'Tour Regular (Grupo)', 'Tour Privado (Solo tu grupo)', 'Tour Astrofotográfico (Especializado)'],
+                        en: ['Select tour type', 'Regular Tour (Group)', 'Private Tour (Your group only)', 'Astrophotography Tour (Specialized)'],
+                        pt: ['Selecione tipo de tour', 'Tour Regular (Grupo)', 'Tour Privado (Só seu grupo)', 'Tour Astrofotográfico (Especializado)']
+                    };
+                    tourTypeSelect.innerHTML = `
+                        <option value="">${tourOptions[currentLang][0]}</option>
+                        <option value="regular">${tourOptions[currentLang][1]}</option>
+                        <option value="private">${tourOptions[currentLang][2]}</option>
+                        <option value="astro">${tourOptions[currentLang][3]}</option>
+                    `;
+                }
+            }
+
+            if (!isDateAvailable(date) && !isLatePrivate) {
                 const moonPhase = getMoonPhase(date);
                 const currentLang = localStorage.getItem('preferred-language') || 'es';
                 let reason;
