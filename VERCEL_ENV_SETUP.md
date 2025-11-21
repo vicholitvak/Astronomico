@@ -46,7 +46,7 @@ Environments: Production, Preview, Development (marcar todos)
 
 **Ejemplo de connection string:**
 ```
-postgresql://vicente:AbC123XyZ@ep-cool-darkness-123456.us-east-2.aws.neon.tech/atacama?sslmode=require
+postgresql://USER:PASSWORD@your-neon-host.neon.tech/dbname?sslmode=require
 ```
 
 **⚠️ IMPORTANTE:**

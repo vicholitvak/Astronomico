@@ -49,7 +49,7 @@ Esta noche (15 Nov 2025) se implementaron las siguientes mejoras:
 - [ ] **DATABASE_URL** - Connection string de Neon PostgreSQL
   ```bash
   vercel env add DATABASE_URL production
-  # Pegar: postgresql://usuario:password@ep-xxx.neon.tech/atacama_db?sslmode=require
+  # Pegar: postgresql://USER:PASSWORD@your-neon-host.neon.tech/dbname?sslmode=require
   ```
 
 - [ ] **STRIPE_SECRET_KEY** (si aún no está)

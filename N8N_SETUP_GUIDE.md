@@ -109,7 +109,7 @@ Esto creará:
 ### Connection String (Ya configurado)
 
 ```env
-DATABASE_URL=postgresql://neondb_owner:...@ep-calm-meadow-adiepjlh-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+DATABASE_URL=postgresql://USER:PASSWORD@your-neon-host.neon.tech/dbname?sslmode=require
 ```
 
 Ya está agregado en:

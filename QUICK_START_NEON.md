@@ -12,7 +12,7 @@
    - PostgreSQL: `16`
 4. **COPIAR Y GUARDAR** el connection string:
    ```
-   postgresql://user:pass@ep-xxx.us-east-2.aws.neon.tech/db?sslmode=require
+   postgresql://USER:PASSWORD@your-neon-host.neon.tech/dbname?sslmode=require
    ```
 
 ---
@@ -50,7 +50,7 @@ npm install pg
 
 ### 4.3 AGREGAR esta variable:
 ```bash
-DATABASE_URL=postgresql://user:pass@ep-xxx.us-east-2.aws.neon.tech/db?sslmode=require
+DATABASE_URL=postgresql://USER:PASSWORD@your-neon-host.neon.tech/dbname?sslmode=require
 ```
 (Usar TU connection string de Neon)
 
