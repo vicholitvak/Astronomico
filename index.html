@@ -55,7 +55,7 @@
     <script src="https://sdk.mercadopago.com/js/v2"></script>
 
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="styles.css?v=6.2">
+    <link rel="stylesheet" href="styles.css?v=6.3">
     <link rel="stylesheet" href="faq-styles.css">
 
     <!-- Schema.org Structured Data for SEO and LLMs -->
@@ -269,6 +269,84 @@
       ]
     }
     </script>
+
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Inicio",
+          "item": "https://www.atacamadarksky.cl/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tours Astronómicos",
+          "item": "https://www.atacamadarksky.cl/#tours"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Reservas",
+          "item": "https://www.atacamadarksky.cl/#reservas"
+        }
+      ]
+    }
+    </script>
+
+    <!-- FAQ Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Qué incluye el tour astronómico en Atacama?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nuestros tours incluyen transporte desde San Pedro de Atacama, guía experto en astronomía, uso de telescopio inteligente de última generación, observación de nebulosas, galaxias y planetas, fotos del espacio profundo a color, y cóctel bajo las estrellas."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Cuánto dura el tour astronómico?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "El tour regular dura aproximadamente 2.5 horas. El tour de astrofotografía dura 3 horas y el tour privado VIP puede extenderse hasta 4 horas según tus preferencias."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Se puede hacer el tour con niños?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "¡Sí! Nuestros tours son ideales para familias. Los niños disfrutan especialmente ver Saturno con sus anillos y la Luna en detalle. Recomendamos el tour regular para familias con niños."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Qué pasa si está nublado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "San Pedro de Atacama tiene más de 300 noches despejadas al año. Si las condiciones climáticas no permiten observación, reprogramamos tu tour sin costo adicional o realizamos reembolso completo."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Necesito experiencia previa en astronomía?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No se requiere ninguna experiencia. Nuestro guía explica todo de forma clara y entretenida, adaptando el contenido tanto para principiantes como para entusiastas avanzados."
+          }
+        }
+      ]
+    }
+    </script>
 </head>
 
 <body>
@@ -345,6 +423,17 @@
                     <span class="title-line title-line-3" data-i18n="hero.title3">En San Pedro de Atacama</span>
                 </h1>
                 <p class="hero-subtitle" data-i18n="hero.subtitle">Tours astronómicos en San Pedro de Atacama con telescopio inteligente. Observación de estrellas, astrofotografía y experiencias únicas bajo el cielo más oscuro del mundo.</p>
+
+                <!-- Trust indicators above-the-fold -->
+                <div class="hero-trust" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin: 20px 0; font-size: 0.9rem;">
+                    <span style="color: #fbbf24;">★★★★★</span>
+                    <span style="color: rgba(255,255,255,0.9);">127+ reseñas</span>
+                    <span style="color: rgba(255,255,255,0.7);">|</span>
+                    <span style="color: rgba(255,255,255,0.9);"><i class="fas fa-check-circle" style="color: #4ade80;"></i> 3000+ visitantes</span>
+                    <span style="color: rgba(255,255,255,0.7);">|</span>
+                    <span style="color: rgba(255,255,255,0.9);"><i class="fas fa-cloud-sun" style="color: #60a5fa;"></i> 300+ noches despejadas/año</span>
+                </div>
+
                 <div class="hero-buttons">
                     <a href="#reservas" class="btn btn-primary" data-i18n="hero.btn_book">Reserva Tu Tour</a>
                     <a href="#tours" class="btn btn-secondary" data-i18n="hero.btn_tours">Ver Tours</a>
