@@ -703,6 +703,86 @@ section {
     margin-bottom: var(--spacing-xs);
 }
 
+/* Info Section */
+.info-section {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%);
+    padding: var(--spacing-xl) 0;
+    border-top: 1px solid rgba(255, 215, 0, 0.2);
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.info-item {
+    text-align: center;
+    padding: var(--spacing-lg);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.info-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
+.info-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.info-item:hover::before {
+    opacity: 1;
+}
+
+.info-item i {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-md);
+    display: block;
+    transition: transform var(--transition-normal);
+}
+
+.info-item:hover i {
+    transform: scale(1.1);
+}
+
+.info-item h3 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-sm);
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-item p {
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.7;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
 .about-image {
     display: flex;
     justify-content: center;
@@ -2641,6 +2721,11 @@ blockquote {
     .features {
         grid-template-columns: 1fr;
     }
+
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
 }
 
 /* Mobile Styles */
@@ -2730,11 +2815,25 @@ blockquote {
         grid-template-columns: 1fr;
         gap: var(--spacing-md);
     }
-    
+
     .tour-card {
         max-width: 100%;
     }
-    
+
+    /* Info grid mobile */
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+
+    .info-item {
+        padding: var(--spacing-sm);
+    }
+
+    .info-item i {
+        font-size: 2rem;
+    }
+
     /* Form adjustments */
     .form-row {
         grid-template-columns: 1fr;
