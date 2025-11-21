@@ -112,6 +112,130 @@ INSERT INTO bookings (
     ('ATK-TEST-001', '2025-08-10', '21:00', 'regular', 2, 'Juan Pérez', 'juan@example.com', '+56912345678', 'confirmed'),
     ('ATK-TEST-002', '2025-08-12', '21:30', 'private', 4, 'María González', 'maria@example.com', '+56987654321', 'pending');
 
+-- =====================================================
+-- REVIEWS TABLE - Para reseñas post-tour
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS reviews (
+    id SERIAL PRIMARY KEY,
+    review_id VARCHAR(50) UNIQUE NOT NULL,
+
+    -- Link to booking
+    booking_id VARCHAR(50) REFERENCES bookings(booking_id),
+
+    -- Ratings (1-5 stars)
+    overall_rating INTEGER NOT NULL CHECK (overall_rating >= 1 AND overall_rating <= 5),
+    guide_rating INTEGER CHECK (guide_rating >= 1 AND guide_rating <= 5),
+    equipment_rating INTEGER CHECK (equipment_rating >= 1 AND equipment_rating <= 5),
+    location_rating INTEGER CHECK (location_rating >= 1 AND location_rating <= 5),
+    value_rating INTEGER CHECK (value_rating >= 1 AND value_rating <= 5),
+
+    -- Review content
+    title VARCHAR(200),
+    comment TEXT,
+
+    -- Reviewer info
+    reviewer_name VARCHAR(100) NOT NULL,
+    reviewer_email VARCHAR(255) NOT NULL,
+    reviewer_country VARCHAR(100),
+    language VARCHAR(10) DEFAULT 'es',
+
+    -- Tour info
+    tour_type VARCHAR(50),
+    tour_date DATE,
+
+    -- Media
+    photos JSONB,
+
+    -- Engagement
+    helpful_count INTEGER DEFAULT 0,
+
+    -- Status and moderation
+    status VARCHAR(20) DEFAULT 'pending', -- pending, approved, rejected
+    is_featured BOOLEAN DEFAULT FALSE,
+    moderation_notes TEXT,
+
+    -- Timestamps
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
+    approved_at TIMESTAMP WITH TIME ZONE
+);
+
+-- Table for owner responses to reviews
+CREATE TABLE IF NOT EXISTS review_responses (
+    id SERIAL PRIMARY KEY,
+    review_id VARCHAR(50) UNIQUE REFERENCES reviews(review_id),
+    response_text TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
+);
+
+-- Indexes for reviews
+CREATE INDEX idx_reviews_status ON reviews(status);
+CREATE INDEX idx_reviews_overall_rating ON reviews(overall_rating);
+CREATE INDEX idx_reviews_featured ON reviews(is_featured);
+CREATE INDEX idx_reviews_booking_id ON reviews(booking_id);
+
+-- View for approved public reviews
+CREATE VIEW public_reviews AS
+SELECT
+    review_id,
+    reviewer_name,
+    reviewer_country,
+    overall_rating,
+    title,
+    comment,
+    tour_type,
+    tour_date,
+    created_at
+FROM reviews
+WHERE status = 'approved'
+ORDER BY created_at DESC;
+
+-- View for featured testimonials (for homepage)
+CREATE VIEW featured_reviews AS
+SELECT
+    review_id,
+    reviewer_name,
+    reviewer_country,
+    overall_rating,
+    title,
+    comment,
+    tour_type,
+    created_at
+FROM reviews
+WHERE status = 'approved'
+    AND is_featured = TRUE
+ORDER BY created_at DESC
+LIMIT 6;
+
+-- RLS for reviews
+ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
+
+-- Anyone can submit a review
+CREATE POLICY "Enable insert for anon reviews" ON reviews
+    FOR INSERT TO anon
+    WITH CHECK (true);
+
+-- Only authenticated users can read all reviews
+CREATE POLICY "Enable read for authenticated reviews" ON reviews
+    FOR SELECT TO authenticated
+    USING (true);
+
+-- Anon can only read approved reviews
+CREATE POLICY "Enable read approved reviews for anon" ON reviews
+    FOR SELECT TO anon
+    USING (status = 'approved');
+
+-- Grant permissions for reviews
+GRANT ALL ON reviews TO anon;
+GRANT ALL ON reviews_id_seq TO anon;
+GRANT ALL ON review_responses TO anon;
+GRANT ALL ON review_responses_id_seq TO anon;
+
+-- =====================================================
+-- ORIGINAL GRANTS
+-- =====================================================
+
 -- Grant permissions
 GRANT USAGE ON SCHEMA public TO anon;
 GRANT ALL ON bookings TO anon;

@@ -157,8 +157,8 @@ function initLanguageToggle() {
     const translations = {
         es: {
             // Page meta
-            'page-title': 'Atacama NightSky | Tours Astronómicos en San Pedro de Atacama',
-            'meta-description': 'Atacama NightSky: Tours guiados con telescopio inteligente en el desierto más claro del mundo. Captura nebulosas y galaxias a color. Observación de estrellas, astrofotografía y experiencias únicas.',
+            'page-title': 'Tours Astronómicos San Pedro de Atacama | Observación de Estrellas | Atacama Dark Sky',
+            'meta-description': 'Tours astronómicos en San Pedro de Atacama con telescopio inteligente. Observación de estrellas, astrofotografía y experiencias únicas en el cielo más claro del mundo.',
             
             // Navigation
             'Inicio': 'Inicio',
@@ -171,7 +171,7 @@ function initLanguageToggle() {
             
             // Hero Section
             'hero-title': ['Atacama Dark Skies', 'El Cielo Más Puro del Mundo', 'en San Pedro de Atacama'],
-            'hero-subtitle': 'Tours astronómicos guiados por expertos: observación de estrellas, constelaciones y fenómenos celestes del espacio profundo.',
+            'hero-subtitle': 'Tours astronómicos en San Pedro de Atacama con telescopio inteligente. Observación de estrellas, astrofotografía y experiencias únicas bajo el cielo más oscuro del mundo.',
             'btn-reserve': 'Reserva Tu Tour',
             'btn-see-tours': 'Ver Tours',
             
@@ -220,7 +220,7 @@ function initLanguageToggle() {
         },
         en: {
             // Page meta
-            'page-title': 'Atacama NightSky | Astronomical Tours in San Pedro de Atacama',
+            'page-title': 'Stargazing Tours San Pedro de Atacama | Atacama Dark Sky',
             'meta-description': 'Atacama NightSky: Guided tours with smart telescope in the clearest desert in the world. Capture nebulae and galaxies in color. Star observation, astrophotography and unique experiences.',
             
             // Navigation
@@ -234,7 +234,7 @@ function initLanguageToggle() {
 
             // Hero Section
             'hero-title': ['Atacama Dark Skies', 'The Purest Sky in the World', 'in San Pedro de Atacama'],
-            'hero-subtitle': 'Expert-guided astronomical tours: star observation, constellations and deep space celestial phenomena.',
+            'hero-subtitle': 'Stargazing tours in San Pedro de Atacama with smart telescope. Star observation, astrophotography and unique experiences under the darkest sky on Earth.',
             'btn-reserve': 'Book Your Tour',
             'btn-see-tours': 'View Tours',
 
@@ -283,7 +283,7 @@ function initLanguageToggle() {
         },
         pt: {
             // Page meta
-            'page-title': 'Atacama NightSky | Passeios Astronômicos em San Pedro de Atacama',
+            'page-title': 'Passeios Astronômicos San Pedro de Atacama | Observação de Estrelas | Atacama Dark Sky',
             'meta-description': 'Atacama NightSky: Passeios guiados com telescópio inteligente no deserto mais claro do mundo. Capture nebulosas e galáxias em cores. Observação de estrelas, astrofotografia e experiências únicas.',
             
             // Navigation
@@ -297,7 +297,7 @@ function initLanguageToggle() {
 
             // Hero Section
             'hero-title': ['Atacama Dark Skies', 'O Céu Mais Puro do Mundo', 'em San Pedro de Atacama'],
-            'hero-subtitle': 'Passeios astronômicos guiados por especialistas: observação de estrelas, constelações e fenômenos celestes do espaço profundo.',
+            'hero-subtitle': 'Passeios astronômicos em San Pedro de Atacama com telescópio inteligente. Observação de estrelas, astrofotografia e experiências únicas sob o céu mais escuro do mundo.',
             'btn-reserve': 'Reserve Seu Passeio',
             'btn-see-tours': 'Ver Passeios',
 
@@ -363,7 +363,7 @@ function initLanguageToggle() {
             'hero.title1': 'Atacama Dark Skies',
             'hero.title2': 'El cielo más puro del mundo',
             'hero.title3': 'En San Pedro de Atacama',
-            'hero.subtitle': 'Tours astronómicos guiados por expertos: observación de estrellas, constelaciones y fenómenos celestes del espacio profundo.',
+            'hero.subtitle': 'Tours astronómicos en San Pedro de Atacama con telescopio inteligente. Observación de estrellas, astrofotografía y experiencias únicas bajo el cielo más oscuro del mundo.',
             'hero.btn_book': 'Reserva Tu Tour',
             'hero.btn_tours': 'Ver Tours',
             'about.title': 'Vicente Litvak',
@@ -426,7 +426,7 @@ function initLanguageToggle() {
             'hero.title1': 'Atacama Dark Skies',
             'hero.title2': 'The Purest Sky in the World',
             'hero.title3': 'In San Pedro de Atacama',
-            'hero.subtitle': 'Expert-guided astronomical tours: star observation, constellations and deep space celestial phenomena.',
+            'hero.subtitle': 'Stargazing tours in San Pedro de Atacama with smart telescope. Star observation, astrophotography and unique experiences under the darkest sky on Earth.',
             'hero.btn_book': 'Book Your Tour',
             'hero.btn_tours': 'View Tours',
             'about.title': 'Vicente Litvak',
@@ -489,7 +489,7 @@ function initLanguageToggle() {
             'hero.title1': 'Atacama Dark Skies',
             'hero.title2': 'O céu mais puro do mundo',
             'hero.title3': 'Em San Pedro de Atacama',
-            'hero.subtitle': 'Tours astronômicos guiados por especialistas: observação de estrelas, constelações e fenômenos celestes do espaço profundo.',
+            'hero.subtitle': 'Passeios astronômicos em San Pedro de Atacama com telescópio inteligente. Observação de estrelas, astrofotografia e experiências únicas sob o céu mais escuro do mundo.',
             'hero.btn_book': 'Reserve Seu Tour',
             'hero.btn_tours': 'Ver Tours',
             'about.title': 'Vicente Litvak',
@@ -798,7 +798,7 @@ function setLanguage(lang) {
     // Update meta tags
     const titleTag = document.querySelector('title');
     if (titleTag) {
-        titleTag.textContent = translations[lang]['page-title'] || 'Atacama NightSky | Tours Astronómicos en San Pedro de Atacama';
+        titleTag.textContent = translations[lang]['page-title'] || 'Tours Astronómicos San Pedro de Atacama | Atacama Dark Sky';
     }
 
     const metaDesc = document.querySelector('meta[name="description"]');
@@ -1020,6 +1020,60 @@ document.addEventListener('DOMContentLoaded', function() {
     if (savedLang && translations[savedLang]) {
         setLanguage(savedLang);
     }
+
+    // Load dynamic testimonials from API
+    loadDynamicTestimonials();
 });
+
+// ===== DYNAMIC TESTIMONIALS =====
+async function loadDynamicTestimonials() {
+    try {
+        const response = await fetch('/api/reviews?status=approved&featured=true&limit=6');
+        if (!response.ok) return;
+
+        const data = await response.json();
+        if (!data.reviews || data.reviews.length === 0) return;
+
+        const slider = document.querySelector('.testimonial-slider');
+        if (!slider) return;
+
+        // Clear existing static slides
+        slider.innerHTML = '';
+
+        // Add dynamic reviews
+        data.reviews.forEach(review => {
+            const stars = '★'.repeat(review.overall_rating) + '☆'.repeat(5 - review.overall_rating);
+            const slide = document.createElement('div');
+            slide.className = 'testimonial-slide';
+            slide.innerHTML = `
+                <div class="testimonial-content">
+                    <div class="stars" style="color: #fbbf24; font-size: 1.2rem; margin-bottom: 1rem;">
+                        ${stars}
+                    </div>
+                    <blockquote>"${escapeHtml(review.comment || review.title || 'Excelente experiencia')}"</blockquote>
+                    <div class="testimonial-author">
+                        <div class="author-info">
+                            <h4>${escapeHtml(review.reviewer_name)}</h4>
+                            <span>${escapeHtml(review.reviewer_country || '')}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            slider.appendChild(slide);
+        });
+
+        // Reinitialize slider with new slides
+        initTestimonialSlider();
+    } catch (error) {
+        console.log('Using static testimonials');
+    }
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 
 // ====== END OF CODE ======
