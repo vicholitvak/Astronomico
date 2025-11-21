@@ -2016,7 +2016,34 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    alert('Reserva creada: ' + result.bookingId);
+                    const persons = parseInt(data.persons);
+
+                    // Auto-block first slot if 16+ people (large group)
+                    if (persons >= 16) {
+                        try {
+                            const blockResponse = await fetch('/api/admin-data?type=blocked', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    tour_date: data.date,
+                                    reason: `Grupo grande (${persons} personas) - 1er turno reservado`,
+                                    block_type: 'late_private_only'
+                                })
+                            });
+                            const blockData = await blockResponse.json();
+                            if (blockData.success) {
+                                blockedDates.add(data.date);
+                                blockedDatesInfo[data.date] = {
+                                    reason: `Grupo grande (${persons} personas) - 1er turno reservado`,
+                                    block_type: 'late_private_only'
+                                };
+                            }
+                        } catch (e) {
+                            console.error('Error auto-blocking date:', e);
+                        }
+                    }
+
+                    alert(`Reserva creada: ${result.bookingId}${persons >= 16 ? '\n\n✓ Fecha bloqueada automáticamente (grupo grande)\n✓ Solo 2do turno disponible (00:00)' : ''}`);
                     await loadBookings();
                     renderCalendar();
                     showDayModal(data.date);
