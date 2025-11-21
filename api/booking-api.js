@@ -100,12 +100,15 @@ async function createBooking(req, res) {
   console.log('Received booking request:', req.body);
 
   const {
-    date, persons, tourType, time, name, email, phone, message, source = 'web', accommodation, status = 'pending'
+    date, persons, tourType, time, name, email, phone, message, source = 'web', accommodation, status = 'pending', payment_method = 'pending'
   } = req.body;
 
-  if (!date || !persons || !tourType || !name || !email || !phone) {
+  if (!date || !persons || !tourType || !name || !phone) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
+
+  // Email is optional, use placeholder if not provided
+  const finalEmail = email && email.trim() !== '' ? email : 'pendiente@completar.com';
 
   // Auto-assign time based on tour type and season
   let assignedTime = time || '21:00';
@@ -136,23 +139,28 @@ async function createBooking(req, res) {
     tour_type: tourType,
     time: assignedTime,
     name,
-    email,
+    email: finalEmail,
     phone,
     message: message || null,
     accommodation: accommodation || null,
     status: status || 'pending',
     source,
+    payment_method: payment_method || 'pending',
     created_at: new Date().toISOString()
   });
 
-  // Send emails (non-blocking)
-  try {
-    await sendAdminNotificationEmail({ bookingId, date, persons, tourType, time: assignedTime, name, email, phone, message });
-  } catch (e) { console.error('Admin email failed:', e); }
+  // Send emails (non-blocking) - skip if email is placeholder
+  const shouldSendEmail = finalEmail !== 'pendiente@completar.com';
 
   try {
-    await sendConfirmationEmail({ bookingId, name, email, date, persons, tourType, time: assignedTime });
-  } catch (e) { console.error('Confirmation email failed:', e); }
+    await sendAdminNotificationEmail({ bookingId, date, persons, tourType, time: assignedTime, name, email: finalEmail, phone, message });
+  } catch (e) { console.error('Admin email failed:', e); }
+
+  if (shouldSendEmail) {
+    try {
+      await sendConfirmationEmail({ bookingId, name, email: finalEmail, date, persons, tourType, time: assignedTime });
+    } catch (e) { console.error('Confirmation email failed:', e); }
+  }
 
   try {
     await addToGoogleCalendar({ bookingId, date, time: assignedTime, persons, tourType, name, email, phone, message });
@@ -202,7 +210,7 @@ async function listBookings(req, res) {
   const total = parseInt(countResult.rows[0].total, 10);
 
   const bookingsResult = await query(`
-    SELECT id, booking_id, date, persons, tour_type, time, name, email, phone, message, accommodation, status, source, reminder_sent, reminder_sent_at, created_at, updated_at
+    SELECT id, booking_id, date, persons, tour_type, time, name, email, phone, message, accommodation, status, source, payment_method, reminder_sent, reminder_sent_at, created_at, updated_at
     FROM bookings ${whereClause}
     ORDER BY ${orderBy}
     LIMIT $${paramCount} OFFSET $${paramCount + 1}

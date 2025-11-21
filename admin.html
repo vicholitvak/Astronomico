@@ -1711,24 +1711,24 @@
 
                         <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(71, 85, 105, 0.5);">
                             <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 8px;">
-                                Creado: ${formatDateTime(booking.created_at)} | Fuente: ${booking.source === 'mercadopago' ? '<span style="color: #10b981; font-weight: bold;"><i class="fas fa-credit-card"></i> PAGADO (MercadoPago)</span>' : (booking.source || 'web')}
+                                Creado: ${formatDateTime(booking.created_at)} | Fuente: ${booking.source || 'web'} | Pago: ${getPaymentMethodDisplay(booking.payment_method || 'pending')}
                             </div>
-                            ${isPastDate(dateStr) || booking.source === 'mercadopago' ? `
+                            ${isPastDate(dateStr) || booking.payment_method === 'mercadopago' ? `
                                 <div style="padding: 8px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 4px; margin-bottom: 8px; font-size: 0.75rem; color: #fca5a5;">
-                                    <i class="fas fa-lock"></i> ${booking.source === 'mercadopago' ? 'No se puede modificar - Pago confirmado' : 'No se puede modificar - Fecha pasada'}
+                                    <i class="fas fa-lock"></i> ${booking.payment_method === 'mercadopago' ? 'No se puede modificar - Pago confirmado' : 'No se puede modificar - Fecha pasada'}
                                 </div>
                             ` : ''}
                             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                                <button onclick="changeBookingStatus(${booking.id}, 'confirmed')" style="background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'confirmed' || booking.source === 'mercadopago' || isPastDate(dateStr) ? 'disabled' : ''}>
+                                <button onclick="changeBookingStatus(${booking.id}, 'confirmed')" style="background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'confirmed' || booking.payment_method === 'mercadopago' || isPastDate(dateStr) ? 'disabled' : ''}>
                                     <i class="fas fa-check"></i> Confirmar
                                 </button>
-                                <button onclick="changeBookingStatus(${booking.id}, 'pending')" style="background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'pending' || booking.source === 'mercadopago' || isPastDate(dateStr) ? 'disabled' : ''}>
+                                <button onclick="changeBookingStatus(${booking.id}, 'pending')" style="background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'pending' || booking.payment_method === 'mercadopago' || isPastDate(dateStr) ? 'disabled' : ''}>
                                     <i class="fas fa-clock"></i> Pendiente
                                 </button>
-                                <button onclick="changeBookingStatus(${booking.id}, 'cancelled')" style="background: #6b7280; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'cancelled' || booking.source === 'mercadopago' || isPastDate(dateStr) ? 'disabled' : ''}>
+                                <button onclick="changeBookingStatus(${booking.id}, 'cancelled')" style="background: #6b7280; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'cancelled' || booking.payment_method === 'mercadopago' || isPastDate(dateStr) ? 'disabled' : ''}>
                                     <i class="fas fa-times"></i> Cancelar
                                 </button>
-                                <button onclick="deleteBooking(${booking.id}, '${booking.name.replace(/'/g, "\\'")}')" style="background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;" ${booking.source === 'mercadopago' ? 'disabled' : ''}>
+                                <button onclick="deleteBooking(${booking.id}, '${booking.name.replace(/'/g, "\\'")}')" style="background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;" ${booking.payment_method === 'mercadopago' ? 'disabled' : ''}>
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -1903,8 +1903,8 @@
                                 <input type="text" name="name" required style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
                             </div>
                             <div>
-                                <label style="color: #94a3b8; font-size: 0.85rem;">Email *</label>
-                                <input type="email" name="email" required style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
+                                <label style="color: #94a3b8; font-size: 0.85rem;">Email (opcional)</label>
+                                <input type="email" name="email" placeholder="Completar después..." style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
                             </div>
                         </div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -1946,19 +1946,29 @@
                             <div>
                                 <label style="color: #94a3b8; font-size: 0.85rem;">Estado</label>
                                 <select name="status" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
-                                    <option value="confirmed">Confirmado</option>
                                     <option value="pending">Pendiente</option>
+                                    <option value="confirmed">Confirmado</option>
                                 </select>
                             </div>
                             <div>
-                                <label style="color: #94a3b8; font-size: 0.85rem;">Fuente</label>
-                                <select name="source" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
-                                    <option value="manual">Manual (Admin)</option>
-                                    <option value="whatsapp">WhatsApp</option>
-                                    <option value="email">Email</option>
-                                    <option value="phone">Teléfono</option>
+                                <label style="color: #94a3b8; font-size: 0.85rem;">Método de Pago</label>
+                                <select name="payment_method" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
+                                    <option value="pending">⏳ Pendiente</option>
+                                    <option value="cash">💵 Efectivo</option>
+                                    <option value="transfer">🏦 Transferencia</option>
+                                    <option value="mercadopago">💳 MercadoPago</option>
                                 </select>
                             </div>
+                        </div>
+                        <div>
+                            <label style="color: #94a3b8; font-size: 0.85rem;">Fuente</label>
+                            <select name="source" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
+                                <option value="manual">Manual (Admin)</option>
+                                <option value="whatsapp">WhatsApp</option>
+                                <option value="email">Email</option>
+                                <option value="phone">Teléfono</option>
+                                <option value="web">Web</option>
+                            </select>
                         </div>
                         <div style="display: flex; gap: 10px; margin-top: 10px;">
                             <button type="submit" class="btn-approve" style="flex: 1;">
@@ -1985,7 +1995,7 @@
             const data = {
                 date: formData.get('date'),
                 name: formData.get('name'),
-                email: formData.get('email'),
+                email: formData.get('email') || 'pendiente@completar.com',
                 phone: formData.get('phone'),
                 persons: formData.get('persons'),
                 tourType: formData.get('tourType'),
@@ -1993,7 +2003,8 @@
                 accommodation: formData.get('accommodation'),
                 message: formData.get('message'),
                 status: formData.get('status'),
-                source: formData.get('source')
+                source: formData.get('source'),
+                payment_method: formData.get('payment_method')
             };
 
             try {
@@ -2393,6 +2404,16 @@
                 'completed': 'Completado'
             };
             return names[status] || status;
+        }
+
+        function getPaymentMethodDisplay(method) {
+            const methods = {
+                'pending': '<span style="color: #f59e0b;">⏳ Pendiente</span>',
+                'cash': '<span style="color: #10b981;">💵 Efectivo</span>',
+                'transfer': '<span style="color: #60a5fa;">🏦 Transferencia</span>',
+                'mercadopago': '<span style="color: #10b981; font-weight: bold;">💳 MercadoPago</span>'
+            };
+            return methods[method] || method;
         }
 
         // Logout function
