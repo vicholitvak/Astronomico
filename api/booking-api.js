@@ -111,11 +111,12 @@ async function createBooking(req, res) {
   let assignedTime = time || '21:00';
   if (!time) {
     const currentMonth = new Date().getMonth() + 1;
+    // Summer (Sept-March): months 9-12 and 1-3, Winter (April-Aug): months 4-8
     const isSummer = currentMonth < 4 || currentMonth > 8;
 
     switch(tourType) {
       case 'regular':
-        assignedTime = isSummer ? '21:30' : '20:30';
+        assignedTime = isSummer ? '21:00' : '20:00';
         break;
       case 'private':
         assignedTime = 'flexible';

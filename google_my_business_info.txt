@@ -72,9 +72,9 @@ Oficina/Reservas:
 Lunes a Domingo: 10:00 - 20:00
 
 Tours:
-Lunes a Domingo: 19:00 - 23:30 (varía según temporada)
-* Horario de verano (Oct-Mar): Salida 20:30
-* Horario de invierno (Abr-Sep): Salida 19:00
+Lunes a Domingo: 20:00 - 00:00 (varía según temporada)
+* Horario de verano (Sep-Mar): Salida 21:00
+* Horario de invierno (Abr-Ago): Salida 20:00
 
 --------------------------------------------------------------------------------
 INFORMACIÓN DE CONTACTO:
