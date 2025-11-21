@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diseña Tu Expedición - One Sky Expeditions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.7);
+            font-size: 1.1rem;
+        }
+
+        .wizard-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255,255,255,0.18);
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .vibe-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .vibe-option {
+            padding: 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .vibe-option:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+        }
+
+        .vibe-option.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .vibe-option i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .result-container {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .result-container.active {
+            display: block;
+        }
+
+        .warnings {
+            background: rgba(255, 193, 7, 0.2);
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .warnings p {
+            margin: 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .day-card {
+            background: rgba(255,255,255,0.05);
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+        }
+
+        .day-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .activity {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .activity:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            margin-right: 10px;
+        }
+
+        .total-price {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .total-price .amount {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ Diseña Tu Expedición One Sky</h1>
+            <p>Itinerario personalizado basado en tus preferencias</p>
+        </div>
+
+        <div class="wizard-card">
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 33%"></div>
+            </div>
+
+            <!-- STEP 1: Básico -->
+            <div class="step active" id="step1">
+                <h2 style="margin-bottom: 30px;">👋 Comencemos</h2>
+
+                <div class="form-group">
+                    <label>Tu Nombre</label>
+                    <input type="text" id="name" placeholder="Ej: María González" required>
+                </div>
+
+                <div class="form-group">
+                    <label>¿Cuál es tu vibe?</label>
+                    <div class="vibe-selector">
+                        <div class="vibe-option" data-vibe="PHOTO">
+                            <i class="fas fa-camera"></i>
+                            <div>Fotografía</div>
+                        </div>
+                        <div class="vibe-option" data-vibe="RELAX">
+                            <i class="fas fa-spa"></i>
+                            <div>Relax</div>
+                        </div>
+                        <div class="vibe-option" data-vibe="ADVENTURE">
+                            <i class="fas fa-hiking"></i>
+                            <div>Aventura</div>
+                        </div>
+                        <div class="vibe-option" data-vibe="BUDGET">
+                            <i class="fas fa-wallet"></i>
+                            <div>Económico</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Noches en San Pedro de Atacama</label>
+                    <select id="nights">
+                        <option value="2">2 noches</option>
+                        <option value="3" selected>3 noches</option>
+                        <option value="4">4 noches</option>
+                        <option value="5">5 noches</option>
+                        <option value="6">6 noches</option>
+                        <option value="7">7 noches</option>
+                    </select>
+                </div>
+
+                <div class="buttons">
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 2: Preferencias -->
+            <div class="step" id="step2">
+                <h2 style="margin-bottom: 30px;">⚙️ Tus Preferencias</h2>
+
+                <div class="form-group">
+                    <label>¿Interés en Uyuni (Bolivia)?</label>
+                    <select id="uyuni">
+                        <option value="NONE">No, solo San Pedro</option>
+                        <option value="ONE_WAY">Sí, terminar en Uyuni (Recomendado)</option>
+                        <option value="ROUNDTRIP">Sí, pero volver a San Pedro</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Presupuesto</label>
+                    <select id="budget">
+                        <option value="LOW">Económico ($200-400 USD)</option>
+                        <option value="MID" selected>Medio ($400-700 USD)</option>
+                        <option value="HIGH">Premium ($700-1000 USD)</option>
+                        <option value="UNLIMITED">Sin límite</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-group">
+                        <input type="checkbox" id="hateEarly">
+                        <span>💤 Odio madrugar (proteger mi sueño)</span>
+                    </label>
+                </div>
+
+                <div class="buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">
+                        <i class="fas fa-arrow-left"></i> Atrás
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Solicitudes -->
+            <div class="step" id="step3">
+                <h2 style="margin-bottom: 30px;">💭 Solicitudes Especiales</h2>
+
+                <div class="form-group">
+                    <label>¿Algo que quieras contarnos?</label>
+                    <textarea id="special" placeholder="Ej: Quiero hacer sandboard, interés en fotografía nocturna, celebración especial..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Número de Personas</label>
+                    <input type="number" id="pax" min="1" max="10" value="2">
+                </div>
+
+                <div class="buttons">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">
+                        <i class="fas fa-arrow-left"></i> Atrás
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="generateItinerary()">
+                        🚀 Generar Mi Expedición
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Diseñando tu experiencia perfecta...</p>
+            </div>
+
+            <!-- Results -->
+            <div class="result-container" id="results">
+                <h2 style="margin-bottom: 20px;">✨ Tu Expedición One Sky</h2>
+
+                <div id="warningsContainer"></div>
+                <div id="daysContainer"></div>
+
+                <div class="total-price">
+                    <div style="font-size: 1.2rem;">Inversión Total</div>
+                    <div class="amount" id="totalPrice">$0 USD</div>
+                    <button class="btn btn-primary" style="margin-top: 20px;" onclick="bookNow()">
+                        <i class="fas fa-calendar-check"></i> Reservar Ahora
+                    </button>
+                    <button class="btn btn-secondary" style="margin-top: 10px;" onclick="resetWizard()">
+                        <i class="fas fa-redo"></i> Crear Otra Expedición
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let selectedVibe = null;
+
+        // Vibe selection
+        document.querySelectorAll('.vibe-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.vibe-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedVibe = this.dataset.vibe;
+            });
+        });
+
+        function nextStep() {
+            // Validaciones
+            if (currentStep === 1) {
+                const name = document.getElementById('name').value.trim();
+                if (!name) {
+                    alert('Por favor ingresa tu nombre');
+                    return;
+                }
+                if (!selectedVibe) {
+                    alert('Por favor selecciona tu vibe');
+                    return;
+                }
+            }
+
+            // Ocultar step actual
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+
+            // Mostrar siguiente
+            currentStep++;
+            document.getElementById(`step${currentStep}`).classList.add('active');
+
+            // Actualizar progress bar
+            const progress = (currentStep / 3) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function prevStep() {
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            currentStep--;
+            document.getElementById(`step${currentStep}`).classList.add('active');
+
+            const progress = (currentStep / 3) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        async function generateItinerary() {
+            // Mostrar loading
+            document.getElementById('step3').classList.remove('active');
+            document.getElementById('loading').classList.add('active');
+
+            // Recoger datos del formulario
+            const profile = {
+                name: document.getElementById('name').value.trim(),
+                vibe: selectedVibe,
+                nights: parseInt(document.getElementById('nights').value),
+                pax: parseInt(document.getElementById('pax').value),
+                uyuni_preference: document.getElementById('uyuni').value,
+                budget_level: document.getElementById('budget').value,
+                hate_early_mornings: document.getElementById('hateEarly').checked,
+                special_requests: document.getElementById('special').value.trim()
+            };
+
+            try {
+                // Llamada a la API
+                const response = await fetch('/api/generate-itinerary', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(profile)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Error generando itinerario');
+                }
+
+                // Mostrar resultados
+                displayResults(data.itinerary);
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hubo un error generando tu itinerario. Por favor intenta nuevamente.');
+
+                // Volver al step 3
+                document.getElementById('loading').classList.remove('active');
+                document.getElementById('step3').classList.add('active');
+            }
+        }
+
+        function displayResults(itinerary) {
+            // Ocultar loading
+            document.getElementById('loading').classList.remove('active');
+
+            // Mostrar warnings
+            const warningsHtml = itinerary.warnings.length > 0
+                ? `<div class="warnings">
+                    ${itinerary.warnings.map(w => `<p>${w}</p>`).join('')}
+                   </div>`
+                : '';
+            document.getElementById('warningsContainer').innerHTML = warningsHtml;
+
+            // Mostrar días
+            const daysHtml = itinerary.days.map(day => {
+                let activities = '';
+
+                if (day.morning) {
+                    activities += `<div class="activity">
+                        <span class="activity-icon">☀️</span>
+                        <strong>Mañana:</strong> ${day.morning.name}
+                    </div>`;
+                }
+
+                if (day.afternoon) {
+                    activities += `<div class="activity">
+                        <span class="activity-icon">🌅</span>
+                        <strong>Tarde:</strong> ${day.afternoon.name}
+                    </div>`;
+                }
+
+                if (day.night) {
+                    activities += `<div class="activity">
+                        <span class="activity-icon">✨</span>
+                        <strong>Noche:</strong> ${day.night.name}
+                    </div>`;
+                }
+
+                const notes = day.notes.map(n => `<p style="margin:5px 0; color:rgba(255,255,255,0.7); font-size:0.9rem;">${n}</p>`).join('');
+
+                return `
+                    <div class="day-card">
+                        <h3>Día ${day.day}</h3>
+                        ${activities}
+                        ${notes}
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('daysContainer').innerHTML = daysHtml;
+
+            // Mostrar precio total
+            document.getElementById('totalPrice').textContent = `$${itinerary.total_price_usd} USD`;
+
+            // Mostrar contenedor de resultados
+            document.getElementById('results').classList.add('active');
+        }
+
+        function bookNow() {
+            // Redirigir a WhatsApp o formulario de contacto
+            const message = encodeURIComponent('Hola! Me interesa reservar la expedición que diseñé en su sitio web.');
+            window.open(`https://wa.me/56935134669?text=${message}`, '_blank');
+        }
+
+        function resetWizard() {
+            currentStep = 1;
+            selectedVibe = null;
+
+            // Resetear formulario
+            document.getElementById('name').value = '';
+            document.getElementById('nights').value = '3';
+            document.getElementById('uyuni').value = 'NONE';
+            document.getElementById('budget').value = 'MID';
+            document.getElementById('hateEarly').checked = false;
+            document.getElementById('special').value = '';
+            document.getElementById('pax').value = '2';
+
+            document.querySelectorAll('.vibe-option').forEach(o => o.classList.remove('selected'));
+
+            // Mostrar step 1
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('step1').classList.add('active');
+            document.getElementById('progressBar').style.width = '33%';
+        }
+    </script>
+</body>
+</html>

@@ -16,6 +16,7 @@ Allow: /icons/
 Allow: /assets/
 
 # Bloquear archivos sensibles o innecesarios
+Disallow: /api/
 Disallow: /admin/
 Disallow: /private/
 Disallow: /temp/

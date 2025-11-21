@@ -625,7 +625,7 @@ function initBookingForm() {
     // Initialize date picker with blocked dates
     if (flatpickr) {
         // Load blocked dates and initialize picker
-        fetch('/api/blocked-dates')
+        fetch('/api/admin-data?type=blocked')
             .then(res => res.json())
             .then(data => {
                 const blockedDates = data.success ? data.data.map(d => d.blocked_date.split('T')[0]) : [];

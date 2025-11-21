@@ -475,7 +475,7 @@
                 const tourDate = data.tour_date;
                 if (tourDate) {
                     try {
-                        const photoResponse = await fetch(`/api/photo-links?date=${tourDate}`);
+                        const photoResponse = await fetch(`/api/admin-data?type=photos&date=${tourDate}`);
                         const photoData = await photoResponse.json();
 
                         if (photoData.success && photoData.data && photoData.data.photo_url) {

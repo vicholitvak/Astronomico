@@ -1890,7 +1890,7 @@
                 document.getElementById('photoLinksTable').style.display = 'none';
                 document.getElementById('noPhotoLinks').style.display = 'none';
 
-                const response = await fetch('/api/photo-links');
+                const response = await fetch('/api/admin-data?type=photos');
                 const data = await response.json();
 
                 document.getElementById('photoLinksLoading').style.display = 'none';
@@ -1945,7 +1945,7 @@
             }
 
             try {
-                const response = await fetch('/api/photo-links', {
+                const response = await fetch('/api/admin-data?type=photos', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ tour_date, photo_url, description })
@@ -1978,7 +1978,7 @@
             if (!confirm('¿Eliminar este link de fotos?')) return;
 
             try {
-                const response = await fetch(`/api/photo-links?date=${date}`, {
+                const response = await fetch(`/api/admin-data?type=photos&date=${date}`, {
                     method: 'DELETE'
                 });
 
@@ -1998,7 +1998,7 @@
 
         async function loadBlockedDates() {
             try {
-                const response = await fetch('/api/blocked-dates');
+                const response = await fetch('/api/admin-data?type=blocked');
                 const data = await response.json();
 
                 if (data.success) {
@@ -2020,7 +2020,7 @@
                 if (!confirm(`¿Desbloquear la fecha ${formatDate(dateStr)}?`)) return;
 
                 try {
-                    await fetch(`/api/blocked-dates?date=${dateStr}`, { method: 'DELETE' });
+                    await fetch(`/api/admin-data?type=blocked&date=${dateStr}`, { method: 'DELETE' });
                     blockedDates.delete(dateStr);
                     renderCalendar();
                 } catch (error) {
@@ -2032,7 +2032,7 @@
                 if (reason === null) return; // Canceló
 
                 try {
-                    await fetch('/api/blocked-dates', {
+                    await fetch('/api/admin-data?type=blocked', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ blocked_date: dateStr, reason })

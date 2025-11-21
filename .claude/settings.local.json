@@ -22,7 +22,9 @@
       "Bash(rm:*)",
       "Bash(node:*)",
       "Bash(find:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "mcp__google-analytics__runReport",
+      "mcp__google-analytics__getUserBehavior"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
