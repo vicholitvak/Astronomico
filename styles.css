@@ -3381,10 +3381,10 @@ blockquote {
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(8px);
     display: flex !important;
-    align-items: center !important;
+    align-items: flex-start !important;
     justify-content: center !important;
     z-index: var(--z-modal) !important;
-    padding: var(--spacing-sm);
+    padding: var(--spacing-lg) var(--spacing-sm);
     animation: fadeIn 0.3s ease;
     overflow-y: auto;
 }
@@ -3403,13 +3403,14 @@ blockquote {
     border-radius: 16px;
     max-width: 600px;
     width: 100%;
-    max-height: 90vh;
+    max-height: calc(100vh - 4rem);
     overflow-y: auto;
     border: 2px solid rgba(0, 158, 227, 0.3);
     box-shadow: 0 20px 60px rgba(0, 158, 227, 0.2);
     position: relative !important;
     animation: slideUp 0.3s ease;
-    margin: auto;
+    margin: 0 auto;
+    padding-bottom: var(--spacing-md);
 }
 
 @keyframes slideUp {
