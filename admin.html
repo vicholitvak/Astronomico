@@ -593,7 +593,28 @@
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
+            overflow-x: hidden;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(96, 165, 250, 0.5) transparent;
+        }
+
+        .day-modal-content::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .day-modal-content::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 10px;
+        }
+
+        .day-modal-content::-webkit-scrollbar-thumb {
+            background: rgba(96, 165, 250, 0.5);
+            border-radius: 10px;
+        }
+
+        .day-modal-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(96, 165, 250, 0.7);
         }
 
         .day-modal-header {
@@ -953,6 +974,38 @@
             color: #fbbf24;
             border: 1px solid rgba(251, 191, 36, 0.3);
         }
+
+        /* Estilos para botones deshabilitados */
+        button:disabled,
+        button[disabled] {
+            opacity: 0.4 !important;
+            cursor: not-allowed !important;
+            filter: grayscale(0.5);
+            pointer-events: none;
+        }
+
+        /* Mejorar visibilidad de la booking card */
+        .booking-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .booking-card:hover {
+            background: rgba(30, 41, 59, 0.7);
+            border-color: rgba(96, 165, 250, 0.4);
+            box-shadow: 0 4px 20px rgba(96, 165, 250, 0.15);
+        }
+
+        /* Mejorar scroll del modal */
+        .day-modal-body {
+            padding: 25px;
+            overflow-y: auto;
+            max-height: calc(90vh - 100px);
+        }
     </style>
 </head>
 <body>
@@ -1277,8 +1330,10 @@
                 <h3 id="modalDateTitle">Reservas del Día</h3>
                 <button class="modal-close" onclick="closeDayModal()">&times;</button>
             </div>
-            <div class="day-summary" id="modalSummary"></div>
-            <div id="modalBookingsList"></div>
+            <div class="day-modal-body">
+                <div class="day-summary" id="modalSummary"></div>
+                <div id="modalBookingsList"></div>
+            </div>
         </div>
     </div>
 
