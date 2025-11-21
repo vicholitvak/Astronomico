@@ -41,3 +41,4 @@ build/
 .netlify/
 .vercel
 .env*.local
+.claude/settings.json
