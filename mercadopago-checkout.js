@@ -109,9 +109,8 @@ function showBookingModal(tourType, price, tourName) {
 
                     <div class="price-summary">
                         <p><strong>Tour:</strong> ${tourName}</p>
-                        <p id="base-price"><strong>${tourType === 'private' ? 'Precio fijo (1-4 personas)' : 'Precio por persona'}:</strong> $${parseInt(price).toLocaleString('es-CL')} CLP</p>
+                        <p id="base-price"><strong>${tourType === 'private' ? 'Precio fijo (1-6 personas)' : 'Precio por persona'}:</strong> $${parseInt(price).toLocaleString('es-CL')} CLP</p>
                         <p id="subtotal-price" style="display:none;"><strong>Subtotal:</strong> $0 CLP</p>
-                        <p id="commission-price" style="display:none;"><strong>Comisión Mercado Pago (5.94%):</strong> $0 CLP</p>
                         <p id="total-price"><strong>Total a Pagar:</strong> $0 CLP</p>
                     </div>
 
@@ -188,35 +187,27 @@ function showBookingModal(tourType, price, tourName) {
     personsSelect.addEventListener('change', function() {
         const persons = parseInt(this.value) || 0;
         const basePrice = parseInt(price);
-        const MP_COMMISSION = 0.0594; // 5.94% (4.99% + IVA)
 
-        let subtotal;
+        let total;
         if (tourType === 'private') {
-            // Tour privado: precio fijo sin importar personas (1-4)
-            subtotal = basePrice;
+            // Tour privado: precio fijo sin importar personas (1-6)
+            total = basePrice;
         } else {
             // Tours regular y astrofoto: precio por persona
-            subtotal = basePrice * persons;
+            total = basePrice * persons;
         }
-
-        const commission = Math.ceil(subtotal * MP_COMMISSION);
-        const total = subtotal + commission;
 
         // Show/hide breakdown
         if (persons > 0) {
             if (tourType !== 'private') {
                 document.getElementById('subtotal-price').style.display = 'block';
                 document.getElementById('subtotal-price').innerHTML =
-                    `<strong>Subtotal (${persons} ${persons > 1 ? 'personas' : 'persona'}):</strong> $${subtotal.toLocaleString('es-CL')} CLP`;
+                    `<strong>Subtotal (${persons} ${persons > 1 ? 'personas' : 'persona'}):</strong> $${total.toLocaleString('es-CL')} CLP`;
             }
-            document.getElementById('commission-price').style.display = 'block';
-            document.getElementById('commission-price').innerHTML =
-                `<strong>Comisión Mercado Pago (5.94%):</strong> $${commission.toLocaleString('es-CL')} CLP`;
             document.getElementById('total-price').innerHTML =
                 `<strong>Total a Pagar:</strong> $${total.toLocaleString('es-CL')} CLP`;
         } else {
             document.getElementById('subtotal-price').style.display = 'none';
-            document.getElementById('commission-price').style.display = 'none';
             document.getElementById('total-price').innerHTML =
                 `<strong>Total a Pagar:</strong> $0 CLP`;
         }

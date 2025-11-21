@@ -43,8 +43,7 @@ export default async function handler(req, res) {
 
         const preference = new Preference(client);
 
-        // Calculate total with Mercado Pago commission (5.94%)
-        const MP_COMMISSION = 0.0594;
+        // Calculate total - NO commissions added (absorbed by business)
         const basePrice = parseInt(price);
         const personsCount = parseInt(persons);
 
@@ -57,13 +56,13 @@ export default async function handler(req, res) {
             // Tour privado: precio fijo sin importar personas
             subtotal = basePrice;
             quantity = 1;
-            unitPrice = basePrice + Math.ceil(basePrice * MP_COMMISSION);
+            unitPrice = basePrice; // Sin comisión adicional
             description = `Tour Privado VIP para ${personsCount} persona(s) - Fecha: ${date}`;
         } else {
             // Tours regular y astrofoto: precio por persona
             subtotal = basePrice * personsCount;
             quantity = personsCount;
-            unitPrice = basePrice + Math.ceil(basePrice * MP_COMMISSION);
+            unitPrice = basePrice; // Sin comisión adicional
             description = `Tour para ${personsCount} persona(s) - Fecha: ${date}`;
         }
 
