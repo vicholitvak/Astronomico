@@ -3576,10 +3576,10 @@ ${msg.contact}`);
                     submitBtn.textContent = 'Enviando...';
 
                     try {
-                        console.log('Sending API request to /api/booking');
+                        console.log('Sending API request to /api/booking-api');
 
                         // Enviar a la API
-                        const response = await fetch('/api/booking', {
+                        const response = await fetch('/api/booking-api', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

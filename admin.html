@@ -1245,7 +1245,7 @@
                     ...currentFilters
                 });
 
-                const response = await fetch(`/api/bookings?${params}`);
+                const response = await fetch(`/api/booking-api?${params}`);
 
                 if (!response.ok) {
                     throw new Error(`Error ${response.status}: ${response.statusText}`);
@@ -1844,7 +1844,7 @@
         // Logout function
         async function logout() {
             if (confirm('¿Seguro que quieres cerrar sesión?')) {
-                await fetch('/api/auth-signout', { method: 'POST' });
+                await fetch('/api/auth?action=signout', { method: 'POST' });
                 window.location.href = '/admin-login.html';
             }
         }
