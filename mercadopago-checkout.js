@@ -79,8 +79,25 @@ function showBookingModal(tourType, price, tourName) {
                     </div>
 
                     <div class="form-group">
-                        <label for="mp-name">Nombre Completo *</label>
+                        <label for="mp-name">Nombre Completo (Persona 1) *</label>
                         <input type="text" id="mp-name" name="name" required placeholder="Tu nombre completo">
+                        <small style="color: #9ca3af; font-size: 0.875rem; margin-top: 0.25rem; display: block;">
+                            Este es quien hace la reserva
+                        </small>
+                    </div>
+
+                    <!-- Campos dinámicos para acompañantes -->
+                    <div id="companions-container" style="display: none;">
+                        <div class="companions-header" style="margin: 1.5rem 0 1rem 0; padding: 0.75rem; background: rgba(99, 102, 241, 0.1); border-radius: 8px; border-left: 3px solid #6366f1;">
+                            <h4 style="margin: 0; color: #6366f1; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-users"></i>
+                                Nombres de Acompañantes
+                            </h4>
+                            <small style="color: #6b7280; display: block; margin-top: 0.25rem;">
+                                Necesitamos esta información para la lista de la agencia
+                            </small>
+                        </div>
+                        <div id="companions-fields"></div>
                     </div>
 
                     <div class="form-group">
@@ -211,11 +228,40 @@ function showBookingModal(tourType, price, tourName) {
             document.getElementById('total-price').innerHTML =
                 `<strong>Total a Pagar:</strong> $0 CLP`;
         }
+
+        // Generar campos dinámicos para acompañantes
+        generateCompanionFields(persons);
     });
 
     // Handle form submission
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
+
+        // Validación adicional de nombres de acompañantes
+        const personsCount = parseInt(personsSelect.value) || 0;
+        if (personsCount > 1) {
+            const missingNames = [];
+            for (let i = 2; i <= personsCount; i++) {
+                const companionInput = document.getElementById(`companion-${i}`);
+                if (!companionInput || !companionInput.value.trim()) {
+                    missingNames.push(i);
+                }
+            }
+
+            if (missingNames.length > 0) {
+                const missingText = missingNames.map(n => `Persona ${n}`).join(', ');
+                alert(`⚠️ Por favor completa los nombres de todos los participantes:\n\n${missingText}\n\nNecesitamos esta información para la lista de la agencia.`);
+
+                // Hacer scroll al primer campo faltante
+                const firstMissing = document.getElementById(`companion-${missingNames[0]}`);
+                if (firstMissing) {
+                    firstMissing.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstMissing.focus();
+                }
+                return;
+            }
+        }
+
         await processMercadoPagoCheckout(form);
     });
 }
@@ -233,7 +279,24 @@ async function processMercadoPagoCheckout(form) {
             data[key] = value;
         });
 
+        // Recopilar todos los nombres de los participantes (quien reserva + acompañantes)
+        const allNames = [data.name]; // Empezar con quien hace la reserva
+        const totalPersons = parseInt(data.persons) || 1;
+
+        // Agregar nombres de acompañantes si hay más de 1 persona
+        for (let i = 2; i <= totalPersons; i++) {
+            const companionName = data[`companion_${i}`];
+            if (companionName && companionName.trim()) {
+                allNames.push(companionName.trim());
+            }
+        }
+
+        // Agregar el array de nombres al objeto data
+        data.participant_names = allNames;
+        data.total_participants = allNames.length;
+
         console.log('Creating Mercado Pago preference:', data);
+        console.log('Participant names:', allNames);
 
         // Call our API to create the preference
         const response = await fetch('/api/create-preference', {
@@ -324,6 +387,69 @@ function generatePersonOptions(tourType) {
     }
 
     return options;
+}
+
+function generateCompanionFields(totalPersons) {
+    const container = document.getElementById('companions-container');
+    const fieldsDiv = document.getElementById('companions-fields');
+
+    if (!container || !fieldsDiv) return;
+
+    // Si es 1 persona o menos, ocultar completamente la sección
+    if (totalPersons <= 1) {
+        container.style.display = 'none';
+        fieldsDiv.innerHTML = '';
+        return;
+    }
+
+    // Mostrar la sección de acompañantes
+    container.style.display = 'block';
+
+    // Generar campos para personas 2 en adelante (persona 1 es quien reserva)
+    let fieldsHTML = '';
+    for (let i = 2; i <= totalPersons; i++) {
+        fieldsHTML += `
+            <div class="form-group companion-field" style="animation: slideIn 0.3s ease-out;">
+                <label for="companion-${i}">
+                    <i class="fas fa-user" style="color: #6366f1; margin-right: 0.5rem;"></i>
+                    Nombre Completo (Persona ${i}) *
+                </label>
+                <input
+                    type="text"
+                    id="companion-${i}"
+                    name="companion_${i}"
+                    required
+                    placeholder="Nombre completo del acompañante ${i - 1}"
+                    style="transition: border-color 0.2s ease;"
+                >
+            </div>
+        `;
+    }
+
+    fieldsDiv.innerHTML = fieldsHTML;
+
+    // Agregar animación CSS si no existe
+    if (!document.getElementById('companion-animation-styles')) {
+        const style = document.createElement('style');
+        style.id = 'companion-animation-styles';
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .companion-field input:focus {
+                border-color: #6366f1 !important;
+                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }
 }
 
 // Close modal when clicking outside

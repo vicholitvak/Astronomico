@@ -1732,6 +1732,21 @@
                                 <i class="fas fa-users" style="color: #60a5fa; width: 20px;"></i>
                                 <span style="color: #cbd5e1;">${booking.persons} persona${booking.persons > 1 ? 's' : ''}</span>
                             </div>
+                            ${booking.participant_names && Array.isArray(booking.participant_names) && booking.participant_names.length > 0 ? `
+                                <div style="margin-left: 28px; padding: 8px 12px; background: rgba(99, 102, 241, 0.15); border-left: 3px solid #6366f1; border-radius: 4px;">
+                                    <div style="font-size: 0.75rem; font-weight: 600; color: #818cf8; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        <i class="fas fa-list-ul" style="margin-right: 4px;"></i>Lista de Participantes
+                                    </div>
+                                    <div style="display: grid; gap: 4px;">
+                                        ${booking.participant_names.map((name, idx) => `
+                                            <div style="display: flex; align-items: center; gap: 6px; color: #cbd5e1; font-size: 0.85rem;">
+                                                <span style="display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; background: #6366f1; color: white; border-radius: 50%; font-size: 0.7rem; font-weight: bold;">${idx + 1}</span>
+                                                <span>${name}</span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <i class="fas fa-clock" style="color: #60a5fa; width: 20px;"></i>
                                 <span style="color: #cbd5e1;">${booking.time || 'Sin horario especificado'}</span>
@@ -2165,7 +2180,14 @@
                             ${getTourTypeName(booking.tour_type)}
                         </span>
                     </td>
-                    <td><strong>${booking.persons}</strong></td>
+                    <td>
+                        <strong>${booking.persons}</strong>
+                        ${booking.participant_names && Array.isArray(booking.participant_names) && booking.participant_names.length > 0 ? `
+                            <div class="booking-details" style="color: #818cf8; margin-top: 4px;">
+                                <i class="fas fa-list-check"></i> Lista completa
+                            </div>
+                        ` : ''}
+                    </td>
                     <td>
                         <span class="status-badge status-${booking.status}">
                             ${getStatusName(booking.status)}
@@ -2251,6 +2273,12 @@
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <i class="fas fa-users" style="color: #60a5fa; width: 20px;"></i>
                             <span style="color: #cbd5e1;">${booking.persons} persona${booking.persons > 1 ? 's' : ''}</span>
+                            ${booking.participant_names && Array.isArray(booking.participant_names) && booking.participant_names.length > 0 ? `
+                                <span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.4); border-radius: 12px; font-size: 0.7rem; color: #818cf8;">
+                                    <i class="fas fa-list-check" style="font-size: 0.65rem;"></i>
+                                    <span>Lista completa</span>
+                                </span>
+                            ` : ''}
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <i class="fas fa-envelope" style="color: #60a5fa; width: 20px;"></i>

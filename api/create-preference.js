@@ -28,11 +28,29 @@ export default async function handler(req, res) {
             });
         }
 
-        const { tourType, persons, date, name, email, phone, accommodation, message, tourName, price } = req.body;
+        const {
+            tourType,
+            persons,
+            date,
+            name,
+            email,
+            phone,
+            accommodation,
+            message,
+            tourName,
+            price,
+            participant_names,
+            total_participants
+        } = req.body;
 
         // Validate required fields
         if (!tourType || !persons || !date || !name || !email || !phone || !price) {
             return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        // Validate participant names if provided
+        if (participant_names && !Array.isArray(participant_names)) {
+            return res.status(400).json({ error: 'participant_names must be an array' });
         }
 
         // Initialize Mercado Pago client
@@ -101,7 +119,9 @@ export default async function handler(req, res) {
                 customer_phone: phone,
                 customer_accommodation: accommodation || '',
                 customer_message: message || '',
-                persons: persons
+                persons: persons,
+                participant_names: participant_names ? JSON.stringify(participant_names) : JSON.stringify([name]),
+                total_participants: total_participants || persons
             },
             statement_descriptor: 'Atacama Dark Sky Tour',
             external_reference: `ATK-${Date.now()}`,

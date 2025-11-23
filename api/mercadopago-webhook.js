@@ -61,13 +61,29 @@ export default async function handler(req, res) {
                 const bookingId = externalRef || `ATK-${paymentInfo.id}`;
 
                 try {
+                    // Parse participant names from metadata
+                    let participantNames = [];
+                    try {
+                        if (metadata.participant_names) {
+                            participantNames = JSON.parse(metadata.participant_names);
+                        } else {
+                            // Fallback: use customer name if no participant names
+                            participantNames = [metadata.customer_name || paymentInfo.payer?.name || 'Cliente'];
+                        }
+                    } catch (parseError) {
+                        console.warn('[WEBHOOK] Could not parse participant_names, using fallback');
+                        participantNames = [metadata.customer_name || paymentInfo.payer?.name || 'Cliente'];
+                    }
+
                     await pool.query(`
                         INSERT INTO bookings (
                             booking_id, date, persons, tour_type, time, name, email, phone,
-                            message, status, source, created_at
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW())
+                            message, status, source, participant_names, accommodation, payment_method, created_at
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, NOW())
                         ON CONFLICT (booking_id) DO UPDATE
-                        SET status = 'confirmed', updated_at = NOW()
+                        SET status = 'confirmed',
+                            participant_names = EXCLUDED.participant_names,
+                            updated_at = NOW()
                     `, [
                         bookingId,
                         metadata.tour_date || new Date().toISOString().split('T')[0],
@@ -79,6 +95,9 @@ export default async function handler(req, res) {
                         metadata.customer_phone || paymentInfo.payer?.phone?.number || '',
                         metadata.customer_message || '',
                         'confirmed',
+                        'mercadopago',
+                        JSON.stringify(participantNames), // Store as JSONB
+                        metadata.customer_accommodation || '',
                         'mercadopago'
                     ]);
 
@@ -143,6 +162,14 @@ export default async function handler(req, res) {
             <div class="detail-row"><span class="detail-label">Tour:</span><span>${tourName}</span></div>
             <div class="detail-row"><span class="detail-label">Fecha:</span><span>${new Date(tourDate + 'T00:00:00').toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span></div>
             <div class="detail-row"><span class="detail-label">Personas:</span><span>${persons} ${persons === 1 ? 'persona' : 'personas'}</span></div>
+            ${participantNames && participantNames.length > 0 ? `
+            <div class="detail-row">
+                <span class="detail-label">Participantes:</span>
+                <span style="display: flex; flex-direction: column; gap: 4px; align-items: flex-end;">
+                    ${participantNames.map((name, idx) => `<span>• ${name}</span>`).join('')}
+                </span>
+            </div>
+            ` : ''}
             <div class="detail-row"><span class="detail-label">Total Pagado:</span><span><strong>$${totalAmount.toLocaleString('es-CL')} CLP</strong></span></div>
         </div>
         <div class="info-section">
@@ -240,6 +267,16 @@ export default async function handler(req, res) {
                 <tr><td class="label">Tour:</td><td class="value">${tourName}</td></tr>
                 <tr><td class="label">Fecha:</td><td class="value">${new Date(tourDate + 'T00:00:00').toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</td></tr>
                 <tr><td class="label">Personas:</td><td class="value">${persons} ${persons === 1 ? 'persona' : 'personas'}</td></tr>
+                ${participantNames && participantNames.length > 0 ? `
+                <tr>
+                    <td class="label" style="vertical-align: top;">Lista de Participantes:</td>
+                    <td class="value">
+                        <div style="background: #f0f9ff; padding: 10px; border-radius: 5px; border-left: 3px solid #667eea;">
+                            ${participantNames.map((name, idx) => `<div style="padding: 3px 0;"><strong>${idx + 1}.</strong> ${name}</div>`).join('')}
+                        </div>
+                    </td>
+                </tr>
+                ` : ''}
                 <tr><td class="label">Estado:</td><td class="value" style="color: #4CAF50; font-weight: bold;">CONFIRMADO</td></tr>
             </table>
         </div>
