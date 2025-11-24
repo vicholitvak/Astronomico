@@ -98,10 +98,20 @@ export default async function handler(req, res) {
                 }
             ],
             payer: {
-                name: name,
+                name: name.split(' ')[0] || name,
+                surname: name.split(' ').slice(1).join(' ') || name,
                 email: email,
                 phone: {
-                    number: phone
+                    area_code: phone.replace(/\D/g, '').substring(0, 2) || "56",
+                    number: phone.replace(/\D/g, '').substring(2) || phone.replace(/\D/g, '')
+                },
+                identification: {
+                    type: "RUT",
+                    number: ""  // Opcional por ahora, mejora la aprobación si se proporciona
+                },
+                address: {
+                    zip_code: "1410000",
+                    street_name: accommodation || "San Pedro de Atacama"
                 }
             },
             back_urls: {
@@ -110,6 +120,7 @@ export default async function handler(req, res) {
                 pending: 'https://atacamadarksky.cl/payment-pending.html'
             },
             auto_return: 'approved',
+            binary_mode: true,  // Solo aprobado o rechazado, no "pendiente"
             notification_url: 'https://atacamadarksky.cl/api/mercadopago-webhook',
             metadata: {
                 tour_type: tourType,
@@ -121,10 +132,62 @@ export default async function handler(req, res) {
                 customer_message: message || '',
                 persons: persons,
                 participant_names: participant_names ? JSON.stringify(participant_names) : JSON.stringify([name]),
-                total_participants: total_participants || persons
+                total_participants: total_participants || persons,
+                // Información de seguridad adicional
+                customer_ip: req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.socket?.remoteAddress || "unknown",
+                user_agent: req.headers['user-agent'] || "unknown",
+                booking_channel: 'website',
+                business_type: 'tourism',
+                service_date: date,
+                advance_days: Math.floor((new Date(date) - new Date()) / (1000 * 60 * 60 * 24)),
+                booking_timestamp: new Date().toISOString()
             },
-            statement_descriptor: 'Atacama Dark Sky Tour',
+            statement_descriptor: 'ATACAMA TOUR',  // Máx 11 caracteres, aparece en el estado de cuenta
             external_reference: `ATK-${Date.now()}`,
+            shipments: {
+                receiver_address: {
+                    zip_code: "1410000",
+                    state_name: "Antofagasta",
+                    city_name: "San Pedro de Atacama",
+                    street_name: accommodation || "Centro",
+                    street_number: ""
+                }
+            },
+            additional_info: {
+                ip_address: req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.socket?.remoteAddress || "unknown",
+                items: [
+                    {
+                        id: tourType,
+                        title: tourName || `Tour Astronómico - ${tourType}`,
+                        description: description,
+                        picture_url: "https://atacamadarksky.cl/images/logo.png",
+                        category_id: "travels",
+                        quantity: quantity,
+                        unit_price: unitPrice
+                    }
+                ],
+                payer: {
+                    first_name: name.split(' ')[0] || name,
+                    last_name: name.split(' ').slice(1).join(' ') || name,
+                    phone: {
+                        area_code: phone.replace(/\D/g, '').substring(0, 2) || "56",
+                        number: phone.replace(/\D/g, '').substring(2) || phone.replace(/\D/g, '')
+                    },
+                    address: {
+                        zip_code: "1410000",
+                        street_name: accommodation || "San Pedro de Atacama"
+                    },
+                    registration_date: new Date().toISOString()
+                },
+                shipments: {
+                    receiver_address: {
+                        zip_code: "1410000",
+                        state_name: "Antofagasta",
+                        city_name: "San Pedro de Atacama",
+                        street_name: accommodation || "Centro"
+                    }
+                }
+            },
             expires: true,
             expiration_date_from: new Date().toISOString(),
             expiration_date_to: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
