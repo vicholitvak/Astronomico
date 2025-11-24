@@ -280,34 +280,41 @@ async function sendConfirmationEmail(booking) {
 
   const dateObj = new Date(booking.date);
   const formattedDate = dateObj.toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  const tourTypes = { 'regular': 'Tour Astronómico Regular', 'private': 'Tour Privado Exclusivo', 'astrophoto': 'Tour Astrofotográfico' };
+  const formattedDateEn = dateObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+  const tourTypes = {
+    'regular': 'Tour Astronómico Regular',
+    'private': 'Tour Privado Exclusivo',
+    'astrophoto': 'Tour Astrofotográfico'
+  };
+
+  const tourTypesEn = {
+    'regular': 'Regular Astronomy Tour',
+    'private': 'Private Exclusive Tour',
+    'astrophoto': 'Astrophotography Tour'
+  };
+
   const tourPrices = { 'regular': 30000, 'private': 200000, 'astrophoto': 120000 };
 
   // Get price and calculate total
   const basePrice = tourPrices[booking.tourType] || 30000;
   const personsCount = parseInt(booking.persons);
   let totalPrice;
-  let priceDisplay;
+  let priceDisplayEs;
+  let priceDisplayEn;
 
   if (booking.tourType === 'private') {
     totalPrice = basePrice;
-    priceDisplay = `$${basePrice.toLocaleString('es-CL')} CLP (grupo completo)`;
+    priceDisplayEs = `$${basePrice.toLocaleString('es-CL')} CLP (grupo completo)`;
+    priceDisplayEn = `$${basePrice.toLocaleString('es-CL')} CLP (full group)`;
   } else {
     totalPrice = basePrice * personsCount;
-    priceDisplay = `$${basePrice.toLocaleString('es-CL')} CLP × ${personsCount} persona(s) = $${totalPrice.toLocaleString('es-CL')} CLP`;
+    priceDisplayEs = `$${basePrice.toLocaleString('es-CL')} CLP × ${personsCount} persona(s) = $${totalPrice.toLocaleString('es-CL')} CLP`;
+    priceDisplayEn = `$${basePrice.toLocaleString('es-CL')} CLP × ${personsCount} person(s) = $${totalPrice.toLocaleString('es-CL')} CLP`;
   }
 
-  // Create payment link
-  const paymentUrl = `https://atacamadarksky.cl/?tour=${booking.tourType}&date=${booking.date}&persons=${booking.persons}&email=${encodeURIComponent(booking.email)}&name=${encodeURIComponent(booking.name)}#reservas`;
-
-  const paymentButtonHtml = `
-    <div style="text-align: center; margin: 30px 0;">
-      <a href="${paymentUrl}" style="display: inline-block; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: #000; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 18px; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);">
-        💳 Pagar Ahora - $${totalPrice.toLocaleString('es-CL')} CLP
-      </a>
-      <p style="margin-top: 15px; color: #666; font-size: 14px;">Paga con seguridad usando MercadoPago</p>
-    </div>
-  `;
+  // Create payment link with direct action
+  const paymentUrl = `https://atacamadarksky.cl/?tour=${booking.tourType}&date=${booking.date}&persons=${booking.persons}&email=${encodeURIComponent(booking.email)}&name=${encodeURIComponent(booking.name)}&action=pay#tours`;
 
   const emailHtml = `
     <!DOCTYPE html>
@@ -317,26 +324,36 @@ async function sendConfirmationEmail(booking) {
       <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .warning-header { background: linear-gradient(135deg, #FF6B6B 0%, #FF8787 100%); color: white; padding: 25px; text-align: center; border-radius: 10px 10px 0 0; }
         .content { background: #fff; padding: 30px; border: 1px solid #e0e0e0; }
         .booking-details { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; }
         .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e0e0e0; }
         .detail-label { font-weight: bold; color: #555; }
         .detail-value { color: #000; }
+        .urgent-box { background: #FFF3CD; border: 2px solid #FFD700; border-radius: 8px; padding: 20px; margin: 25px 0; text-align: center; }
+        .payment-button { display: inline-block; background: linear-gradient(135deg, #00C851 0%, #00A846 100%); color: white; padding: 18px 50px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 20px; box-shadow: 0 4px 15px rgba(0, 200, 81, 0.3); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
         .footer { background: #f8f9fa; padding: 20px; text-align: center; border-radius: 0 0 10px 10px; font-size: 14px; color: #666; }
         .whatsapp { display: inline-block; background: #25D366; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 15px 0; }
+        .lang-separator { border-top: 3px dotted #ccc; margin: 40px 0; padding-top: 30px; }
       </style>
     </head>
     <body>
       <div class="container">
-        <div class="header">
-          <h1 style="margin: 0; font-size: 28px;">✨ ¡Reserva Confirmada!</h1>
-          <p style="margin: 10px 0 0 0; opacity: 0.9;">Atacama Dark Sky - Tours Astronómicos</p>
+        <!-- SPANISH VERSION -->
+        <div class="warning-header">
+          <h1 style="margin: 0; font-size: 26px;">⚠️ RESERVA PENDIENTE DE PAGO</h1>
+          <p style="margin: 10px 0 0 0; font-size: 16px;">Tu cupo NO está confirmado hasta completar el pago</p>
         </div>
 
         <div class="content">
           <p style="font-size: 18px;">Hola <strong>${booking.name}</strong>,</p>
-          <p>Tu reserva ha sido recibida exitosamente. ¡Nos emociona compartir el universo contigo!</p>
+
+          <div class="urgent-box">
+            <h3 style="margin: 0 0 10px 0; color: #FF6B6B;">⏰ IMPORTANTE: Completa tu pago en las próximas 24 horas</h3>
+            <p style="margin: 10px 0;">Los cupos son limitados y se asignan por orden de pago.</p>
+            <p style="margin: 0; font-weight: bold;">Sin el pago, tu reserva será cancelada automáticamente.</p>
+          </div>
 
           <div class="booking-details">
             <div class="detail-row">
@@ -344,7 +361,7 @@ async function sendConfirmationEmail(booking) {
               <span class="detail-value"><strong>${booking.bookingId}</strong></span>
             </div>
             <div class="detail-row">
-              <span class="detail-label">Fecha:</span>
+              <span class="detail-label">Fecha del Tour:</span>
               <span class="detail-value">${formattedDate}</span>
             </div>
             <div class="detail-row">
@@ -359,41 +376,79 @@ async function sendConfirmationEmail(booking) {
               <span class="detail-label">Personas:</span>
               <span class="detail-value">${booking.persons}</span>
             </div>
-            <div class="detail-row" style="border-bottom: none; font-size: 18px;">
-              <span class="detail-label">Precio Total:</span>
-              <span class="detail-value" style="color: #FFD700; font-weight: bold;">${priceDisplay}</span>
+            <div class="detail-row" style="border-bottom: none; font-size: 20px;">
+              <span class="detail-label">TOTAL A PAGAR:</span>
+              <span class="detail-value" style="color: #00C851; font-weight: bold;">${priceDisplayEs}</span>
             </div>
           </div>
 
-          ${paymentButtonHtml}
-
-          <div style="background: #fff3cd; border-left: 4px solid #FFD700; padding: 15px; margin: 20px 0;">
-            <strong>📍 Punto de Encuentro:</strong><br>
-            ${booking.tourType === 'private'
-              ? 'Te recogeremos en tu hotel'
-              : 'Plaza Apacheta (extremo este de calle Caracoles)'}
+          <div style="text-align: center; margin: 35px 0;">
+            <p style="margin-bottom: 20px; font-size: 18px; font-weight: bold;">👇 Completa tu reserva ahora:</p>
+            <a href="${paymentUrl}" class="payment-button">
+              💳 PAGAR AHORA - $${totalPrice.toLocaleString('es-CL')} CLP
+            </a>
+            <p style="margin-top: 15px; color: #666;">
+              Pago 100% seguro con MercadoPago<br>
+              <small>Aceptamos tarjetas de crédito, débito y transferencias</small>
+            </p>
           </div>
 
-          <p><strong>¿Necesitas ayuda o tienes preguntas?</strong><br>
-          Contáctanos por WhatsApp y te responderemos inmediatamente:</p>
+          <div style="background: #E8F5E9; border-left: 4px solid #4CAF50; padding: 15px; margin: 20px 0;">
+            <strong>✅ ¿Qué pasa después del pago?</strong><br>
+            1. Recibirás confirmación inmediata por email<br>
+            2. Te contactaremos 24h antes del tour por WhatsApp<br>
+            3. Te recogeremos en tu hotel (tour privado) o nos vemos en Plaza Apacheta
+          </div>
 
-          <div style="text-align: center;">
+          <!-- ENGLISH VERSION -->
+          <div class="lang-separator"></div>
+
+          <div style="background: #F0F8FF; padding: 20px; border-radius: 8px;">
+            <h2 style="color: #FF6B6B; text-align: center;">🌍 English Version</h2>
+
+            <p><strong>Hello ${booking.name},</strong></p>
+
+            <div style="background: #FFF3CD; border: 2px solid #FFD700; padding: 15px; margin: 20px 0; text-align: center;">
+              <strong>⚠️ YOUR BOOKING IS NOT CONFIRMED YET</strong><br>
+              Please complete payment within 24 hours to secure your spot.<br>
+              <span style="color: red;">Without payment, your reservation will be automatically cancelled.</span>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 5px; margin: 15px 0;">
+              <strong>Tour Details:</strong><br>
+              • Date: ${formattedDateEn}<br>
+              • Tour: ${tourTypesEn[booking.tourType]}<br>
+              • People: ${booking.persons}<br>
+              • Total to pay: <span style="color: #00C851; font-weight: bold;">${priceDisplayEn}</span>
+            </div>
+
+            <div style="text-align: center; margin: 25px 0;">
+              <a href="${paymentUrl}" style="display: inline-block; background: #00C851; color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 18px;">
+                💳 PAY NOW - $${totalPrice.toLocaleString('es-CL')} CLP
+              </a>
+              <p style="margin-top: 10px; color: #666; font-size: 14px;">
+                Secure payment with MercadoPago<br>
+                We accept all international cards
+              </p>
+            </div>
+
+            <p><strong>After payment:</strong> You'll receive immediate confirmation and we'll contact you 24h before the tour.</p>
+          </div>
+
+          <div style="text-align: center; margin-top: 30px;">
+            <p><strong>¿Preguntas? / Questions?</strong></p>
             <a href="https://wa.me/56935134669?text=Hola!%20Tengo%20una%20consulta%20sobre%20mi%20reserva%20${booking.bookingId}" class="whatsapp">
-              💬 Contactar por WhatsApp
+              💬 WhatsApp: +56 9 3513 4669
             </a>
           </div>
-
-          <p style="margin-top: 30px; font-size: 14px; color: #666;">
-            <strong>Importante:</strong> Te contactaremos pronto para confirmar todos los detalles finales del tour.
-            Por favor revisa también tu carpeta de spam.
-          </p>
         </div>
 
         <div class="footer">
-          <p style="margin: 5px 0;"><strong>Atacama Dark Sky Tours</strong></p>
-          <p style="margin: 5px 0;">WhatsApp: +56 9 3513 4669</p>
-          <p style="margin: 5px 0;">Email: reservas@atacamadarksky.cl</p>
-          <p style="margin: 15px 0 5px 0; font-size: 12px;">¡Gracias por elegirnos para explorar el universo! 🌌⭐</p>
+          <p style="margin: 5px 0;"><strong>Atacama Dark Sky</strong></p>
+          <p style="margin: 5px 0;">San Pedro de Atacama, Chile</p>
+          <p style="margin: 15px 0 5px 0; font-size: 12px;">
+            🌟 Los cielos más oscuros del mundo te esperan / The darkest skies in the world await you
+          </p>
         </div>
       </div>
     </body>
@@ -406,7 +461,7 @@ async function sendConfirmationEmail(booking) {
     body: JSON.stringify({
       from: 'Atacama Dark Sky <reservas@atacamadarksky.cl>',
       to: [booking.email],
-      subject: `✨ Reserva Confirmada - ${formattedDate} - Código: ${booking.bookingId}`,
+      subject: `⚠️ PAGO PENDIENTE - Reserva ${booking.bookingId} - ${formattedDate} / PAYMENT REQUIRED`,
       html: emailHtml
     })
   });

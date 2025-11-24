@@ -1985,8 +1985,11 @@
             const checkDate = new Date(date);
             checkDate.setHours(0, 0, 0, 0);
 
-            // No disponible si es en el pasado
-            if (checkDate < today) return false;
+            // Permitir reservas para hoy y fechas futuras
+            // IMPORTANTE: Permitimos reservas del mismo día para tours nocturnos
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (checkDate <= yesterday) return false;
 
             const moonPhase = getMoonPhase(checkDate);
             // Disponible solo si NO está cerca de luna llena

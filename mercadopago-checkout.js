@@ -5,6 +5,48 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('[MP DEBUG] DOM Content Loaded at:', new Date().toLocaleTimeString());
     console.log('[MP DEBUG] Mercado Pago checkout script initialized');
 
+    // Check for payment parameters in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const action = urlParams.get('action');
+
+    // Si viene con action=pay, abrir modal automáticamente
+    if (action === 'pay') {
+        const tourType = urlParams.get('tour');
+        const date = urlParams.get('date');
+        const persons = urlParams.get('persons');
+        const email = urlParams.get('email');
+        const name = urlParams.get('name');
+
+        console.log('[MP DEBUG] Payment URL detected with params:', {
+            tourType, date, persons, email, name
+        });
+
+        // Obtener precio según tipo de tour
+        let price, tourName;
+        if (tourType === 'regular') {
+            price = '30000';
+            tourName = 'Tour Astronómico Regular';
+        } else if (tourType === 'astro') {
+            price = '120000';
+            tourName = 'Tour Astrofotografía';
+        } else if (tourType === 'private') {
+            price = '200000';
+            tourName = 'Tour Privado VIP';
+        }
+
+        if (price && tourName) {
+            // Abrir modal con datos pre-cargados
+            setTimeout(() => {
+                showBookingModalWithData(tourType, price, tourName, {
+                    date: date,
+                    persons: persons,
+                    email: email,
+                    name: name
+                });
+            }, 500); // Pequeño delay para asegurar que todo esté cargado
+        }
+    }
+
     // Get all Mercado Pago payment buttons
     const mpButtons = document.querySelectorAll('.btn-mercadopago');
     console.log('[MP DEBUG] Found MP buttons:', mpButtons.length);
@@ -50,6 +92,40 @@ document.addEventListener('DOMContentLoaded', function() {
 
     console.log('[MP DEBUG] All event listeners attached');
 });
+
+// Nueva función para abrir modal con datos pre-cargados
+function showBookingModalWithData(tourType, price, tourName, prefilledData = {}) {
+    showBookingModal(tourType, price, tourName);
+
+    // Esperar a que el modal esté renderizado y luego pre-llenar los campos
+    setTimeout(() => {
+        if (prefilledData.date) {
+            const dateInput = document.getElementById('mp-date');
+            if (dateInput) dateInput.value = prefilledData.date;
+        }
+
+        if (prefilledData.persons) {
+            const personsSelect = document.getElementById('mp-persons');
+            if (personsSelect) {
+                personsSelect.value = prefilledData.persons;
+                // Trigger change event to update price
+                personsSelect.dispatchEvent(new Event('change'));
+            }
+        }
+
+        if (prefilledData.name) {
+            const nameInput = document.getElementById('mp-name');
+            if (nameInput) nameInput.value = prefilledData.name;
+        }
+
+        if (prefilledData.email) {
+            const emailInput = document.getElementById('mp-email');
+            if (emailInput) emailInput.value = prefilledData.email;
+        }
+
+        console.log('[MP DEBUG] Pre-filled modal with:', prefilledData);
+    }, 100);
+}
 
 function showBookingModal(tourType, price, tourName) {
     // Create modal HTML
@@ -369,9 +445,9 @@ function closeBookingModal() {
 }
 
 function getMinDate() {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow.toISOString().split('T')[0];
+    // Permitir reservas para el mismo día (tours nocturnos)
+    const today = new Date();
+    return today.toISOString().split('T')[0];
 }
 
 function generatePersonOptions(tourType) {
