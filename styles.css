@@ -707,18 +707,21 @@ section {
 .info-section {
     background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%);
     padding: var(--spacing-xl) 0;
+    margin-top: var(--spacing-xl);
     border-top: 1px solid rgba(255, 215, 0, 0.2);
     border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    width: 100%;
 }
 
 .info-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--spacing-md);
+    gap: var(--spacing-lg);
     margin-top: var(--spacing-md);
-    max-width: 1200px;
+    max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
+    padding: 0 var(--spacing-md);
 }
 
 .info-item {
@@ -1285,26 +1288,31 @@ blockquote {
 /* Booking Section Layout */
 .booking-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-lg);
-    max-width: 1200px;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: var(--spacing-xl);
+    max-width: 1400px;
     margin: 0 auto;
+    align-items: start;
 }
 
 .booking-calendar-col {
-    max-width: 450px;
+    width: 100%;
+    max-width: none;
 }
 
 .booking-calendar-col h3 {
     color: var(--primary-color);
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    font-size: 1.4rem;
 }
 
 .booking-form-col {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(0, 212, 255, 0.2);
     border-radius: var(--border-radius);
-    padding: var(--spacing-md);
+    padding: var(--spacing-lg);
+    position: sticky;
+    top: 100px;
 }
 
 .booking-form-col h3 {
@@ -1314,15 +1322,21 @@ blockquote {
 
 .calendar-legend {
     display: flex;
-    gap: var(--spacing-md);
-    margin-top: var(--spacing-sm);
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--border-radius);
     flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 .legend-item {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
     font-size: 0.85rem;
     color: var(--text-secondary);
 }
@@ -1356,13 +1370,33 @@ blockquote {
 }
 
 /* Responsive booking layout */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
     .booking-container {
         grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
     }
 
     .booking-calendar-col {
         max-width: 100%;
+    }
+
+    .booking-form-col {
+        position: static;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+}
+
+@media (max-width: 480px) {
+    .info-grid {
+        grid-template-columns: 1fr;
     }
 }
 
