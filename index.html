@@ -17,14 +17,26 @@
     <link rel="alternate" hreflang="pt" href="https://www.atacamadarksky.cl/?lang=pt">
     <link rel="alternate" hreflang="x-default" href="https://www.atacamadarksky.cl/">
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T39HYLDJ8K"></script>
+    <!-- Google tag (gtag.js) - diferido para no afectar LCP -->
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
 
-        gtag('config', 'G-T39HYLDJ8K');
+        // Diferir carga de gtag hasta después del render inicial
+        function loadGtag() {
+            var s = document.createElement('script');
+            s.src = 'https://www.googletagmanager.com/gtag/js?id=G-T39HYLDJ8K';
+            s.async = true;
+            document.head.appendChild(s);
+            gtag('js', new Date());
+            gtag('config', 'G-T39HYLDJ8K');
+        }
+
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(loadGtag, { timeout: 3000 });
+        } else {
+            setTimeout(loadGtag, 2000);
+        }
     </script>
 
     <!-- Performance Optimizations -->
