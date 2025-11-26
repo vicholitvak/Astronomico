@@ -12,6 +12,8 @@
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         * {
@@ -1006,6 +1008,90 @@
             overflow-y: auto;
             max-height: calc(90vh - 100px);
         }
+
+        /* Income Section Styles */
+        .date-filters {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .date-filters input[type="date"] {
+            padding: 8px 12px;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            background: #1f2937;
+            color: #f3f4f6;
+        }
+        .date-filters button {
+            padding: 8px 16px;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            background: #1f2937;
+            color: #f3f4f6;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .date-filters button:hover {
+            background: #374151;
+            border-color: #60a5fa;
+        }
+        .income-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .income-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .breakdown-section {
+            background: #1f2937;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .breakdown-section h3 {
+            margin-bottom: 15px;
+            color: #f3f4f6;
+        }
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #374151;
+        }
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+        .income-table-container {
+            background: #1f2937;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .income-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .income-table th, .income-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #374151;
+        }
+        .income-table th {
+            background: #111827;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+        .income-table td {
+            color: #f3f4f6;
+        }
+        .income-table tr:hover {
+            background: #374151;
+        }
     </style>
 </head>
 <body>
@@ -1032,6 +1118,9 @@
             </button>
             <button class="tab-btn" onclick="switchTab('photos')">
                 <i class="fas fa-images"></i> Links Fotos
+            </button>
+            <button class="tab-btn" onclick="switchTab('income')">
+                <i class="fas fa-dollar-sign"></i> Ingresos
             </button>
         </div>
 
@@ -1320,6 +1409,170 @@
                     <tbody id="photoLinksBody"></tbody>
                 </table>
                 <p id="noPhotoLinks" style="display: none; text-align: center; color: #94a3b8; padding: 40px;">No hay links guardados aún.</p>
+            </div>
+
+            <!-- Sección de Herramientas de Comunicación -->
+            <div class="filters-section" style="margin-top: 30px; background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); border: 1px solid #3b82f6;">
+                <h3 style="color: #60a5fa; margin-bottom: 10px;"><i class="fas fa-paper-plane"></i> Mensaje para Clientes</h3>
+                <p style="color: #94a3b8; margin-bottom: 20px;">Copia el mensaje para enviar por WhatsApp. El cliente completa la encuesta y al final recibe el link de las fotos.</p>
+
+                <!-- Links Rápidos -->
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px; padding: 15px; background: rgba(59, 130, 246, 0.1); border-radius: 8px;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="color: #94a3b8; font-size: 0.85rem; display: block; margin-bottom: 5px;">Link de Encuesta/Review:</label>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <input type="text" value="https://atacamadarksky.cl/review-form.html" readonly
+                                   style="flex: 1; background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 8px; border-radius: 4px; font-size: 0.85rem;"
+                                   id="reviewLinkInput">
+                            <button class="btn-secondary" onclick="copyToClipboard('reviewLinkInput', this)" style="padding: 8px 12px;">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personalización -->
+                <div class="filters-grid" style="max-width: 800px; margin-bottom: 20px;">
+                    <div class="filter-group">
+                        <label for="msgClientName">Nombre del Cliente (opcional)</label>
+                        <input type="text" id="msgClientName" placeholder="Ej: Juan" oninput="updatePhotoMessage()">
+                    </div>
+                    <div class="filter-group">
+                        <label for="msgPhotoDate">Verificar fotos de fecha</label>
+                        <select id="msgPhotoDate" onchange="updatePhotoMessage()">
+                            <option value="">-- Sin verificar --</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="msgLanguage">Idioma del mensaje</label>
+                        <select id="msgLanguage" onchange="updatePhotoMessage()">
+                            <option value="es">Español</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Mensaje con fotos -->
+                <div>
+                    <label style="color: #e2e8f0; font-weight: 500; display: block; margin-bottom: 10px;">
+                        <i class="fab fa-whatsapp" style="color: #25D366;"></i> Mensaje para WhatsApp (con fotos al final de encuesta):
+                    </label>
+                    <textarea id="photoMessageText" readonly rows="10"
+                              style="width: 100%; background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 15px; border-radius: 8px; font-family: inherit; font-size: 0.95rem; line-height: 1.5; resize: vertical;">¡Hola! 🌌
+
+Gracias por vivir esta experiencia bajo las estrellas con nosotros.
+
+Tu opinión es muy importante para ayudarnos a mejorar y para que más personas descubran el cielo de Atacama.
+
+¿Podrías compartir tu experiencia? Solo te tomará 2 minutos y al finalizar podrás descargar las fotos del tour:
+👉 https://atacamadarksky.cl/review-form.html
+
+¡Esperamos verte pronto nuevamente! ✨
+
+Vicente
+Atacama Dark Sky</textarea>
+
+                    <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; align-items: center;">
+                        <button class="btn-primary" onclick="copyPhotoMessage()" id="copyMsgBtn">
+                            <i class="fas fa-copy"></i> Copiar Mensaje
+                        </button>
+                        <button class="btn-secondary" onclick="openWhatsAppWithMessage()" id="whatsappMsgBtn" style="background: #25D366; border-color: #25D366;">
+                            <i class="fab fa-whatsapp"></i> Abrir WhatsApp
+                        </button>
+                        <span id="photoStatusMsg" style="color: #94a3b8; font-size: 0.85rem; margin-left: 10px;"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Income Tab -->
+        <div id="incomeTab" class="tab-content">
+            <div class="section-header">
+                <h2><i class="fas fa-dollar-sign"></i> Ingresos</h2>
+                <div class="date-filters">
+                    <input type="date" id="incomeStartDate" onchange="loadIncomeData()">
+                    <span>hasta</span>
+                    <input type="date" id="incomeEndDate" onchange="loadIncomeData()">
+                    <button onclick="setIncomePeriod('week')">Semana</button>
+                    <button onclick="setIncomePeriod('month')">Mes</button>
+                    <button onclick="setIncomePeriod('year')">Año</button>
+                    <span style="margin-left: 15px;">|</span>
+                    <select id="incomePaymentFilter" onchange="loadIncomeData()" style="padding: 8px 12px; border: 1px solid #374151; border-radius: 8px; background: #1f2937; color: #f3f4f6;">
+                        <option value="all">Todos los pagos</option>
+                        <option value="mercadopago">MercadoPago</option>
+                        <option value="cash">Efectivo</option>
+                        <option value="transfer">Transferencia</option>
+                        <option value="pending">Pendiente</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="income-stats">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="totalIncome">$0</span>
+                        <span class="stat-label">Total Ingresos</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-receipt"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="totalBookingsIncome">0</span>
+                        <span class="stat-label">Reservas Pagadas</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="avgBookingValue">$0</span>
+                        <span class="stat-label">Promedio por Reserva</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="totalPersonsIncome">0</span>
+                        <span class="stat-label">Total Personas</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de ingresos -->
+            <div class="income-chart-container" style="background: #1f2937; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                <h3 style="margin-bottom: 15px; color: #f3f4f6;"><i class="fas fa-chart-bar"></i> Ingresos por Día</h3>
+                <div style="height: 300px;">
+                    <canvas id="incomeChart"></canvas>
+                </div>
+            </div>
+
+            <div class="income-breakdown">
+                <div class="breakdown-section">
+                    <h3><i class="fas fa-credit-card"></i> Por Método de Pago</h3>
+                    <div id="paymentMethodBreakdown"></div>
+                </div>
+                <div class="breakdown-section">
+                    <h3><i class="fas fa-star"></i> Por Tipo de Tour</h3>
+                    <div id="tourTypeBreakdown"></div>
+                </div>
+            </div>
+
+            <div class="income-table-container">
+                <h3><i class="fas fa-list"></i> Detalle de Reservas</h3>
+                <table class="income-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Tour</th>
+                            <th>Personas</th>
+                            <th>Método</th>
+                            <th>Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody id="incomeTableBody"></tbody>
+                </table>
+                <p id="noIncomeData" style="display: none; text-align: center; color: #94a3b8; padding: 40px;">No hay ingresos en este período.</p>
             </div>
         </div>
 
@@ -2289,6 +2542,11 @@
                             <span style="color: #cbd5e1;">${booking.phone}</span>
                         </div>
                     </div>
+                    <div style="margin-top: 12px; display: flex; gap: 8px;">
+                        <button onclick="event.stopPropagation(); copyAgencyInfo(${JSON.stringify(booking).replace(/"/g, '&quot;')})" style="padding: 6px 12px; background: #1e40af; border: none; border-radius: 6px; color: white; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                            <i class="fas fa-copy"></i> Copiar para Agencia
+                        </button>
+                    </div>
                 </div>
             `;
         }
@@ -2466,13 +2724,14 @@
         function formatDate(dateString) {
             if (!dateString) return 'Sin fecha';
             try {
-                // Try parsing as-is first
-                let date = new Date(dateString);
-                // If invalid, try adding time
-                if (isNaN(date.getTime())) {
-                    date = new Date(dateString + 'T00:00:00');
+                // Extract date parts directly to avoid timezone issues
+                const dateOnly = dateString.split('T')[0]; // Get YYYY-MM-DD part
+                const [year, month, day] = dateOnly.split('-');
+                if (!year || !month || !day) {
+                    return 'Fecha inválida';
                 }
-                // Still invalid?
+                // Create date using local timezone (noon to avoid any edge cases)
+                const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), 12, 0, 0);
                 if (isNaN(date.getTime())) {
                     return 'Fecha inválida';
                 }
@@ -2745,6 +3004,7 @@
                 }
 
                 renderPhotoLinks(data.data);
+                updatePhotoDateSelect(data.data); // Actualizar select para generador de mensajes
                 document.getElementById('photoLinksTable').style.display = 'table';
 
             } catch (error) {
@@ -2838,6 +3098,116 @@
             }
         }
 
+        // Variable para almacenar los links de fotos para el generador de mensajes
+        let photoLinksData = [];
+
+        // Actualizar el select de fechas cuando se cargan los links
+        function updatePhotoDateSelect(links) {
+            photoLinksData = links;
+            const select = document.getElementById('msgPhotoDate');
+            select.innerHTML = '<option value="">-- Selecciona fecha --</option>';
+
+            links.forEach(link => {
+                const option = document.createElement('option');
+                option.value = link.tour_date;
+                option.textContent = formatDate(link.tour_date) + (link.description ? ` - ${link.description}` : '');
+                option.dataset.photoUrl = link.photo_url;
+                select.appendChild(option);
+            });
+        }
+
+        // Generar mensaje con fotos y link de review
+        function updatePhotoMessage() {
+            const select = document.getElementById('msgPhotoDate');
+            const clientName = document.getElementById('msgClientName').value.trim();
+            const language = document.getElementById('msgLanguage').value;
+            const textarea = document.getElementById('photoMessageText');
+            const statusMsg = document.getElementById('photoStatusMsg');
+
+            // Actualizar estado de verificación de fotos
+            if (select.value) {
+                statusMsg.innerHTML = '<i class="fas fa-check-circle" style="color: #4ade80;"></i> Fotos verificadas para esta fecha';
+            } else {
+                statusMsg.innerHTML = '';
+            }
+
+            let message;
+            if (language === 'en') {
+                const greeting = clientName ? `Hi ${clientName}!` : 'Hi!';
+                message = `${greeting} 🌌
+
+Thank you for sharing this experience under the stars with us.
+
+Your feedback is very important to help us improve and to help more people discover the Atacama sky.
+
+Could you share your experience? It only takes 2 minutes and at the end you'll be able to download your tour photos:
+👉 https://atacamadarksky.cl/review-form.html
+
+Hope to see you again soon! ✨
+
+Vicente
+Atacama Dark Sky`;
+            } else {
+                const greeting = clientName ? `¡Hola ${clientName}!` : '¡Hola!';
+                message = `${greeting} 🌌
+
+Gracias por vivir esta experiencia bajo las estrellas con nosotros.
+
+Tu opinión es muy importante para ayudarnos a mejorar y para que más personas descubran el cielo de Atacama.
+
+¿Podrías compartir tu experiencia? Solo te tomará 2 minutos y al finalizar podrás descargar las fotos del tour:
+👉 https://atacamadarksky.cl/review-form.html
+
+¡Esperamos verte pronto nuevamente! ✨
+
+Vicente
+Atacama Dark Sky`;
+            }
+
+            textarea.value = message;
+        }
+
+        // Copiar mensaje de fotos al portapapeles
+        function copyPhotoMessage() {
+            const textarea = document.getElementById('photoMessageText');
+            navigator.clipboard.writeText(textarea.value).then(() => {
+                const btn = document.getElementById('copyMsgBtn');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+                btn.style.background = '#10b981';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                alert('Error al copiar: ' + err);
+            });
+        }
+
+        // Copiar cualquier texto al portapapeles
+        function copyToClipboard(elementId, button) {
+            const element = document.getElementById(elementId);
+            const text = element.value || element.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalHTML = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i>';
+                button.style.background = '#10b981';
+                setTimeout(() => {
+                    button.innerHTML = originalHTML;
+                    button.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                alert('Error al copiar: ' + err);
+            });
+        }
+
+        // Abrir WhatsApp con el mensaje
+        function openWhatsAppWithMessage() {
+            const textarea = document.getElementById('photoMessageText');
+            const message = encodeURIComponent(textarea.value);
+            window.open(`https://wa.me/?text=${message}`, '_blank');
+        }
+
         // ============ BLOCKED DATES FUNCTIONS ============
 
         async function loadBlockedDates() {
@@ -2896,6 +3266,251 @@
                     alert('Error: ' + error.message);
                 }
             }
+        }
+
+        // ============ INCOME FUNCTIONS ============
+        function setIncomePeriod(period) {
+            const endDate = new Date();
+            let startDate = new Date();
+
+            if (period === 'week') {
+                startDate.setDate(endDate.getDate() - 7);
+            } else if (period === 'month') {
+                startDate.setMonth(endDate.getMonth() - 1);
+            } else if (period === 'year') {
+                startDate.setFullYear(endDate.getFullYear() - 1);
+            }
+
+            document.getElementById('incomeStartDate').value = startDate.toISOString().split('T')[0];
+            document.getElementById('incomeEndDate').value = endDate.toISOString().split('T')[0];
+            loadIncomeData();
+        }
+
+        async function loadIncomeData() {
+            const startDate = document.getElementById('incomeStartDate').value;
+            const endDate = document.getElementById('incomeEndDate').value;
+            const paymentFilter = document.getElementById('incomePaymentFilter').value;
+
+            if (!startDate || !endDate) return;
+
+            try {
+                let url = `/api/admin-data?type=income&start_date=${startDate}&end_date=${endDate}`;
+                if (paymentFilter && paymentFilter !== 'all') {
+                    url += `&payment_method=${paymentFilter}`;
+                }
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.error) {
+                    console.error('Error loading income:', data.error);
+                    return;
+                }
+
+                renderIncomeData(data);
+            } catch (error) {
+                console.error('Error loading income data:', error);
+            }
+        }
+
+        let incomeChart = null;
+
+        function renderIncomeData(data) {
+            const { bookings, totals, byTourType } = data;
+
+            // Calculate totals
+            const totalIncome = bookings.reduce((sum, b) => sum + (parseFloat(b.total_paid) || 0), 0);
+            const totalPersons = bookings.reduce((sum, b) => sum + (parseInt(b.num_people) || 0), 0);
+            const avgValue = bookings.length > 0 ? totalIncome / bookings.length : 0;
+
+            document.getElementById('totalIncome').textContent = formatCLP(totalIncome);
+            document.getElementById('totalBookingsIncome').textContent = bookings.length;
+            document.getElementById('avgBookingValue').textContent = formatCLP(avgValue);
+            document.getElementById('totalPersonsIncome').textContent = totalPersons;
+
+            // Agrupar por día para el gráfico
+            const dailyData = {};
+            bookings.forEach(b => {
+                // Extraer solo YYYY-MM-DD de la fecha ISO
+                const date = b.tour_date.split('T')[0];
+                if (!dailyData[date]) {
+                    dailyData[date] = { income: 0, bookings: 0, persons: 0 };
+                }
+                dailyData[date].income += parseFloat(b.total_paid) || 0;
+                dailyData[date].bookings++;
+                dailyData[date].persons += parseInt(b.num_people) || 0;
+            });
+
+            // Ordenar fechas
+            const sortedDates = Object.keys(dailyData).sort();
+            const chartLabels = sortedDates.map(d => {
+                const [year, month, day] = d.split('-');
+                const date = new Date(year, month - 1, day);
+                return date.toLocaleDateString('es-CL', { day: '2-digit', month: 'short' });
+            });
+            const chartIncomeData = sortedDates.map(d => dailyData[d].income);
+            const chartPersonsData = sortedDates.map(d => dailyData[d].persons);
+
+            // Crear/actualizar gráfico
+            const ctx = document.getElementById('incomeChart').getContext('2d');
+            if (incomeChart) {
+                incomeChart.destroy();
+            }
+            incomeChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        {
+                            label: 'Ingresos (CLP)',
+                            data: chartIncomeData,
+                            backgroundColor: 'rgba(96, 165, 250, 0.7)',
+                            borderColor: 'rgba(96, 165, 250, 1)',
+                            borderWidth: 1,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Personas',
+                            data: chartPersonsData,
+                            type: 'line',
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.3,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { labels: { color: '#94a3b8' } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.dataset.label === 'Ingresos (CLP)') {
+                                        return 'Ingresos: ' + formatCLP(context.raw);
+                                    }
+                                    return context.dataset.label + ': ' + context.raw;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148, 163, 184, 0.1)' } },
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            ticks: {
+                                color: '#60a5fa',
+                                callback: function(value) { return formatCLP(value); }
+                            },
+                            grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            position: 'right',
+                            ticks: { color: '#10b981' },
+                            grid: { drawOnChartArea: false }
+                        }
+                    }
+                }
+            });
+
+            // Payment method breakdown con nombres legibles
+            const methodNames = { mercadopago: 'MercadoPago', cash: 'Efectivo', transfer: 'Transferencia', pending: 'Pendiente' };
+            const paymentBreakdown = document.getElementById('paymentMethodBreakdown');
+            if (totals && totals.length > 0) {
+                paymentBreakdown.innerHTML = totals.map(t => `
+                    <div class="breakdown-item">
+                        <span>${methodNames[t.payment_method] || t.payment_method || 'Sin método'}</span>
+                        <span>${formatCLP(t.total)}</span>
+                    </div>
+                `).join('');
+            } else {
+                paymentBreakdown.innerHTML = '<p style="color: #94a3b8;">Sin datos</p>';
+            }
+
+            // Tour type breakdown con nombres legibles
+            const tourNames = { regular: 'Tour Regular', private: 'Tour Privado', astrophoto: 'Astrofotografía' };
+            const tourBreakdown = document.getElementById('tourTypeBreakdown');
+            if (byTourType && byTourType.length > 0) {
+                tourBreakdown.innerHTML = byTourType.map(t => `
+                    <div class="breakdown-item">
+                        <span>${tourNames[t.tour_type] || t.tour_type}</span>
+                        <span>${formatCLP(t.total)} (${t.count} reservas)</span>
+                    </div>
+                `).join('');
+            } else {
+                tourBreakdown.innerHTML = '<p style="color: #94a3b8;">Sin datos</p>';
+            }
+
+            // Income table
+            const tableBody = document.getElementById('incomeTableBody');
+            const noDataMsg = document.getElementById('noIncomeData');
+
+            if (bookings && bookings.length > 0) {
+                tableBody.innerHTML = bookings.map(b => `
+                    <tr>
+                        <td>${formatDate(b.tour_date)}</td>
+                        <td>${b.customer_name}</td>
+                        <td>${tourNames[b.tour_type] || b.tour_type}</td>
+                        <td>${b.num_people}</td>
+                        <td>${methodNames[b.payment_method] || b.payment_method || '-'}</td>
+                        <td>${formatCLP(b.total_paid || 0)}</td>
+                    </tr>
+                `).join('');
+                noDataMsg.style.display = 'none';
+            } else {
+                tableBody.innerHTML = '';
+                noDataMsg.style.display = 'block';
+            }
+        }
+
+        function formatCLP(amount) {
+            return new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(amount);
+        }
+
+        // Initialize income dates when switching to income tab
+        const originalSwitchTab = switchTab;
+        switchTab = function(tab) {
+            originalSwitchTab(tab);
+            if (tab === 'income') {
+                if (!document.getElementById('incomeStartDate').value) {
+                    setIncomePeriod('month');
+                }
+            }
+        };
+
+        // ============ COPY AGENCY INFO ============
+        function copyAgencyInfo(booking) {
+            const tourNames = {
+                regular: 'Tour Astronómico Regular',
+                private: 'Tour Privado',
+                astrophoto: 'Astrofotografía'
+            };
+
+            const text = `RESERVA TOUR ASTRONÓMICO
+━━━━━━━━━━━━━━━━━━━━━━━━
+Nombre: ${booking.name}
+Fecha: ${formatDate(booking.date)}
+Hora: ${booking.time || '21:00'}
+Tour: ${tourNames[booking.tour_type] || booking.tour_type}
+Personas: ${booking.persons}
+Teléfono: ${booking.phone}
+Email: ${booking.email}
+${booking.accommodation ? `Alojamiento: ${booking.accommodation}` : ''}
+━━━━━━━━━━━━━━━━━━━━━━━━
+ID: ${booking.booking_id}`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Información copiada al portapapeles');
+            }).catch(err => {
+                console.error('Error al copiar:', err);
+                alert('Error al copiar. Intenta de nuevo.');
+            });
         }
     </script>
 </body>

@@ -103,7 +103,85 @@ export default async function handler(req, res) {
       }
     }
 
-    return res.status(400).json({ success: false, error: 'Invalid type. Use ?type=photos or ?type=blocked' });
+    // ============ INCOME DATA ============
+    if (type === 'income') {
+      if (req.method === 'GET') {
+        const { start_date, end_date, payment_method } = req.query;
+
+        const endDate = end_date || new Date().toISOString().split('T')[0];
+        const startDate = start_date || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+        // Precios por persona según tipo de tour (para cuando no hay payment_amount)
+        const TOUR_PRICES = { regular: 30000, private: 200000, astrophoto: 150000 };
+        // Tour privado es precio fijo, no por persona
+
+        // Construir query con filtro opcional de método de pago
+        let query = `
+          SELECT id, booking_id, date AS tour_date, name AS customer_name, persons AS num_people, tour_type,
+            payment_method, payment_amount, status, created_at
+          FROM bookings
+          WHERE date >= $1 AND date <= $2 AND status IN ('confirmed', 'completed')
+        `;
+        const params = [startDate, endDate];
+
+        if (payment_method) {
+          query += ` AND payment_method = $3`;
+          params.push(payment_method);
+        }
+
+        query += ` ORDER BY date DESC`;
+
+        const bookingsResult = await pool.query(query, params);
+
+        // Usar payment_amount real si existe, sino calcular estimado
+        const bookings = bookingsResult.rows.map(b => {
+          let total;
+          if (b.payment_amount) {
+            total = parseFloat(b.payment_amount);
+          } else if (b.tour_type === 'private') {
+            total = TOUR_PRICES.private; // Precio fijo para privado
+          } else {
+            total = b.num_people * (TOUR_PRICES[b.tour_type] || TOUR_PRICES.regular);
+          }
+          return {
+            ...b,
+            total_paid: total
+          };
+        });
+
+        // Agrupar por método de pago
+        const byPaymentMethod = {};
+        bookings.forEach(b => {
+          const method = b.payment_method || 'pending';
+          if (!byPaymentMethod[method]) {
+            byPaymentMethod[method] = { payment_method: method, count: 0, total: 0 };
+          }
+          byPaymentMethod[method].count++;
+          byPaymentMethod[method].total += b.total_paid;
+        });
+
+        // Agrupar por tipo de tour
+        const byTourType = {};
+        bookings.forEach(b => {
+          const type = b.tour_type || 'regular';
+          if (!byTourType[type]) {
+            byTourType[type] = { tour_type: type, count: 0, total: 0 };
+          }
+          byTourType[type].count++;
+          byTourType[type].total += b.total_paid;
+        });
+
+        return res.status(200).json({
+          success: true,
+          bookings,
+          totals: Object.values(byPaymentMethod),
+          byTourType: Object.values(byTourType),
+          dateRange: { start: startDate, end: endDate }
+        });
+      }
+    }
+
+    return res.status(400).json({ success: false, error: 'Invalid type. Use ?type=photos, ?type=blocked, or ?type=income' });
 
   } catch (error) {
     console.error('Admin data API error:', error);

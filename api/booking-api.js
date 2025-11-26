@@ -110,23 +110,21 @@ async function createBooking(req, res) {
   // Email is optional, use placeholder if not provided
   const finalEmail = email && email.trim() !== '' ? email : 'pendiente@completar.com';
 
-  // Auto-assign time based on tour type and season
+  // Auto-assign time - ALWAYS 21:00 for regular tours
   let assignedTime = time || '21:00';
   if (!time) {
-    const currentMonth = new Date().getMonth() + 1;
-    // Summer (Sept-March): months 9-12 and 1-3, Winter (April-Aug): months 4-8
-    const isSummer = currentMonth < 4 || currentMonth > 8;
-
     switch(tourType) {
       case 'regular':
-        assignedTime = isSummer ? '21:00' : '20:00';
+        assignedTime = '21:00'; // Siempre a las 21:00
         break;
       case 'private':
-        assignedTime = 'flexible';
+        assignedTime = 'flexible'; // Horario acordado con cliente
         break;
       case 'astrophoto':
-        assignedTime = isSummer ? '21:00' : '20:00';
+        assignedTime = '21:00'; // También a las 21:00
         break;
+      default:
+        assignedTime = '21:00';
     }
   }
 

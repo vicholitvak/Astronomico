@@ -75,21 +75,66 @@ export default async function handler(req, res) {
                         participantNames = [metadata.customer_name || paymentInfo.payer?.name || 'Cliente'];
                     }
 
-                    await pool.query(`
-                        INSERT INTO bookings (
-                            booking_id, date, persons, tour_type, time, name, email, phone,
-                            message, status, source, participant_names, accommodation, payment_method, created_at
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, NOW())
-                        ON CONFLICT (booking_id) DO UPDATE
-                        SET status = 'confirmed',
-                            participant_names = EXCLUDED.participant_names,
-                            updated_at = NOW()
+                    // Primero intentar encontrar una reserva existente del mismo cliente para la misma fecha
+                    const existingBooking = await pool.query(`
+                        SELECT booking_id FROM bookings
+                        WHERE date = $1
+                        AND (email = $2 OR phone = $3 OR name = $4)
+                        AND tour_type = $5
+                        AND status = 'pending'
+                        ORDER BY created_at DESC
+                        LIMIT 1
                     `, [
+                        metadata.tour_date || new Date().toISOString().split('T')[0],
+                        metadata.customer_email || paymentInfo.payer?.email,
+                        metadata.customer_phone || paymentInfo.payer?.phone?.number || '',
+                        metadata.customer_name || paymentInfo.payer?.name || 'Cliente',
+                        metadata.tour_type || 'regular'
+                    ]);
+
+                    if (existingBooking.rows.length > 0) {
+                        // Actualizar la reserva existente
+                        const existingId = existingBooking.rows[0].booking_id;
+                        console.log('[WEBHOOK] Updating existing booking:', existingId);
+
+                        await pool.query(`
+                            UPDATE bookings
+                            SET status = 'confirmed',
+                                participant_names = $1,
+                                payment_method = 'mercadopago',
+                                payment_id = $2,
+                                payment_amount = $3,
+                                updated_at = NOW()
+                            WHERE booking_id = $4
+                        `, [
+                            JSON.stringify(participantNames),
+                            paymentInfo.id,
+                            paymentInfo.transaction_amount,
+                            existingId
+                        ]);
+
+                        // Usar el ID existente para los emails
+                        bookingId = existingId;
+                    } else {
+                        // Crear nueva reserva si no existe una pendiente
+                        await pool.query(`
+                            INSERT INTO bookings (
+                                booking_id, date, persons, tour_type, time, name, email, phone,
+                                message, status, source, participant_names, accommodation, payment_method,
+                                payment_id, payment_amount, created_at
+                            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, NOW())
+                            ON CONFLICT (booking_id) DO UPDATE
+                            SET status = 'confirmed',
+                                participant_names = EXCLUDED.participant_names,
+                                payment_id = EXCLUDED.payment_id,
+                                payment_amount = EXCLUDED.payment_amount,
+                                updated_at = NOW()
+                        `, [
                         bookingId,
                         metadata.tour_date || new Date().toISOString().split('T')[0],
                         parseInt(metadata.persons) || 1,
                         metadata.tour_type || 'regular',
-                        '20:00', // Default tour time
+                        '21:00', // Hora del tour: 21:00
                         metadata.customer_name || paymentInfo.payer?.name || 'Cliente',
                         metadata.customer_email || paymentInfo.payer?.email,
                         metadata.customer_phone || paymentInfo.payer?.phone?.number || '',
@@ -98,8 +143,11 @@ export default async function handler(req, res) {
                         'mercadopago',
                         JSON.stringify(participantNames), // Store as JSONB
                         metadata.customer_accommodation || '',
-                        'mercadopago'
+                        'mercadopago',
+                        paymentInfo.id,
+                        paymentInfo.transaction_amount
                     ]);
+                    }
 
                     console.log('[WEBHOOK] Booking saved to database:', bookingId);
 
@@ -183,7 +231,7 @@ export default async function handler(req, res) {
         <div class="info-section" style="background: #fff3e0; border-left-color: #FF6F00;">
             <h3 style="color: #E65100;">ℹ️ Información Importante</h3>
             <ul>
-                <li>Los tours comienzan aproximadamente a las 20:00 hrs</li>
+                <li>Los tours comienzan a las 21:00 hrs (encuentro en Plazoleta Apacheta 20:50)</li>
                 <li>Duración según el tipo de tour seleccionado</li>
                 <li>Abrígate bien - las noches en el desierto son frías</li>
                 <li>El transporte desde/hacia tu alojamiento está incluido</li>
