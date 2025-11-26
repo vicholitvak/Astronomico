@@ -28,6 +28,15 @@ Disallow: /backup/
 Disallow: /test/
 Disallow: /dev/
 
+# Bloquear páginas de test y admin
+Disallow: /test*.html
+Disallow: /admin*.html
+Disallow: /*test*.html
+Disallow: /index_backup.html
+Disallow: /vincular_ga4_ads.html
+Disallow: /crear_audiencias_ga4.html
+Disallow: /itinerary-builder.html
+
 # Bloquear archivos de configuración
 Disallow: /netlify.toml
 Disallow: /.netlify/
@@ -84,8 +93,6 @@ Disallow: /
 # Configuración para sitemap
 Sitemap: https://atacamadarksky.cl/sitemap.xml
 
-# Directrices adicionales para crawling
-Crawl-delay: 1
 
 # Permitir acceso a archivos importantes para SEO
 Allow: /favicon.ico
