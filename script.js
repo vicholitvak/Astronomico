@@ -583,7 +583,6 @@ function initTestimonialSlider() {
 async function loadReviewsForTestimonials() {
     const slider = document.getElementById('testimonialSlider');
     const summaryDiv = document.getElementById('reviewsRatingSummary');
-    const schemaScript = document.getElementById('reviewsSchema');
 
     try {
         // Fetch approved reviews
@@ -607,9 +606,6 @@ async function loadReviewsForTestimonials() {
                 `;
                 summaryDiv.style.display = 'flex';
             }
-
-            // Generate Schema markup for SEO
-            generateReviewSchema(schemaScript, data.reviews, stats);
 
             // Initialize slider functionality
             initSliderControls();
@@ -689,48 +685,6 @@ function renderFallbackTestimonials(container) {
             </div>
         </div>
     `;
-}
-
-function generateReviewSchema(scriptElement, reviews, stats) {
-    const schema = {
-        "@context": "https://schema.org",
-        "@type": "LocalBusiness",
-        "name": "Atacama Dark Sky - Tours Astronómicos",
-        "description": "Tours astronómicos profesionales en San Pedro de Atacama con telescopios inteligentes",
-        "url": "https://atacamadarksky.cl",
-        "telephone": "+56935134669",
-        "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "San Pedro de Atacama",
-            "addressLocality": "San Pedro de Atacama",
-            "addressRegion": "Antofagasta",
-            "addressCountry": "CL"
-        },
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": stats.average_rating || "5",
-            "reviewCount": stats.total_count || reviews.length,
-            "bestRating": "5",
-            "worstRating": "1"
-        },
-        "review": reviews.slice(0, 5).map(r => ({
-            "@type": "Review",
-            "author": {
-                "@type": "Person",
-                "name": r.reviewer_name
-            },
-            "datePublished": r.created_at ? r.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
-            "reviewBody": r.comment || "Excelente experiencia",
-            "reviewRating": {
-                "@type": "Rating",
-                "ratingValue": r.overall_rating,
-                "bestRating": "5",
-                "worstRating": "1"
-            }
-        }))
-    };
-
-    scriptElement.textContent = JSON.stringify(schema);
 }
 
 function initSliderControls() {
