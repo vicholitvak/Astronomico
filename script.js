@@ -603,13 +603,27 @@ async function loadReviewsForTestimonials() {
             renderTestimonials(slider, data.reviews);
 
             // Show rating summary
-            if (stats.average_rating && stats.total_count > 0) {
+            if (stats.average_rating && stats.total_approved > 0) {
                 const avgRating = parseFloat(stats.average_rating).toFixed(1);
                 summaryDiv.innerHTML = `
                     <div class="rating-stars">${generateStars(Math.round(stats.average_rating))}</div>
-                    <span class="rating-text">${avgRating} / 5 basado en ${stats.total_count} reseñas verificadas</span>
+                    <span class="rating-text">${avgRating} / 5 basado en ${stats.total_approved} reseñas verificadas</span>
                 `;
                 summaryDiv.style.display = 'flex';
+
+                // Update hero trust indicators
+                const heroReviewCount = document.getElementById('heroReviewCount');
+                const heroStars = document.getElementById('heroStars');
+                if (heroReviewCount) {
+                    const reviewText = stats.total_approved === 1 ? 'reseña' : 'reseñas';
+                    heroReviewCount.textContent = `${stats.total_approved} ${reviewText}`;
+                }
+                if (heroStars && avgRating) {
+                    // Generate star rating for hero
+                    const fullStars = Math.floor(avgRating);
+                    let starsHtml = '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
+                    heroStars.innerHTML = starsHtml;
+                }
             }
 
             // Initialize slider functionality
