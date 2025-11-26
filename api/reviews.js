@@ -264,11 +264,88 @@ async function createReview(req, res) {
     reviewer_name
   });
 
+  // Enviar notificación por email al admin
+  await sendNewReviewNotification({
+    review_id,
+    reviewer_name,
+    reviewer_email,
+    overall_rating,
+    title,
+    comment,
+    tour_type: booking.tour_type,
+    tour_date: booking.date
+  });
+
   return res.status(201).json({
     success: true,
     review: result.rows[0],
     message: 'Review submitted successfully and is pending approval'
   });
+}
+
+/**
+ * Enviar notificación de nueva reseña al admin
+ */
+async function sendNewReviewNotification(review) {
+  const resendApiKey = process.env.RESEND_API_KEY;
+  const adminEmail = process.env.ADMIN_EMAIL || 'vicente.litvak@gmail.com';
+
+  if (!resendApiKey) {
+    console.log('RESEND_API_KEY not configured, skipping email notification');
+    return;
+  }
+
+  const tourTypes = {
+    'regular': 'Tour Astronómico Regular',
+    'private': 'Tour Privado Exclusivo',
+    'astrophoto': 'Tour Astrofotográfico'
+  };
+
+  const stars = '⭐'.repeat(review.overall_rating);
+  const tourDate = review.tour_date ? new Date(review.tour_date).toLocaleDateString('es-CL') : 'N/A';
+
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${resendApiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: 'Atacama Dark Sky <onboarding@resend.dev>',
+        to: [adminEmail],
+        subject: `${stars} Nueva Reseña de ${review.reviewer_name}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #1a1a2e;">🌟 Nueva Reseña Recibida</h2>
+
+            <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 20px 0;">
+              <p><strong>Calificación:</strong> ${stars} (${review.overall_rating}/5)</p>
+              <p><strong>Cliente:</strong> ${review.reviewer_name}</p>
+              <p><strong>Email:</strong> ${review.reviewer_email}</p>
+              <p><strong>Tour:</strong> ${tourTypes[review.tour_type] || review.tour_type}</p>
+              <p><strong>Fecha del tour:</strong> ${tourDate}</p>
+            </div>
+
+            ${review.title ? `<p><strong>Título:</strong> ${review.title}</p>` : ''}
+            ${review.comment ? `
+              <div style="background: #fff; border-left: 4px solid #00D4FF; padding: 15px; margin: 20px 0;">
+                <p style="font-style: italic; margin: 0;">"${review.comment}"</p>
+              </div>
+            ` : ''}
+
+            <div style="margin-top: 30px; padding: 15px; background: #1a1a2e; color: white; border-radius: 10px;">
+              <p style="margin: 0;">📋 <strong>Acción requerida:</strong> Revisar y aprobar en el panel de admin</p>
+              <p style="margin: 10px 0 0 0; font-size: 12px;">ID de reseña: ${review.review_id}</p>
+            </div>
+          </div>
+        `
+      })
+    });
+    console.log('Admin notification email sent for review:', review.review_id);
+  } catch (error) {
+    console.error('Error sending review notification email:', error);
+  }
 }
 
 /**
