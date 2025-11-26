@@ -29,7 +29,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize all components
     initNavigation();
     initLanguageToggle();
-    initTestimonialSlider();
+    // Defer testimonial loading to avoid blocking LCP
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => initTestimonialSlider(), { timeout: 3000 });
+    } else {
+        setTimeout(initTestimonialSlider, 1500);
+    }
     initBookingForm();
     initSmoothScrolling();
     initScrollEffects();
@@ -1162,8 +1167,12 @@ document.addEventListener('DOMContentLoaded', function() {
         setLanguage(savedLang);
     }
 
-    // Load dynamic testimonials from API
-    loadDynamicTestimonials();
+    // Defer dynamic testimonials to avoid blocking LCP
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => loadDynamicTestimonials(), { timeout: 4000 });
+    } else {
+        setTimeout(loadDynamicTestimonials, 2000);
+    }
 });
 
 // ===== DYNAMIC TESTIMONIALS =====
