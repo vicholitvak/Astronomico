@@ -694,12 +694,14 @@ function renderFallbackTestimonials(container) {
 function generateReviewSchema(scriptElement, reviews, stats) {
     const schema = {
         "@context": "https://schema.org",
-        "@type": "TouristAttraction",
-        "name": "Atacama Night Sky - Tours Astronómicos",
-        "description": "Tours astronómicos privados en el Desierto de Atacama con telescopios inteligentes",
+        "@type": "LocalBusiness",
+        "name": "Atacama Dark Sky - Tours Astronómicos",
+        "description": "Tours astronómicos profesionales en San Pedro de Atacama con telescopios inteligentes",
         "url": "https://atacamadarksky.cl",
+        "telephone": "+56935134669",
         "address": {
             "@type": "PostalAddress",
+            "streetAddress": "San Pedro de Atacama",
             "addressLocality": "San Pedro de Atacama",
             "addressRegion": "Antofagasta",
             "addressCountry": "CL"
