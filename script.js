@@ -376,7 +376,7 @@ function initLanguageToggle() {
             'tours.subtitle': 'Experiencias únicas bajo el cielo más claro del mundo',
             'tours.regular.badge': 'Más Popular',
             'tours.regular.title': 'Tour Astronómico Regular',
-            'tours.regular.desc1': '<strong>Una noche para entender el universo, no solo mirarlo.</strong> Comenzamos con una charla astronómica bajo el cielo más limpio del planeta. Con un puntero láser te guío por constelaciones, estrellas y las historias que el cosmos cuenta cada noche. 3,000 estrellas aparecen ante tus ojos mientras la Vía Láctea cruza el cielo de horizonte a horizonte.',
+            'tours.regular.desc1': '<strong>Una noche para entender el universo, no solo mirarlo.</strong> Comenzamos con una charla astronómica bajo el cielo más limpio del planeta. Con un puntero láser te guío por constelaciones y te cuento las historias detrás de cada una.',
             'tours.regular.desc2': 'Después del cóctel bajo las estrellas, pasamos a los telescopios: uno <strong>óptico para planetas</strong> —los anillos de Saturno, los cráteres de la Luna— y otro <strong>digital para nebulosas y galaxias</strong> a millones de años luz, con colores que no creerás. Terminamos con una <strong>sesión de fotos</strong> para que te lleves el recuerdo de esta noche.',
             'tours.regular.btn': 'Reservar',
             'tours.photo.title': 'Tour de Astrofotografía Especializado',
