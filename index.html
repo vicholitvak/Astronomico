@@ -1890,9 +1890,6 @@
         <div class="whatsapp-tooltip">¿Tienes preguntas? ¡Escríbenos!</div>
     </div>
 
-    <!-- FullCalendar JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.js" defer></script>
-
     <!-- Google APIs -->
     <script src="https://apis.google.com/js/api.js" defer></script>
 
@@ -3896,8 +3893,35 @@ ${msg.contact}`);
         });
     </script>
 
-    <!-- FullCalendar JS -->
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    <!-- FullCalendar JS - carga diferida cuando el calendario es visible -->
+    <script>
+    (function() {
+        let fcLoaded = false;
+        const calendarEl = document.getElementById('fullcalendar');
+        if (!calendarEl) return;
+
+        const loadFullCalendar = () => {
+            if (fcLoaded) return;
+            fcLoaded = true;
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js';
+            document.body.appendChild(script);
+        };
+
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    loadFullCalendar();
+                    observer.disconnect();
+                }
+            }, { rootMargin: '200px' });
+            observer.observe(calendarEl);
+        } else {
+            // Fallback para navegadores sin IntersectionObserver
+            setTimeout(loadFullCalendar, 2000);
+        }
+    })();
+    </script>
 
     <!-- Mercado Pago Checkout -->
     <script src="mercadopago-checkout.js"></script>
