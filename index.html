@@ -52,15 +52,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></noscript>
 
-    <!-- FullCalendar CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet">
+    <!-- FullCalendar CSS - carga diferida -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.css" rel="stylesheet"></noscript>
 
-    <!-- Mercado Pago SDK -->
-    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <!-- Mercado Pago SDK removed - not needed, checkout redirects to hosted page -->
 
-    <!-- Stylesheet -->
+    <!-- Stylesheet principal -->
     <link rel="stylesheet" href="styles.css?v=6.3">
-    <link rel="stylesheet" href="faq-styles.css">
+    <!-- FAQ styles - carga diferida (sección más abajo en la página) -->
+    <link rel="stylesheet" href="faq-styles.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="faq-styles.css"></noscript>
 
     <!-- Schema.org Structured Data for SEO and LLMs -->
     <script type="application/ld+json">
@@ -258,10 +260,10 @@
         "Cielos oscuros y contaminación lumínica"
       ],
       "image": [
-        "https://www.atacamadarksky.cl/images/regular3-2.jpg",
-        "https://www.atacamadarksky.cl/images/fotografico.jpg",
-        "https://www.atacamadarksky.cl/images/privado1.jpg",
-        "https://www.atacamadarksky.cl/images/Nightskylogo.jpg"
+        "https://www.atacamadarksky.cl/images/regular3-2.webp",
+        "https://www.atacamadarksky.cl/images/fotografico.webp",
+        "https://www.atacamadarksky.cl/images/privado1.webp",
+        "https://www.atacamadarksky.cl/images/Nightskylogo.webp"
       ],
       "touristType": [
         "Familias con niños",
@@ -360,7 +362,7 @@
             <div class="nav-container">
                 <div class="nav-logo">
                     <a href="#inicio">
-                        <img src="images/Nightskylogo.jpg" alt="Atacama Dark Sky Logo" class="logo-img">
+                        <img src="images/Nightskylogo.webp" alt="Atacama Dark Sky Logo" class="logo-img" width="150" height="50">
                     </a>
                 </div>
 
@@ -462,8 +464,8 @@
                 <div class="tour-card featured">
                     <div class="featured-badge" data-i18n="tours.regular.badge">Más Popular</div>
                     <div class="tour-image">
-                        <img src="images/regular3-2.jpg" alt="Tour astronómico regular con telescopio profesional"
-                            loading="lazy">
+                        <img src="images/regular3-2.webp" alt="Tour astronómico regular con telescopio profesional"
+                            loading="lazy" width="600" height="400">
                     </div>
                     <div class="tour-content">
                         <h3 data-i18n="tours.regular.title">Tour Astronómico Regular</h3>
@@ -520,8 +522,8 @@
                 <!-- Tour 2: Astrophotography -->
                 <div class="tour-card">
                     <div class="tour-image">
-                        <img src="images/fotografico.jpg" alt="Tour de astrofotografía en el desierto de Atacama"
-                            loading="lazy">
+                        <img src="images/fotografico.webp" alt="Tour de astrofotografía en el desierto de Atacama"
+                            loading="lazy" width="600" height="400">
                     </div>
                     <div class="tour-content">
                         <h3 data-i18n="tours.photo.title">Tour de Astrofotografía Especializado</h3>
@@ -577,7 +579,7 @@
                 <!-- Tour 3: Private VIP -->
                 <div class="tour-card">
                     <div class="tour-image">
-                        <img src="images/privado1.jpg" alt="Tour astronómico privado VIP" loading="lazy">
+                        <img src="images/privado1.webp" alt="Tour astronómico privado VIP" loading="lazy" width="600" height="400">
                     </div>
                     <div class="tour-content">
                         <h3 data-i18n="tours.private.title">Tour Privado VIP</h3>
@@ -633,8 +635,8 @@
                 <!-- Tour 4: Educational Study Tours -->
                 <div class="tour-card">
                     <div class="tour-image">
-                        <img src="images/_DSC1725.jpg?v=3.1" alt="Viajes de estudio educativos con telescopio"
-                            loading="lazy">
+                        <img src="images/_DSC1725.webp" alt="Viajes de estudio educativos con telescopio"
+                            loading="lazy" width="600" height="400">
                     </div>
                     <div class="tour-content">
                         <h3 data-i18n="tours.study.title">Viajes de Estudio</h3>
@@ -674,7 +676,7 @@
                 <div class="tour-card featured">
                     <div class="featured-badge">Empresas</div>
                     <div class="tour-image">
-                        <img src="images/ejecutivo.jpg" alt="Eventos corporativos bajo las estrellas" loading="lazy">
+                        <img src="images/ejecutivo.webp" alt="Eventos corporativos bajo las estrellas" loading="lazy" width="600" height="400">
                     </div>
                     <div class="tour-content">
                         <h3>Eventos Corporativos</h3>
@@ -1099,9 +1101,9 @@
                     </div>
                 </div>
                 <div class="about-image">
-                    <img src="images/me2.jpg"
+                    <img src="images/me2.webp"
                         alt="Vicente Litvak - Guía astronómico apasionado en el desierto de Atacama con telescopio inteligente"
-                        loading="lazy">
+                        loading="lazy" width="400" height="400">
                     <div class="image-caption">
                         <i class="fas fa-quote-left"></i>
                         <p data-i18n="about.quote">"Cada noche bajo las estrellas de Atacama me recuerda por qué elegí
@@ -1819,7 +1821,7 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <div class="footer-logo">
-                        <img src="images/Nightskylogo.jpg" alt="Atacama Dark Sky Logo" class="footer-logo-img">
+                        <img src="images/Nightskylogo.webp" alt="Atacama Dark Sky Logo" class="footer-logo-img" width="120" height="40">
                     </div>
                     <p data-i18n="footer.desc">Descubre el universo en el cielo más claro del mundo. Experiencias
                         astronómicas inolvidables en
