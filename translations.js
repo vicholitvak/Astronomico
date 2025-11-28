@@ -54,6 +54,15 @@ const translations = {
         'info.payment': 'Pago',
         'info.paymentText': 'Efectivo, Transferencia o Tarjeta<br>Confirmación en 24 horas',
 
+        // Southern Hemisphere Section (for European visitors)
+        'tours.southern.title': 'Solo visible desde el Hemisferio Sur',
+        'tours.southern.subtitle': 'Objetos celestes que <strong>nunca podrás ver desde Europa o Norteamérica</strong>',
+        'tours.southern.cross': 'La constelación más icónica del hemisferio sur',
+        'tours.southern.magellanic': 'Galaxias satélite visibles a simple vista',
+        'tours.southern.alpha': 'El sistema estelar más cercano al Sol (4.37 años luz)',
+        'tours.southern.omega': 'El cúmulo globular más grande y brillante del cielo',
+        'tours.southern.info': 'Además: el centro de la Vía Láctea se ve completo y brillante solo desde aquí',
+
         // FAQ Section
         'faq.title': 'Preguntas Frecuentes',
         'faq.subtitle': 'Todo lo que necesitas saber antes de tu tour astronómico',
@@ -126,6 +135,15 @@ const translations = {
         'info.transportText': 'Regular tours: Plaza Apacheta<br>Private tours: Hotel pick-up & drop-off',
         'info.payment': 'Payment',
         'info.paymentText': 'Cash, Transfer or Card<br>Confirmation in 24 hours',
+
+        // Southern Hemisphere Section (for European visitors)
+        'tours.southern.title': 'Only Visible from the Southern Hemisphere',
+        'tours.southern.subtitle': 'Celestial objects you <strong>can never see from Europe or North America</strong>',
+        'tours.southern.cross': 'The most iconic constellation of the southern sky',
+        'tours.southern.magellanic': 'Satellite galaxies visible to the naked eye',
+        'tours.southern.alpha': 'The closest star system to the Sun (4.37 light-years)',
+        'tours.southern.omega': 'The largest and brightest globular cluster in the sky',
+        'tours.southern.info': 'Plus: the Milky Way\'s center is fully visible and bright only from here',
 
         // FAQ Section
         'faq.title': 'Frequently Asked Questions',
