@@ -50,6 +50,13 @@ const GYG_PRODUCTS = {
   '1152147': { name: 'Stargazing Tour', maxCapacity: 16, tourType: 'regular' }
 };
 
+// Generate unique booking ID for GYG reservations
+function generateGygBookingId() {
+  const timestamp = Date.now().toString(36).toUpperCase();
+  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `GYG-${timestamp}-${random}`;
+}
+
 // ============ MAIN HANDLER ============
 export default async function handler(req, res) {
   // CORS
@@ -180,6 +187,7 @@ async function handleReservation(req, res) {
 
   // Create temporary reservation
   const result = await insert('bookings', {
+    booking_id: generateGygBookingId(),
     date, time,
     name: 'GYG Reservation (Pending)',
     email: 'pending@getyourguide.com',
@@ -264,6 +272,7 @@ async function handleBooking(req, res) {
   ].filter(Boolean).join('\n');
 
   const result = await insert('bookings', {
+    booking_id: generateGygBookingId(),
     date, time, name, email, phone, country,
     persons: totalPersons || 1,
     tour_type: product.tourType,
