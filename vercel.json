@@ -11,6 +11,14 @@
     {
       "source": "/admin",
       "destination": "/admin.html"
+    },
+    {
+      "source": "/api/gyg/:version/:action",
+      "destination": "/api/gyg"
+    },
+    {
+      "source": "/api/gyg/:version/:action/",
+      "destination": "/api/gyg"
     }
   ]
 }
