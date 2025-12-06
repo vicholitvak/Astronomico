@@ -495,6 +495,30 @@
             font-size: 0.7rem;
         }
 
+        .calendar-day.moon-blocked {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: #fbbf24;
+        }
+
+        .calendar-day.moon-blocked .day-number::after {
+            content: ' 🌕';
+            font-size: 0.7rem;
+        }
+
+        .moon-emoji {
+            position: absolute;
+            top: 2px;
+            left: 4px;
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .moon-info {
+            font-size: 0.65rem;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
         .day-number {
             font-size: 0.9rem;
             font-weight: 600;
@@ -1601,6 +1625,51 @@ Atacama Dark Sky</textarea>
         let blockedDates = new Set();
         let blockedDatesInfo = {}; // { '2025-12-07': { block_type: 'full' | 'late_private_only', reason: '...' } }
 
+        // Moon phase calculation (same as passenger calendar)
+        function getMoonPhase(date) {
+            const referenceNewMoon = new Date('2000-01-06T18:14:00Z');
+            const lunarCycle = 29.530588853;
+            const daysSinceReference = (date - referenceNewMoon) / (1000 * 60 * 60 * 24);
+            const phase = (daysSinceReference / lunarCycle) % 1;
+            const normalizedPhase = phase < 0 ? phase + 1 : phase;
+
+            let illumination;
+            if (normalizedPhase <= 0.5) {
+                illumination = normalizedPhase * 2 * 100;
+            } else {
+                illumination = (2 - normalizedPhase * 2) * 100;
+            }
+            illumination = Math.round(illumination * 10) / 10;
+
+            let isNearFullMoon = false;
+            if (normalizedPhase <= 0.5) {
+                isNearFullMoon = illumination > 75;
+            } else {
+                isNearFullMoon = illumination > 90;
+            }
+
+            let phaseName, emoji;
+            if (illumination < 1) {
+                phaseName = 'Nueva'; emoji = '🌑';
+            } else if (illumination < 25) {
+                phaseName = normalizedPhase < 0.5 ? 'Creciente' : 'Menguante';
+                emoji = normalizedPhase < 0.5 ? '🌒' : '🌘';
+            } else if (illumination < 45) {
+                phaseName = normalizedPhase < 0.5 ? 'Cuarto Creciente' : 'Cuarto Menguante';
+                emoji = normalizedPhase < 0.5 ? '🌓' : '🌗';
+            } else if (illumination < 95) {
+                phaseName = normalizedPhase < 0.5 ? 'Gibosa Creciente' : 'Gibosa Menguante';
+                emoji = normalizedPhase < 0.5 ? '🌔' : '🌖';
+            } else {
+                phaseName = 'Llena'; emoji = '🌕';
+            }
+
+            return {
+                emoji, name: phaseName, illumination, isNearFullMoon,
+                phase: normalizedPhase, isFullMoon: illumination > 95, isNewMoon: illumination < 5
+            };
+        }
+
         // Check authentication on page load
         document.addEventListener('DOMContentLoaded', async () => {
             const isAuthenticated = await checkAuthentication();
@@ -1767,11 +1836,16 @@ Atacama Dark Sky</textarea>
 
                 const isBlocked = blockedDates.has(dateStr);
 
+                // Get moon phase for this date
+                const moonPhase = getMoonPhase(currentDate);
+                const isMoonBlocked = moonPhase.isNearFullMoon;
+
                 let classes = 'calendar-day';
                 if (isToday) classes += ' today';
                 if (hasBookings) classes += ' has-bookings';
                 if (isSelected) classes += ' selected';
                 if (isBlocked) classes += ' blocked';
+                if (isMoonBlocked && !isBlocked) classes += ' moon-blocked';
 
                 let bookingsHTML = '';
                 if (hasBookings) {
@@ -1802,9 +1876,13 @@ Atacama Dark Sky</textarea>
                     }
                 }
 
+                const moonTitle = `${moonPhase.name} ${moonPhase.emoji} - ${moonPhase.illumination}% iluminación${isMoonBlocked ? ' (bloqueado para pasajeros)' : ''}`;
+
                 calendarHTML += `
-                    <div class="${classes}" onclick="selectDate('${dateStr}')" ondblclick="toggleBlockDate('${dateStr}')">
+                    <div class="${classes}" onclick="selectDate('${dateStr}')" ondblclick="toggleBlockDate('${dateStr}')" title="${moonTitle}">
+                        <span class="moon-emoji">${moonPhase.emoji}</span>
                         <div class="day-number">${day}</div>
+                        <div class="moon-info">${moonPhase.illumination}%</div>
                         <div class="day-bookings">${bookingsHTML}</div>
                     </div>
                 `;
