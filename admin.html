@@ -2344,18 +2344,6 @@ Atacama Dark Sky</textarea>
                                 <input type="number" name="persons" min="1" max="20" value="2" required style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
                             </div>
                             <div>
-                                <label style="color: #94a3b8; font-size: 0.85rem;">Idioma preferido</label>
-                                <select name="language" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
-                                    <option value="es">🇪🇸 Español</option>
-                                    <option value="en">🇬🇧 English</option>
-                                    <option value="pt">🇧🇷 Português</option>
-                                    <option value="de">🇩🇪 Deutsch</option>
-                                    <option value="fr">🇫🇷 Français</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                            <div>
                                 <label style="color: #94a3b8; font-size: 0.85rem;">Tipo de Tour *</label>
                                 <select name="tourType" required style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
                                     <option value="regular">Regular (Grupo)</option>
@@ -2436,7 +2424,6 @@ Atacama Dark Sky</textarea>
                 email: formData.get('email') || 'pendiente@completar.com',
                 phone: formData.get('phone'),
                 country: formData.get('country') || '',
-                language: formData.get('language') || 'es',
                 persons: formData.get('persons'),
                 tourType: formData.get('tourType'),
                 time: formData.get('time'),
