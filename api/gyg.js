@@ -203,10 +203,10 @@ async function handleReservation(req, res) {
     created_at: new Date().toISOString()
   });
 
-  console.log(`[GYG] Reservation created: ${result.rows[0].id}`);
+  console.log(`[GYG] Reservation created: ${result.id}`);
 
   return res.status(200).json({
-    reservationReference: result.rows[0].id.toString(),
+    reservationReference: result.id.toString(),
     gygBookingReference,
     status: 'RESERVED',
     expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString()
@@ -285,10 +285,10 @@ async function handleBooking(req, res) {
     created_at: new Date().toISOString()
   });
 
-  console.log(`[GYG] Booking confirmed: ${result.rows[0].id}`);
+  console.log(`[GYG] Booking confirmed: ${result.id}`);
 
   return res.status(200).json({
-    bookingReference: result.rows[0].id.toString(),
+    bookingReference: result.id.toString(),
     gygBookingReference,
     status: 'CONFIRMED'
   });
