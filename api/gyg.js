@@ -108,7 +108,7 @@ async function handleAvailability(req, res) {
 
   // Check if date is blocked
   const blockedResult = await query(
-    `SELECT * FROM blocked_dates WHERE tour_date = $1`,
+    `SELECT * FROM blocked_dates WHERE blocked_date = $1`,
     [date]
   );
 
