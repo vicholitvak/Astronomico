@@ -1,14 +1,26 @@
 /**
- * GetYourGuide API - Unified Endpoint
+ * GetYourGuide Supplier API
  *
- * Handles all GYG operations via query parameter:
- * /api/gyg?action=availability
- * /api/gyg?action=reservation
- * /api/gyg?action=booking
- * /api/gyg?action=cancellation
+ * Implements GYG Supplier API specification:
+ * - GET /api/gyg/1/get-availabilities/
+ * - POST /api/gyg/1/reserve/
+ * - POST /api/gyg/1/book/
+ * - POST /api/gyg/1/cancel/
  */
 
 import { insert, query } from './lib/db.js';
+
+// ============ CONFIGURATION ============
+const TOUR_CONFIG = {
+  productId: '1152147',
+  name: 'Stargazing Tour',
+  maxCapacity: 16,
+  tourType: 'regular',
+  currency: 'EUR',
+  pricePerPerson: 5000, // 50.00 EUR in cents
+  cutoffSeconds: 7200,  // 2 hours before tour
+  availableTimes: ['21:00']
+};
 
 // ============ AUTHENTICATION ============
 function validateGygAuth(req) {
@@ -32,25 +44,7 @@ function validateGygAuth(req) {
   return { valid: false, error: 'Invalid credentials' };
 }
 
-function gygErrorResponse(code, message) {
-  return { error: { code, message } };
-}
-
-const GYG_ERRORS = {
-  AUTHORIZATION_FAILURE: 'AUTHORIZATION_FAILURE',
-  NO_AVAILABILITY: 'NO_AVAILABILITY',
-  INVALID_RESERVATION: 'INVALID_RESERVATION',
-  VALIDATION_FAILURE: 'VALIDATION_FAILURE',
-  INTERNAL_SYSTEM_FAILURE: 'INTERNAL_SYSTEM_FAILURE'
-};
-
-const GYG_PRODUCTS = {
-  'stargazing-regular': { name: 'Stargazing Tour', maxCapacity: 16, tourType: 'regular' },
-  'stargazing-private': { name: 'Private Stargazing', maxCapacity: 10, tourType: 'private' },
-  '1152147': { name: 'Stargazing Tour', maxCapacity: 16, tourType: 'regular' }
-};
-
-// Generate unique booking ID for GYG reservations
+// Generate unique booking ID
 function generateGygBookingId() {
   const timestamp = Date.now().toString(36).toUpperCase();
   const random = Math.random().toString(36).substring(2, 6).toUpperCase();
@@ -71,129 +65,197 @@ export default async function handler(req, res) {
   // Validate authentication
   const auth = validateGygAuth(req);
   if (!auth.valid) {
-    return res.status(401).json(gygErrorResponse(GYG_ERRORS.AUTHORIZATION_FAILURE, auth.error));
+    return res.status(401).json({
+      errorCode: 'AUTHORIZATION_FAILURE',
+      errorMessage: auth.error
+    });
   }
 
-  const { action } = req.query;
+  // Parse the path to determine which endpoint is being called
+  const url = new URL(req.url, `https://${req.headers.host}`);
+  const path = url.pathname.replace('/api/gyg', '');
+
+  console.log(`[GYG] Request: ${req.method} ${path}`);
 
   try {
-    switch (action) {
-      case 'availability':
-        return await handleAvailability(req, res);
-      case 'reservation':
-        return await handleReservation(req, res);
-      case 'booking':
-        return await handleBooking(req, res);
-      case 'cancellation':
-        return await handleCancellation(req, res);
-      default:
-        return res.status(400).json(gygErrorResponse(GYG_ERRORS.VALIDATION_FAILURE,
-          'Invalid action. Use: availability, reservation, booking, or cancellation'));
+    // Route based on path
+    if (path.includes('/get-availabilities') || req.query.action === 'availability') {
+      return await handleGetAvailabilities(req, res);
     }
+    if (path.includes('/reserve') || req.query.action === 'reservation') {
+      return await handleReserve(req, res);
+    }
+    if (path.includes('/book') || req.query.action === 'booking') {
+      return await handleBook(req, res);
+    }
+    if (path.includes('/cancel') || req.query.action === 'cancellation') {
+      return await handleCancel(req, res);
+    }
+
+    // Default: return API info
+    return res.status(200).json({
+      api: 'GetYourGuide Supplier API',
+      version: '1.0',
+      endpoints: [
+        'GET /api/gyg/1/get-availabilities/',
+        'POST /api/gyg/1/reserve/',
+        'POST /api/gyg/1/book/',
+        'POST /api/gyg/1/cancel/'
+      ]
+    });
+
   } catch (error) {
-    console.error('GYG API error:', error);
-    return res.status(500).json(gygErrorResponse(GYG_ERRORS.INTERNAL_SYSTEM_FAILURE, error.message));
+    console.error('[GYG] API error:', error);
+    return res.status(500).json({
+      errorCode: 'INTERNAL_SYSTEM_FAILURE',
+      errorMessage: error.message
+    });
   }
 }
 
-// ============ AVAILABILITY ============
-async function handleAvailability(req, res) {
-  const { productId, dateTime } = req.query;
+// ============ GET AVAILABILITIES ============
+async function handleGetAvailabilities(req, res) {
+  const { productId, fromDateTime, toDateTime, dateTime } = req.query;
 
-  if (!productId || !dateTime) {
-    return res.status(400).json(
-      gygErrorResponse(GYG_ERRORS.VALIDATION_FAILURE, 'productId and dateTime are required')
-    );
+  // Support both GYG format (fromDateTime/toDateTime) and simple format (dateTime)
+  let startDate, endDate;
+
+  if (fromDateTime && toDateTime) {
+    startDate = new Date(fromDateTime);
+    endDate = new Date(toDateTime);
+  } else if (dateTime) {
+    startDate = new Date(dateTime);
+    endDate = new Date(dateTime);
+  } else {
+    return res.status(400).json({
+      errorCode: 'INVALID_REQUEST',
+      errorMessage: 'Missing required parameters: fromDateTime and toDateTime (or dateTime)'
+    });
   }
 
-  const date = dateTime.split('T')[0];
-  const dateObj = new Date(dateTime);
-  const time = dateObj.toTimeString().slice(0, 5);
+  const availabilities = [];
 
-  const product = GYG_PRODUCTS[productId] || GYG_PRODUCTS['stargazing-regular'];
-  const maxCapacity = product.maxCapacity;
+  // Generate availabilities for each day in the range
+  let currentDate = new Date(startDate);
+  while (currentDate <= endDate) {
+    const dateStr = currentDate.toISOString().split('T')[0];
 
-  // Check if date is blocked
-  const blockedResult = await query(
-    `SELECT * FROM blocked_dates WHERE blocked_date = $1`,
-    [date]
-  );
+    for (const time of TOUR_CONFIG.availableTimes) {
+      const dateTimeStr = `${dateStr}T${time}:00-03:00`; // Chile timezone
 
-  if (blockedResult.rows.length > 0) {
-    const blockInfo = blockedResult.rows[0];
-    if (blockInfo.block_type === 'full') {
-      return res.status(200).json({
-        productId, dateTime, availableCapacity: 0, totalCapacity: maxCapacity
+      // Check if date is blocked
+      const blockedResult = await query(
+        `SELECT * FROM blocked_dates WHERE blocked_date = $1`,
+        [dateStr]
+      );
+
+      let vacancies = TOUR_CONFIG.maxCapacity;
+
+      if (blockedResult.rows.length > 0) {
+        const blockInfo = blockedResult.rows[0];
+        if (blockInfo.block_type === 'full') {
+          vacancies = 0;
+        } else if (blockInfo.block_type === 'late_private_only' && time === '21:00') {
+          vacancies = 0;
+        }
+      }
+
+      // Count current bookings if not fully blocked
+      if (vacancies > 0) {
+        const bookingsResult = await query(
+          `SELECT COALESCE(SUM(persons), 0) as total_persons
+           FROM bookings
+           WHERE date = $1 AND time = $2 AND status NOT IN ('cancelled', 'rejected')`,
+          [dateStr, time]
+        );
+
+        const bookedPersons = parseInt(bookingsResult.rows[0]?.total_persons || 0);
+        vacancies = Math.max(0, TOUR_CONFIG.maxCapacity - bookedPersons);
+      }
+
+      availabilities.push({
+        dateTime: dateTimeStr,
+        productId: productId || TOUR_CONFIG.productId,
+        vacancies: vacancies,
+        cutoffSeconds: TOUR_CONFIG.cutoffSeconds,
+        currency: TOUR_CONFIG.currency,
+        pricesByCategory: {
+          retailPrices: [
+            {
+              category: 'ADULT',
+              price: TOUR_CONFIG.pricePerPerson
+            }
+          ]
+        }
       });
     }
-    if (blockInfo.block_type === 'late_private_only' && time === '21:00') {
-      return res.status(200).json({
-        productId, dateTime, availableCapacity: 0, totalCapacity: maxCapacity
-      });
-    }
+
+    // Move to next day
+    currentDate.setDate(currentDate.getDate() + 1);
   }
-
-  // Count current bookings
-  const bookingsResult = await query(
-    `SELECT COALESCE(SUM(persons), 0) as total_persons
-     FROM bookings
-     WHERE date = $1 AND time = $2 AND status NOT IN ('cancelled', 'rejected')`,
-    [date, time]
-  );
-
-  const bookedPersons = parseInt(bookingsResult.rows[0]?.total_persons || 0);
-  const availableCapacity = Math.max(0, maxCapacity - bookedPersons);
 
   return res.status(200).json({
-    productId, dateTime, availableCapacity, totalCapacity: maxCapacity, bookedCapacity: bookedPersons
+    data: {
+      availabilities: availabilities
+    }
   });
 }
 
-// ============ RESERVATION ============
-async function handleReservation(req, res) {
-  const { gygBookingReference, productId, dateTime, bookingItems } = req.body;
+// ============ RESERVE ============
+async function handleReserve(req, res) {
+  const {
+    gygBookingReference,
+    productId,
+    dateTime,
+    tickets,
+    bookingItems
+  } = req.body;
 
   if (!gygBookingReference || !dateTime) {
-    return res.status(400).json(
-      gygErrorResponse(GYG_ERRORS.VALIDATION_FAILURE, 'gygBookingReference and dateTime are required')
-    );
+    return res.status(400).json({
+      errorCode: 'INVALID_REQUEST',
+      errorMessage: 'Missing required fields: gygBookingReference, dateTime'
+    });
   }
 
-  const date = dateTime.split('T')[0];
   const dateObj = new Date(dateTime);
+  const date = dateObj.toISOString().split('T')[0];
   const time = dateObj.toTimeString().slice(0, 5);
 
-  const product = GYG_PRODUCTS[productId] || GYG_PRODUCTS['stargazing-regular'];
-
+  // Calculate total persons from tickets or bookingItems
   let totalPersons = 0;
-  if (bookingItems && Array.isArray(bookingItems)) {
+  if (tickets && Array.isArray(tickets)) {
+    totalPersons = tickets.reduce((sum, t) => sum + (t.count || 1), 0);
+  } else if (bookingItems && Array.isArray(bookingItems)) {
     totalPersons = bookingItems.reduce((sum, item) => sum + (item.count || 0), 0);
   }
 
-  // Check if reservation already exists
+  // Check if reservation already exists (idempotency)
   const existingReservation = await query(
     `SELECT * FROM bookings WHERE gyg_reference = $1`,
     [gygBookingReference]
   );
 
   if (existingReservation.rows.length > 0) {
+    const existing = existingReservation.rows[0];
     return res.status(200).json({
-      reservationReference: existingReservation.rows[0].id.toString(),
-      gygBookingReference,
-      status: 'RESERVED',
-      expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString()
+      data: {
+        reservationReference: existing.id.toString(),
+        status: 'RESERVED'
+      }
     });
   }
 
-  // Create temporary reservation
+  // Create reservation
   const result = await insert('bookings', {
     booking_id: generateGygBookingId(),
-    date, time,
+    date,
+    time,
     name: 'GYG Reservation (Pending)',
     email: 'pending@getyourguide.com',
     phone: '',
     persons: totalPersons || 1,
-    tour_type: product.tourType,
+    tour_type: TOUR_CONFIG.tourType,
     status: 'pending',
     source: 'getyourguide',
     payment_method: 'getyourguide',
@@ -203,27 +265,34 @@ async function handleReservation(req, res) {
     created_at: new Date().toISOString()
   });
 
-  console.log(`[GYG] Reservation created: ${result.id}`);
+  console.log(`[GYG] Reservation created: ${result.id} for ${gygBookingReference}`);
 
   return res.status(200).json({
-    reservationReference: result.id.toString(),
-    gygBookingReference,
-    status: 'RESERVED',
-    expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString()
+    data: {
+      reservationReference: result.id.toString(),
+      status: 'RESERVED'
+    }
   });
 }
 
-// ============ BOOKING ============
-async function handleBooking(req, res) {
+// ============ BOOK ============
+async function handleBook(req, res) {
   const {
-    gygBookingReference, productId, dateTime,
-    travelerDetails, bookingItems, pickupLocation, comment
+    gygBookingReference,
+    productId,
+    dateTime,
+    tickets,
+    bookingItems,
+    traveler,
+    travelerDetails,
+    comment
   } = req.body;
 
   if (!gygBookingReference || !dateTime) {
-    return res.status(400).json(
-      gygErrorResponse(GYG_ERRORS.VALIDATION_FAILURE, 'gygBookingReference and dateTime are required')
-    );
+    return res.status(400).json({
+      errorCode: 'INVALID_REQUEST',
+      errorMessage: 'Missing required fields: gygBookingReference, dateTime'
+    });
   }
 
   // Check if booking already exists (idempotency)
@@ -242,40 +311,51 @@ async function handleBooking(req, res) {
       );
     }
     return res.status(200).json({
-      bookingReference: existing.id.toString(),
-      gygBookingReference,
-      status: 'CONFIRMED'
+      data: {
+        bookingReference: existing.id.toString(),
+        status: 'CONFIRMED',
+        tickets: [{
+          ticketCode: `GYG-${existing.id}`,
+          category: 'ADULT'
+        }]
+      }
     });
   }
 
-  const date = dateTime.split('T')[0];
   const dateObj = new Date(dateTime);
+  const date = dateObj.toISOString().split('T')[0];
   const time = dateObj.toTimeString().slice(0, 5);
 
-  const product = GYG_PRODUCTS[productId] || GYG_PRODUCTS['stargazing-regular'];
-
+  // Calculate total persons
   let totalPersons = 0;
-  if (bookingItems && Array.isArray(bookingItems)) {
+  if (tickets && Array.isArray(tickets)) {
+    totalPersons = tickets.reduce((sum, t) => sum + (t.count || 1), 0);
+  } else if (bookingItems && Array.isArray(bookingItems)) {
     totalPersons = bookingItems.reduce((sum, item) => sum + (item.count || 0), 0);
   }
 
-  const traveler = travelerDetails || {};
-  const name = `${traveler.firstName || ''} ${traveler.lastName || ''}`.trim() || 'GetYourGuide Guest';
-  const email = traveler.email || 'getyourguide@booking.com';
-  const phone = traveler.phoneNumber || '';
-  const country = traveler.country || '';
+  // Get traveler info (support both formats)
+  const travelerInfo = traveler || travelerDetails || {};
+  const name = `${travelerInfo.firstName || ''} ${travelerInfo.lastName || ''}`.trim() || 'GetYourGuide Guest';
+  const email = travelerInfo.email || 'getyourguide@booking.com';
+  const phone = travelerInfo.phoneNumber || travelerInfo.phone || '';
+  const country = travelerInfo.country || '';
 
   const notes = [
     `GYG Booking: ${gygBookingReference}`,
-    pickupLocation ? `Pickup: ${pickupLocation}` : null,
     comment ? `Comment: ${comment}` : null
   ].filter(Boolean).join('\n');
 
   const result = await insert('bookings', {
     booking_id: generateGygBookingId(),
-    date, time, name, email, phone, country,
+    date,
+    time,
+    name,
+    email,
+    phone,
+    country,
     persons: totalPersons || 1,
-    tour_type: product.tourType,
+    tour_type: TOUR_CONFIG.tourType,
     status: 'confirmed',
     source: 'getyourguide',
     payment_method: 'getyourguide',
@@ -285,23 +365,35 @@ async function handleBooking(req, res) {
     created_at: new Date().toISOString()
   });
 
-  console.log(`[GYG] Booking confirmed: ${result.id}`);
+  console.log(`[GYG] Booking confirmed: ${result.id} for ${gygBookingReference}`);
+
+  // Generate ticket codes
+  const ticketCodes = [];
+  for (let i = 0; i < (totalPersons || 1); i++) {
+    ticketCodes.push({
+      ticketCode: `GYG-${result.id}-${i + 1}`,
+      category: 'ADULT'
+    });
+  }
 
   return res.status(200).json({
-    bookingReference: result.id.toString(),
-    gygBookingReference,
-    status: 'CONFIRMED'
+    data: {
+      bookingReference: result.id.toString(),
+      status: 'CONFIRMED',
+      tickets: ticketCodes
+    }
   });
 }
 
-// ============ CANCELLATION ============
-async function handleCancellation(req, res) {
+// ============ CANCEL ============
+async function handleCancel(req, res) {
   const { gygBookingReference, bookingReference, reason } = req.body;
 
   if (!gygBookingReference && !bookingReference) {
-    return res.status(400).json(
-      gygErrorResponse(GYG_ERRORS.VALIDATION_FAILURE, 'gygBookingReference or bookingReference required')
-    );
+    return res.status(400).json({
+      errorCode: 'INVALID_REQUEST',
+      errorMessage: 'Missing required field: gygBookingReference or bookingReference'
+    });
   }
 
   let booking;
@@ -314,16 +406,18 @@ async function handleCancellation(req, res) {
   }
 
   if (!booking) {
-    return res.status(404).json(
-      gygErrorResponse(GYG_ERRORS.INVALID_RESERVATION, 'Booking not found')
-    );
+    return res.status(404).json({
+      errorCode: 'BOOKING_NOT_FOUND',
+      errorMessage: 'Booking not found'
+    });
   }
 
   if (booking.status === 'cancelled') {
     return res.status(200).json({
-      bookingReference: booking.id.toString(),
-      gygBookingReference: booking.gyg_reference,
-      status: 'CANCELLED'
+      data: {
+        bookingReference: booking.id.toString(),
+        status: 'CANCELLED'
+      }
     });
   }
 
@@ -337,8 +431,9 @@ async function handleCancellation(req, res) {
   console.log(`[GYG] Booking cancelled: ${booking.id}`);
 
   return res.status(200).json({
-    bookingReference: booking.id.toString(),
-    gygBookingReference: booking.gyg_reference,
-    status: 'CANCELLED'
+    data: {
+      bookingReference: booking.id.toString(),
+      status: 'CANCELLED'
+    }
   });
 }
