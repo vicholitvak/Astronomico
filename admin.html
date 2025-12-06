@@ -77,6 +77,19 @@
             box-shadow: 0 10px 30px rgba(96, 165, 250, 0.2);
         }
 
+        .stat-card.clickable {
+            cursor: pointer;
+        }
+
+        .stat-card.clickable:hover {
+            border-color: #60a5fa;
+        }
+
+        .stat-card.active {
+            border: 2px solid #60a5fa;
+            background: rgba(96, 165, 250, 0.15);
+        }
+
         .stat-label {
             font-size: 0.85rem;
             color: #94a3b8;
@@ -1152,17 +1165,21 @@
         <div id="bookingsTab" class="tab-content active">
 
         <div class="stats-container" id="statsContainer">
-            <div class="stat-card">
+            <div class="stat-card clickable" id="cardTotal" onclick="filterByStatCard('all')" title="Ver todas las reservas">
                 <div class="stat-label">Total Reservas</div>
                 <div class="stat-value" id="statTotal">-</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card clickable" id="cardConfirmed" onclick="filterByStatCard('confirmed')" title="Ver solo confirmadas">
                 <div class="stat-label">Confirmadas</div>
                 <div class="stat-value" id="statConfirmed" style="color: #4ade80;">-</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card clickable" id="cardPending" onclick="filterByStatCard('pending')" title="Ver solo pendientes">
                 <div class="stat-label">Pendientes</div>
                 <div class="stat-value" id="statPending" style="color: #fbbf24;">-</div>
+            </div>
+            <div class="stat-card clickable" id="cardCancelled" onclick="filterByStatCard('cancelled')" title="Ver canceladas">
+                <div class="stat-label">Canceladas</div>
+                <div class="stat-value" id="statCancelled" style="color: #ef4444;">-</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Total Personas</div>
@@ -1758,6 +1775,7 @@ Atacama Dark Sky</textarea>
             document.getElementById('statTotal').textContent = stats.total_bookings || 0;
             document.getElementById('statConfirmed').textContent = stats.confirmed || 0;
             document.getElementById('statPending').textContent = stats.pending || 0;
+            document.getElementById('statCancelled').textContent = stats.cancelled || 0;
             document.getElementById('statPersons').textContent = stats.total_persons || 0;
         }
 
@@ -2849,7 +2867,46 @@ Atacama Dark Sky</textarea>
             document.getElementById('filterSort').value = 'date_desc';
 
             currentFilters = {};
+            clearStatCardActive();
             loadBookings(1);
+        }
+
+        // Filter bookings by clicking on stat cards
+        function filterByStatCard(status) {
+            // Clear active state from all stat cards
+            clearStatCardActive();
+
+            // Set active state on clicked card
+            const cardMap = {
+                'all': 'cardTotal',
+                'confirmed': 'cardConfirmed',
+                'pending': 'cardPending',
+                'cancelled': 'cardCancelled'
+            };
+
+            const cardId = cardMap[status];
+            if (cardId) {
+                document.getElementById(cardId).classList.add('active');
+            }
+
+            // Clear other filters and set status filter
+            document.getElementById('filterTourType').value = '';
+            document.getElementById('filterDateFrom').value = '';
+            document.getElementById('filterDateTo').value = '';
+            document.getElementById('filterSearch').value = '';
+            document.getElementById('filterSort').value = 'date_desc';
+
+            // Set status filter (empty for 'all')
+            document.getElementById('filterStatus').value = status === 'all' ? '' : status;
+
+            // Apply filters
+            applyFilters();
+        }
+
+        function clearStatCardActive() {
+            document.querySelectorAll('.stat-card.clickable').forEach(card => {
+                card.classList.remove('active');
+            });
         }
 
         function exportData() {

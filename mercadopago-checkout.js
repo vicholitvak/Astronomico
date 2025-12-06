@@ -1,5 +1,18 @@
 // Mercado Pago Checkout Integration
 
+// Helper function to get translations
+function t(key) {
+    const lang = localStorage.getItem('preferredLanguage') || 'es';
+    if (typeof translations !== 'undefined' && translations[lang] && translations[lang][key]) {
+        return translations[lang][key];
+    }
+    // Fallback to Spanish if key not found
+    if (typeof translations !== 'undefined' && translations['es'] && translations['es'][key]) {
+        return translations['es'][key];
+    }
+    return key;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Check for payment parameters in URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -90,37 +103,37 @@ function showBookingModalWithData(tourType, price, tourName, prefilledData = {})
 }
 
 function showBookingModal(tourType, price, tourName) {
-    // Create modal HTML
+    // Create modal HTML with translations
     const modalHTML = `
         <div id="mp-booking-modal" class="modal-overlay">
             <div class="modal-content">
                 <button class="modal-close" onclick="closeBookingModal()">&times;</button>
-                <h2>🌟 Asegura tu Cupo Ahora</h2>
-                <p class="modal-subtitle">Completa el pago para confirmar tu reserva instantáneamente</p>
+                <h2>${t('checkout.title')}</h2>
+                <p class="modal-subtitle">${t('checkout.subtitle')}</p>
                 <div class="secure-payment-badge">
                     <i class="fas fa-shield-alt"></i>
-                    <span>Pago 100% Seguro con Mercado Pago</span>
+                    <span>${t('checkout.secureBadge')}</span>
                 </div>
 
                 <form id="mp-booking-form">
                     <div class="form-group">
-                        <label for="mp-date">Fecha del Tour *</label>
+                        <label for="mp-date">${t('checkout.dateLabel')}</label>
                         <input type="date" id="mp-date" name="date" required min="${getMinDate()}">
                     </div>
 
                     <div class="form-group">
-                        <label for="mp-persons">Número de Personas *</label>
+                        <label for="mp-persons">${t('checkout.personsLabel')}</label>
                         <select id="mp-persons" name="persons" required>
-                            <option value="">Selecciona cantidad</option>
+                            <option value="">${t('checkout.selectQuantity')}</option>
                             ${generatePersonOptions(tourType)}
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="mp-name">Nombre Completo (Persona 1) *</label>
-                        <input type="text" id="mp-name" name="name" required placeholder="Tu nombre completo">
+                        <label for="mp-name">${t('checkout.nameLabel')}</label>
+                        <input type="text" id="mp-name" name="name" required placeholder="${t('checkout.namePlaceholder')}">
                         <small style="color: #9ca3af; font-size: 0.875rem; margin-top: 0.25rem; display: block;">
-                            Este es quien hace la reserva
+                            ${t('checkout.nameHelp')}
                         </small>
                     </div>
 
@@ -129,33 +142,33 @@ function showBookingModal(tourType, price, tourName) {
                         <div class="companions-header" style="margin: 1.5rem 0 1rem 0; padding: 0.75rem; background: rgba(99, 102, 241, 0.1); border-radius: 8px; border-left: 3px solid #6366f1;">
                             <h4 style="margin: 0; color: #6366f1; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem;">
                                 <i class="fas fa-users"></i>
-                                Nombres de Acompañantes
+                                ${t('checkout.companionsTitle')}
                             </h4>
                             <small style="color: #6b7280; display: block; margin-top: 0.25rem;">
-                                Necesitamos esta información para la lista de la agencia
+                                ${t('checkout.companionsHelp')}
                             </small>
                         </div>
                         <div id="companions-fields"></div>
                     </div>
 
                     <div class="form-group">
-                        <label for="mp-email">Email *</label>
-                        <input type="email" id="mp-email" name="email" required placeholder="tu@email.com">
+                        <label for="mp-email">${t('checkout.emailLabel')}</label>
+                        <input type="email" id="mp-email" name="email" required placeholder="${t('checkout.emailPlaceholder')}">
                     </div>
 
                     <div class="form-group">
-                        <label for="mp-phone">Teléfono/WhatsApp *</label>
-                        <input type="tel" id="mp-phone" name="phone" required placeholder="+56 9 1234 5678">
+                        <label for="mp-phone">${t('checkout.phoneLabel')}</label>
+                        <input type="tel" id="mp-phone" name="phone" required placeholder="${t('checkout.phonePlaceholder')}">
                     </div>
 
                     <div class="form-group">
-                        <label for="mp-accommodation">Alojamiento (Opcional)</label>
-                        <input type="text" id="mp-accommodation" name="accommodation" placeholder="Nombre de tu hotel/hostal">
+                        <label for="mp-accommodation">${t('checkout.accommodationLabel')}</label>
+                        <input type="text" id="mp-accommodation" name="accommodation" placeholder="${t('checkout.accommodationPlaceholder')}">
                     </div>
 
                     <div class="form-group">
-                        <label for="mp-message">Mensaje Adicional</label>
-                        <textarea id="mp-message" name="message" rows="3" placeholder="¿Algún requerimiento especial?"></textarea>
+                        <label for="mp-message">${t('checkout.messageLabel')}</label>
+                        <textarea id="mp-message" name="message" rows="3" placeholder="${t('checkout.messagePlaceholder')}"></textarea>
                     </div>
 
                     <input type="hidden" name="tourType" value="${tourType}">
@@ -163,14 +176,14 @@ function showBookingModal(tourType, price, tourName) {
                     <input type="hidden" name="tourName" value="${tourName}">
 
                     <div class="price-summary">
-                        <p><strong>Tour:</strong> ${tourName}</p>
-                        <p id="base-price"><strong>${tourType === 'private' ? 'Precio fijo (1-6 personas)' : 'Precio por persona'}:</strong> $${parseInt(price).toLocaleString('es-CL')} CLP</p>
-                        <p id="subtotal-price" style="display:none;"><strong>Subtotal:</strong> $0 CLP</p>
-                        <p id="total-price"><strong>Total a Pagar:</strong> $0 CLP</p>
+                        <p><strong>${t('checkout.tour')}</strong> ${tourName}</p>
+                        <p id="base-price"><strong>${tourType === 'private' ? t('checkout.fixedPrice') : t('checkout.pricePerPerson')}</strong> $${parseInt(price).toLocaleString('es-CL')} CLP</p>
+                        <p id="subtotal-price" style="display:none;"><strong>${t('checkout.subtotal')}:</strong> $0 CLP</p>
+                        <p id="total-price"><strong>${t('checkout.totalToPay')}</strong> $0 CLP</p>
                     </div>
 
                     <button type="submit" class="btn btn-mercadopago btn-submit">
-                        <i class="fas fa-lock"></i> Pagar y Asegurar mi Cupo
+                        <i class="fas fa-lock"></i> ${t('checkout.payButton')}
                     </button>
                 </form>
             </div>
@@ -202,14 +215,33 @@ function showBookingModal(tourType, price, tourName) {
             width: 100vw !important;
             height: 100vh !important;
             display: flex !important;
-            align-items: center !important;
+            align-items: flex-start !important;
             justify-content: center !important;
             z-index: 99999 !important;
             background: rgba(0, 0, 0, 0.85) !important;
             backdrop-filter: blur(8px);
             visibility: visible !important;
             opacity: 1 !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            padding: 2rem 1rem !important;
+            box-sizing: border-box !important;
         `;
+
+        // Aplicar estilos al modal-content para asegurar que sea scrolleable
+        const modalContent = modal.querySelector('.modal-content');
+        if (modalContent) {
+            modalContent.style.cssText = `
+                max-height: none !important;
+                height: auto !important;
+                overflow: visible !important;
+                margin: 0 auto 2rem auto !important;
+                flex-shrink: 0 !important;
+                width: 100% !important;
+                max-width: 600px !important;
+                position: relative !important;
+            `;
+        }
     }
 
     // Bloquear scroll del body y mantener posición
@@ -239,16 +271,17 @@ function showBookingModal(tourType, price, tourName) {
         // Show/hide breakdown
         if (persons > 0) {
             if (tourType !== 'private') {
+                const personText = persons > 1 ? t('checkout.persons') : t('checkout.person');
                 document.getElementById('subtotal-price').style.display = 'block';
                 document.getElementById('subtotal-price').innerHTML =
-                    `<strong>Subtotal (${persons} ${persons > 1 ? 'personas' : 'persona'}):</strong> $${total.toLocaleString('es-CL')} CLP`;
+                    `<strong>${t('checkout.subtotal')} (${persons} ${personText}):</strong> $${total.toLocaleString('es-CL')} CLP`;
             }
             document.getElementById('total-price').innerHTML =
-                `<strong>Total a Pagar:</strong> $${total.toLocaleString('es-CL')} CLP`;
+                `<strong>${t('checkout.totalToPay')}</strong> $${total.toLocaleString('es-CL')} CLP`;
         } else {
             document.getElementById('subtotal-price').style.display = 'none';
             document.getElementById('total-price').innerHTML =
-                `<strong>Total a Pagar:</strong> $0 CLP`;
+                `<strong>${t('checkout.totalToPay')}</strong> $0 CLP`;
         }
 
         // Generar campos dinámicos para acompañantes
@@ -271,8 +304,10 @@ function showBookingModal(tourType, price, tourName) {
             }
 
             if (missingNames.length > 0) {
-                const missingText = missingNames.map(n => `Persona ${n}`).join(', ');
-                alert(`⚠️ Por favor completa los nombres de todos los participantes:\n\n${missingText}\n\nNecesitamos esta información para la lista de la agencia.`);
+                const lang = localStorage.getItem('preferredLanguage') || 'es';
+                const personLabel = lang === 'en' ? 'Person' : (lang === 'pt' ? 'Pessoa' : 'Persona');
+                const missingText = missingNames.map(n => `${personLabel} ${n}`).join(', ');
+                alert(`⚠️ ${t('checkout.fillAllNames')}\n\n${missingText}\n\n${t('checkout.needForAgency')}`);
 
                 // Hacer scroll al primer campo faltante
                 const firstMissing = document.getElementById(`companion-${missingNames[0]}`);
@@ -292,7 +327,7 @@ async function processMercadoPagoCheckout(form) {
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Redirigiendo a Mercado Pago...';
+    submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${t('checkout.redirecting')}`;
 
     try {
         const formData = new FormData(form);
@@ -352,7 +387,7 @@ async function processMercadoPagoCheckout(form) {
                     value: parseInt(data.price) || 30000
                 });
             }
-            submitBtn.innerHTML = '<i class="fas fa-check"></i> Redirigiendo a pago seguro...';
+            submitBtn.innerHTML = `<i class="fas fa-check"></i> ${t('checkout.redirectingSecure')}`;
             window.location.href = result.init_point;
         } else {
             throw new Error('No se recibió URL de pago');
@@ -360,7 +395,7 @@ async function processMercadoPagoCheckout(form) {
 
     } catch (error) {
         console.error('Error:', error);
-        alert('❌ Error al procesar el pago: ' + error.message + '\n\nPor favor intenta nuevamente o contáctanos por WhatsApp.');
+        alert(`❌ ${t('checkout.errorProcessing')} ${error.message}\n\n${t('checkout.tryAgain')}`);
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalText;
     }
@@ -397,11 +432,12 @@ function generatePersonOptions(tourType) {
     const maxPersons = tourType === 'private' ? 4 : 16;
 
     for (let i = 1; i <= maxPersons; i++) {
-        options += `<option value="${i}">${i} persona${i > 1 ? 's' : ''}</option>`;
+        const personText = i > 1 ? t('checkout.persons') : t('checkout.person');
+        options += `<option value="${i}">${i} ${personText}</option>`;
     }
 
     if (tourType !== 'private') {
-        options += '<option value="16+">Más de 16 personas (contactar)</option>';
+        options += `<option value="16+">${t('checkout.moreThan16')}</option>`;
     }
 
     return options;
@@ -426,18 +462,20 @@ function generateCompanionFields(totalPersons) {
     // Generar campos para personas 2 en adelante (persona 1 es quien reserva)
     let fieldsHTML = '';
     for (let i = 2; i <= totalPersons; i++) {
+        const labelText = t('checkout.companionLabel').replace('{n}', i);
+        const placeholderText = t('checkout.companionPlaceholder').replace('{n}', i - 1);
         fieldsHTML += `
             <div class="form-group companion-field" style="animation: slideIn 0.3s ease-out;">
                 <label for="companion-${i}">
                     <i class="fas fa-user" style="color: #6366f1; margin-right: 0.5rem;"></i>
-                    Nombre Completo (Persona ${i}) *
+                    ${labelText}
                 </label>
                 <input
                     type="text"
                     id="companion-${i}"
                     name="companion_${i}"
                     required
-                    placeholder="Nombre completo del acompañante ${i - 1}"
+                    placeholder="${placeholderText}"
                     style="transition: border-color 0.2s ease;"
                 >
             </div>
