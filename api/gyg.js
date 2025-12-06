@@ -75,7 +75,14 @@ export default async function handler(req, res) {
   const url = new URL(req.url, `https://${req.headers.host}`);
   const path = url.pathname.replace('/api/gyg', '');
 
-  console.log(`[GYG] Request: ${req.method} ${path}`);
+  // Detailed logging for debugging
+  console.log(`[GYG] ========== REQUEST ==========`);
+  console.log(`[GYG] Method: ${req.method}`);
+  console.log(`[GYG] Path: ${path}`);
+  console.log(`[GYG] URL: ${req.url}`);
+  console.log(`[GYG] Query:`, JSON.stringify(req.query));
+  console.log(`[GYG] Body:`, JSON.stringify(req.body));
+  console.log(`[GYG] Headers:`, JSON.stringify(req.headers));
 
   try {
     // Route based on path
@@ -115,7 +122,11 @@ export default async function handler(req, res) {
 
 // ============ GET AVAILABILITIES ============
 async function handleGetAvailabilities(req, res) {
-  const { productId, fromDateTime, toDateTime, dateTime } = req.query;
+  // Support both GET (query params) and POST (body)
+  const params = req.method === 'POST' ? req.body : req.query;
+  const { productId, fromDateTime, toDateTime, dateTime } = params;
+
+  console.log(`[GYG] Availability params:`, JSON.stringify(params));
 
   // Support both GYG format (fromDateTime/toDateTime) and simple format (dateTime)
   let startDate, endDate;
@@ -127,6 +138,7 @@ async function handleGetAvailabilities(req, res) {
     startDate = new Date(dateTime);
     endDate = new Date(dateTime);
   } else {
+    console.log(`[GYG] Missing date params - fromDateTime: ${fromDateTime}, toDateTime: ${toDateTime}, dateTime: ${dateTime}`);
     return res.status(400).json({
       errorCode: 'INVALID_REQUEST',
       errorMessage: 'Missing required parameters: fromDateTime and toDateTime (or dateTime)'
