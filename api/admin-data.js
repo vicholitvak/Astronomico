@@ -429,15 +429,31 @@ export default async function handler(req, res) {
             message: booking.message
           });
 
+          // Check if result is an error object
+          if (result && result.error) {
+            return res.status(200).json({
+              success: false,
+              booking: {
+                id: booking.booking_id,
+                date: dateStr,
+                name: booking.name,
+                tourType: booking.tour_type
+              },
+              calendarEvent: null,
+              error: result.error,
+              errorCode: result.code
+            });
+          }
+
           return res.status(200).json({
-            success: !!result,
+            success: !!result && !!result.id,
             booking: {
               id: booking.booking_id,
               date: dateStr,
               name: booking.name,
               tourType: booking.tour_type
             },
-            calendarEvent: result ? { id: result.id, link: result.htmlLink } : null
+            calendarEvent: result && result.id ? { id: result.id, link: result.htmlLink } : null
           });
         } catch (calendarError) {
           return res.status(200).json({
@@ -507,12 +523,22 @@ export default async function handler(req, res) {
               message: booking.message
             });
 
-            results.push({
-              bookingId: booking.booking_id,
-              date: dateStr,
-              success: !!result,
-              eventLink: result?.htmlLink
-            });
+            // Check if result is an error object
+            if (result && result.error) {
+              results.push({
+                bookingId: booking.booking_id,
+                date: dateStr,
+                success: false,
+                error: result.error
+              });
+            } else {
+              results.push({
+                bookingId: booking.booking_id,
+                date: dateStr,
+                success: !!result && !!result.id,
+                eventLink: result?.htmlLink
+              });
+            }
           } catch (error) {
             results.push({
               bookingId: booking.booking_id,

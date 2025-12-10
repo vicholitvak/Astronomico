@@ -30,7 +30,7 @@ export async function addToGoogleCalendar(booking) {
   
   if (!googleServiceAccountKey || !googleCalendarId) {
     console.log('Google Calendar credentials not configured');
-    return;
+    return { error: 'Google Calendar credentials not configured' };
   }
   
   try {
@@ -123,7 +123,7 @@ export async function addToGoogleCalendar(booking) {
     
     console.log('Calendar event created successfully:', response.data.htmlLink);
     return response.data;
-    
+
   } catch (error) {
     console.error('Google Calendar integration error:', error.message);
     console.error('Error type:', error.constructor.name);
@@ -134,8 +134,8 @@ export async function addToGoogleCalendar(booking) {
     if (error.code) {
       console.error('Error code:', error.code);
     }
-    // Don't throw, just log - let the booking succeed even if calendar fails
-    return null;
+    // Return error info for debugging - let the booking succeed even if calendar fails
+    return { error: error.message, code: error.code };
   }
 }
 
