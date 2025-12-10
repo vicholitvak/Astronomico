@@ -1,9 +1,10 @@
 /**
- * Admin Data API - Combined endpoint for photo-links and blocked-dates
- * Routes: ?type=photos or ?type=blocked
+ * Admin Data API - Combined endpoint for photo-links, blocked-dates, and calendar status
+ * Routes: ?type=photos, ?type=blocked, ?type=income, ?type=conversion, ?type=calendar
  */
 
 import { Pool } from 'pg';
+import { google } from 'googleapis';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -181,7 +182,328 @@ export default async function handler(req, res) {
       }
     }
 
-    return res.status(400).json({ success: false, error: 'Invalid type. Use ?type=photos, ?type=blocked, or ?type=income' });
+    // ============ CONVERSION STATS ============
+    if (type === 'conversion') {
+      if (req.method === 'GET') {
+        const { days = 30 } = req.query;
+
+        // Estadísticas de conversión de los últimos X días
+        const stats = await pool.query(`
+          WITH booking_stats AS (
+            SELECT
+              COUNT(*) FILTER (WHERE status = 'pending') as pending_count,
+              COUNT(*) FILTER (WHERE status = 'confirmed') as confirmed_count,
+              COUNT(*) FILTER (WHERE status = 'cancelled') as cancelled_count,
+              COUNT(*) FILTER (WHERE status = 'expired') as expired_count,
+              COUNT(*) as total_count,
+              COUNT(*) FILTER (WHERE status = 'confirmed' AND payment_method = 'mercadopago') as paid_online,
+              COUNT(*) FILTER (WHERE status = 'confirmed' AND payment_method IN ('cash', 'transfer')) as paid_offline,
+              SUM(CASE WHEN status = 'confirmed' THEN COALESCE(payment_amount, 0) ELSE 0 END) as total_revenue,
+              AVG(CASE WHEN status = 'confirmed' THEN EXTRACT(EPOCH FROM (updated_at - created_at))/3600 ELSE NULL END) as avg_hours_to_convert
+            FROM bookings
+            WHERE created_at > NOW() - INTERVAL '${parseInt(days)} days'
+          ),
+          daily_stats AS (
+            SELECT
+              DATE(created_at) as day,
+              COUNT(*) as created,
+              COUNT(*) FILTER (WHERE status = 'confirmed') as converted
+            FROM bookings
+            WHERE created_at > NOW() - INTERVAL '${parseInt(days)} days'
+            GROUP BY DATE(created_at)
+            ORDER BY day DESC
+          ),
+          pending_old AS (
+            SELECT
+              COUNT(*) as count,
+              ARRAY_AGG(json_build_object(
+                'booking_id', booking_id,
+                'name', name,
+                'email', email,
+                'date', date,
+                'created_at', created_at,
+                'hours_pending', EXTRACT(EPOCH FROM (NOW() - created_at))/3600
+              ) ORDER BY created_at ASC) as bookings
+            FROM bookings
+            WHERE status = 'pending'
+            AND payment_method = 'pending'
+            AND date >= CURRENT_DATE
+          )
+          SELECT
+            bs.*,
+            ROUND((bs.confirmed_count::numeric / NULLIF(bs.total_count, 0) * 100), 1) as conversion_rate,
+            (SELECT json_agg(row_to_json(d)) FROM daily_stats d) as daily,
+            (SELECT count FROM pending_old) as pending_awaiting_payment,
+            (SELECT bookings FROM pending_old) as pending_bookings_detail
+          FROM booking_stats bs
+        `);
+
+        return res.status(200).json({
+          success: true,
+          data: stats.rows[0]
+        });
+      }
+    }
+
+    // ============ GOOGLE CALENDAR STATUS ============
+    if (type === 'calendar') {
+      const { action = 'status' } = req.query;
+
+      if (action === 'status') {
+        const status = {
+          timestamp: new Date().toISOString(),
+          configuration: {
+            serviceAccountKey: !!process.env.GOOGLE_SERVICE_ACCOUNT_KEY,
+            calendarId: !!process.env.GOOGLE_CALENDAR_ID,
+            calendarIdValue: process.env.GOOGLE_CALENDAR_ID ?
+              process.env.GOOGLE_CALENDAR_ID.substring(0, 30) + '...' : null
+          },
+          connection: null,
+          error: null
+        };
+
+        if (!process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
+          status.error = 'GOOGLE_SERVICE_ACCOUNT_KEY not configured';
+          return res.status(200).json(status);
+        }
+
+        if (!process.env.GOOGLE_CALENDAR_ID) {
+          status.error = 'GOOGLE_CALENDAR_ID not configured';
+          return res.status(200).json(status);
+        }
+
+        try {
+          const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+          status.configuration.serviceAccountEmail = credentials.client_email;
+          status.configuration.projectId = credentials.project_id;
+
+          // Fix private key formatting
+          if (credentials.private_key) {
+            credentials.private_key = credentials.private_key
+              .replace(/-----BEGIN PRIVATE KEY-----\s+/g, '-----BEGIN PRIVATE KEY-----\n')
+              .replace(/\s+-----END PRIVATE KEY-----/g, '\n-----END PRIVATE KEY-----');
+
+            if (!credentials.private_key.includes('\n') && credentials.private_key.includes('\\n')) {
+              credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
+            }
+          }
+
+          const auth = new google.auth.JWT({
+            email: credentials.client_email,
+            key: credentials.private_key,
+            scopes: ['https://www.googleapis.com/auth/calendar']
+          });
+
+          await auth.authorize();
+          status.connection = { authenticated: true };
+
+          const calendar = google.calendar({ version: 'v3', auth });
+          let calendarId = process.env.GOOGLE_CALENDAR_ID;
+
+          if (calendarId === 'vicente.litvak@gmail.com' || !calendarId) {
+            calendarId = '9a3ed2b295897e3fe68d2b719d3a1049a24c83dde50983b0625aed37407158b3@group.calendar.google.com';
+          }
+
+          const calendarInfo = await calendar.calendars.get({ calendarId });
+          status.connection.calendarAccess = true;
+          status.connection.calendarName = calendarInfo.data.summary;
+          status.connection.calendarTimeZone = calendarInfo.data.timeZone;
+
+          // Get upcoming events count
+          const now = new Date();
+          const nextMonth = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+
+          const events = await calendar.events.list({
+            calendarId,
+            timeMin: now.toISOString(),
+            timeMax: nextMonth.toISOString(),
+            singleEvents: true,
+            orderBy: 'startTime'
+          });
+
+          status.connection.upcomingEventsCount = events.data.items?.length || 0;
+          status.status = 'OK';
+
+        } catch (error) {
+          status.error = error.message;
+          status.errorType = error.constructor.name;
+          if (error.code) status.errorCode = error.code;
+          status.status = 'ERROR';
+        }
+
+        return res.status(200).json(status);
+      }
+
+      if (action === 'list-events') {
+        const { days = 30 } = req.query;
+
+        try {
+          const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+
+          if (credentials.private_key && !credentials.private_key.includes('\n')) {
+            credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
+          }
+
+          const auth = new google.auth.JWT({
+            email: credentials.client_email,
+            key: credentials.private_key,
+            scopes: ['https://www.googleapis.com/auth/calendar']
+          });
+
+          await auth.authorize();
+          const calendar = google.calendar({ version: 'v3', auth });
+
+          let calendarId = process.env.GOOGLE_CALENDAR_ID;
+          if (calendarId === 'vicente.litvak@gmail.com' || !calendarId) {
+            calendarId = '9a3ed2b295897e3fe68d2b719d3a1049a24c83dde50983b0625aed37407158b3@group.calendar.google.com';
+          }
+
+          const now = new Date();
+          const endDate = new Date(now.getTime() + parseInt(days) * 24 * 60 * 60 * 1000);
+
+          const events = await calendar.events.list({
+            calendarId,
+            timeMin: now.toISOString(),
+            timeMax: endDate.toISOString(),
+            singleEvents: true,
+            orderBy: 'startTime',
+            maxResults: 50
+          });
+
+          return res.status(200).json({
+            calendarId,
+            period: `Next ${days} days`,
+            eventsCount: events.data.items?.length || 0,
+            events: events.data.items?.map(e => ({
+              id: e.id,
+              summary: e.summary,
+              start: e.start?.dateTime || e.start?.date,
+              end: e.end?.dateTime || e.end?.date,
+              status: e.status,
+              description: e.description?.substring(0, 200)
+            }))
+          });
+
+        } catch (error) {
+          return res.status(500).json({ error: error.message });
+        }
+      }
+
+      if (action === 'sync-booking') {
+        const { bookingId } = req.query;
+
+        if (!bookingId) {
+          return res.status(400).json({ error: 'bookingId required' });
+        }
+
+        const bookingResult = await pool.query(
+          'SELECT * FROM bookings WHERE booking_id = $1',
+          [bookingId]
+        );
+
+        if (bookingResult.rows.length === 0) {
+          return res.status(404).json({ error: 'Booking not found' });
+        }
+
+        const booking = bookingResult.rows[0];
+        const { addToGoogleCalendar } = await import('./google-calendar.js');
+
+        const result = await addToGoogleCalendar({
+          bookingId: booking.booking_id,
+          date: booking.date,
+          time: booking.time,
+          persons: booking.persons,
+          tourType: booking.tour_type,
+          name: booking.name,
+          email: booking.email,
+          phone: booking.phone,
+          message: booking.message
+        });
+
+        return res.status(200).json({
+          success: !!result,
+          booking: {
+            id: booking.booking_id,
+            date: booking.date,
+            name: booking.name,
+            tourType: booking.tour_type
+          },
+          calendarEvent: result ? { id: result.id, link: result.htmlLink } : null
+        });
+      }
+
+      if (action === 'sync-all') {
+        const { fromDate, status: bookingStatus = 'all' } = req.query;
+
+        const today = new Date().toISOString().split('T')[0];
+        const startDate = fromDate || today;
+
+        let query = `
+          SELECT * FROM bookings
+          WHERE date >= $1 AND status != 'cancelled'
+          ORDER BY date ASC
+        `;
+        const params = [startDate];
+
+        if (bookingStatus && bookingStatus !== 'all') {
+          query = `
+            SELECT * FROM bookings
+            WHERE date >= $1 AND status = $2 AND status != 'cancelled'
+            ORDER BY date ASC
+          `;
+          params.push(bookingStatus);
+        }
+
+        const bookingsResult = await pool.query(query, params);
+        const bookings = bookingsResult.rows;
+
+        const { addToGoogleCalendar } = await import('./google-calendar.js');
+        const results = [];
+
+        for (const booking of bookings) {
+          try {
+            const result = await addToGoogleCalendar({
+              bookingId: booking.booking_id,
+              date: booking.date,
+              time: booking.time,
+              persons: booking.persons,
+              tourType: booking.tour_type,
+              name: booking.name,
+              email: booking.email,
+              phone: booking.phone,
+              message: booking.message
+            });
+
+            results.push({
+              bookingId: booking.booking_id,
+              date: booking.date,
+              success: !!result,
+              eventLink: result?.htmlLink
+            });
+          } catch (error) {
+            results.push({
+              bookingId: booking.booking_id,
+              date: booking.date,
+              success: false,
+              error: error.message
+            });
+          }
+        }
+
+        return res.status(200).json({
+          summary: {
+            total: bookings.length,
+            successful: results.filter(r => r.success).length,
+            failed: results.filter(r => !r.success).length
+          },
+          results
+        });
+      }
+
+      return res.status(400).json({ error: 'Invalid action. Use: status, list-events, sync-booking, sync-all' });
+    }
+
+    return res.status(400).json({ success: false, error: 'Invalid type. Use ?type=photos, ?type=blocked, ?type=income, ?type=conversion, or ?type=calendar' });
 
   } catch (error) {
     console.error('Admin data API error:', error);
