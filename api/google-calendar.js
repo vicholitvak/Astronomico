@@ -400,8 +400,16 @@ function createCombinedCalendarEvent(booking, allTourBookings, dayTotal = null) 
     'astrophoto': 'Astrofoto'
   };
 
+  // Normalize date - handle both ISO strings and YYYY-MM-DD format
+  let dateStr = booking.date;
+  if (dateStr instanceof Date) {
+    dateStr = dateStr.toISOString().split('T')[0];
+  } else if (typeof dateStr === 'string' && dateStr.includes('T')) {
+    dateStr = dateStr.split('T')[0];
+  }
+
   // Parse date and set the actual tour time
-  const [year, month, day] = booking.date.split('-');
+  const [year, month, day] = dateStr.split('-');
 
   // Handle flexible time for private tours
   let startTime = booking.time;
@@ -475,7 +483,7 @@ function createCombinedCalendarEvent(booking, allTourBookings, dayTotal = null) 
   }
 
   // Create combined description with all clients
-  let description = `🎯 ${tourType} - ${totalTourPax} pax total\n📅 ${booking.date}\n⏰ ${startTime}\n\n`;
+  let description = `🎯 ${tourType} - ${totalTourPax} pax total\n📅 ${dateStr}\n⏰ ${startTime}\n\n`;
 
   combinedBookings.forEach((b, index) => {
     const pax = parseInt(b.persons) || 0;
