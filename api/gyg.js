@@ -129,7 +129,16 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  // Validate authentication
+  // Parse the path to determine which endpoint is being called
+  const url = new URL(req.url, `https://${req.headers.host}`);
+  const path = url.pathname.replace('/api/gyg', '');
+
+  // GYG Live Testing endpoint (no auth required - internal diagnostic tool)
+  if (path.includes('/live-test') || req.query.action === 'live-test') {
+    return await handleGygLiveTest(req, res);
+  }
+
+  // Validate authentication for all other endpoints
   const auth = validateGygAuth(req);
   if (!auth.valid) {
     return res.status(401).json({
@@ -137,10 +146,6 @@ export default async function handler(req, res) {
       errorMessage: auth.error
     });
   }
-
-  // Parse the path to determine which endpoint is being called
-  const url = new URL(req.url, `https://${req.headers.host}`);
-  const path = url.pathname.replace('/api/gyg', '');
 
   // Detailed logging for debugging
   console.log(`[GYG] ========== REQUEST ==========`);
@@ -171,10 +176,6 @@ export default async function handler(req, res) {
     // Push availability to GYG (internal endpoint)
     if (path.includes('/push-availability') || path.includes('/notify-availability-update')) {
       return await handlePushAvailability(req, res);
-    }
-    // GYG Live Testing endpoint
-    if (path.includes('/live-test') || req.query.action === 'live-test') {
-      return await handleGygLiveTest(req, res);
     }
     // Supplier products list
     if (path.match(/\/suppliers\/([^/]+)\/products/)) {
