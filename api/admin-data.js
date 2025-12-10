@@ -408,28 +408,50 @@ export default async function handler(req, res) {
         const booking = bookingResult.rows[0];
         const { addToGoogleCalendar } = await import('./google-calendar.js');
 
-        const result = await addToGoogleCalendar({
-          bookingId: booking.booking_id,
-          date: booking.date,
-          time: booking.time,
-          persons: booking.persons,
-          tourType: booking.tour_type,
-          name: booking.name,
-          email: booking.email,
-          phone: booking.phone,
-          message: booking.message
-        });
+        // Normalize date to string format YYYY-MM-DD
+        let dateStr = booking.date;
+        if (dateStr instanceof Date) {
+          dateStr = dateStr.toISOString().split('T')[0];
+        } else if (typeof dateStr === 'string' && dateStr.includes('T')) {
+          dateStr = dateStr.split('T')[0];
+        }
 
-        return res.status(200).json({
-          success: !!result,
-          booking: {
-            id: booking.booking_id,
-            date: booking.date,
+        try {
+          const result = await addToGoogleCalendar({
+            bookingId: booking.booking_id,
+            date: dateStr,
+            time: booking.time,
+            persons: booking.persons,
+            tourType: booking.tour_type,
             name: booking.name,
-            tourType: booking.tour_type
-          },
-          calendarEvent: result ? { id: result.id, link: result.htmlLink } : null
-        });
+            email: booking.email,
+            phone: booking.phone,
+            message: booking.message
+          });
+
+          return res.status(200).json({
+            success: !!result,
+            booking: {
+              id: booking.booking_id,
+              date: dateStr,
+              name: booking.name,
+              tourType: booking.tour_type
+            },
+            calendarEvent: result ? { id: result.id, link: result.htmlLink } : null
+          });
+        } catch (calendarError) {
+          return res.status(200).json({
+            success: false,
+            booking: {
+              id: booking.booking_id,
+              date: dateStr,
+              name: booking.name,
+              tourType: booking.tour_type
+            },
+            calendarEvent: null,
+            error: calendarError.message
+          });
+        }
       }
 
       if (action === 'sync-all') {
@@ -460,11 +482,22 @@ export default async function handler(req, res) {
         const { addToGoogleCalendar } = await import('./google-calendar.js');
         const results = [];
 
+        // Helper to normalize date
+        const normalizeDate = (date) => {
+          if (date instanceof Date) {
+            return date.toISOString().split('T')[0];
+          } else if (typeof date === 'string' && date.includes('T')) {
+            return date.split('T')[0];
+          }
+          return date;
+        };
+
         for (const booking of bookings) {
+          const dateStr = normalizeDate(booking.date);
           try {
             const result = await addToGoogleCalendar({
               bookingId: booking.booking_id,
-              date: booking.date,
+              date: dateStr,
               time: booking.time,
               persons: booking.persons,
               tourType: booking.tour_type,
@@ -476,14 +509,14 @@ export default async function handler(req, res) {
 
             results.push({
               bookingId: booking.booking_id,
-              date: booking.date,
+              date: dateStr,
               success: !!result,
               eventLink: result?.htmlLink
             });
           } catch (error) {
             results.push({
               bookingId: booking.booking_id,
-              date: booking.date,
+              date: dateStr,
               success: false,
               error: error.message
             });
