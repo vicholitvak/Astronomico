@@ -296,20 +296,33 @@ function getMoonPhaseInfo(date) {
 • Visibilidad: ${visibility}`;
 }
 
+// Helper function to normalize date to YYYY-MM-DD format
+function normalizeDate(date) {
+  if (date instanceof Date) {
+    return date.toISOString().split('T')[0];
+  } else if (typeof date === 'string' && date.includes('T')) {
+    return date.split('T')[0];
+  }
+  return date;
+}
+
 // Function to get total passengers for a specific date
 async function getTotalPassengersForDay(date) {
   try {
+    // Normalize date to YYYY-MM-DD
+    const dateStr = normalizeDate(date);
+
     // Import Supabase client
     const { createClient } = await import('@supabase/supabase-js');
-    
+
     const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY;
     const supabase = createClient(process.env.SUPABASE_URL, supabaseKey);
-    
+
     // Query all bookings for the specific date
     const { data, error } = await supabase
       .from('bookings')
       .select('persons')
-      .eq('date', date)
+      .eq('date', dateStr)
       .neq('status', 'cancelled'); // Exclude cancelled bookings
     
     if (error) {
@@ -331,15 +344,18 @@ async function getTotalPassengersForDay(date) {
 // Function to get all bookings for same tour type and date
 async function getBookingsForTourAndDate(date, tourType) {
   try {
+    // Normalize date to YYYY-MM-DD
+    const dateStr = normalizeDate(date);
+
     const { createClient } = await import('@supabase/supabase-js');
-    
+
     const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY;
     const supabase = createClient(process.env.SUPABASE_URL, supabaseKey);
-    
+
     const { data, error } = await supabase
       .from('bookings')
       .select('*')
-      .eq('date', date)
+      .eq('date', dateStr)
       .eq('tour_type', tourType)
       .neq('status', 'cancelled')
       .order('created_at', { ascending: true });
@@ -359,8 +375,10 @@ async function getBookingsForTourAndDate(date, tourType) {
 // Function to find existing calendar event for same tour and date
 async function findExistingCalendarEvent(calendar, calendarId, date, tourType) {
   try {
-    const startOfDay = new Date(date + 'T00:00:00');
-    const endOfDay = new Date(date + 'T23:59:59');
+    // Normalize date to YYYY-MM-DD
+    const dateStr = normalizeDate(date);
+    const startOfDay = new Date(dateStr + 'T00:00:00');
+    const endOfDay = new Date(dateStr + 'T23:59:59');
     
     const response = await calendar.events.list({
       calendarId: calendarId,
@@ -400,13 +418,8 @@ function createCombinedCalendarEvent(booking, allTourBookings, dayTotal = null) 
     'astrophoto': 'Astrofoto'
   };
 
-  // Normalize date - handle both ISO strings and YYYY-MM-DD format
-  let dateStr = booking.date;
-  if (dateStr instanceof Date) {
-    dateStr = dateStr.toISOString().split('T')[0];
-  } else if (typeof dateStr === 'string' && dateStr.includes('T')) {
-    dateStr = dateStr.split('T')[0];
-  }
+  // Normalize date to YYYY-MM-DD format
+  const dateStr = normalizeDate(booking.date);
 
   // Parse date and set the actual tour time
   const [year, month, day] = dateStr.split('-');
