@@ -23,6 +23,7 @@ const PRODUCTS = {
   // Tour Regular (grupo compartido)
   '1152147': {
     productId: '1152147',
+    optionId: '1766948', // GYG Option ID
     name: 'San Pedro de Atacama: Stargazing Tour with Telescope',
     description: 'Experience the clearest skies on Earth with our stargazing tour in the Atacama Desert.',
     maxCapacity: 16,
@@ -39,6 +40,7 @@ const PRODUCTS = {
   // Tour Semi-Privado (precio por persona, max 4)
   '1163787': {
     productId: '1163787',
+    optionId: '1782507', // GYG Option ID (En revisión)
     name: 'Atacama: Private Stargazing Tour to Secret Spot',
     description: 'Small group 4x4 expedition to a Bortle Class 1 location with zero light pollution. Maximum 4 guests. Includes smart telescope, wine, hot drinks, and photo session.',
     maxCapacity: 4, // máximo 4 personas por tour
@@ -1221,7 +1223,7 @@ async function handleGygLiveTest(req, res) {
       testNumber: i + 1,
       timestamp: timestamp,
       productId: productId,
-      gygOptionId: product.gygOptionId || 'PENDING - Need from GYG Portal',
+      gygOptionId: product.optionId || 'PENDING - Need from GYG Portal',
       request: requestBody,
       response: {
         status: responseStatus,
@@ -1249,8 +1251,8 @@ async function handleGygLiveTest(req, res) {
     },
     products: productIds.map(id => ({
       productId: id,
-      productName: PRODUCTS[id].name,
-      gygOptionId: PRODUCTS[id].gygOptionId || 'PENDING'
+      optionId: PRODUCTS[id].optionId,
+      productName: PRODUCTS[id].name
     })),
     testResults: testResults,
     emailTemplate: {
