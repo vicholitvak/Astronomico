@@ -396,68 +396,99 @@ async function findExistingCalendarEvent(calendar, calendarId, date, tourType) {
 function createCombinedCalendarEvent(booking, allTourBookings, dayTotal = null) {
   const tourTypes = {
     'regular': 'Regular',
-    'private': 'Privado', 
+    'private': 'Privado',
     'astrophoto': 'Astrofoto'
   };
-  
+
   // Parse date and set the actual tour time
   const [year, month, day] = booking.date.split('-');
-  
+
   // Handle flexible time for private tours
   let startTime = booking.time;
   if (booking.time === 'flexible') {
     startTime = '21:00'; // Default for flexible times
   }
-  
+
   // Create the date with the exact time
   const [hours, minutes] = startTime.split(':');
   const eventDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hours), parseInt(minutes), 0);
-  
+
   console.log('Event timing details:');
   console.log('- Original date:', booking.date);
   console.log('- Original time:', booking.time);
   console.log('- Parsed start time:', startTime);
   console.log('- Event date object:', eventDate);
   console.log('- Event date ISO:', eventDate.toISOString());
-  
+
   // Calculate end time based on tour type
   const duration = {
     'regular': 2.5,
     'private': 3,
     'astrophoto': 5
   };
-  
+
   const endDate = new Date(eventDate);
   const tourDuration = duration[booking.tourType] || 2.5;
   endDate.setHours(endDate.getHours() + Math.floor(tourDuration));
   endDate.setMinutes(endDate.getMinutes() + (tourDuration % 1) * 60);
-  
+
   const tourType = tourTypes[booking.tourType] || booking.tourType;
-  
+
+  // Ensure current booking is included in the list (it might not be saved to DB yet)
+  // Normalize the current booking to match DB format
+  const currentBookingNormalized = {
+    booking_id: booking.bookingId,
+    name: booking.name,
+    phone: booking.phone,
+    email: booking.email,
+    message: booking.message,
+    persons: parseInt(booking.persons) || 0,
+    tour_type: booking.tourType,
+    date: booking.date
+  };
+
+  // Check if current booking is already in the list (by booking_id)
+  const isCurrentBookingInList = allTourBookings.some(b =>
+    b.booking_id === booking.bookingId || b.booking_id === currentBookingNormalized.booking_id
+  );
+
+  // Create combined list with current booking if not already included
+  const combinedBookings = isCurrentBookingInList
+    ? allTourBookings
+    : [...allTourBookings, currentBookingNormalized];
+
+  console.log('Combined bookings count:', combinedBookings.length);
+  console.log('Current booking included:', !isCurrentBookingInList ? 'Added' : 'Already in list');
+
   // Calculate total passengers for this specific tour
-  const totalTourPax = allTourBookings.reduce((sum, b) => sum + (b.persons || 0), 0);
+  const totalTourPax = combinedBookings.reduce((sum, b) => sum + (parseInt(b.persons) || 0), 0);
   const paxEmoji = totalTourPax > 1 ? '👥' : '👤';
-  
-  // Create title with combined info
-  let title = `${paxEmoji} ${totalTourPax} | ${tourType}`;
-  if (dayTotal && dayTotal > totalTourPax) {
-    title += ` (Día: ${dayTotal} pax)`;
+
+  // Create title with combined info - include first client name for easy reference
+  const firstClient = combinedBookings[0]?.name || booking.name;
+  let title = `${paxEmoji} ${totalTourPax} | ${tourType} | ${firstClient}`;
+  if (combinedBookings.length > 1) {
+    title = `${paxEmoji} ${totalTourPax} | ${tourType} | ${combinedBookings.length} reservas`;
   }
-  
+  if (dayTotal && dayTotal > totalTourPax) {
+    title += ` (Día: ${dayTotal})`;
+  }
+
   // Create combined description with all clients
-  let description = `🎯 ${tourType} - ${totalTourPax} pax total\n\n`;
-  
-  allTourBookings.forEach((b, index) => {
-    description += `👤 ${b.name}\n📞 ${b.phone}\n📧 ${b.email || 'Sin email'}\n`;
+  let description = `🎯 ${tourType} - ${totalTourPax} pax total\n📅 ${booking.date}\n⏰ ${startTime}\n\n`;
+
+  combinedBookings.forEach((b, index) => {
+    const pax = parseInt(b.persons) || 0;
+    description += `👤 ${b.name} (${pax} pax)\n📞 ${b.phone}\n📧 ${b.email || 'Sin email'}\n`;
     if (b.message) {
       description += `💬 ${b.message}\n`;
     }
     description += `🆔 ${b.booking_id}\n`;
-    if (index < allTourBookings.length - 1) {
+    if (index < combinedBookings.length - 1) {
       description += '\n─────────────\n\n';
     }
   });
-  
+
   return {
     summary: title,
     description: description,
