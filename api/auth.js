@@ -53,7 +53,7 @@ function handleSignOut(req, res) {
   }
 
   res.setHeader('Set-Cookie', [
-    'admin_session=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0'
+    'admin_session=; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=0'
   ]);
 
   if (req.method === 'GET') {
@@ -114,7 +114,7 @@ async function handleCallback(req, res) {
     const sessionToken = Buffer.from(JSON.stringify(sessionData)).toString('base64');
 
     res.setHeader('Set-Cookie', [
-      `admin_session=${sessionToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${30 * 24 * 60 * 60}`
+      `admin_session=${sessionToken}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=${30 * 24 * 60 * 60}`
     ]);
 
     res.redirect('/admin');
