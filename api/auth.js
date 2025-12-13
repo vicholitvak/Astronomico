@@ -5,7 +5,12 @@
 
 import { OAuth2Client } from 'google-auth-library';
 
-const REDIRECT_URI = 'https://atacamadarksky.cl/api/auth?action=callback';
+// Helper function to build dynamic redirect URI based on request
+function getRedirectUri(req) {
+  const protocol = req.headers['x-forwarded-proto'] || 'https';
+  const host = req.headers['x-forwarded-host'] || req.headers.host;
+  return `${protocol}://${host}/api/auth?action=callback`;
+}
 
 export default async function handler(req, res) {
   const { action } = req.query;
@@ -30,17 +35,19 @@ function handleSignIn(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  const redirectUri = getRedirectUri(req);
+
   const client = new OAuth2Client(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    REDIRECT_URI
+    redirectUri
   );
 
   const authorizeUrl = client.generateAuthUrl({
     access_type: 'offline',
     scope: ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile'],
     prompt: 'consent',
-    redirect_uri: REDIRECT_URI
+    redirect_uri: redirectUri
   });
 
   return res.redirect(authorizeUrl);
@@ -80,10 +87,12 @@ async function handleCallback(req, res) {
   }
 
   try {
+    const redirectUri = getRedirectUri(req);
+
     const client = new OAuth2Client(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
-      REDIRECT_URI
+      redirectUri
     );
 
     const { tokens } = await client.getToken(code);

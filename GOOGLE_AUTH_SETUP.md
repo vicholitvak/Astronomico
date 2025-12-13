@@ -21,12 +21,21 @@ https://astronomico.vercel.app
 
 ### 3. Configurar URIs de Redirección
 
-En "URIs de redireccionamiento autorizados", agrega:
+En "URIs de redireccionamiento autorizados", agrega **EXACTAMENTE** estas URLs:
 ```
-https://atacamadarksky.cl/api/auth/callback/google
-https://www.atacamadarksky.cl/api/auth/callback/google
-https://astronomico.vercel.app/api/auth/callback/google
+https://atacamadarksky.cl/api/auth?action=callback
+https://www.atacamadarksky.cl/api/auth?action=callback
+https://astronomico.vercel.app/api/auth?action=callback
 ```
+
+⚠️ **IMPORTANTE**: Si accedes desde otros dominios de Vercel (como `atacama-nightsky-*.vercel.app`), también debes agregar:
+```
+https://atacama-nightsky-9bkvzwv7w-vicholitvaks-projects.vercel.app/api/auth?action=callback
+https://atacama-nightsky-fjshjgugw-vicholitvaks-projects.vercel.app/api/auth?action=callback
+https://atacama-nightsky-ojzme9mrs-vicholitvaks-projects.vercel.app/api/auth?action=callback
+```
+
+💡 **Tip**: Cada vez que despliegues a Vercel, puede generar un nuevo dominio. Puedes agregarlo a esta lista si necesitas probar desde ese dominio específico.
 
 ### 4. Obtener Credenciales
 
@@ -101,7 +110,30 @@ Vercel automáticamente redesplegarádespués del push.
 ## 🚨 Troubleshooting
 
 ### Error: "redirect_uri_mismatch"
-Verifica que las URIs de redirección en Google Cloud coincidan exactamente con las configuradas.
+
+Este error significa que la URL de redirección no está configurada en Google Cloud Console.
+
+**Solución paso a paso:**
+
+1. Ve a [Google Cloud Console](https://console.cloud.google.com/)
+2. Selecciona tu proyecto
+3. Ve a "APIs y servicios" > "Credenciales"
+4. Click en tu "ID de cliente de OAuth 2.0"
+5. En "URIs de redireccionamiento autorizados", asegúrate de tener **EXACTAMENTE**:
+   ```
+   https://atacamadarksky.cl/api/auth?action=callback
+   https://www.atacamadarksky.cl/api/auth?action=callback
+   https://astronomico.vercel.app/api/auth?action=callback
+   ```
+6. Si accedes desde un dominio de Vercel diferente (ej: `atacama-nightsky-xyz.vercel.app`), agrégalo también:
+   ```
+   https://TU-DOMINIO-VERCEL.vercel.app/api/auth?action=callback
+   ```
+7. Click en "Guardar"
+8. Espera 1-2 minutos para que los cambios se propaguen
+9. Intenta hacer login de nuevo
+
+**Nota importante**: El redirect URI debe incluir `?action=callback` al final. No uses `/api/auth/callback/google`.
 
 ### Error: "Access Denied"
 Tu email no coincide con `ADMIN_EMAIL` en las variables de entorno.
