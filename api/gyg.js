@@ -123,6 +123,24 @@ function getChileTimezoneOffset(dateStr) {
   return isWinterTime ? '-04:00' : '-03:00';
 }
 
+// ============ PRODUCT LOOKUP HELPER ============
+// GYG may send either productId OR optionId, so we need to check both
+function findProduct(id) {
+  // First check by productId
+  if (PRODUCTS[id]) return PRODUCTS[id];
+  if (PRODUCTS_TIME_PERIOD[id]) return PRODUCTS_TIME_PERIOD[id];
+
+  // Then check by optionId
+  for (const product of Object.values(PRODUCTS)) {
+    if (product.optionId === id) return product;
+  }
+  for (const product of Object.values(PRODUCTS_TIME_PERIOD)) {
+    if (product.optionId === id) return product;
+  }
+
+  return null;
+}
+
 // ============ AUTHENTICATION ============
 function validateGygAuth(req) {
   const authHeader = req.headers.authorization;
@@ -259,14 +277,16 @@ async function handleGetAvailabilities(req, res) {
 
   console.log(`[GYG] Availability params:`, JSON.stringify(params));
 
-  // Get product config - check both Time Point and Time Period products
-  const product = PRODUCTS[productId] || PRODUCTS_TIME_PERIOD[productId];
+  // Get product config - check by productId or optionId
+  const product = findProduct(productId);
   if (!product) {
+    console.log(`[GYG] Product not found for ID: ${productId}`);
     return res.status(200).json({
       errorCode: 'INVALID_PRODUCT',
       errorMessage: `Product ${productId} not found`
     });
   }
+  console.log(`[GYG] Found product: ${product.productId} (${product.name})`);
 
   // Support both GYG format (fromDateTime/toDateTime) and simple format (dateTime)
   let startDate, endDate;
@@ -317,18 +337,13 @@ async function handleGetAvailabilities(req, res) {
         currency: product.currency
       };
 
-      // Add vacancies and pricing - use vacanciesByCategory for individual, vacancies for group
+      // Add vacancies and pricing - use simple vacancies field for all products
+      availability.vacancies = vacancies;
       if (product.pricingType === 'group') {
-        availability.vacancies = vacancies;
         availability.pricesByCategory = {
           retailPrices: [{ category: 'GROUP', price: product.pricePerGroup }]
         };
       } else {
-        // AVAILABILITY_BY_TICKET_CATEGORY feature
-        availability.vacanciesByCategory = [{
-          category: 'ADULT',
-          vacancies: vacancies
-        }];
         availability.pricesByCategory = {
           retailPrices: [{ category: 'ADULT', price: product.pricePerPerson }]
         };
@@ -408,11 +423,8 @@ async function handleGetAvailabilities(req, res) {
           }]
         };
       } else {
-        // AVAILABILITY_BY_TICKET_CATEGORY feature - return vacanciesByCategory for individual products
-        availability.vacanciesByCategory = [{
-          category: 'ADULT',
-          vacancies: vacancies
-        }];
+        // Individual pricing - use simple vacancies field (not vacanciesByCategory)
+        availability.vacancies = vacancies;
         availability.pricesByCategory = {
           retailPrices: [{
             category: 'ADULT',
@@ -452,8 +464,8 @@ async function handleReserve(req, res) {
     });
   }
 
-  // Get product config - check both Time Point and Time Period products
-  const product = PRODUCTS[productId] || PRODUCTS_TIME_PERIOD[productId];
+  // Get product config - check by productId or optionId
+  const product = findProduct(productId);
   if (!product) {
     return res.status(200).json({
       errorCode: 'INVALID_PRODUCT',
@@ -682,8 +694,8 @@ async function handleBook(req, res) {
     });
   }
 
-  // Get product config (check both regular and time period products)
-  const product = PRODUCTS[productId] || PRODUCTS_TIME_PERIOD[productId] || PRODUCTS[DEFAULT_PRODUCT_ID];
+  // Get product config - check by productId or optionId, with fallback to default
+  const product = findProduct(productId) || PRODUCTS[DEFAULT_PRODUCT_ID];
 
   // Calculate total persons from bookingItems in the request
   let totalPersons = 0;
