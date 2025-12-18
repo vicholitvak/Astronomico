@@ -12,6 +12,7 @@
  */
 
 import { insert, query } from './lib/db.js';
+import { addToGoogleCalendar } from './google-calendar.js';
 
 // ============ GYG API CREDENTIALS (for calling GYG endpoints) ============
 const GYG_API_URL = 'https://supplier-api.getyourguide.com';
@@ -46,9 +47,9 @@ const PRODUCTS = {
     maxCapacity: 4, // máximo 4 personas por tour
     tourType: 'private',
     currency: 'EUR',
-    pricePerPerson: 28600, // €286 en GYG → €200 neto después de 30% comisión
+    pricePerPerson: 13326, // €133.26 en GYG → CLP $100,000 neto después de 30% comisión (TC: 1 EUR = 1,072 CLP)
     cutoffSeconds: 14400, // 4 hours before tour
-    availableTimes: ['20:00', '20:30', '21:00', '00:00'], // horarios flexibles
+    availableTimes: ['20:00', '20:30', '21:00'], // horarios flexibles (sin 00:00 - GYG no soporta midnight)
     pricingType: 'individual', // precio por persona
     categories: ['ADULT'],
     city: 'San Pedro de Atacama',
@@ -79,7 +80,7 @@ const PRODUCTS_TIME_PERIOD = {
     maxCapacity: 4,
     tourType: 'private',
     currency: 'EUR',
-    pricePerPerson: 28600, // €286 en GYG → €200 neto
+    pricePerPerson: 13326, // €133.26 en GYG → CLP $100,000 neto después de 30%
     cutoffSeconds: 14400,
     openingHours: { fromTime: '20:00', toTime: '23:59' },
     pricingType: 'individual',
@@ -90,6 +91,37 @@ const PRODUCTS_TIME_PERIOD = {
 
 // Default product for backwards compatibility
 const DEFAULT_PRODUCT_ID = '1152147';
+
+// ============ CHILE TIMEZONE HELPER ============
+// Chile DST: Summer time (CLST, -03:00) from first Sunday of September to first Sunday of April
+//            Winter time (CLT, -04:00) from first Sunday of April to first Sunday of September
+function getChileTimezoneOffset(dateStr) {
+  const date = new Date(dateStr);
+  const year = date.getFullYear();
+  const month = date.getMonth(); // 0-indexed
+  const day = date.getDate();
+
+  // Find first Sunday of April
+  const firstSundayApril = new Date(year, 3, 1); // April 1st
+  while (firstSundayApril.getDay() !== 0) {
+    firstSundayApril.setDate(firstSundayApril.getDate() + 1);
+  }
+
+  // Find first Sunday of September
+  const firstSundaySept = new Date(year, 8, 1); // September 1st
+  while (firstSundaySept.getDay() !== 0) {
+    firstSundaySept.setDate(firstSundaySept.getDate() + 1);
+  }
+
+  // Summer time (CLST): from first Sunday of September to first Sunday of April (next year)
+  // Winter time (CLT): from first Sunday of April to first Sunday of September
+  const isWinterTime = (
+    (month > 3 || (month === 3 && day >= firstSundayApril.getDate())) && // After first Sunday April
+    (month < 8 || (month === 8 && day < firstSundaySept.getDate()))      // Before first Sunday September
+  );
+
+  return isWinterTime ? '-04:00' : '-03:00';
+}
 
 // ============ AUTHENTICATION ============
 function validateGygAuth(req) {
@@ -279,7 +311,7 @@ async function handleGetAvailabilities(req, res) {
 
       const availability = {
         productId: product.productId,
-        dateTime: `${dateStr}T00:00:00-03:00`,
+        dateTime: `${dateStr}T00:00:00${getChileTimezoneOffset(dateStr)}`,
         openingTimes: [product.openingHours],
         cutoffSeconds: product.cutoffSeconds,
         currency: product.currency
@@ -309,7 +341,7 @@ async function handleGetAvailabilities(req, res) {
 
     // Handle Time Point products (fixed times)
     for (const time of product.availableTimes) {
-      const dateTimeStr = `${dateStr}T${time}:00-03:00`; // Chile timezone
+      const dateTimeStr = `${dateStr}T${time}:00${getChileTimezoneOffset(dateStr)}`; // Chile timezone with DST
 
       // Check if date is blocked
       const blockedResult = await query(
@@ -701,6 +733,22 @@ async function handleBook(req, res) {
     // Generate tickets using request bookingItems count
     const tickets = generateTickets(existingReservation.booking_id, totalPersons || existingReservation.persons, product);
 
+    // Sync to Google Calendar (async, don't wait)
+    const dateFromReservation = existingReservation.date instanceof Date
+      ? existingReservation.date.toISOString().split('T')[0]
+      : String(existingReservation.date).split('T')[0];
+    syncGygBookingToCalendar({
+      bookingId: existingReservation.booking_id,
+      date: dateFromReservation,
+      time: existingReservation.time,
+      persons: totalPersons || existingReservation.persons,
+      tourType: product.tourType,
+      name: name,
+      email: email,
+      phone: phone,
+      message: `GYG Booking: ${gygBookingReference}`
+    });
+
     return res.status(200).json({
       data: {
         bookingReference: existingReservation.booking_id,
@@ -742,6 +790,22 @@ async function handleBook(req, res) {
 
     // Generate tickets using request bookingItems count
     const tickets = generateTickets(existing.booking_id, totalPersons || existing.persons, product);
+
+    // Sync to Google Calendar (async, don't wait)
+    const dateFromExisting = existing.date instanceof Date
+      ? existing.date.toISOString().split('T')[0]
+      : String(existing.date).split('T')[0];
+    syncGygBookingToCalendar({
+      bookingId: existing.booking_id,
+      date: dateFromExisting,
+      time: existing.time,
+      persons: totalPersons || existing.persons,
+      tourType: product.tourType,
+      name: name,
+      email: email,
+      phone: phone,
+      message: `GYG Booking: ${gygBookingReference}`
+    });
 
     return res.status(200).json({
       data: {
@@ -790,6 +854,19 @@ async function handleBook(req, res) {
 
   console.log(`[GYG] Booking confirmed: ${bookingId} for ${gygBookingReference} (${product.tourType})`);
 
+  // Sync to Google Calendar (async, don't wait)
+  syncGygBookingToCalendar({
+    bookingId: bookingId,
+    date: date,
+    time: time,
+    persons: totalPersons || 1,
+    tourType: product.tourType,
+    name: name,
+    email: email,
+    phone: phone,
+    message: notes
+  });
+
   // Generate tickets
   const tickets = generateTickets(bookingId, totalPersons || 1, product);
 
@@ -799,6 +876,33 @@ async function handleBook(req, res) {
       tickets: tickets
     }
   });
+}
+
+// Helper to sync booking to Google Calendar
+async function syncGygBookingToCalendar(bookingData) {
+  try {
+    console.log(`[GYG] Syncing to Google Calendar: ${bookingData.bookingId}`);
+    const result = await addToGoogleCalendar({
+      bookingId: bookingData.bookingId,
+      date: bookingData.date,
+      time: bookingData.time,
+      persons: bookingData.persons,
+      tourType: bookingData.tourType,
+      name: bookingData.name,
+      email: bookingData.email,
+      phone: bookingData.phone,
+      message: bookingData.message || `GYG Booking`
+    });
+
+    if (result && result.error) {
+      console.error(`[GYG] Calendar sync failed: ${result.error}`);
+    } else if (result && result.id) {
+      console.log(`[GYG] Calendar event created: ${result.htmlLink}`);
+    }
+  } catch (error) {
+    // Don't fail the booking if calendar sync fails
+    console.error(`[GYG] Calendar sync error: ${error.message}`);
+  }
 }
 
 // Helper to generate ticket codes
@@ -1177,7 +1281,7 @@ async function handleGygLiveTest(req, res) {
 
     // Build availability for this test
     const availabilities = product.availableTimes.map(time => ({
-      dateTime: `${testDate}T${time}:00-03:00`,
+      dateTime: `${testDate}T${time}:00${getChileTimezoneOffset(testDate)}`,
       vacancies: product.maxCapacity
     }));
 
