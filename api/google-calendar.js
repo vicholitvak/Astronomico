@@ -142,78 +142,103 @@ export async function addToGoogleCalendar(booking) {
 function createCalendarEvent(booking, dayTotal = null) {
   const tourTypes = {
     'regular': 'Regular',
-    'private': 'Privado', 
+    'private': 'Privado',
     'astrophoto': 'Astrofoto'
   };
-  
+
   // Parse date and set the actual tour time
-  // Important: Create date in Santiago time zone to avoid UTC issues
-  const [year, month, day] = booking.date.split('-');
-  
+  // Normalize date to YYYY-MM-DD format
+  const dateStr = normalizeDate(booking.date);
+  const [year, month, day] = dateStr.split('-');
+
   // Handle flexible time for private tours
   let startTime = booking.time;
   if (booking.time === 'flexible') {
     startTime = '21:00'; // Default for flexible times
   }
-  
-  // Create the date with the exact time in Santiago timezone
+
+  // Create the date-time string directly in ISO format for Chile timezone
+  // IMPORTANT: Don't use new Date() + toISOString() as it converts to UTC
   const [hours, minutes] = startTime.split(':');
-  
-  // Create date string in Santiago time format for Google Calendar
-  const dateStr = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:00`;
-  const eventDate = new Date(dateStr);
-  
+  const startDateTimeStr = `${dateStr}T${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:00`;
+
   console.log('Event timing details:');
   console.log('- Original date:', booking.date);
   console.log('- Original time:', booking.time);
   console.log('- Parsed start time:', startTime);
-  console.log('- Event date object:', eventDate);
-  console.log('- Event date ISO:', eventDate.toISOString());
-  
+  console.log('- Start dateTime string:', startDateTimeStr);
+
   // Calculate end time based on tour type
   const duration = {
     'regular': 2.5,
     'private': 3,
     'astrophoto': 5
   };
-  
-  const endDate = new Date(eventDate);
+
   const tourDuration = duration[booking.tourType] || 2.5;
-  endDate.setHours(endDate.getHours() + Math.floor(tourDuration));
-  endDate.setMinutes(endDate.getMinutes() + (tourDuration % 1) * 60);
-  
+  const durationHours = Math.floor(tourDuration);
+  const durationMinutes = Math.round((tourDuration % 1) * 60);
+
+  // Calculate end time manually to avoid timezone issues
+  let endHours = parseInt(hours) + durationHours;
+  let endMinutes = parseInt(minutes) + durationMinutes;
+  let endDay = parseInt(day);
+  let endMonth = parseInt(month);
+  let endYear = parseInt(year);
+
+  if (endMinutes >= 60) {
+    endHours += 1;
+    endMinutes -= 60;
+  }
+  if (endHours >= 24) {
+    endHours -= 24;
+    endDay += 1;
+    const daysInMonth = new Date(endYear, endMonth, 0).getDate();
+    if (endDay > daysInMonth) {
+      endDay = 1;
+      endMonth += 1;
+      if (endMonth > 12) {
+        endMonth = 1;
+        endYear += 1;
+      }
+    }
+  }
+
+  const endDateTimeStr = `${endYear}-${String(endMonth).padStart(2, '0')}-${String(endDay).padStart(2, '0')}T${String(endHours).padStart(2, '0')}:${String(endMinutes).padStart(2, '0')}:00`;
+
   const tourType = tourTypes[booking.tourType] || booking.tourType;
-  
-  // Get moon phase for the date
-  const moonInfo = getMoonPhaseInfo(eventDate);
-  
+
+  // Get moon phase for the date (use noon to avoid timezone issues)
+  const moonDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), 12, 0, 0);
+  const moonInfo = getMoonPhaseInfo(moonDate);
+
   // Create concise title with total pax count (will aggregate visually in calendar)
   const paxCount = parseInt(booking.persons);
   const paxEmoji = paxCount > 1 ? '👥' : '👤';
-  
+
   // Include day total if available
   let title = `${paxEmoji} ${paxCount} | ${tourType} | ${booking.name}`;
   if (dayTotal && dayTotal > paxCount) {
     title = `${paxEmoji} ${paxCount} | ${tourType} | ${booking.name} (Día: ${dayTotal} pax)`;
   }
-  
+
   return {
     summary: title,
     description: `🎯 ${tourType} - ${booking.persons} pax
 
 👤 ${booking.name}
-📞 ${booking.phone}  
+📞 ${booking.phone}
 📧 ${booking.email || 'Sin email'}
 ${booking.message ? `💬 ${booking.message}` : ''}
 
 🆔 ${booking.bookingId}`,
     location: 'San Pedro de Atacama, Chile',
     start: {
-      dateTime: eventDate.toISOString(),
+      dateTime: startDateTimeStr,
       timeZone: 'America/Santiago'
     },
     end: {
-      dateTime: endDate.toISOString(),
+      dateTime: endDateTimeStr,
       timeZone: 'America/Santiago'
     },
     // Note: Service accounts cannot invite attendees without Domain-Wide Delegation
@@ -430,16 +455,17 @@ function createCombinedCalendarEvent(booking, allTourBookings, dayTotal = null) 
     startTime = '21:00'; // Default for flexible times
   }
 
-  // Create the date with the exact time
+  // Create the date-time string directly in ISO format for Chile timezone
+  // IMPORTANT: Don't use new Date() + toISOString() as it converts to UTC
+  // Instead, format the string directly to avoid timezone conversion issues
   const [hours, minutes] = startTime.split(':');
-  const eventDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hours), parseInt(minutes), 0);
+  const startDateTimeStr = `${dateStr}T${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:00`;
 
   console.log('Event timing details:');
   console.log('- Original date:', booking.date);
   console.log('- Original time:', booking.time);
   console.log('- Parsed start time:', startTime);
-  console.log('- Event date object:', eventDate);
-  console.log('- Event date ISO:', eventDate.toISOString());
+  console.log('- Start dateTime string:', startDateTimeStr);
 
   // Calculate end time based on tour type
   const duration = {
@@ -448,10 +474,38 @@ function createCombinedCalendarEvent(booking, allTourBookings, dayTotal = null) 
     'astrophoto': 5
   };
 
-  const endDate = new Date(eventDate);
   const tourDuration = duration[booking.tourType] || 2.5;
-  endDate.setHours(endDate.getHours() + Math.floor(tourDuration));
-  endDate.setMinutes(endDate.getMinutes() + (tourDuration % 1) * 60);
+  const durationHours = Math.floor(tourDuration);
+  const durationMinutes = Math.round((tourDuration % 1) * 60);
+
+  // Calculate end time manually
+  let endHours = parseInt(hours) + durationHours;
+  let endMinutes = parseInt(minutes) + durationMinutes;
+  let endDay = parseInt(day);
+  let endMonth = parseInt(month);
+  let endYear = parseInt(year);
+
+  if (endMinutes >= 60) {
+    endHours += 1;
+    endMinutes -= 60;
+  }
+  if (endHours >= 24) {
+    endHours -= 24;
+    endDay += 1;
+    // Handle month overflow (simplified - works for most cases)
+    const daysInMonth = new Date(endYear, endMonth, 0).getDate();
+    if (endDay > daysInMonth) {
+      endDay = 1;
+      endMonth += 1;
+      if (endMonth > 12) {
+        endMonth = 1;
+        endYear += 1;
+      }
+    }
+  }
+
+  const endDateTimeStr = `${endYear}-${String(endMonth).padStart(2, '0')}-${String(endDay).padStart(2, '0')}T${String(endHours).padStart(2, '0')}:${String(endMinutes).padStart(2, '0')}:00`;
+  console.log('- End dateTime string:', endDateTimeStr);
 
   const tourType = tourTypes[booking.tourType] || booking.tourType;
 
@@ -515,11 +569,11 @@ function createCombinedCalendarEvent(booking, allTourBookings, dayTotal = null) 
     description: description,
     location: 'San Pedro de Atacama, Chile',
     start: {
-      dateTime: eventDate.toISOString(),
+      dateTime: startDateTimeStr,
       timeZone: 'America/Santiago'
     },
     end: {
-      dateTime: endDate.toISOString(),
+      dateTime: endDateTimeStr,
       timeZone: 'America/Santiago'
     },
     reminders: {

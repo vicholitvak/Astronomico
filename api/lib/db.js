@@ -4,7 +4,12 @@
  */
 
 import pg from 'pg';
-const { Pool } = pg;
+const { Pool, types } = pg;
+
+// Configure pg to return DATE fields as strings instead of Date objects
+// This prevents timezone conversion issues when reading dates from PostgreSQL
+// DATE type OID is 1082
+types.setTypeParser(1082, (val) => val); // Return DATE as string YYYY-MM-DD
 
 // Create connection pool (singleton pattern)
 let pool = null;
