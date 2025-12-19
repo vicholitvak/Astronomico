@@ -27,8 +27,14 @@ function generateReviewId() {
  */
 export default async function handler(req, res) {
   const { method } = req;
+  const { action } = req.query;
 
   try {
+    // Handle helpful action via POST
+    if (method === 'POST' && action === 'helpful') {
+      return await markReviewHelpful(req, res);
+    }
+
     switch (method) {
       case 'GET':
         return await getReviews(req, res);
@@ -51,6 +57,41 @@ export default async function handler(req, res) {
 }
 
 /**
+ * Mark review as helpful (one vote per IP)
+ */
+async function markReviewHelpful(req, res) {
+  const { review_id } = req.body;
+
+  if (!review_id) {
+    return res.status(400).json({ error: 'review_id is required' });
+  }
+
+  const voterIp = req.headers['x-forwarded-for'] ||
+                  req.headers['x-real-ip'] ||
+                  req.socket?.remoteAddress ||
+                  'unknown';
+
+  const result = await pool.query(
+    'SELECT mark_review_helpful($1, $2) as success',
+    [review_id, voterIp]
+  );
+
+  const success = result.rows[0].success;
+
+  if (success) {
+    return res.status(200).json({
+      success: true,
+      message: 'Review marked as helpful'
+    });
+  } else {
+    return res.status(400).json({
+      success: false,
+      message: 'You have already marked this review as helpful'
+    });
+  }
+}
+
+/**
  * GET - Obtener reviews
  * Query params:
  * - tour_type: 'regular', 'private', 'astrophoto'
@@ -58,6 +99,7 @@ export default async function handler(req, res) {
  * - limit: número de resultados (default: 20)
  * - offset: paginación (default: 0)
  * - featured: true/false
+ * - schema: true - returns Schema.org JSON-LD for SEO
  */
 async function getReviews(req, res) {
   const {
@@ -66,8 +108,14 @@ async function getReviews(req, res) {
     limit = 20,
     offset = 0,
     featured,
-    stats
+    stats,
+    schema
   } = req.query;
+
+  // Si se pide schema, retornar Schema.org JSON-LD
+  if (schema === 'true') {
+    return generateSchema(req, res);
+  }
 
   // Si se pide stats, retornar estadísticas
   if (stats === 'true') {
@@ -465,4 +513,93 @@ async function deleteReview(req, res) {
     message: 'Review deleted successfully',
     review_id: result.rows[0].review_id
   });
+}
+
+/**
+ * Generate Schema.org JSON-LD for SEO
+ * Called via GET /api/reviews?schema=true
+ */
+async function generateSchema(req, res) {
+  res.setHeader('Content-Type', 'application/ld+json');
+  res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+
+  try {
+    const reviewsResult = await pool.query(`
+      SELECT reviewer_name, reviewer_country, overall_rating, title, comment, tour_date, created_at
+      FROM reviews WHERE status = 'approved' ORDER BY created_at DESC LIMIT 50
+    `);
+
+    const reviews = reviewsResult.rows;
+    const totalReviews = reviews.length;
+    const avgRating = totalReviews > 0
+      ? (reviews.reduce((sum, r) => sum + r.overall_rating, 0) / totalReviews).toFixed(1)
+      : '5.0';
+
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "@id": "https://atacamadarksky.cl/#organization",
+      "name": "Atacama Dark Sky",
+      "alternateName": ["Tours Astronómicos Atacama", "Atacama Stargazing Tours"],
+      "description": "Tours astronómicos profesionales en San Pedro de Atacama con telescopios inteligentes Unistellar. Observación de nebulosas, galaxias y el cielo más claro del planeta.",
+      "url": "https://atacamadarksky.cl",
+      "logo": "https://atacamadarksky.cl/images/Nightskylogo.webp",
+      "image": ["https://atacamadarksky.cl/images/hero-bg.webp", "https://atacamadarksky.cl/images/tour1.webp"],
+      "telephone": "+56935134669",
+      "email": "vicente.litvak@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Calle Caracoles",
+        "addressLocality": "San Pedro de Atacama",
+        "addressRegion": "Antofagasta",
+        "postalCode": "1410000",
+        "addressCountry": "CL"
+      },
+      "geo": { "@type": "GeoCoordinates", "latitude": -22.9087, "longitude": -68.1997 },
+      "openingHoursSpecification": [{
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        "opens": "20:00", "closes": "00:00"
+      }],
+      "priceRange": "$$",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": avgRating,
+        "reviewCount": totalReviews.toString(),
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "review": reviews.map(r => ({
+        "@type": "Review",
+        ...(r.title && { "name": r.title.trim() }),
+        "reviewRating": { "@type": "Rating", "ratingValue": r.overall_rating.toString(), "bestRating": "5" },
+        "author": {
+          "@type": "Person",
+          "name": r.reviewer_name.trim(),
+          ...(r.reviewer_country && { "nationality": r.reviewer_country.trim() })
+        },
+        "datePublished": new Date(r.tour_date || r.created_at).toISOString().split('T')[0],
+        "reviewBody": r.comment.trim()
+      })),
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Tours Astronómicos",
+        "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Tour Astronómico Regular" }, "price": "30000", "priceCurrency": "CLP" },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Expedición Privada a Vallecito" }, "price": "200000", "priceCurrency": "CLP" },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Tour de Astrofotografía" }, "price": "120000", "priceCurrency": "CLP" }
+        ]
+      }
+    };
+
+    return res.status(200).json(schema);
+  } catch (error) {
+    console.error('[SCHEMA] Error:', error);
+    return res.status(200).json({
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Atacama Dark Sky",
+      "url": "https://atacamadarksky.cl"
+    });
+  }
 }

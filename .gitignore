@@ -33,6 +33,12 @@ tmp/
 .env.test.local
 .env.production.local
 
+# Credenciales de servicios
+*-credentials.json
+
+# MCP local configuration
+.mcp.json
+
 # Carpetas de build (si implementas build process)
 dist/
 build/
@@ -42,3 +48,4 @@ build/
 .vercel
 .env*.local
 .claude/settings.json
+nul

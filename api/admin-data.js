@@ -562,7 +562,79 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Invalid action. Use: status, list-events, sync-booking, sync-all' });
     }
 
-    return res.status(400).json({ success: false, error: 'Invalid type. Use ?type=photos, ?type=blocked, ?type=income, ?type=conversion, or ?type=calendar' });
+    // ============ SYNC PAYMENTS ============
+    if (type === 'sync-payments') {
+      if (req.method === 'GET') {
+        try {
+          // Buscar reservas de mercadopago sin payment_amount
+          const bookingsResult = await pool.query(`
+            SELECT booking_id, name, email, date, persons, tour_type
+            FROM bookings
+            WHERE payment_method = 'mercadopago'
+            AND (payment_amount IS NULL OR payment_amount = 0)
+            ORDER BY created_at DESC
+          `);
+
+          const results = [];
+
+          for (const booking of bookingsResult.rows) {
+            try {
+              const searchResponse = await fetch(
+                `https://api.mercadopago.com/v1/payments/search?external_reference=${booking.booking_id}&status=approved`,
+                {
+                  headers: {
+                    'Authorization': `Bearer ${process.env.MERCADOPAGO_ACCESS_TOKEN}`
+                  }
+                }
+              );
+
+              const searchData = await searchResponse.json();
+
+              if (searchData.results && searchData.results.length > 0) {
+                const paymentInfo = searchData.results[0];
+
+                await pool.query(`
+                  UPDATE bookings
+                  SET payment_amount = $1,
+                      payment_id = $2,
+                      updated_at = NOW()
+                  WHERE booking_id = $3
+                `, [paymentInfo.transaction_amount, paymentInfo.id, booking.booking_id]);
+
+                results.push({
+                  booking_id: booking.booking_id,
+                  name: booking.name,
+                  status: 'updated',
+                  amount: paymentInfo.transaction_amount
+                });
+              } else {
+                results.push({
+                  booking_id: booking.booking_id,
+                  name: booking.name,
+                  status: 'not_found'
+                });
+              }
+            } catch (err) {
+              results.push({
+                booking_id: booking.booking_id,
+                status: 'error',
+                error: err.message
+              });
+            }
+          }
+
+          return res.status(200).json({
+            success: true,
+            message: `Processed ${results.length} bookings`,
+            results
+          });
+        } catch (error) {
+          return res.status(500).json({ success: false, error: error.message });
+        }
+      }
+    }
+
+    return res.status(400).json({ success: false, error: 'Invalid type. Use ?type=photos, ?type=blocked, ?type=income, ?type=conversion, ?type=calendar, or ?type=sync-payments' });
 
   } catch (error) {
     console.error('Admin data API error:', error);
