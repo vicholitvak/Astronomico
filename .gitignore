@@ -49,3 +49,5 @@ build/
 .env*.local
 .claude/settings.json
 nul
+
+.env*.local

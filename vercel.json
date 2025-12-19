@@ -7,10 +7,48 @@
       "maxDuration": 10
     }
   },
+  "crons": [
+    {
+      "path": "/api/cron-bookings",
+      "schedule": "0 10 * * *"
+    }
+  ],
   "rewrites": [
     {
       "source": "/admin",
       "destination": "/admin.html"
+    },
+    {
+      "source": "/pago",
+      "destination": "/pago.html"
+    },
+    {
+      "source": "/api/gyg/:version/suppliers/:supplierId/products/",
+      "destination": "/api/gyg"
+    },
+    {
+      "source": "/api/gyg/:version/suppliers/:supplierId/products",
+      "destination": "/api/gyg"
+    },
+    {
+      "source": "/api/gyg/:version/products/:productId/pricing-categories/",
+      "destination": "/api/gyg"
+    },
+    {
+      "source": "/api/gyg/:version/products/:productId/pricing-categories",
+      "destination": "/api/gyg"
+    },
+    {
+      "source": "/api/gyg/:version/products/:productId/addons/",
+      "destination": "/api/gyg"
+    },
+    {
+      "source": "/api/gyg/:version/products/:productId/addons",
+      "destination": "/api/gyg"
+    },
+    {
+      "source": "/api/gyg/:version/products/:productId",
+      "destination": "/api/gyg"
     },
     {
       "source": "/api/gyg/:version/:action",

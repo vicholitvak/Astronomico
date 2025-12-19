@@ -576,6 +576,118 @@ function showNotification(message, type = 'info') {
 }
 
 // ============================================================================
+// TESTIMONIAL SLIDER
+// ============================================================================
+
+let currentSlide = 0;
+let testimonialSlides = [];
+
+/**
+ * Load testimonials into the slider
+ */
+async function loadTestimonials() {
+  const slider = document.getElementById('testimonialSlider');
+  if (!slider) return;
+
+  try {
+    const response = await fetch('/api/reviews?status=approved&limit=20');
+    const data = await response.json();
+
+    if (data.reviews && data.reviews.length > 0) {
+      displayTestimonials(data.reviews);
+      initSlider();
+      updateHeroReviewCount(data.reviews.length);
+    } else {
+      slider.innerHTML = `
+        <div class="testimonial-slide active">
+          <div class="testimonial-content">
+            <blockquote>"Una experiencia increíble bajo el cielo más claro del mundo"</blockquote>
+            <div class="testimonial-author">
+              <span class="author-name">Visitante Satisfecho</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  } catch (error) {
+    console.error('Error loading testimonials:', error);
+  }
+}
+
+/**
+ * Display testimonials in the slider
+ */
+function displayTestimonials(reviews) {
+  const slider = document.getElementById('testimonialSlider');
+  if (!slider) return;
+
+  slider.innerHTML = reviews.map((review, index) => `
+    <div class="testimonial-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
+      <div class="testimonial-content">
+        <div class="testimonial-stars">${renderStars(review.overall_rating)}</div>
+        ${review.title ? `<h4 class="testimonial-title">${escapeHtml(review.title)}</h4>` : ''}
+        <blockquote>"${escapeHtml(review.comment)}"</blockquote>
+        <div class="testimonial-author">
+          <span class="author-name">${escapeHtml(review.reviewer_name)}</span>
+          ${review.reviewer_country ? `<span class="author-country">· ${escapeHtml(review.reviewer_country)}</span>` : ''}
+          <span class="author-tour">· ${getTourTypeName(review.tour_type)}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  testimonialSlides = slider.querySelectorAll('.testimonial-slide');
+}
+
+/**
+ * Initialize slider navigation
+ */
+function initSlider() {
+  const prevBtn = document.querySelector('.testimonial-prev');
+  const nextBtn = document.querySelector('.testimonial-next');
+
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => navigateSlider(-1));
+  }
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => navigateSlider(1));
+  }
+
+  // Auto-advance every 8 seconds
+  setInterval(() => {
+    if (testimonialSlides.length > 1) {
+      navigateSlider(1);
+    }
+  }, 8000);
+}
+
+/**
+ * Navigate slider
+ */
+function navigateSlider(direction) {
+  if (testimonialSlides.length === 0) return;
+
+  // Remove active class from current slide
+  testimonialSlides[currentSlide].classList.remove('active');
+
+  // Calculate new index
+  currentSlide = (currentSlide + direction + testimonialSlides.length) % testimonialSlides.length;
+
+  // Add active class to new slide
+  testimonialSlides[currentSlide].classList.add('active');
+}
+
+/**
+ * Update hero section review count
+ */
+function updateHeroReviewCount(count) {
+  const heroCount = document.getElementById('heroReviewCount');
+  if (heroCount) {
+    heroCount.textContent = `${count} reseñas`;
+  }
+}
+
+// ============================================================================
 // INITIALIZATION
 // ============================================================================
 
@@ -584,5 +696,10 @@ document.addEventListener('DOMContentLoaded', function() {
   // Check if we're on a page with reviews
   if (document.getElementById('reviews-container')) {
     loadReviews();
+  }
+
+  // Load testimonials slider
+  if (document.getElementById('testimonialSlider')) {
+    loadTestimonials();
   }
 });

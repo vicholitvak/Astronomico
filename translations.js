@@ -89,14 +89,19 @@ const translations = {
         'tours.photo.duration': '3 horas',
         'tours.photo.maxPersons': 'Max 6 personas',
 
-        // Tour Private - Includes
-        'tours.private.include1': 'Transporte privado ida y vuelta al hotel',
-        'tours.private.include2': 'Guía exclusivo dedicado',
-        'tours.private.include3': 'Telescopio exclusivo para el grupo',
-        'tours.private.include4': 'Vinos chilenos premium (navegado en invierno)',
-        'tours.private.include5': 'Sesión de fotos profesional ilimitada',
-        'tours.private.duration': 'Flexible',
-        'tours.private.maxPersons': 'Privado',
+        // Tour Private - Expedición a Vallecito
+        'tours.private.title': 'Expedición Privada a Vallecito',
+        'tours.private.desc1': '<strong>Donde termina el camino, comienza el mejor cielo del planeta.</strong> En 4x4 atravesamos el desierto hasta Vallecito, un lugar sin nombre en los mapas donde la escala Bortle marca 1 —oscuridad absoluta, cero contaminación lumínica. Aquí la Vía Láctea proyecta sombras.',
+        'tours.private.desc2': 'Te esperan sillas reclinables bajo las estrellas, mantas, telescopio inteligente capturando nebulosas en tiempo real, y un cooler con vino, agua caliente y variedades de té. Sin apuros, sin extraños, sin límites. <strong>El desierto es tuyo por una noche.</strong>',
+        'tours.private.include1': 'Transporte 4x4 privado desde tu hotel',
+        'tours.private.include2': 'Ubicación exclusiva Bortle 1 en Vallecito',
+        'tours.private.include3': 'Telescopio inteligente + cámara astrofotográfica',
+        'tours.private.include4': 'Sillas reclinables, mantas y setup completo',
+        'tours.private.include5': 'Vino, agua caliente y variedades de té',
+        'tours.private.include6': 'Fotos del cielo profundo para llevarte',
+        'tours.private.include7': 'Buena compañía',
+        'tours.private.duration': '3-4 horas',
+        'tours.private.maxPersons': '1-6 personas',
         'tours.private.priceNote': 'Por grupo (1-6 pers)',
 
         // Tour Study - Includes
@@ -147,6 +152,7 @@ const translations = {
         'checkout.pricePerPerson': 'Precio por persona:',
         'checkout.fixedPrice': 'Precio fijo (1-6 personas):',
         'checkout.subtotal': 'Subtotal',
+        'checkout.mpFee': 'Tarifa MercadoPago (4.64%):',
         'checkout.totalToPay': 'Total a Pagar:',
         'checkout.payButton': 'Pagar y Asegurar mi Cupo',
         'checkout.redirecting': 'Redirigiendo a Mercado Pago...',
@@ -267,14 +273,19 @@ const translations = {
         'tours.photo.duration': '3 hours',
         'tours.photo.maxPersons': 'Max 6 people',
 
-        // Tour Private - Includes
-        'tours.private.include1': 'Private round-trip hotel transport',
-        'tours.private.include2': 'Dedicated exclusive guide',
-        'tours.private.include3': 'Exclusive telescope for your group',
-        'tours.private.include4': 'Premium Chilean wines (mulled wine in winter)',
-        'tours.private.include5': 'Unlimited professional photo session',
-        'tours.private.duration': 'Flexible',
-        'tours.private.maxPersons': 'Private',
+        // Tour Private - Vallecito Expedition
+        'tours.private.title': 'Private Vallecito Expedition',
+        'tours.private.desc1': '<strong>Where the road ends, the best sky on Earth begins.</strong> In a 4x4 we cross the desert to Vallecito, a place with no name on maps where the Bortle scale reads 1 —absolute darkness, zero light pollution. Here the Milky Way casts shadows.',
+        'tours.private.desc2': 'Reclining chairs under the stars await you, blankets, smart telescope capturing nebulae in real time, and a cooler with wine, hot water and tea varieties. No rush, no strangers, no limits. <strong>The desert is yours for a night.</strong>',
+        'tours.private.include1': 'Private 4x4 transport from your hotel',
+        'tours.private.include2': 'Exclusive Bortle 1 location in Vallecito',
+        'tours.private.include3': 'Smart telescope + astrophotography camera',
+        'tours.private.include4': 'Reclining chairs, blankets and full setup',
+        'tours.private.include5': 'Wine, hot water and tea varieties',
+        'tours.private.include6': 'Deep sky photos to take home',
+        'tours.private.include7': 'Good company',
+        'tours.private.duration': '3-4 hours',
+        'tours.private.maxPersons': '1-6 people',
         'tours.private.priceNote': 'Per group (1-6 ppl)',
 
         // Tour Study - Includes
@@ -325,6 +336,7 @@ const translations = {
         'checkout.pricePerPerson': 'Price per person:',
         'checkout.fixedPrice': 'Fixed price (1-6 people):',
         'checkout.subtotal': 'Subtotal',
+        'checkout.mpFee': 'MercadoPago Fee (4.64%):',
         'checkout.totalToPay': 'Total to Pay:',
         'checkout.payButton': 'Pay and Secure My Spot',
         'checkout.redirecting': 'Redirecting to Mercado Pago...',
@@ -445,14 +457,19 @@ const translations = {
         'tours.photo.duration': '3 horas',
         'tours.photo.maxPersons': 'Máx 6 pessoas',
 
-        // Tour Private - Includes
-        'tours.private.include1': 'Transporte privado ida e volta ao hotel',
-        'tours.private.include2': 'Guia exclusivo dedicado',
-        'tours.private.include3': 'Telescópio exclusivo para o grupo',
-        'tours.private.include4': 'Vinhos chilenos premium (quentão no inverno)',
-        'tours.private.include5': 'Sessão de fotos profissional ilimitada',
-        'tours.private.duration': 'Flexível',
-        'tours.private.maxPersons': 'Privado',
+        // Tour Private - Expedição Vallecito
+        'tours.private.title': 'Expedição Privada a Vallecito',
+        'tours.private.desc1': '<strong>Onde a estrada termina, começa o melhor céu do planeta.</strong> Em 4x4 atravessamos o deserto até Vallecito, um lugar sem nome nos mapas onde a escala Bortle marca 1 —escuridão absoluta, zero poluição luminosa. Aqui a Via Láctea projeta sombras.',
+        'tours.private.desc2': 'Te esperam cadeiras reclináveis sob as estrelas, mantas, telescópio inteligente capturando nebulosas em tempo real, e um cooler com vinho, água quente e variedades de chá. Sem pressa, sem estranhos, sem limites. <strong>O deserto é seu por uma noite.</strong>',
+        'tours.private.include1': 'Transporte 4x4 privado do seu hotel',
+        'tours.private.include2': 'Localização exclusiva Bortle 1 em Vallecito',
+        'tours.private.include3': 'Telescópio inteligente + câmera astrofotográfica',
+        'tours.private.include4': 'Cadeiras reclináveis, mantas e setup completo',
+        'tours.private.include5': 'Vinho, água quente e variedades de chá',
+        'tours.private.include6': 'Fotos do céu profundo para levar',
+        'tours.private.include7': 'Boa companhia',
+        'tours.private.duration': '3-4 horas',
+        'tours.private.maxPersons': '1-6 pessoas',
         'tours.private.priceNote': 'Por grupo (1-6 pess)',
 
         // Tour Study - Includes
@@ -503,6 +520,7 @@ const translations = {
         'checkout.pricePerPerson': 'Preço por pessoa:',
         'checkout.fixedPrice': 'Preço fixo (1-6 pessoas):',
         'checkout.subtotal': 'Subtotal',
+        'checkout.mpFee': 'Taxa MercadoPago (4.64%):',
         'checkout.totalToPay': 'Total a Pagar:',
         'checkout.payButton': 'Pagar e Garantir Minha Vaga',
         'checkout.redirecting': 'Redirecionando para Mercado Pago...',

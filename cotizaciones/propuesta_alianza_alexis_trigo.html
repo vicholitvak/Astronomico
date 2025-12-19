@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propuesta de Alianza - One Sky Expeditions × Alexis Trigo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 50%, #0d1b2a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .logo-text {
+            font-size: 1.4em;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .logo-text.atacama {
+            color: #64b5f6;
+        }
+
+        .logo-text.alexis {
+            color: #ffd54f;
+        }
+
+        .multiply {
+            font-size: 2em;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        h1 {
+            font-size: 2.2em;
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #64b5f6, #ffd54f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 1.1em;
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+        }
+
+        .section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            font-size: 0.85em;
+            letter-spacing: 3px;
+            color: #64b5f6;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .vision-box {
+            background: rgba(100, 181, 246, 0.1);
+            border-left: 3px solid #64b5f6;
+            padding: 25px;
+            border-radius: 0 10px 10px 0;
+            font-size: 1.15em;
+            line-height: 1.7;
+        }
+
+        .formula {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .formula-item {
+            text-align: center;
+            padding: 15px 25px;
+        }
+
+        .formula-item .icon {
+            font-size: 2em;
+            margin-bottom: 8px;
+        }
+
+        .formula-item .label {
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .formula-item .value {
+            font-size: 1em;
+            color: #fff;
+            margin-top: 5px;
+        }
+
+        .formula-sign {
+            font-size: 1.5em;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .product-box {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(100, 181, 246, 0.1) 100%);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .product-name {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #ffd54f;
+            margin-bottom: 5px;
+        }
+
+        .product-subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 20px;
+        }
+
+        .product-price {
+            font-size: 2.5em;
+            font-weight: 300;
+            color: #fff;
+        }
+
+        .product-price span {
+            font-size: 0.4em;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .feature-icon {
+            font-size: 1.2em;
+        }
+
+        .numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            text-align: center;
+        }
+
+        .number-box {
+            padding: 25px 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .number-value {
+            font-size: 2em;
+            font-weight: 300;
+            color: #64b5f6;
+        }
+
+        .number-label {
+            font-size: 0.75em;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .content-strategy {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .content-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+        }
+
+        .content-item .num {
+            background: linear-gradient(135deg, #64b5f6, #ffd54f);
+            color: #0a0a1a;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .content-item .text {
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .cta-box {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(100, 181, 246, 0.15) 0%, rgba(255, 215, 79, 0.15) 100%);
+            border-radius: 15px;
+            margin-top: 10px;
+        }
+
+        .cta-text {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.85em;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px;
+            }
+
+            .container {
+                padding: 30px 20px;
+            }
+
+            .features-grid,
+            .content-strategy {
+                grid-template-columns: 1fr;
+            }
+
+            .numbers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .formula {
+                flex-direction: column;
+            }
+
+            .formula-sign {
+                transform: rotate(90deg);
+            }
+        }
+
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            body {
+                background: #0a0a1a !important;
+            }
+
+            .container {
+                background: rgba(255, 255, 255, 0.03) !important;
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logos">
+                <span class="logo-text atacama">ONE SKY EXPEDITIONS</span>
+                <span class="multiply">×</span>
+                <span class="logo-text alexis">ALEXIS TRIGO</span>
+            </div>
+            <h1>PROPUESTA DE ALIANZA</h1>
+            <p class="tagline">Creemos juntos LA experiencia astronómica de Sudamérica</p>
+        </div>
+
+        <div class="section">
+            <div class="section-title">La Visión</div>
+            <div class="vision-box">
+                Combinar tu expertise en astrofotografía de alto nivel con tecnología de observación astronómica de última generación, para crear <strong>expediciones premium a Uyuni</strong> que generen contenido viral y atraigan clientes internacionales de alto valor.
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">La Fórmula</div>
+            <div class="formula">
+                <div class="formula-item">
+                    <div class="icon">📸</div>
+                    <div class="label">Tu expertise</div>
+                    <div class="value">Astrofotografía</div>
+                </div>
+                <span class="formula-sign">+</span>
+                <div class="formula-item">
+                    <div class="icon">🔭</div>
+                    <div class="label">Mi aporte</div>
+                    <div class="value">Telescopio Inteligente</div>
+                </div>
+                <span class="formula-sign">+</span>
+                <div class="formula-item">
+                    <div class="icon">🚙</div>
+                    <div class="label">Logística</div>
+                    <div class="value">Transporte 4×4</div>
+                </div>
+                <span class="formula-sign">=</span>
+                <div class="formula-item">
+                    <div class="icon">✨</div>
+                    <div class="label">Resultado</div>
+                    <div class="value">Experiencia Única</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">El Producto</div>
+            <div class="product-box">
+                <div class="product-name">Expedición Astronómica Uyuni</div>
+                <div class="product-subtitle">3-4 noches · Grupo reducido · Experiencia exclusiva</div>
+                <div class="product-price">$2,500 - $3,500 <span>USD / persona</span></div>
+
+                <div class="features-grid">
+                    <div class="feature">
+                        <span class="feature-icon">🌌</span>
+                        <span>Astrofotografía profesional guiada</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">🔭</span>
+                        <span>Observación con telescopio Unistellar</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">🚙</span>
+                        <span>Transporte 4×4 San Pedro - Uyuni</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">🏨</span>
+                        <span>Alojamiento hotel de sal</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">📷</span>
+                        <span>Fotos profesionales incluidas</span>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">⭐</span>
+                        <span>Cielo Bortle Class 1</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Los Números</div>
+            <div class="numbers-grid">
+                <div class="number-box">
+                    <div class="number-value">$15K+</div>
+                    <div class="number-label">Por expedición (6 pax)</div>
+                </div>
+                <div class="number-box">
+                    <div class="number-value">12</div>
+                    <div class="number-label">Expediciones / año</div>
+                </div>
+                <div class="number-box">
+                    <div class="number-value">$180K</div>
+                    <div class="number-label">Potencial anual USD</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Contenido Visual por Temporada</div>
+            <div class="content-strategy">
+                <div class="content-item">
+                    <span class="num">1</span>
+                    <span class="text"><strong>Feb - Abr</strong> - Centro galáctico emergiendo al amanecer, Carina en su mejor momento</span>
+                </div>
+                <div class="content-item">
+                    <span class="num">2</span>
+                    <span class="text"><strong>May - Jul</strong> - Centro galáctico en su punto más alto, noches más largas</span>
+                </div>
+                <div class="content-item">
+                    <span class="num">3</span>
+                    <span class="text"><strong>Ago - Oct</strong> - Vía Láctea horizontal sobre el salar, reflejos perfectos</span>
+                </div>
+                <div class="content-item">
+                    <span class="num">4</span>
+                    <span class="text"><strong>Nov - Ene</strong> - Nubes de Magallanes, cielo austral profundo</span>
+                </div>
+            </div>
+            <div style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 10px; font-size: 0.9em; color: rgba(255,255,255,0.7);">
+                <strong style="color: #64b5f6;">El telescopio como complemento:</strong> Mientras tú capturas la foto de larga exposición, el telescopio muestra en tiempo real nebulosas y galaxias del espacio profundo. Contenido extra para los clientes y material único para reels.
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Mi Aporte</div>
+            <div class="features-grid">
+                <div class="feature">
+                    <span class="feature-icon">🔭</span>
+                    <span>Telescopio inteligente Unistellar eVscope</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🎓</span>
+                    <span>Guía astronómico experto</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">📱</span>
+                    <span>Imágenes del telescopio para contenido</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🚙</span>
+                    <span>Transporte 4×4 en 4Runner, 2 disponibles</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="cta-box">
+                <p class="cta-text">
+                    ¿Qué te parece? Juntémonos a conversar los detalles.<br>
+                    <strong>Creo que podemos armar algo muy bueno juntos.</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>ONE SKY EXPEDITIONS · San Pedro de Atacama, Chile</p>
+            <p style="margin-top: 5px;">Diciembre 2025</p>
+        </div>
+    </div>
+</body>
+</html>

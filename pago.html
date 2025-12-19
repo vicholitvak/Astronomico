@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar Reserva - Atacama Dark Sky</title>
+    <link rel="icon" type="image/webp" href="images/Nightskylogo.webp">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo img {
+            width: 120px;
+            height: auto;
+        }
+        .card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .card h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .card .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        .booking-details {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            color: #888;
+            font-size: 14px;
+        }
+        .detail-value {
+            font-weight: 600;
+            text-align: right;
+        }
+        .total-row {
+            background: rgba(0, 212, 255, 0.1);
+            margin: -20px;
+            margin-top: 15px;
+            padding: 20px;
+            border-radius: 0 0 12px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .total-label {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .total-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #00d4ff;
+        }
+        .pay-button {
+            width: 100%;
+            padding: 18px;
+            font-size: 20px;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #00c853 0%, #00a844 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(0, 200, 83, 0.4);
+        }
+        .pay-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 200, 83, 0.5);
+        }
+        .pay-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .pay-button.loading {
+            background: #666;
+        }
+        .secure-note {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #888;
+        }
+        .secure-note img {
+            height: 20px;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+        .whatsapp-help {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .whatsapp-help a {
+            color: #25D366;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .error-message {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff4444;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .edit-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .edit-link a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .participant-list {
+            margin-top: 5px;
+            font-size: 13px;
+            color: #ccc;
+        }
+        @media (max-width: 480px) {
+            .card { padding: 20px; }
+            .total-value { font-size: 24px; }
+            .pay-button { font-size: 18px; padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="images/Nightskylogo.webp" alt="Atacama Dark Sky">
+        </div>
+
+        <div class="card">
+            <h1>Confirmar Reserva</h1>
+            <p class="subtitle">Revisa los datos y completa el pago</p>
+
+            <div id="error-container"></div>
+
+            <div class="booking-details" id="booking-details">
+                <div class="detail-row">
+                    <span class="detail-label">Tour</span>
+                    <span class="detail-value" id="tour-name">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Fecha</span>
+                    <span class="detail-value" id="tour-date">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Hora</span>
+                    <span class="detail-value" id="tour-time">21:00 hrs</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Personas</span>
+                    <span class="detail-value" id="tour-persons">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Nombre</span>
+                    <span class="detail-value" id="customer-name">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email</span>
+                    <span class="detail-value" id="customer-email">-</span>
+                </div>
+                <div class="total-row">
+                    <span class="total-label">Total a pagar</span>
+                    <span class="total-value" id="total-price">$0</span>
+                </div>
+            </div>
+
+            <button class="pay-button" id="pay-button" onclick="processPayment()">
+                <span id="button-text">💳 Pagar con MercadoPago</span>
+            </button>
+
+            <p class="secure-note">
+                🔒 Pago 100% seguro con MercadoPago
+            </p>
+
+            <div class="edit-link">
+                <a href="/#tours">¿Datos incorrectos? Modificar reserva</a>
+            </div>
+
+            <div class="whatsapp-help">
+                <p>¿Necesitas ayuda?</p>
+                <a href="https://wa.me/56935134669" target="_blank">💬 WhatsApp +56 9 3513 4669</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de precios
+        const TOUR_PRICES = {
+            regular: 42000,
+            private: 200000,
+            astrophoto: 120000
+        };
+
+        const TOUR_NAMES = {
+            regular: 'Tour Astronómico Regular',
+            private: 'Tour Privado VIP',
+            astrophoto: 'Tour de Astrofotografía'
+        };
+
+        // Obtener parámetros de URL
+        const params = new URLSearchParams(window.location.search);
+        const bookingData = {
+            tour: params.get('tour') || 'regular',
+            date: params.get('date'),
+            persons: parseInt(params.get('persons')) || 1,
+            name: params.get('name') || '',
+            email: params.get('email') || '',
+            phone: params.get('phone') || '',
+            bookingId: params.get('booking_id') || ''
+        };
+
+        // Validar datos mínimos
+        function validateData() {
+            if (!bookingData.date) {
+                showError('Falta la fecha del tour. Por favor usa el formulario de reserva.');
+                return false;
+            }
+            if (!bookingData.name) {
+                showError('Falta el nombre. Por favor usa el formulario de reserva.');
+                return false;
+            }
+            if (!bookingData.email) {
+                showError('Falta el email. Por favor usa el formulario de reserva.');
+                return false;
+            }
+            return true;
+        }
+
+        function showError(message) {
+            document.getElementById('error-container').innerHTML = `
+                <div class="error-message">${message}</div>
+            `;
+            document.getElementById('pay-button').disabled = true;
+        }
+
+        // Calcular precio
+        function calculatePrice() {
+            const basePrice = TOUR_PRICES[bookingData.tour] || TOUR_PRICES.regular;
+            if (bookingData.tour === 'private') {
+                return basePrice;
+            }
+            return basePrice * bookingData.persons;
+        }
+
+        // Formatear fecha
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr + 'T00:00:00');
+            return date.toLocaleDateString('es-CL', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // Mostrar datos en la página
+        function displayBookingData() {
+            document.getElementById('tour-name').textContent = TOUR_NAMES[bookingData.tour] || 'Tour Astronómico';
+            document.getElementById('tour-date').textContent = formatDate(bookingData.date);
+            document.getElementById('tour-persons').textContent = bookingData.persons + (bookingData.persons === 1 ? ' persona' : ' personas');
+            document.getElementById('customer-name').textContent = bookingData.name || '-';
+            document.getElementById('customer-email').textContent = bookingData.email || '-';
+
+            const total = calculatePrice();
+            document.getElementById('total-price').textContent = '$' + total.toLocaleString('es-CL') + ' CLP';
+        }
+
+        // Procesar pago
+        async function processPayment() {
+            const button = document.getElementById('pay-button');
+            const buttonText = document.getElementById('button-text');
+
+            button.disabled = true;
+            button.classList.add('loading');
+            buttonText.innerHTML = '<div class="spinner"></div> Procesando...';
+
+            try {
+                // Crear preferencia de pago en MercadoPago
+                const response = await fetch('/api/create-preference', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        tourType: bookingData.tour,
+                        date: bookingData.date,
+                        persons: bookingData.persons,
+                        customerName: bookingData.name,
+                        customerEmail: bookingData.email,
+                        customerPhone: bookingData.phone,
+                        participantNames: [bookingData.name], // Al menos el nombre principal
+                        source: 'direct_payment_link'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.init_point) {
+                    // Redirigir a MercadoPago
+                    window.location.href = data.init_point;
+                } else {
+                    throw new Error(data.error || 'Error al crear el pago');
+                }
+            } catch (error) {
+                console.error('Payment error:', error);
+                button.disabled = false;
+                button.classList.remove('loading');
+                buttonText.textContent = '💳 Pagar con MercadoPago';
+                showError('Error al procesar el pago. Por favor intenta de nuevo o contáctanos por WhatsApp.');
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            if (validateData()) {
+                displayBookingData();
+            }
+        });
+    </script>
+</body>
+</html>

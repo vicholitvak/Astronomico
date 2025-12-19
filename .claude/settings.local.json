@@ -24,9 +24,24 @@
       "Bash(find:*)",
       "Bash(dir:*)",
       "mcp__google-analytics__runReport",
-      "mcp__google-analytics__getUserBehavior"
+      "mcp__google-analytics__getUserBehavior",
+      "Bash(npx sharp-cli:*)",
+      "Bash(ls:*)",
+      "mcp__google-analytics__getPageViews",
+      "mcp__vercel__list_deployments",
+      "Bash(cat:*)",
+      "mcp__google-analytics__getActiveUsers",
+      "Bash(pip:*)",
+      "Bash(pipx install:*)",
+      "Bash(curl:*)",
+      "WebFetch(domain:atacamadarksky.cl)",
+      "mcp__atacama-dark-sky__get_deployment"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
-  }
+  },
+  "enabledMcpjsonServers": [
+    "google-analytics"
+  ],
+  "enableAllProjectMcpServers": true
 }

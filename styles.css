@@ -1083,12 +1083,14 @@ section {
     left: 0;
     width: 100%;
     opacity: 0;
-    transition: transform 0.5s ease, opacity 0.5s ease;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
-.testimonial-slide:first-child {
+.testimonial-slide.active {
     position: relative;
     opacity: 1;
+    visibility: visible;
 }
 
 .testimonial-content {
@@ -1097,6 +1099,50 @@ section {
     background: rgba(255, 255, 255, 0.03);
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.testimonial-stars {
+    margin-bottom: 15px;
+}
+
+.testimonial-stars .stars {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.testimonial-stars .stars i {
+    color: #FFD700;
+    font-size: 1.2rem;
+}
+
+.testimonial-title {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.testimonial-content blockquote {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.9);
+    font-style: italic;
+    margin: 0 0 20px 0;
+}
+
+.testimonial-author {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.author-name {
+    font-weight: 600;
+    color: var(--primary-color);
 }
 
 /* Navigation Buttons */
@@ -3369,7 +3415,7 @@ blockquote {
     justify-content: center;
 }
 
-.modal-content {
+.gallery-modal .modal-content {
     position: relative;
     max-width: 90vw;
     max-height: 90vh;
@@ -3758,7 +3804,7 @@ blockquote {
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(8px);
     display: flex !important;
-    align-items: center !important;
+    align-items: flex-start !important;
     justify-content: center !important;
     z-index: var(--z-modal) !important;
     padding: 2rem 1rem;
@@ -3780,14 +3826,14 @@ blockquote {
     border-radius: 16px;
     max-width: 600px;
     width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
+    max-height: none;
+    overflow-y: visible;
     overflow-x: hidden;
     border: 2px solid rgba(0, 158, 227, 0.3);
     box-shadow: 0 20px 60px rgba(0, 158, 227, 0.2);
     position: relative !important;
     animation: slideUp 0.3s ease;
-    margin: auto;
+    margin: 2rem auto;
     padding-bottom: var(--spacing-md);
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 158, 227, 0.5) transparent;
@@ -3970,16 +4016,37 @@ body.modal-open {
     width: 100vw !important;
     height: 100vh !important;
     display: flex !important;
-    align-items: center !important;
+    align-items: flex-start !important;
     justify-content: center !important;
-    z-index: 9999 !important;
+    z-index: 99999 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 2rem 1rem !important;
+    box-sizing: border-box !important;
+}
+
+#mp-booking-modal > .modal-content,
+#mp-booking-modal.modal-overlay > .modal-content {
+    max-height: none !important;
+    height: auto !important;
+    overflow-y: visible !important;
+    overflow-x: hidden !important;
+    margin: 0 auto 2rem auto !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+    width: 100% !important;
+    max-width: 600px !important;
 }
 
 /* Responsive adjustments for modal */
 @media (max-width: 768px) {
     .modal-overlay .modal-content {
         margin: var(--spacing-sm);
-        max-height: 95vh;
+        max-height: none;
+    }
+
+    #mp-booking-modal .modal-content {
+        margin: 0 var(--spacing-sm) 2rem var(--spacing-sm) !important;
     }
 
     #mp-booking-form {

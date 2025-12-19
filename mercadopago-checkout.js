@@ -179,6 +179,7 @@ function showBookingModal(tourType, price, tourName) {
                         <p><strong>${t('checkout.tour')}</strong> ${tourName}</p>
                         <p id="base-price"><strong>${tourType === 'private' ? t('checkout.fixedPrice') : t('checkout.pricePerPerson')}</strong> $${parseInt(price).toLocaleString('es-CL')} CLP</p>
                         <p id="subtotal-price" style="display:none;"><strong>${t('checkout.subtotal')}:</strong> $0 CLP</p>
+                        <p id="mp-fee" style="display:none; color: #6b7280; font-size: 0.9rem;"><strong>${t('checkout.mpFee')}</strong> $0 CLP</p>
                         <p id="total-price"><strong>${t('checkout.totalToPay')}</strong> $0 CLP</p>
                     </div>
 
@@ -258,15 +259,20 @@ function showBookingModal(tourType, price, tourName) {
     personsSelect.addEventListener('change', function() {
         const persons = parseInt(this.value) || 0;
         const basePrice = parseInt(price);
+        const MP_COMMISSION_RATE = 0.0464; // 4.64% = 3.9% + IVA
 
-        let total;
+        let subtotal;
         if (tourType === 'private') {
             // Tour privado: precio fijo sin importar personas (1-6)
-            total = basePrice;
+            subtotal = basePrice;
         } else {
             // Tours regular y astrofoto: precio por persona
-            total = basePrice * persons;
+            subtotal = basePrice * persons;
         }
+
+        // Calcular tarifa de MercadoPago
+        const totalWithFee = Math.round(subtotal / (1 - MP_COMMISSION_RATE));
+        const mpFee = totalWithFee - subtotal;
 
         // Show/hide breakdown
         if (persons > 0) {
@@ -274,12 +280,17 @@ function showBookingModal(tourType, price, tourName) {
                 const personText = persons > 1 ? t('checkout.persons') : t('checkout.person');
                 document.getElementById('subtotal-price').style.display = 'block';
                 document.getElementById('subtotal-price').innerHTML =
-                    `<strong>${t('checkout.subtotal')} (${persons} ${personText}):</strong> $${total.toLocaleString('es-CL')} CLP`;
+                    `<strong>${t('checkout.subtotal')} (${persons} ${personText}):</strong> $${subtotal.toLocaleString('es-CL')} CLP`;
             }
+            // Mostrar tarifa de MercadoPago
+            document.getElementById('mp-fee').style.display = 'block';
+            document.getElementById('mp-fee').innerHTML =
+                `<strong>${t('checkout.mpFee')}</strong> $${mpFee.toLocaleString('es-CL')} CLP`;
             document.getElementById('total-price').innerHTML =
-                `<strong>${t('checkout.totalToPay')}</strong> $${total.toLocaleString('es-CL')} CLP`;
+                `<strong>${t('checkout.totalToPay')}</strong> $${totalWithFee.toLocaleString('es-CL')} CLP`;
         } else {
             document.getElementById('subtotal-price').style.display = 'none';
+            document.getElementById('mp-fee').style.display = 'none';
             document.getElementById('total-price').innerHTML =
                 `<strong>${t('checkout.totalToPay')}</strong> $0 CLP`;
         }
