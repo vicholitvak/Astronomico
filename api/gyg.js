@@ -92,6 +92,17 @@ const PRODUCTS_TIME_PERIOD = {
 // Default product for backwards compatibility
 const DEFAULT_PRODUCT_ID = '1152147';
 
+// EUR to CLP exchange rate (approximate, update periodically)
+const EUR_TO_CLP = 1072;
+
+// Calculate payment amount in CLP from EUR cents
+function calculatePaymentCLP(priceInCentsEUR, persons) {
+  // priceInCentsEUR is in cents (e.g., 5000 = €50.00)
+  const priceEUR = priceInCentsEUR / 100;
+  const totalEUR = priceEUR * persons;
+  return Math.round(totalEUR * EUR_TO_CLP);
+}
+
 // ============ CHILE TIMEZONE HELPER ============
 // Chile DST: Summer time (CLST, -03:00) from first Sunday of September to first Sunday of April
 //            Winter time (CLT, -04:00) from first Sunday of April to first Sunday of September
@@ -732,10 +743,12 @@ async function handleBook(req, res) {
     const phone = travelerInfo.phoneNumber || existingReservation.phone;
 
     // Update persons from request bookingItems
+    const paymentAmount1 = calculatePaymentCLP(product.pricePerPerson, totalPersons || existingReservation.persons);
     await query(
       `UPDATE bookings SET
         status = 'confirmed',
         payment_status = 'paid',
+        payment_amount = $8,
         name = $2,
         email = $3,
         phone = $4,
@@ -744,7 +757,7 @@ async function handleBook(req, res) {
         message = COALESCE(message, '') || $7,
         updated_at = NOW()
       WHERE id = $1`,
-      [existingReservation.id, name, email, phone, travelerHotel || null, totalPersons || existingReservation.persons, comment ? `\nComment: ${comment}` : '']
+      [existingReservation.id, name, email, phone, travelerHotel || null, totalPersons || existingReservation.persons, comment ? `\nComment: ${comment}` : '', paymentAmount1]
     );
 
     // Generate tickets using request bookingItems count
@@ -789,10 +802,12 @@ async function handleBook(req, res) {
       const email = travelerInfo.email || existing.email;
       const phone = travelerInfo.phoneNumber || existing.phone;
 
+      const paymentAmount2 = calculatePaymentCLP(product.pricePerPerson, totalPersons || existing.persons);
       await query(
         `UPDATE bookings SET
           status = 'confirmed',
           payment_status = 'paid',
+          payment_amount = $8,
           name = $2,
           email = $3,
           phone = $4,
@@ -801,7 +816,7 @@ async function handleBook(req, res) {
           message = COALESCE(message, '') || $7,
           updated_at = NOW()
         WHERE id = $1`,
-        [existing.id, name, email, phone, travelerHotel || null, totalPersons || existing.persons, comment ? `\nComment: ${comment}` : '']
+        [existing.id, name, email, phone, travelerHotel || null, totalPersons || existing.persons, comment ? `\nComment: ${comment}` : '', paymentAmount2]
       );
     }
 
@@ -850,6 +865,7 @@ async function handleBook(req, res) {
   ].filter(Boolean).join('\n');
 
   const bookingId = generateGygBookingId();
+  const paymentAmount3 = calculatePaymentCLP(product.pricePerPerson, totalPersons || 1);
   await insert('bookings', {
     booking_id: bookingId,
     date,
@@ -864,6 +880,7 @@ async function handleBook(req, res) {
     source: 'gyg',
     payment_method: 'getyourguide',
     payment_status: 'paid',
+    payment_amount: paymentAmount3,
     message: notes,
     gyg_reference: gygBookingReference,
     created_at: new Date().toISOString()
