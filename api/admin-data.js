@@ -634,7 +634,416 @@ export default async function handler(req, res) {
       }
     }
 
-    return res.status(400).json({ success: false, error: 'Invalid type. Use ?type=photos, ?type=blocked, ?type=income, ?type=conversion, ?type=calendar, or ?type=sync-payments' });
+    // ============ GOOGLE ANALYTICS ============
+    if (type === 'ga-analytics') {
+      if (req.method === 'GET') {
+        const { start_date, end_date } = req.query;
+
+        // Default: último mes
+        const endDate = end_date || new Date().toISOString().split('T')[0];
+        const startDate = start_date || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+        const propertyId = process.env.GA4_PROPERTY_ID;
+
+        if (!propertyId) {
+          return res.status(200).json({
+            success: false,
+            error: 'GA4_PROPERTY_ID not configured',
+            message: 'Add GA4_PROPERTY_ID to your environment variables'
+          });
+        }
+
+        if (!process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
+          return res.status(200).json({
+            success: false,
+            error: 'GOOGLE_SERVICE_ACCOUNT_KEY not configured'
+          });
+        }
+
+        try {
+          const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+
+          // Fix private key formatting
+          if (credentials.private_key && !credentials.private_key.includes('\n')) {
+            credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
+          }
+
+          const auth = new google.auth.JWT({
+            email: credentials.client_email,
+            key: credentials.private_key,
+            scopes: ['https://www.googleapis.com/auth/analytics.readonly']
+          });
+
+          await auth.authorize();
+
+          const analyticsData = google.analyticsdata({ version: 'v1beta', auth });
+
+          // Ejecutar queries en paralelo
+          const [sessionsReport, trafficSourcesReport, pagesReport, geoReport] = await Promise.all([
+            // 1. Sessions y usuarios
+            analyticsData.properties.runReport({
+              property: `properties/${propertyId}`,
+              requestBody: {
+                dateRanges: [{ startDate, endDate }],
+                metrics: [
+                  { name: 'sessions' },
+                  { name: 'totalUsers' },
+                  { name: 'newUsers' },
+                  { name: 'bounceRate' },
+                  { name: 'averageSessionDuration' },
+                  { name: 'screenPageViews' }
+                ],
+                dimensions: []
+              }
+            }),
+
+            // 2. Fuentes de tráfico
+            analyticsData.properties.runReport({
+              property: `properties/${propertyId}`,
+              requestBody: {
+                dateRanges: [{ startDate, endDate }],
+                dimensions: [{ name: 'sessionSource' }, { name: 'sessionMedium' }],
+                metrics: [{ name: 'sessions' }, { name: 'totalUsers' }],
+                limit: 10,
+                orderBys: [{ metric: { metricName: 'sessions' }, desc: true }]
+              }
+            }),
+
+            // 3. Páginas más vistas
+            analyticsData.properties.runReport({
+              property: `properties/${propertyId}`,
+              requestBody: {
+                dateRanges: [{ startDate, endDate }],
+                dimensions: [{ name: 'pagePath' }],
+                metrics: [{ name: 'screenPageViews' }, { name: 'totalUsers' }, { name: 'averageSessionDuration' }],
+                limit: 15,
+                orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }]
+              }
+            }),
+
+            // 4. Geografía
+            analyticsData.properties.runReport({
+              property: `properties/${propertyId}`,
+              requestBody: {
+                dateRanges: [{ startDate, endDate }],
+                dimensions: [{ name: 'country' }],
+                metrics: [{ name: 'sessions' }, { name: 'totalUsers' }],
+                limit: 15,
+                orderBys: [{ metric: { metricName: 'sessions' }, desc: true }]
+              }
+            })
+          ]);
+
+          // Procesar resultados
+          const parseMetrics = (row) => {
+            return row.metricValues.map(m => parseFloat(m.value) || 0);
+          };
+
+          const parseDimensionRow = (row) => {
+            return {
+              dimensions: row.dimensionValues.map(d => d.value),
+              metrics: parseMetrics(row)
+            };
+          };
+
+          // Sessions overview
+          const sessionsData = sessionsReport.data.rows?.[0];
+          const overview = sessionsData ? {
+            sessions: parseFloat(sessionsData.metricValues[0]?.value) || 0,
+            totalUsers: parseFloat(sessionsData.metricValues[1]?.value) || 0,
+            newUsers: parseFloat(sessionsData.metricValues[2]?.value) || 0,
+            bounceRate: (parseFloat(sessionsData.metricValues[3]?.value) * 100).toFixed(1) || 0,
+            avgSessionDuration: parseFloat(sessionsData.metricValues[4]?.value) || 0,
+            pageViews: parseFloat(sessionsData.metricValues[5]?.value) || 0
+          } : { sessions: 0, totalUsers: 0, newUsers: 0, bounceRate: 0, avgSessionDuration: 0, pageViews: 0 };
+
+          // Traffic sources
+          const trafficSources = (trafficSourcesReport.data.rows || []).map(row => ({
+            source: row.dimensionValues[0]?.value || 'direct',
+            medium: row.dimensionValues[1]?.value || 'none',
+            sessions: parseFloat(row.metricValues[0]?.value) || 0,
+            users: parseFloat(row.metricValues[1]?.value) || 0
+          }));
+
+          // Top pages
+          const topPages = (pagesReport.data.rows || []).map(row => ({
+            path: row.dimensionValues[0]?.value || '/',
+            pageViews: parseFloat(row.metricValues[0]?.value) || 0,
+            users: parseFloat(row.metricValues[1]?.value) || 0,
+            avgDuration: parseFloat(row.metricValues[2]?.value) || 0
+          }));
+
+          // Geography
+          const geography = (geoReport.data.rows || []).map(row => ({
+            country: row.dimensionValues[0]?.value || 'Unknown',
+            sessions: parseFloat(row.metricValues[0]?.value) || 0,
+            users: parseFloat(row.metricValues[1]?.value) || 0
+          }));
+
+          // Calcular tasa de conversión comparando con reservas de la BD
+          const bookingsInPeriod = await pool.query(`
+            SELECT COUNT(*) as total_bookings
+            FROM bookings
+            WHERE created_at >= $1 AND created_at <= $2
+            AND status IN ('confirmed', 'completed')
+          `, [startDate, endDate]);
+
+          const totalBookings = parseInt(bookingsInPeriod.rows[0]?.total_bookings) || 0;
+          const conversionRate = overview.sessions > 0
+            ? ((totalBookings / overview.sessions) * 100).toFixed(2)
+            : 0;
+
+          return res.status(200).json({
+            success: true,
+            dateRange: { start: startDate, end: endDate },
+            overview: {
+              ...overview,
+              conversionRate,
+              totalBookings
+            },
+            trafficSources,
+            topPages,
+            geography
+          });
+
+        } catch (error) {
+          console.error('GA Analytics error:', error);
+          return res.status(200).json({
+            success: false,
+            error: error.message,
+            code: error.code
+          });
+        }
+      }
+    }
+
+    // ============ GYG ANALYTICS ============
+    if (type === 'gyg-analytics') {
+      if (req.method === 'GET') {
+        const { start_date, end_date } = req.query;
+
+        // Default: último trimestre
+        const endDate = end_date || new Date().toISOString().split('T')[0];
+        const startDate = start_date || new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+        // Ejecutar todas las queries en paralelo
+        const [channelResult, nationalitiesResult, hotelsResult, groupSizeResult, advanceResult, timesResult, weeklyResult, financialResult, trendResult] = await Promise.all([
+          // 1. Comparativa de canales
+          pool.query(`
+            SELECT
+              COALESCE(source, 'website') as source,
+              COUNT(*) as total_bookings,
+              COALESCE(SUM(persons), 0) as total_persons,
+              COALESCE(SUM(payment_amount), 0) as total_revenue,
+              ROUND(AVG(persons)::numeric, 2) as avg_group_size,
+              COUNT(*) FILTER (WHERE status = 'confirmed') as confirmed,
+              COUNT(*) FILTER (WHERE status = 'cancelled') as cancelled
+            FROM bookings
+            WHERE date >= $1 AND date <= $2
+              AND status IN ('confirmed', 'completed')
+            GROUP BY COALESCE(source, 'website')
+            ORDER BY total_bookings DESC
+          `, [startDate, endDate]),
+
+          // 2. Nacionalidades (del prefijo telefónico)
+          pool.query(`
+            SELECT
+              CASE
+                WHEN phone LIKE '+33%' OR phone LIKE '0033%' THEN 'Francia'
+                WHEN phone LIKE '+49%' OR phone LIKE '0049%' THEN 'Alemania'
+                WHEN phone LIKE '+44%' OR phone LIKE '0044%' THEN 'Reino Unido'
+                WHEN phone LIKE '+1%' THEN 'USA/Canadá'
+                WHEN phone LIKE '+34%' OR phone LIKE '0034%' THEN 'España'
+                WHEN phone LIKE '+39%' OR phone LIKE '0039%' THEN 'Italia'
+                WHEN phone LIKE '+31%' OR phone LIKE '0031%' THEN 'Países Bajos'
+                WHEN phone LIKE '+32%' OR phone LIKE '0032%' THEN 'Bélgica'
+                WHEN phone LIKE '+41%' OR phone LIKE '0041%' THEN 'Suiza'
+                WHEN phone LIKE '+61%' OR phone LIKE '0061%' THEN 'Australia'
+                WHEN phone LIKE '+56%' OR phone LIKE '56%' THEN 'Chile'
+                WHEN phone LIKE '+55%' OR phone LIKE '0055%' THEN 'Brasil'
+                WHEN phone LIKE '+54%' OR phone LIKE '0054%' THEN 'Argentina'
+                WHEN phone LIKE '+52%' OR phone LIKE '0052%' THEN 'México'
+                WHEN phone LIKE '+57%' OR phone LIKE '0057%' THEN 'Colombia'
+                WHEN phone LIKE '+81%' OR phone LIKE '0081%' THEN 'Japón'
+                WHEN phone LIKE '+82%' OR phone LIKE '0082%' THEN 'Corea del Sur'
+                WHEN phone LIKE '+86%' OR phone LIKE '0086%' THEN 'China'
+                WHEN phone LIKE '+91%' OR phone LIKE '0091%' THEN 'India'
+                WHEN phone LIKE '+972%' THEN 'Israel'
+                WHEN phone LIKE '+48%' THEN 'Polonia'
+                WHEN phone LIKE '+420%' THEN 'República Checa'
+                WHEN phone LIKE '+351%' THEN 'Portugal'
+                WHEN phone LIKE '+46%' THEN 'Suecia'
+                WHEN phone LIKE '+47%' THEN 'Noruega'
+                WHEN phone LIKE '+45%' THEN 'Dinamarca'
+                WHEN phone LIKE '+358%' THEN 'Finlandia'
+                WHEN phone LIKE '+43%' THEN 'Austria'
+                ELSE 'Otro'
+              END as country,
+              COUNT(*) as bookings,
+              COALESCE(SUM(persons), 0) as total_persons
+            FROM bookings
+            WHERE COALESCE(source, 'website') = 'gyg'
+              AND date >= $1 AND date <= $2
+              AND status IN ('confirmed', 'completed')
+            GROUP BY country
+            ORDER BY bookings DESC
+            LIMIT 15
+          `, [startDate, endDate]),
+
+          // 3. Hoteles frecuentes
+          pool.query(`
+            SELECT
+              COALESCE(NULLIF(TRIM(accommodation), ''), 'No especificado') as hotel,
+              COUNT(*) as bookings,
+              COALESCE(SUM(persons), 0) as guests
+            FROM bookings
+            WHERE COALESCE(source, 'website') = 'gyg'
+              AND date >= $1 AND date <= $2
+              AND status IN ('confirmed', 'completed')
+            GROUP BY COALESCE(NULLIF(TRIM(accommodation), ''), 'No especificado')
+            ORDER BY bookings DESC
+            LIMIT 20
+          `, [startDate, endDate]),
+
+          // 4. Tamaño promedio de grupos
+          pool.query(`
+            SELECT
+              COALESCE(source, 'website') as source,
+              ROUND(AVG(persons)::numeric, 2) as avg_group_size,
+              MIN(persons) as min_group,
+              MAX(persons) as max_group,
+              PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY persons) as median_group
+            FROM bookings
+            WHERE date >= $1 AND date <= $2
+              AND status IN ('confirmed', 'completed')
+            GROUP BY COALESCE(source, 'website')
+          `, [startDate, endDate]),
+
+          // 5. Días de anticipación
+          pool.query(`
+            SELECT
+              COALESCE(source, 'website') as source,
+              ROUND(AVG(date - created_at::date)::numeric, 1) as avg_days_advance,
+              MIN(date - created_at::date) as min_days,
+              MAX(date - created_at::date) as max_days,
+              PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY date - created_at::date) as median_days
+            FROM bookings
+            WHERE date >= $1 AND date <= $2
+              AND status IN ('confirmed', 'completed')
+            GROUP BY COALESCE(source, 'website')
+          `, [startDate, endDate]),
+
+          // 6. Horarios populares
+          pool.query(`
+            SELECT
+              time,
+              COALESCE(source, 'website') as source,
+              COUNT(*) as bookings,
+              COALESCE(SUM(persons), 0) as total_persons
+            FROM bookings
+            WHERE date >= $1 AND date <= $2
+              AND status IN ('confirmed', 'completed')
+            GROUP BY time, COALESCE(source, 'website')
+            ORDER BY bookings DESC
+          `, [startDate, endDate]),
+
+          // 7. Distribución semanal
+          pool.query(`
+            SELECT
+              TO_CHAR(date, 'Day') as day_name,
+              EXTRACT(DOW FROM date) as day_number,
+              COALESCE(source, 'website') as source,
+              COUNT(*) as bookings,
+              COALESCE(SUM(persons), 0) as persons
+            FROM bookings
+            WHERE date >= $1 AND date <= $2
+              AND status IN ('confirmed', 'completed')
+            GROUP BY TO_CHAR(date, 'Day'), EXTRACT(DOW FROM date), COALESCE(source, 'website')
+            ORDER BY day_number
+          `, [startDate, endDate]),
+
+          // 8. Análisis financiero
+          pool.query(`
+            SELECT
+              COALESCE(source, 'website') as source,
+              COUNT(*) as total_bookings,
+              COALESCE(SUM(persons), 0) as total_persons,
+              COALESCE(SUM(payment_amount), 0) as gross_revenue,
+              CASE
+                WHEN COALESCE(source, 'website') = 'gyg' THEN COALESCE(SUM(payment_amount), 0) * 0.70
+                ELSE COALESCE(SUM(payment_amount), 0)
+              END as net_revenue,
+              CASE
+                WHEN COALESCE(source, 'website') = 'gyg' THEN COALESCE(SUM(payment_amount), 0) * 0.30
+                ELSE 0
+              END as commission_paid,
+              ROUND(COALESCE(AVG(payment_amount), 0)::numeric, 0) as avg_ticket
+            FROM bookings
+            WHERE date >= $1 AND date <= $2
+              AND status IN ('confirmed', 'completed')
+            GROUP BY COALESCE(source, 'website')
+          `, [startDate, endDate]),
+
+          // 9. Tendencia semanal
+          pool.query(`
+            SELECT
+              DATE_TRUNC('week', date)::date as week_start,
+              COALESCE(source, 'website') as source,
+              COUNT(*) as bookings,
+              COALESCE(SUM(persons), 0) as persons,
+              COALESCE(SUM(payment_amount), 0) as revenue
+            FROM bookings
+            WHERE date >= $1 AND date <= $2
+              AND status IN ('confirmed', 'completed')
+            GROUP BY DATE_TRUNC('week', date), COALESCE(source, 'website')
+            ORDER BY week_start, source
+          `, [startDate, endDate])
+        ]);
+
+        // Tendencia mensual para el gráfico financiero
+        const monthlyTrendResult = await pool.query(`
+          SELECT
+            DATE_TRUNC('month', date)::date as month,
+            COALESCE(source, 'website') as source,
+            COUNT(*) as bookings,
+            COALESCE(SUM(payment_amount), 0) as gross_revenue,
+            CASE
+              WHEN COALESCE(source, 'website') = 'gyg' THEN COALESCE(SUM(payment_amount), 0) * 0.70
+              ELSE COALESCE(SUM(payment_amount), 0)
+            END as net_revenue
+          FROM bookings
+          WHERE date >= $1 AND date <= $2
+            AND status IN ('confirmed', 'completed')
+          GROUP BY DATE_TRUNC('month', date), COALESCE(source, 'website')
+          ORDER BY month, source
+        `, [startDate, endDate]);
+
+        return res.status(200).json({
+          success: true,
+          dateRange: { start: startDate, end: endDate },
+          channelComparison: {
+            summary: channelResult.rows,
+            trend: trendResult.rows
+          },
+          customerAnalysis: {
+            nationalities: nationalitiesResult.rows,
+            topHotels: hotelsResult.rows,
+            groupSizes: groupSizeResult.rows
+          },
+          temporalAnalysis: {
+            advanceBooking: advanceResult.rows,
+            popularTimes: timesResult.rows,
+            weeklyDistribution: weeklyResult.rows
+          },
+          financialAnalysis: {
+            summary: financialResult.rows,
+            monthlyTrend: monthlyTrendResult.rows
+          }
+        });
+      }
+    }
+
+    return res.status(400).json({ success: false, error: 'Invalid type. Use ?type=photos, ?type=blocked, ?type=income, ?type=conversion, ?type=calendar, ?type=sync-payments, ?type=gyg-analytics, or ?type=ga-analytics' });
 
   } catch (error) {
     console.error('Admin data API error:', error);

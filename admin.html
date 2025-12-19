@@ -953,6 +953,150 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
+        /* Analytics Dashboard Styles */
+        .analytics-section {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(96, 165, 250, 0.2);
+        }
+
+        .analytics-section h3 {
+            color: #60a5fa;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .analytics-grid.three-cols {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .chart-container {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            border-radius: 12px;
+            min-height: 300px;
+            position: relative;
+        }
+
+        .breakdown-section {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            border-radius: 12px;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .breakdown-section h4 {
+            color: #e2e8f0;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .breakdown-item .label {
+            color: #cbd5e1;
+        }
+
+        .breakdown-item .value {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        /* Funnel Styles */
+        .funnel-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 30px;
+        }
+
+        .funnel-step {
+            position: relative;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .funnel-bar {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            opacity: 0.8;
+        }
+
+        .funnel-label {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+        }
+
+        .funnel-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .funnel-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .funnel-percent {
+            position: absolute;
+            right: -60px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 1200px) {
+            .analytics-grid.three-cols {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .analytics-grid,
+            .analytics-grid.three-cols {
+                grid-template-columns: 1fr;
+            }
+            .funnel-percent {
+                right: -40px;
+                font-size: 0.8rem;
+            }
+        }
+
         .review-card {
             background: rgba(30, 41, 59, 0.5);
             border: 1px solid rgba(71, 85, 105, 0.3);
@@ -1158,6 +1302,9 @@
             </button>
             <button class="tab-btn" onclick="switchTab('income')">
                 <i class="fas fa-dollar-sign"></i> Ingresos
+            </button>
+            <button class="tab-btn" onclick="switchTab('analytics')">
+                <i class="fas fa-chart-pie"></i> Analytics
             </button>
         </div>
 
@@ -1614,6 +1761,213 @@ Atacama Dark Sky</textarea>
                     <tbody id="incomeTableBody"></tbody>
                 </table>
                 <p id="noIncomeData" style="display: none; text-align: center; color: #94a3b8; padding: 40px;">No hay ingresos en este período.</p>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analyticsTab" class="tab-content">
+            <!-- Date Filters -->
+            <div class="filters-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <h2 style="color: #60a5fa; display: flex; align-items: center; gap: 10px; margin: 0;">
+                        <i class="fas fa-chart-pie"></i> Dashboard de Analytics
+                    </h2>
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <input type="date" id="analyticsStartDate" style="padding: 8px 12px;">
+                        <span style="color: #94a3b8;">hasta</span>
+                        <input type="date" id="analyticsEndDate" style="padding: 8px 12px;">
+                        <button onclick="setAnalyticsPeriod('month')" class="btn-secondary" style="padding: 8px 12px;">Mes</button>
+                        <button onclick="setAnalyticsPeriod('quarter')" class="btn-secondary" style="padding: 8px 12px;">Trimestre</button>
+                        <button onclick="setAnalyticsPeriod('year')" class="btn-secondary" style="padding: 8px 12px;">Año</button>
+                        <button onclick="loadAllAnalytics()" class="btn-primary" style="padding: 8px 15px;">
+                            <i class="fas fa-sync"></i> Actualizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI Cards Row -->
+            <div class="stats-container" id="analyticsKpiCards">
+                <div class="stat-card" style="border-color: rgba(255, 90, 95, 0.5); background: linear-gradient(135deg, rgba(255, 90, 95, 0.1) 0%, rgba(255, 90, 95, 0.05) 100%);">
+                    <div class="stat-label">Reservas GyG</div>
+                    <div class="stat-value" id="kpiGygBookings" style="color: #FF5A5F;">-</div>
+                    <div style="font-size: 0.85rem; color: #94a3b8;" id="kpiGygPercent">-% del total</div>
+                </div>
+                <div class="stat-card" style="border-color: rgba(16, 185, 129, 0.5); background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);">
+                    <div class="stat-label">Reservas Directas</div>
+                    <div class="stat-value" id="kpiDirectBookings" style="color: #10b981;">-</div>
+                    <div style="font-size: 0.85rem; color: #94a3b8;" id="kpiDirectPersons">- personas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Ingresos Netos GyG</div>
+                    <div class="stat-value" id="kpiGygNetRevenue" style="color: #fbbf24;">-</div>
+                    <div style="font-size: 0.85rem; color: #ef4444;" id="kpiGygCommission">-$0 comisión</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Ingresos Directos</div>
+                    <div class="stat-value" id="kpiDirectRevenue" style="color: #10b981;">-</div>
+                    <div style="font-size: 0.85rem; color: #94a3b8;">0% comisión</div>
+                </div>
+            </div>
+
+            <!-- Channel Comparison Section -->
+            <div class="analytics-section">
+                <h3><i class="fas fa-code-branch"></i> Comparativa de Canales</h3>
+                <div class="analytics-grid">
+                    <div class="chart-container">
+                        <canvas id="channelComparisonChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="channelTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Analysis Section -->
+            <div class="analytics-section">
+                <h3><i class="fas fa-globe"></i> Análisis de Clientes GyG</h3>
+                <div class="analytics-grid three-cols">
+                    <div class="breakdown-section">
+                        <h4>Nacionalidades</h4>
+                        <div id="nationalitiesBreakdown">
+                            <p style="color: #94a3b8; text-align: center;">Cargando...</p>
+                        </div>
+                    </div>
+                    <div class="breakdown-section">
+                        <h4>Hoteles Frecuentes</h4>
+                        <div id="hotelsBreakdown">
+                            <p style="color: #94a3b8; text-align: center;">Cargando...</p>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="groupSizeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Temporal Analysis Section -->
+            <div class="analytics-section">
+                <h3><i class="fas fa-clock"></i> Rendimiento Temporal</h3>
+                <div class="analytics-grid">
+                    <div class="chart-container">
+                        <canvas id="advanceBookingChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="weeklyDistributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Analysis Section -->
+            <div class="analytics-section">
+                <h3><i class="fas fa-dollar-sign"></i> Análisis Financiero</h3>
+                <div class="stats-container" id="financialKpis">
+                    <div class="stat-card">
+                        <div class="stat-label">Ingresos Brutos GyG</div>
+                        <div class="stat-value" id="finGrossGyg" style="color: #FF5A5F;">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Comisión GyG (30%)</div>
+                        <div class="stat-value" id="finCommission" style="color: #ef4444;">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Ingresos Netos GyG</div>
+                        <div class="stat-value" id="finNetGyg" style="color: #fbbf24;">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Ingresos Directos</div>
+                        <div class="stat-value" id="finNetDirect" style="color: #10b981;">-</div>
+                    </div>
+                </div>
+                <div class="chart-container" style="margin-top: 20px;">
+                    <canvas id="revenueComparisonChart"></canvas>
+                </div>
+                <div class="bookings-table-container" style="margin-top: 20px;">
+                    <table class="bookings-table" id="financialSummaryTable">
+                        <thead>
+                            <tr>
+                                <th>Canal</th>
+                                <th>Reservas</th>
+                                <th>Personas</th>
+                                <th>Ingresos Brutos</th>
+                                <th>Comisión</th>
+                                <th>Ingresos Netos</th>
+                                <th>Ticket Promedio</th>
+                            </tr>
+                        </thead>
+                        <tbody id="financialTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Google Analytics Section -->
+            <div class="analytics-section" id="gaSection">
+                <h3><i class="fab fa-google"></i> Google Analytics - Tráfico Web</h3>
+                <div id="gaError" style="display: none; padding: 20px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; margin-bottom: 20px;">
+                    <p style="color: #ef4444;"><i class="fas fa-exclamation-triangle"></i> <span id="gaErrorMessage"></span></p>
+                </div>
+                <div class="stats-container" id="gaKpiCards">
+                    <div class="stat-card">
+                        <div class="stat-label">Sesiones</div>
+                        <div class="stat-value" id="gaSessions" style="color: #60a5fa;">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Usuarios</div>
+                        <div class="stat-value" id="gaUsers" style="color: #60a5fa;">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Tasa de Rebote</div>
+                        <div class="stat-value" id="gaBounceRate" style="color: #fbbf24;">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Tasa de Conversión</div>
+                        <div class="stat-value" id="gaConversionRate" style="color: #10b981;">-</div>
+                    </div>
+                </div>
+                <div class="analytics-grid">
+                    <div class="chart-container">
+                        <canvas id="trafficSourcesChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="geoChart"></canvas>
+                    </div>
+                </div>
+                <div class="breakdown-section" style="margin-top: 20px;">
+                    <h4>Páginas Más Vistas</h4>
+                    <div id="topPagesBreakdown">
+                        <p style="color: #94a3b8; text-align: center;">Cargando...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conversion Funnel Section -->
+            <div class="analytics-section">
+                <h3><i class="fas fa-filter"></i> Embudo de Conversión</h3>
+                <div class="funnel-container" id="conversionFunnel">
+                    <div class="funnel-step" style="width: 100%;">
+                        <div class="funnel-bar" style="background: linear-gradient(90deg, #60a5fa, #3b82f6);"></div>
+                        <div class="funnel-label">
+                            <span class="funnel-name">Visitas Web</span>
+                            <span class="funnel-value" id="funnelVisits">-</span>
+                        </div>
+                    </div>
+                    <div class="funnel-step" style="width: 60%;">
+                        <div class="funnel-bar" style="background: linear-gradient(90deg, #fbbf24, #f59e0b);"></div>
+                        <div class="funnel-label">
+                            <span class="funnel-name">Vieron Tour</span>
+                            <span class="funnel-value" id="funnelViewed">-</span>
+                        </div>
+                        <span class="funnel-percent" id="funnelViewedPercent">-%</span>
+                    </div>
+                    <div class="funnel-step" style="width: 30%;">
+                        <div class="funnel-bar" style="background: linear-gradient(90deg, #10b981, #059669);"></div>
+                        <div class="funnel-label">
+                            <span class="funnel-name">Reservaron</span>
+                            <span class="funnel-value" id="funnelBooked">-</span>
+                        </div>
+                        <span class="funnel-percent" id="funnelBookedPercent">-%</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -3721,7 +4075,434 @@ Atacama Dark Sky`;
                     setIncomePeriod('month');
                 }
             }
+            if (tab === 'analytics') {
+                if (!document.getElementById('analyticsStartDate').value) {
+                    setAnalyticsPeriod('quarter');
+                } else {
+                    loadAllAnalytics();
+                }
+            }
         };
+
+        // ============ ANALYTICS DASHBOARD ============
+        let analyticsCharts = {};
+
+        function setAnalyticsPeriod(period) {
+            const endDate = new Date();
+            let startDate = new Date();
+
+            switch(period) {
+                case 'month': startDate.setMonth(endDate.getMonth() - 1); break;
+                case 'quarter': startDate.setMonth(endDate.getMonth() - 3); break;
+                case 'year': startDate.setFullYear(endDate.getFullYear() - 1); break;
+            }
+
+            document.getElementById('analyticsStartDate').value = startDate.toISOString().split('T')[0];
+            document.getElementById('analyticsEndDate').value = endDate.toISOString().split('T')[0];
+            loadAllAnalytics();
+        }
+
+        async function loadAllAnalytics() {
+            const startDate = document.getElementById('analyticsStartDate').value;
+            const endDate = document.getElementById('analyticsEndDate').value;
+
+            if (!startDate || !endDate) return;
+
+            // Load both in parallel
+            await Promise.all([
+                loadGygAnalytics(startDate, endDate),
+                loadGaAnalytics(startDate, endDate)
+            ]);
+        }
+
+        async function loadGygAnalytics(startDate, endDate) {
+            try {
+                const response = await fetch(`/api/admin-data?type=gyg-analytics&start_date=${startDate}&end_date=${endDate}`);
+                const data = await response.json();
+
+                if (!data.success) {
+                    console.error('Error loading GYG analytics:', data.error);
+                    return;
+                }
+
+                renderGygKpis(data);
+                renderChannelComparison(data.channelComparison);
+                renderCustomerAnalysis(data.customerAnalysis);
+                renderTemporalAnalysis(data.temporalAnalysis);
+                renderFinancialAnalysis(data.financialAnalysis);
+
+            } catch (error) {
+                console.error('Error fetching GYG analytics:', error);
+            }
+        }
+
+        async function loadGaAnalytics(startDate, endDate) {
+            try {
+                const response = await fetch(`/api/admin-data?type=ga-analytics&start_date=${startDate}&end_date=${endDate}`);
+                const data = await response.json();
+
+                const errorDiv = document.getElementById('gaError');
+                const errorMsg = document.getElementById('gaErrorMessage');
+
+                if (!data.success) {
+                    errorDiv.style.display = 'block';
+                    errorMsg.textContent = data.error || 'Error cargando Google Analytics';
+                    document.getElementById('gaSessions').textContent = '-';
+                    document.getElementById('gaUsers').textContent = '-';
+                    document.getElementById('gaBounceRate').textContent = '-';
+                    document.getElementById('gaConversionRate').textContent = '-';
+                    return;
+                }
+
+                errorDiv.style.display = 'none';
+                renderGaAnalytics(data);
+                updateConversionFunnel(data);
+
+            } catch (error) {
+                console.error('Error fetching GA analytics:', error);
+            }
+        }
+
+        function renderGygKpis(data) {
+            const summary = data.channelComparison.summary;
+            const financial = data.financialAnalysis.summary;
+
+            const gygData = summary.find(s => s.source === 'gyg') || { total_bookings: 0, total_persons: 0 };
+            const directData = summary.find(s => s.source === 'website') || { total_bookings: 0, total_persons: 0 };
+            const totalBookings = summary.reduce((sum, s) => sum + parseInt(s.total_bookings), 0);
+            const gygPercent = totalBookings > 0 ? ((gygData.total_bookings / totalBookings) * 100).toFixed(1) : 0;
+
+            const gygFin = financial.find(s => s.source === 'gyg') || { net_revenue: 0, commission_paid: 0 };
+            const directFin = financial.find(s => s.source === 'website') || { net_revenue: 0 };
+
+            document.getElementById('kpiGygBookings').textContent = gygData.total_bookings || 0;
+            document.getElementById('kpiGygPercent').textContent = `${gygPercent}% del total`;
+            document.getElementById('kpiDirectBookings').textContent = directData.total_bookings || 0;
+            document.getElementById('kpiDirectPersons').textContent = `${directData.total_persons || 0} personas`;
+            document.getElementById('kpiGygNetRevenue').textContent = formatCLP(gygFin.net_revenue || 0);
+            document.getElementById('kpiGygCommission').textContent = `-${formatCLP(gygFin.commission_paid || 0)} comisión`;
+            document.getElementById('kpiDirectRevenue').textContent = formatCLP(directFin.net_revenue || 0);
+        }
+
+        function renderChannelComparison(data) {
+            // Bar chart: Channel comparison
+            const ctx = document.getElementById('channelComparisonChart').getContext('2d');
+            if (analyticsCharts.channelComparison) analyticsCharts.channelComparison.destroy();
+
+            const sourceNames = { 'gyg': 'GetYourGuide', 'website': 'Web Directa', 'manual': 'Manual' };
+            const sources = data.summary.map(s => sourceNames[s.source] || s.source);
+            const bookings = data.summary.map(s => parseInt(s.total_bookings));
+            const persons = data.summary.map(s => parseInt(s.total_persons));
+
+            analyticsCharts.channelComparison = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sources,
+                    datasets: [
+                        { label: 'Reservas', data: bookings, backgroundColor: ['#FF5A5F', '#10b981', '#60a5fa'] },
+                        { label: 'Personas', data: persons, backgroundColor: ['#FF8A8F', '#34d399', '#93c5fd'] }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#94a3b8' } } },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8' } },
+                        y: { ticks: { color: '#94a3b8' } }
+                    }
+                }
+            });
+
+            // Line chart: Weekly trend
+            const ctxTrend = document.getElementById('channelTrendChart').getContext('2d');
+            if (analyticsCharts.channelTrend) analyticsCharts.channelTrend.destroy();
+
+            const weeks = [...new Set(data.trend.map(t => t.week_start))].sort();
+            const gygTrend = weeks.map(w => {
+                const item = data.trend.find(t => t.week_start === w && t.source === 'gyg');
+                return item ? parseInt(item.bookings) : 0;
+            });
+            const directTrend = weeks.map(w => {
+                const item = data.trend.find(t => t.week_start === w && t.source === 'website');
+                return item ? parseInt(item.bookings) : 0;
+            });
+
+            analyticsCharts.channelTrend = new Chart(ctxTrend, {
+                type: 'line',
+                data: {
+                    labels: weeks.map(w => new Date(w).toLocaleDateString('es-CL', { day: '2-digit', month: 'short' })),
+                    datasets: [
+                        { label: 'GyG', data: gygTrend, borderColor: '#FF5A5F', backgroundColor: 'rgba(255, 90, 95, 0.1)', fill: true, tension: 0.3 },
+                        { label: 'Directas', data: directTrend, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.3 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#94a3b8' } }, title: { display: true, text: 'Tendencia Semanal', color: '#e2e8f0' } },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8' } },
+                        y: { ticks: { color: '#94a3b8' } }
+                    }
+                }
+            });
+        }
+
+        function renderCustomerAnalysis(data) {
+            // Nationalities breakdown
+            document.getElementById('nationalitiesBreakdown').innerHTML = data.nationalities.length > 0
+                ? data.nationalities.slice(0, 10).map(n => `
+                    <div class="breakdown-item">
+                        <span class="label">${n.country}</span>
+                        <span class="value">${n.bookings} (${n.total_persons}p)</span>
+                    </div>
+                `).join('')
+                : '<p style="color: #94a3b8; text-align: center;">Sin datos de nacionalidades</p>';
+
+            // Hotels breakdown
+            document.getElementById('hotelsBreakdown').innerHTML = data.topHotels.length > 0
+                ? data.topHotels.slice(0, 10).map(h => `
+                    <div class="breakdown-item">
+                        <span class="label">${h.hotel}</span>
+                        <span class="value">${h.bookings}</span>
+                    </div>
+                `).join('')
+                : '<p style="color: #94a3b8; text-align: center;">Sin datos de hoteles</p>';
+
+            // Group size chart
+            const ctx = document.getElementById('groupSizeChart').getContext('2d');
+            if (analyticsCharts.groupSize) analyticsCharts.groupSize.destroy();
+
+            const sourceNames = { 'gyg': 'GyG', 'website': 'Directas', 'manual': 'Manual' };
+            analyticsCharts.groupSize = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.groupSizes.map(g => sourceNames[g.source] || g.source),
+                    datasets: [{
+                        data: data.groupSizes.map(g => parseFloat(g.avg_group_size) || 0),
+                        backgroundColor: ['#FF5A5F', '#10b981', '#60a5fa']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#94a3b8' } },
+                        title: { display: true, text: 'Tamaño Promedio de Grupo', color: '#e2e8f0' }
+                    }
+                }
+            });
+        }
+
+        function renderTemporalAnalysis(data) {
+            // Advance booking chart
+            const ctx = document.getElementById('advanceBookingChart').getContext('2d');
+            if (analyticsCharts.advanceBooking) analyticsCharts.advanceBooking.destroy();
+
+            const sourceNames = { 'gyg': 'GyG', 'website': 'Directas', 'manual': 'Manual' };
+            analyticsCharts.advanceBooking = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.advanceBooking.map(a => sourceNames[a.source] || a.source),
+                    datasets: [{
+                        label: 'Días Promedio de Anticipación',
+                        data: data.advanceBooking.map(a => parseFloat(a.avg_days_advance) || 0),
+                        backgroundColor: ['#FF5A5F', '#10b981', '#60a5fa']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#94a3b8' } }, title: { display: true, text: 'Anticipación de Reserva', color: '#e2e8f0' } },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8' } },
+                        y: { ticks: { color: '#94a3b8' } }
+                    }
+                }
+            });
+
+            // Weekly distribution chart
+            const ctxWeekly = document.getElementById('weeklyDistributionChart').getContext('2d');
+            if (analyticsCharts.weeklyDist) analyticsCharts.weeklyDist.destroy();
+
+            const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+            const gygWeekly = days.map((_, i) => {
+                const item = data.weeklyDistribution.find(w => parseInt(w.day_number) === i && w.source === 'gyg');
+                return item ? parseInt(item.bookings) : 0;
+            });
+            const directWeekly = days.map((_, i) => {
+                const item = data.weeklyDistribution.find(w => parseInt(w.day_number) === i && w.source === 'website');
+                return item ? parseInt(item.bookings) : 0;
+            });
+
+            analyticsCharts.weeklyDist = new Chart(ctxWeekly, {
+                type: 'radar',
+                data: {
+                    labels: days,
+                    datasets: [
+                        { label: 'GyG', data: gygWeekly, borderColor: '#FF5A5F', backgroundColor: 'rgba(255, 90, 95, 0.2)' },
+                        { label: 'Directas', data: directWeekly, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.2)' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#94a3b8' } }, title: { display: true, text: 'Distribución Semanal', color: '#e2e8f0' } },
+                    scales: { r: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148, 163, 184, 0.2)' }, pointLabels: { color: '#94a3b8' } } }
+                }
+            });
+        }
+
+        function renderFinancialAnalysis(data) {
+            const gygFin = data.summary.find(s => s.source === 'gyg') || {};
+            const directFin = data.summary.find(s => s.source === 'website') || {};
+
+            document.getElementById('finGrossGyg').textContent = formatCLP(gygFin.gross_revenue || 0);
+            document.getElementById('finCommission').textContent = '-' + formatCLP(gygFin.commission_paid || 0);
+            document.getElementById('finNetGyg').textContent = formatCLP(gygFin.net_revenue || 0);
+            document.getElementById('finNetDirect').textContent = formatCLP(directFin.net_revenue || 0);
+
+            // Revenue comparison chart
+            const ctx = document.getElementById('revenueComparisonChart').getContext('2d');
+            if (analyticsCharts.revenue) analyticsCharts.revenue.destroy();
+
+            const months = [...new Set(data.monthlyTrend.map(m => m.month))].sort();
+            const gygNet = months.map(m => {
+                const item = data.monthlyTrend.find(t => t.month === m && t.source === 'gyg');
+                return item ? parseFloat(item.net_revenue) : 0;
+            });
+            const directNet = months.map(m => {
+                const item = data.monthlyTrend.find(t => t.month === m && t.source === 'website');
+                return item ? parseFloat(item.net_revenue) : 0;
+            });
+
+            analyticsCharts.revenue = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months.map(m => new Date(m).toLocaleDateString('es-CL', { month: 'short', year: '2-digit' })),
+                    datasets: [
+                        { label: 'GyG (Neto)', data: gygNet, backgroundColor: 'rgba(255, 90, 95, 0.7)', borderColor: '#FF5A5F', borderWidth: 1 },
+                        { label: 'Directas', data: directNet, backgroundColor: 'rgba(16, 185, 129, 0.7)', borderColor: '#10b981', borderWidth: 1 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#94a3b8' } },
+                        title: { display: true, text: 'Evolución Mensual de Ingresos Netos', color: '#e2e8f0' },
+                        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${formatCLP(ctx.raw)}` } }
+                    },
+                    scales: {
+                        x: { stacked: true, ticks: { color: '#94a3b8' } },
+                        y: { stacked: true, ticks: { color: '#94a3b8', callback: v => formatCLP(v) } }
+                    }
+                }
+            });
+
+            // Financial summary table
+            const sourceNames = { 'gyg': 'GetYourGuide', 'website': 'Web Directa', 'manual': 'Manual' };
+            document.getElementById('financialTableBody').innerHTML = data.summary.map(s => `
+                <tr>
+                    <td><strong>${sourceNames[s.source] || s.source}</strong></td>
+                    <td>${s.total_bookings}</td>
+                    <td>${s.total_persons}</td>
+                    <td>${formatCLP(s.gross_revenue)}</td>
+                    <td style="color: #ef4444;">${s.source === 'gyg' ? '-' + formatCLP(s.commission_paid) : '-'}</td>
+                    <td style="color: #10b981;">${formatCLP(s.net_revenue)}</td>
+                    <td>${formatCLP(s.avg_ticket)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderGaAnalytics(data) {
+            const { overview, trafficSources, topPages, geography } = data;
+
+            // KPIs
+            document.getElementById('gaSessions').textContent = overview.sessions.toLocaleString();
+            document.getElementById('gaUsers').textContent = overview.totalUsers.toLocaleString();
+            document.getElementById('gaBounceRate').textContent = overview.bounceRate + '%';
+            document.getElementById('gaConversionRate').textContent = overview.conversionRate + '%';
+
+            // Traffic sources chart
+            const ctx = document.getElementById('trafficSourcesChart').getContext('2d');
+            if (analyticsCharts.trafficSources) analyticsCharts.trafficSources.destroy();
+
+            analyticsCharts.trafficSources = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: trafficSources.slice(0, 6).map(t => `${t.source} / ${t.medium}`),
+                    datasets: [{
+                        data: trafficSources.slice(0, 6).map(t => t.sessions),
+                        backgroundColor: ['#60a5fa', '#10b981', '#fbbf24', '#f472b6', '#a78bfa', '#94a3b8']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#94a3b8' } },
+                        title: { display: true, text: 'Fuentes de Tráfico', color: '#e2e8f0' }
+                    }
+                }
+            });
+
+            // Geography chart
+            const ctxGeo = document.getElementById('geoChart').getContext('2d');
+            if (analyticsCharts.geo) analyticsCharts.geo.destroy();
+
+            analyticsCharts.geo = new Chart(ctxGeo, {
+                type: 'bar',
+                data: {
+                    labels: geography.slice(0, 8).map(g => g.country),
+                    datasets: [{
+                        label: 'Sesiones',
+                        data: geography.slice(0, 8).map(g => g.sessions),
+                        backgroundColor: 'rgba(96, 165, 250, 0.7)'
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: 'Países por Sesiones', color: '#e2e8f0' }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8' } },
+                        y: { ticks: { color: '#94a3b8' } }
+                    }
+                }
+            });
+
+            // Top pages breakdown
+            document.getElementById('topPagesBreakdown').innerHTML = topPages.length > 0
+                ? topPages.slice(0, 10).map(p => `
+                    <div class="breakdown-item">
+                        <span class="label">${p.path}</span>
+                        <span class="value">${p.pageViews} vistas</span>
+                    </div>
+                `).join('')
+                : '<p style="color: #94a3b8; text-align: center;">Sin datos de páginas</p>';
+        }
+
+        function updateConversionFunnel(gaData) {
+            const sessions = gaData.overview?.sessions || 0;
+            const pageViews = gaData.overview?.pageViews || 0;
+            const bookings = gaData.overview?.totalBookings || 0;
+
+            document.getElementById('funnelVisits').textContent = sessions.toLocaleString();
+            document.getElementById('funnelViewed').textContent = pageViews.toLocaleString();
+            document.getElementById('funnelBooked').textContent = bookings.toLocaleString();
+
+            const viewedPercent = sessions > 0 ? ((pageViews / sessions) * 100).toFixed(1) : 0;
+            const bookedPercent = sessions > 0 ? ((bookings / sessions) * 100).toFixed(1) : 0;
+
+            document.getElementById('funnelViewedPercent').textContent = viewedPercent + '%';
+            document.getElementById('funnelBookedPercent').textContent = bookedPercent + '%';
+        }
 
         // ============ COPY AGENCY INFO ============
         function copyAgencyInfo(booking) {
