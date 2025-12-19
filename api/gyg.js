@@ -289,14 +289,16 @@ async function handleGetAvailabilities(req, res) {
   console.log(`[GYG] Found product: ${product.productId} (${product.name})`);
 
   // Support both GYG format (fromDateTime/toDateTime) and simple format (dateTime)
-  let startDate, endDate;
+  // Extract dates directly from strings to avoid timezone conversion issues
+  let startDateStr, endDateStr;
 
   if (fromDateTime && toDateTime) {
-    startDate = new Date(fromDateTime);
-    endDate = new Date(toDateTime);
+    // GYG sends ISO strings like 2025-01-15T00:00:00+00:00
+    startDateStr = fromDateTime.split('T')[0];
+    endDateStr = toDateTime.split('T')[0];
   } else if (dateTime) {
-    startDate = new Date(dateTime);
-    endDate = new Date(dateTime);
+    startDateStr = dateTime.split('T')[0];
+    endDateStr = dateTime.split('T')[0];
   } else {
     console.log(`[GYG] Missing date params - fromDateTime: ${fromDateTime}, toDateTime: ${toDateTime}, dateTime: ${dateTime}`);
     return res.status(400).json({
@@ -308,7 +310,9 @@ async function handleGetAvailabilities(req, res) {
   const availabilities = [];
 
   // Generate availabilities for each day in the range
-  let currentDate = new Date(startDate);
+  // Use noon time to avoid DST edge cases when incrementing days
+  let currentDate = new Date(startDateStr + 'T12:00:00');
+  const endDate = new Date(endDateStr + 'T12:00:00');
   while (currentDate <= endDate) {
     const dateStr = currentDate.toISOString().split('T')[0];
 
@@ -473,8 +477,9 @@ async function handleReserve(req, res) {
     });
   }
 
-  const dateObj = new Date(dateTime);
-  const date = dateObj.toISOString().split('T')[0];
+  // Extract date directly from string to avoid timezone conversion issues
+  // GYG sends: 2025-01-15T21:00:00-03:00 → we want 2025-01-15
+  const date = dateTime.split('T')[0];
   // Extract time from ISO string properly
   const timeMatch = dateTime.match(/T(\d{2}:\d{2})/);
   const time = timeMatch ? timeMatch[1] : '21:00';

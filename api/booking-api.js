@@ -130,6 +130,26 @@ async function createBooking(req, res) {
 
   const bookingId = `ATK-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
 
+  // Verificar si ya existe una reserva CONFIRMADA para este cliente en la misma fecha
+  // para evitar enviar email de "pago pendiente" a quien ya pagó
+  let hasConfirmedBooking = false;
+  try {
+    const existingConfirmed = await query(`
+      SELECT booking_id FROM bookings
+      WHERE date = $1
+      AND (email = $2 OR phone = $3)
+      AND tour_type = $4
+      AND status = 'confirmed'
+      LIMIT 1
+    `, [date, finalEmail, phone, tourType]);
+    hasConfirmedBooking = existingConfirmed.rows.length > 0;
+    if (hasConfirmedBooking) {
+      console.log(`[BOOKING] Cliente ya tiene reserva confirmada para ${date}, no se enviará email de pago pendiente`);
+    }
+  } catch (e) {
+    console.error('Error checking existing bookings:', e);
+  }
+
   const booking = await insert('bookings', {
     booking_id: bookingId,
     date,
@@ -154,7 +174,8 @@ async function createBooking(req, res) {
     await sendAdminNotificationEmail({ bookingId, date, persons, tourType, time: assignedTime, name, email: finalEmail, phone, message });
   } catch (e) { console.error('Admin email failed:', e); }
 
-  if (shouldSendEmail) {
+  // Solo enviar email de pago pendiente si NO tiene ya una reserva confirmada
+  if (shouldSendEmail && !hasConfirmedBooking) {
     try {
       await sendConfirmationEmail({ bookingId, name, email: finalEmail, date, persons, tourType, time: assignedTime });
     } catch (e) { console.error('Confirmation email failed:', e); }
@@ -183,7 +204,7 @@ async function listBookings(req, res) {
   if (date_from) { conditions.push(`date >= $${paramCount++}`); values.push(date_from); }
   if (date_to) { conditions.push(`date <= $${paramCount++}`); values.push(date_to); }
   if (search) {
-    conditions.push(`(name ILIKE $${paramCount} OR email ILIKE $${paramCount} OR phone ILIKE $${paramCount} OR booking_id ILIKE $${paramCount})`);
+    conditions.push(`(name ILIKE $${paramCount} OR email ILIKE $${paramCount} OR phone ILIKE $${paramCount} OR booking_id ILIKE $${paramCount} OR gyg_reference ILIKE $${paramCount})`);
     values.push(`%${search}%`);
     paramCount++;
   }
@@ -208,7 +229,7 @@ async function listBookings(req, res) {
   const total = parseInt(countResult.rows[0].total, 10);
 
   const bookingsResult = await query(`
-    SELECT id, booking_id, date, persons, tour_type, time, name, email, phone, message, accommodation, status, source, payment_method, reminder_sent, reminder_sent_at, created_at, updated_at, participant_names
+    SELECT id, booking_id, date, persons, tour_type, time, name, email, phone, message, accommodation, status, source, payment_method, reminder_sent, reminder_sent_at, created_at, updated_at, participant_names, gyg_reference
     FROM bookings ${whereClause}
     ORDER BY ${orderBy}
     LIMIT $${paramCount} OFFSET $${paramCount + 1}
@@ -255,7 +276,8 @@ async function sendAdminNotificationEmail(booking) {
   const adminEmail = process.env.ADMIN_EMAIL || 'vicente.litvak@gmail.com';
   if (!resendApiKey) return;
 
-  const dateObj = new Date(booking.date);
+  // Agregar T00:00:00 para evitar problemas de timezone (fecha un día antes)
+  const dateObj = new Date(booking.date + 'T00:00:00');
   const formattedDate = dateObj.toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   const tourTypes = { 'regular': 'Tour Astronómico Regular', 'private': 'Tour Privado Exclusivo', 'astrophoto': 'Tour Astrofotográfico' };
 
@@ -276,7 +298,8 @@ async function sendConfirmationEmail(booking) {
   const resendApiKey = process.env.RESEND_API_KEY;
   if (!resendApiKey) return;
 
-  const dateObj = new Date(booking.date);
+  // Agregar T00:00:00 para evitar problemas de timezone (fecha un día antes)
+  const dateObj = new Date(booking.date + 'T00:00:00');
   const formattedDate = dateObj.toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   const formattedDateEn = dateObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
@@ -292,10 +315,10 @@ async function sendConfirmationEmail(booking) {
     'astrophoto': 'Astrophotography Tour'
   };
 
-  const tourPrices = { 'regular': 30000, 'private': 200000, 'astrophoto': 120000 };
+  const tourPrices = { 'regular': 42000, 'private': 200000, 'astrophoto': 120000 };
 
   // Get price and calculate total
-  const basePrice = tourPrices[booking.tourType] || 30000;
+  const basePrice = tourPrices[booking.tourType] || 42000;
   const personsCount = parseInt(booking.persons);
   let totalPrice;
   let priceDisplayEs;
@@ -311,8 +334,8 @@ async function sendConfirmationEmail(booking) {
     priceDisplayEn = `$${basePrice.toLocaleString('es-CL')} CLP × ${personsCount} person(s) = $${totalPrice.toLocaleString('es-CL')} CLP`;
   }
 
-  // Create payment link with direct action
-  const paymentUrl = `https://atacamadarksky.cl/?tour=${booking.tourType}&date=${booking.date}&persons=${booking.persons}&email=${encodeURIComponent(booking.email)}&name=${encodeURIComponent(booking.name)}&action=pay#tours`;
+  // URL de pago directo (nueva página)
+  const paymentUrl = `https://atacamadarksky.cl/pago?tour=${booking.tourType}&date=${booking.date}&persons=${booking.persons}&email=${encodeURIComponent(booking.email)}&name=${encodeURIComponent(booking.name)}`;
 
   const emailHtml = `
     <!DOCTYPE html>
