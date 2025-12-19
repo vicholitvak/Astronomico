@@ -2,6 +2,7 @@
 import { Pool } from 'pg';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { Resend } from 'resend';
+import { addToGoogleCalendar } from './google-calendar.js';
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -75,28 +76,50 @@ export default async function handler(req, res) {
                         participantNames = [metadata.customer_name || paymentInfo.payer?.name || 'Cliente'];
                     }
 
-                    // Primero intentar encontrar una reserva existente del mismo cliente para la misma fecha
+                    // Normalizar teléfono para mejor matching (quitar espacios, +, guiones)
+                    const customerPhone = (metadata.customer_phone || paymentInfo.payer?.phone?.number || '').replace(/[\s\-\+\(\)]/g, '');
+                    const phoneLastDigits = customerPhone.slice(-8); // Últimos 8 dígitos para matching flexible
+
+                    // Buscar reserva existente con matching más flexible
+                    // Prioridad: 1) mismo email, 2) mismo teléfono (últimos 8 dígitos), 3) mismo nombre
                     const existingBooking = await pool.query(`
-                        SELECT booking_id FROM bookings
+                        SELECT booking_id, email, phone, name FROM bookings
                         WHERE date = $1
-                        AND (email = $2 OR phone = $3 OR name = $4)
-                        AND tour_type = $5
+                        AND tour_type = $2
                         AND status = 'pending'
-                        ORDER BY created_at DESC
+                        AND (
+                            LOWER(email) = LOWER($3)
+                            OR REPLACE(REPLACE(REPLACE(phone, ' ', ''), '-', ''), '+', '') LIKE '%' || $4
+                            OR LOWER(name) = LOWER($5)
+                        )
+                        ORDER BY
+                            CASE WHEN LOWER(email) = LOWER($3) THEN 1 ELSE 2 END,
+                            created_at DESC
                         LIMIT 1
                     `, [
                         metadata.tour_date || new Date().toISOString().split('T')[0],
+                        metadata.tour_type || 'regular',
                         metadata.customer_email || paymentInfo.payer?.email,
-                        metadata.customer_phone || paymentInfo.payer?.phone?.number || '',
-                        metadata.customer_name || paymentInfo.payer?.name || 'Cliente',
-                        metadata.tour_type || 'regular'
+                        phoneLastDigits,
+                        metadata.customer_name || paymentInfo.payer?.name || 'Cliente'
                     ]);
+
+                    console.log('[WEBHOOK] Búsqueda de reserva existente:', {
+                        date: metadata.tour_date,
+                        email: metadata.customer_email,
+                        phoneLastDigits,
+                        found: existingBooking.rows.length > 0
+                    });
 
                     if (existingBooking.rows.length > 0) {
                         // Actualizar la reserva existente
                         const existingId = existingBooking.rows[0].booking_id;
+                        const customerEmail = metadata.customer_email || paymentInfo.payer?.email;
+                        const customerName = metadata.customer_name || paymentInfo.payer?.name || 'Cliente';
+
                         console.log('[WEBHOOK] Updating existing booking:', existingId);
 
+                        // Actualizar con datos más completos (incluyendo email/phone si estaban incompletos)
                         await pool.query(`
                             UPDATE bookings
                             SET status = 'confirmed',
@@ -104,12 +127,18 @@ export default async function handler(req, res) {
                                 payment_method = 'mercadopago',
                                 payment_id = $2,
                                 payment_amount = $3,
+                                email = CASE WHEN email = 'pendiente@completar.com' OR email IS NULL THEN $4 ELSE email END,
+                                phone = CASE WHEN phone = '' OR phone IS NULL THEN $5 ELSE phone END,
+                                name = CASE WHEN name = 'Cliente' OR name IS NULL THEN $6 ELSE name END,
                                 updated_at = NOW()
-                            WHERE booking_id = $4
+                            WHERE booking_id = $7
                         `, [
                             JSON.stringify(participantNames),
                             paymentInfo.id,
                             paymentInfo.transaction_amount,
+                            customerEmail,
+                            customerPhone,
+                            customerName,
                             existingId
                         ]);
 
@@ -150,6 +179,25 @@ export default async function handler(req, res) {
                     }
 
                     console.log('[WEBHOOK] Booking saved to database:', bookingId);
+
+                    // Sync to Google Calendar
+                    try {
+                        const tourDate = metadata.tour_date || new Date().toISOString().split('T')[0];
+                        await addToGoogleCalendar({
+                            bookingId,
+                            date: tourDate,
+                            time: '21:00',
+                            persons: parseInt(metadata.persons) || 1,
+                            tourType: metadata.tour_type || 'regular',
+                            name: metadata.customer_name || paymentInfo.payer?.name || 'Cliente',
+                            email: metadata.customer_email || paymentInfo.payer?.email,
+                            phone: metadata.customer_phone || '',
+                            message: `Pago confirmado via MercadoPago - $${paymentInfo.transaction_amount}`
+                        });
+                        console.log('[WEBHOOK] Google Calendar synced for:', bookingId);
+                    } catch (calendarError) {
+                        console.error('[WEBHOOK] Google Calendar sync failed:', calendarError.message);
+                    }
 
                     // Send confirmation email directly using Resend
                     try {

@@ -75,7 +75,36 @@ async function updateBooking(req, res) {
     return res.status(404).json({ success: false, error: 'Booking not found' });
   }
 
-  return res.status(200).json({ success: true, data: result.rows[0] });
+  const updatedBooking = result.rows[0];
+
+  // Sync to Google Calendar when status changes to confirmed or booking details change
+  if (status === 'confirmed' || date || time || persons) {
+    try {
+      let dateStr = updatedBooking.date;
+      if (dateStr instanceof Date) {
+        dateStr = dateStr.toISOString().split('T')[0];
+      } else if (typeof dateStr === 'string' && dateStr.includes('T')) {
+        dateStr = dateStr.split('T')[0];
+      }
+
+      await addToGoogleCalendar({
+        bookingId: updatedBooking.booking_id,
+        date: dateStr,
+        time: updatedBooking.time,
+        persons: updatedBooking.persons,
+        tourType: updatedBooking.tour_type,
+        name: updatedBooking.name,
+        email: updatedBooking.email,
+        phone: updatedBooking.phone,
+        message: updatedBooking.message
+      });
+      console.log(`[BOOKING] Calendar synced for: ${updatedBooking.booking_id}`);
+    } catch (calendarError) {
+      console.error(`[BOOKING] Calendar sync failed:`, calendarError.message);
+    }
+  }
+
+  return res.status(200).json({ success: true, data: updatedBooking });
 }
 
 // ============ DELETE BOOKING ============
