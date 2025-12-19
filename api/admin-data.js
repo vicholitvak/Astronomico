@@ -847,44 +847,46 @@ export default async function handler(req, res) {
 
           // 2. Nacionalidades (del prefijo telefónico)
           pool.query(`
-            SELECT
-              CASE
-                WHEN phone LIKE '+33%' OR phone LIKE '0033%' THEN 'Francia'
-                WHEN phone LIKE '+49%' OR phone LIKE '0049%' THEN 'Alemania'
-                WHEN phone LIKE '+44%' OR phone LIKE '0044%' THEN 'Reino Unido'
-                WHEN phone LIKE '+1%' THEN 'USA/Canadá'
-                WHEN phone LIKE '+34%' OR phone LIKE '0034%' THEN 'España'
-                WHEN phone LIKE '+39%' OR phone LIKE '0039%' THEN 'Italia'
-                WHEN phone LIKE '+31%' OR phone LIKE '0031%' THEN 'Países Bajos'
-                WHEN phone LIKE '+32%' OR phone LIKE '0032%' THEN 'Bélgica'
-                WHEN phone LIKE '+41%' OR phone LIKE '0041%' THEN 'Suiza'
-                WHEN phone LIKE '+61%' OR phone LIKE '0061%' THEN 'Australia'
-                WHEN phone LIKE '+56%' OR phone LIKE '56%' THEN 'Chile'
-                WHEN phone LIKE '+55%' OR phone LIKE '0055%' THEN 'Brasil'
-                WHEN phone LIKE '+54%' OR phone LIKE '0054%' THEN 'Argentina'
-                WHEN phone LIKE '+52%' OR phone LIKE '0052%' THEN 'México'
-                WHEN phone LIKE '+57%' OR phone LIKE '0057%' THEN 'Colombia'
-                WHEN phone LIKE '+81%' OR phone LIKE '0081%' THEN 'Japón'
-                WHEN phone LIKE '+82%' OR phone LIKE '0082%' THEN 'Corea del Sur'
-                WHEN phone LIKE '+86%' OR phone LIKE '0086%' THEN 'China'
-                WHEN phone LIKE '+91%' OR phone LIKE '0091%' THEN 'India'
-                WHEN phone LIKE '+972%' THEN 'Israel'
-                WHEN phone LIKE '+48%' THEN 'Polonia'
-                WHEN phone LIKE '+420%' THEN 'República Checa'
-                WHEN phone LIKE '+351%' THEN 'Portugal'
-                WHEN phone LIKE '+46%' THEN 'Suecia'
-                WHEN phone LIKE '+47%' THEN 'Noruega'
-                WHEN phone LIKE '+45%' THEN 'Dinamarca'
-                WHEN phone LIKE '+358%' THEN 'Finlandia'
-                WHEN phone LIKE '+43%' THEN 'Austria'
-                ELSE 'Otro'
-              END as country,
-              COUNT(*) as bookings,
-              COALESCE(SUM(persons), 0) as total_persons
-            FROM bookings
-            WHERE COALESCE(source, 'website') = 'gyg'
-              AND date >= $1 AND date <= $2
-              AND status IN ('confirmed', 'completed')
+            SELECT country, COUNT(*) as bookings, COALESCE(SUM(persons), 0) as total_persons
+            FROM (
+              SELECT
+                persons,
+                CASE
+                  WHEN phone LIKE '+33%' OR phone LIKE '0033%' THEN 'Francia'
+                  WHEN phone LIKE '+49%' OR phone LIKE '0049%' THEN 'Alemania'
+                  WHEN phone LIKE '+44%' OR phone LIKE '0044%' THEN 'Reino Unido'
+                  WHEN phone LIKE '+1%' THEN 'USA/Canadá'
+                  WHEN phone LIKE '+34%' OR phone LIKE '0034%' THEN 'España'
+                  WHEN phone LIKE '+39%' OR phone LIKE '0039%' THEN 'Italia'
+                  WHEN phone LIKE '+31%' OR phone LIKE '0031%' THEN 'Países Bajos'
+                  WHEN phone LIKE '+32%' OR phone LIKE '0032%' THEN 'Bélgica'
+                  WHEN phone LIKE '+41%' OR phone LIKE '0041%' THEN 'Suiza'
+                  WHEN phone LIKE '+61%' OR phone LIKE '0061%' THEN 'Australia'
+                  WHEN phone LIKE '+56%' OR phone LIKE '56%' THEN 'Chile'
+                  WHEN phone LIKE '+55%' OR phone LIKE '0055%' THEN 'Brasil'
+                  WHEN phone LIKE '+54%' OR phone LIKE '0054%' THEN 'Argentina'
+                  WHEN phone LIKE '+52%' OR phone LIKE '0052%' THEN 'México'
+                  WHEN phone LIKE '+57%' OR phone LIKE '0057%' THEN 'Colombia'
+                  WHEN phone LIKE '+81%' OR phone LIKE '0081%' THEN 'Japón'
+                  WHEN phone LIKE '+82%' OR phone LIKE '0082%' THEN 'Corea del Sur'
+                  WHEN phone LIKE '+86%' OR phone LIKE '0086%' THEN 'China'
+                  WHEN phone LIKE '+91%' OR phone LIKE '0091%' THEN 'India'
+                  WHEN phone LIKE '+972%' THEN 'Israel'
+                  WHEN phone LIKE '+48%' THEN 'Polonia'
+                  WHEN phone LIKE '+420%' THEN 'República Checa'
+                  WHEN phone LIKE '+351%' THEN 'Portugal'
+                  WHEN phone LIKE '+46%' THEN 'Suecia'
+                  WHEN phone LIKE '+47%' THEN 'Noruega'
+                  WHEN phone LIKE '+45%' THEN 'Dinamarca'
+                  WHEN phone LIKE '+358%' THEN 'Finlandia'
+                  WHEN phone LIKE '+43%' THEN 'Austria'
+                  ELSE 'Otro'
+                END as country
+              FROM bookings
+              WHERE COALESCE(source, 'website') = 'gyg'
+                AND date >= $1 AND date <= $2
+                AND status IN ('confirmed', 'completed')
+            ) sub
             GROUP BY country
             ORDER BY bookings DESC
             LIMIT 15
