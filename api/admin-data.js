@@ -834,7 +834,11 @@ export default async function handler(req, res) {
               COALESCE(source, 'website') as source,
               COUNT(*) as total_bookings,
               COALESCE(SUM(persons), 0) as total_persons,
-              COALESCE(SUM(payment_amount), 0) as total_revenue,
+              SUM(CASE
+                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
+                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
+                  ELSE COALESCE(payment_amount, 0)
+                END) as total_revenue,
               ROUND(AVG(persons)::numeric, 2) as avg_group_size,
               COUNT(*) FILTER (WHERE status = 'confirmed') as confirmed,
               COUNT(*) FILTER (WHERE status = 'cancelled') as cancelled
@@ -970,16 +974,36 @@ export default async function handler(req, res) {
               COALESCE(source, 'website') as source,
               COUNT(*) as total_bookings,
               COALESCE(SUM(persons), 0) as total_persons,
-              COALESCE(SUM(payment_amount), 0) as gross_revenue,
+              SUM(CASE
+                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
+                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
+                  ELSE COALESCE(payment_amount, 0)
+                END) as gross_revenue,
               CASE
-                WHEN COALESCE(source, 'website') = 'gyg' THEN COALESCE(SUM(payment_amount), 0) * 0.70
-                ELSE COALESCE(SUM(payment_amount), 0)
+                WHEN COALESCE(source, 'website') = 'gyg' THEN SUM(CASE
+                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
+                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
+                  ELSE COALESCE(payment_amount, 0)
+                END) * 0.70
+                ELSE SUM(CASE
+                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
+                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
+                  ELSE COALESCE(payment_amount, 0)
+                END)
               END as net_revenue,
               CASE
-                WHEN COALESCE(source, 'website') = 'gyg' THEN COALESCE(SUM(payment_amount), 0) * 0.30
+                WHEN COALESCE(source, 'website') = 'gyg' THEN SUM(CASE
+                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
+                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
+                  ELSE COALESCE(payment_amount, 0)
+                END) * 0.30
                 ELSE 0
               END as commission_paid,
-              ROUND(COALESCE(AVG(payment_amount), 0)::numeric, 0) as avg_ticket
+              ROUND(AVG(CASE
+                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
+                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
+                  ELSE COALESCE(payment_amount, 0)
+                END)::numeric, 0) as avg_ticket
             FROM bookings
             WHERE date >= $1 AND date <= $2
               AND status IN ('confirmed', 'completed')
@@ -993,7 +1017,11 @@ export default async function handler(req, res) {
               COALESCE(source, 'website') as source,
               COUNT(*) as bookings,
               COALESCE(SUM(persons), 0) as persons,
-              COALESCE(SUM(payment_amount), 0) as revenue
+              SUM(CASE
+                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
+                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
+                  ELSE COALESCE(payment_amount, 0)
+                END) as revenue
             FROM bookings
             WHERE date >= $1 AND date <= $2
               AND status IN ('confirmed', 'completed')
@@ -1008,10 +1036,22 @@ export default async function handler(req, res) {
             DATE_TRUNC('month', date)::date as month,
             COALESCE(source, 'website') as source,
             COUNT(*) as bookings,
-            COALESCE(SUM(payment_amount), 0) as gross_revenue,
+            SUM(CASE
+                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
+                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
+                  ELSE COALESCE(payment_amount, 0)
+                END) as gross_revenue,
             CASE
-              WHEN COALESCE(source, 'website') = 'gyg' THEN COALESCE(SUM(payment_amount), 0) * 0.70
-              ELSE COALESCE(SUM(payment_amount), 0)
+              WHEN COALESCE(source, 'website') = 'gyg' THEN SUM(CASE
+                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
+                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
+                  ELSE COALESCE(payment_amount, 0)
+                END) * 0.70
+              ELSE SUM(CASE
+                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
+                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
+                  ELSE COALESCE(payment_amount, 0)
+                END)
             END as net_revenue
           FROM bookings
           WHERE date >= $1 AND date <= $2
