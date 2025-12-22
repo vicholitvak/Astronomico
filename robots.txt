@@ -132,6 +132,16 @@ User-agent: cohere-ai
 Allow: /
 Allow: /llms.txt
 
+# ByteDance AI (TikTok)
+User-agent: Bytespider
+Allow: /
+Allow: /llms.txt
+
+# Brave Search (fuente de Claude)
+User-agent: BraveBot
+Allow: /
+Allow: /llms.txt
+
 # ============================================
 # Bloquear bots maliciosos conocidos
 User-agent: SemrushBot
