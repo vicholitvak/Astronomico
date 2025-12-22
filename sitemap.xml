@@ -4,17 +4,65 @@
   <!-- Página principal -->
   <url>
     <loc>https://atacamadarksky.cl/</loc>
-    <lastmod>2025-11-26</lastmod>
+    <lastmod>2025-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+  </url>
+
+  <!-- Versión en inglés -->
+  <url>
+    <loc>https://atacamadarksky.cl/?lang=en</loc>
+    <lastmod>2025-12-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Versión en portugués -->
+  <url>
+    <loc>https://atacamadarksky.cl/?lang=pt</loc>
+    <lastmod>2025-12-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Página de pago/checkout -->
+  <url>
+    <loc>https://atacamadarksky.cl/pago.html</loc>
+    <lastmod>2025-12-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Confirmación de reserva -->
+  <url>
+    <loc>https://atacamadarksky.cl/confirmacion.html</loc>
+    <lastmod>2025-12-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Resultado de pago exitoso -->
+  <url>
+    <loc>https://atacamadarksky.cl/payment-success.html</loc>
+    <lastmod>2025-12-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
 
   <!-- Formulario de reseñas -->
   <url>
     <loc>https://atacamadarksky.cl/review-form.html</loc>
-    <lastmod>2025-11-26</lastmod>
+    <lastmod>2025-12-22</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Archivo llms.txt para buscadores LLM -->
+  <url>
+    <loc>https://atacamadarksky.cl/llms.txt</loc>
+    <lastmod>2025-12-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 
 </urlset>

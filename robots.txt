@@ -74,6 +74,65 @@ Allow: /
 User-agent: LinkedInBot
 Allow: /
 
+# ============================================
+# BOTS DE INTELIGENCIA ARTIFICIAL (LLM SEO)
+# Permitir crawlers de AI para mejorar presencia en búsquedas LLM
+# ============================================
+
+# OpenAI / ChatGPT
+User-agent: GPTBot
+Allow: /
+Allow: /llms.txt
+
+User-agent: ChatGPT-User
+Allow: /
+Allow: /llms.txt
+
+# Google AI (Gemini, Bard)
+User-agent: Google-Extended
+Allow: /
+Allow: /llms.txt
+
+# Anthropic (Claude)
+User-agent: Claude-Web
+Allow: /
+Allow: /llms.txt
+
+User-agent: anthropic-ai
+Allow: /
+Allow: /llms.txt
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+Allow: /llms.txt
+
+# Apple Intelligence
+User-agent: Applebot-Extended
+Allow: /
+Allow: /llms.txt
+
+# Common Crawl (usado por muchos LLMs para entrenamiento)
+User-agent: CCBot
+Allow: /
+Allow: /llms.txt
+
+# Microsoft / Bing AI (Copilot)
+User-agent: Bingbot
+Allow: /
+Allow: /llms.txt
+
+# Meta AI
+User-agent: FacebookBot
+Allow: /
+Allow: /llms.txt
+
+# Cohere AI
+User-agent: cohere-ai
+Allow: /
+Allow: /llms.txt
+
+# ============================================
 # Bloquear bots maliciosos conocidos
 User-agent: SemrushBot
 Disallow: /
@@ -90,8 +149,12 @@ Disallow: /
 User-agent: BLEXBot
 Disallow: /
 
-# Configuración para sitemap
+# Configuración para sitemap y LLMs
 Sitemap: https://atacamadarksky.cl/sitemap.xml
+
+# Archivo de información para LLMs (Generative Engine Optimization)
+# Más info: https://llmstxt.org/
+LLMs-Txt: https://atacamadarksky.cl/llms.txt
 
 
 # Permitir acceso a archivos importantes para SEO
