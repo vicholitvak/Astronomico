@@ -37,6 +37,9 @@ Disallow: /vincular_ga4_ads.html
 Disallow: /crear_audiencias_ga4.html
 Disallow: /itinerary-builder.html
 
+# Bloquear documentación interna
+Disallow: /docs/
+
 # Bloquear archivos de configuración
 Disallow: /netlify.toml
 Disallow: /.netlify/
