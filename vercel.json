@@ -2,6 +2,19 @@
   "buildCommand": "echo 'No build needed'",
   "outputDirectory": ".",
   "framework": null,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.atacamadarksky.cl"
+        }
+      ],
+      "destination": "https://atacamadarksky.cl/:path*",
+      "permanent": true
+    }
+  ],
   "functions": {
     "api/*.js": {
       "maxDuration": 10
