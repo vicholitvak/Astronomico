@@ -193,6 +193,125 @@
       ]
     }
     </script>
+
+    <!-- TouristAttraction Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TouristAttraction",
+      "name": "Tours Astronómicos Atacama Dark Sky",
+      "description": "Observación de estrellas y astrofotografía con telescopio inteligente en el mejor cielo del mundo. Ubicado en San Pedro de Atacama, Chile, donde el cielo tiene clasificación Bortle 1-2 y más de 330 noches despejadas al año.",
+      "url": "https://atacamadarksky.cl",
+      "image": "https://atacamadarksky.cl/images/hero1.webp",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "San Pedro de Atacama",
+        "addressRegion": "Antofagasta",
+        "addressCountry": "CL"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -22.9114,
+        "longitude": -68.2003
+      },
+      "touristType": ["Astronomy enthusiasts", "Photographers", "Families", "Couples"],
+      "availableLanguage": ["Spanish", "English", "Portuguese"],
+      "isAccessibleForFree": false
+    }
+    </script>
+
+    <!-- Person Schema - Guía Experto -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Vicente Litvak",
+      "jobTitle": "Guía Astronómico & Fundador",
+      "description": "Guía astronómico certificado SERNATUR con más de 6 años de experiencia en San Pedro de Atacama. Ha realizado más de 3,000 tours para visitantes de 50+ países. Astrofotógrafo profesional.",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Atacama Dark Sky"
+      },
+      "knowsAbout": ["Astronomía", "Astrofotografía", "Observación de estrellas", "Cielo del hemisferio sur"],
+      "knowsLanguage": ["Spanish", "English", "Portuguese"],
+      "award": "Certificado SERNATUR (Servicio Nacional de Turismo de Chile)"
+    }
+    </script>
+
+    <!-- Product Schema - Tour Regular -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "Tour Astronómico Regular",
+      "description": "Experiencia de 2.5 horas bajo el mejor cielo del mundo. Incluye charla astronómica, observación con telescopio inteligente, fotos de nebulosas y galaxias a color, cóctel bajo las estrellas, transporte y bebidas calientes.",
+      "image": "https://atacamadarksky.cl/images/hero1.webp",
+      "brand": {
+        "@type": "Brand",
+        "name": "Atacama Dark Sky"
+      },
+      "offers": {
+        "@type": "Offer",
+        "url": "https://atacamadarksky.cl/#reservas",
+        "priceCurrency": "CLP",
+        "price": "30000",
+        "priceValidUntil": "2025-12-31",
+        "availability": "https://schema.org/InStock",
+        "validFrom": "2025-01-01"
+      },
+      "category": "Tours Astronómicos"
+    }
+    </script>
+
+    <!-- Product Schema - Tour Astrofotografía -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "Tour de Astrofotografía Especializado",
+      "description": "Tour de 4-5 horas para fotógrafos. Incluye asesoría técnica personalizada, acceso a ubicaciones secretas Bortle 1-2, préstamo de trípodes y trackers, taller de edición post-tour, retrato bajo la Vía Láctea.",
+      "image": "https://atacamadarksky.cl/images/hero1.webp",
+      "brand": {
+        "@type": "Brand",
+        "name": "Atacama Dark Sky"
+      },
+      "offers": {
+        "@type": "Offer",
+        "url": "https://atacamadarksky.cl/#reservas",
+        "priceCurrency": "CLP",
+        "price": "120000",
+        "priceValidUntil": "2025-12-31",
+        "availability": "https://schema.org/InStock",
+        "validFrom": "2025-01-01"
+      },
+      "category": "Tours Astronómicos"
+    }
+    </script>
+
+    <!-- Product Schema - Tour Privado VIP -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "Expedición Privada VIP a Vallecito",
+      "description": "Experiencia exclusiva de 3-4 horas para grupos de 1-6 personas. Transporte 4x4 privado a ubicación Bortle 1, telescopio inteligente dedicado, sillas reclinables bajo las estrellas, vino y catering premium, fotos del cielo profundo.",
+      "image": "https://atacamadarksky.cl/images/hero1.webp",
+      "brand": {
+        "@type": "Brand",
+        "name": "Atacama Dark Sky"
+      },
+      "offers": {
+        "@type": "Offer",
+        "url": "https://atacamadarksky.cl/#reservas",
+        "priceCurrency": "CLP",
+        "price": "200000",
+        "priceValidUntil": "2025-12-31",
+        "availability": "https://schema.org/InStock",
+        "validFrom": "2025-01-01"
+      },
+      "category": "Tours Astronómicos"
+    }
+    </script>
 </head>
 
 <body>
