@@ -89,7 +89,7 @@
     <!-- Mercado Pago SDK removed - not needed, checkout redirects to hosted page -->
 
     <!-- Stylesheet principal -->
-    <link rel="stylesheet" href="styles.css?v=6.3">
+    <link rel="stylesheet" href="styles.css?v=6.4">
     <!-- FAQ styles - carga diferida (sección más abajo en la página) -->
     <link rel="stylesheet" href="faq-styles.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="faq-styles.css"></noscript>
@@ -1966,6 +1966,37 @@
         let currentDate = new Date();
         let selectedDate = null;
 
+        // Eventos astronómicos 2025-2026 visibles durante los tours
+        // Cada evento tiene: fecha, tipo, nombre en 3 idiomas, emoji
+        const astronomicalEvents = {
+            // 2025
+            '2025-12-13': { type: 'meteor', emoji: '☄️', es: 'Gemínidas', en: 'Geminids', pt: 'Geminídeas' },
+            '2025-12-14': { type: 'meteor', emoji: '☄️', es: 'Gemínidas', en: 'Geminids', pt: 'Geminídeas' },
+            // 2026
+            '2026-01-03': { type: 'supermoon', emoji: '🌕', es: 'Superluna', en: 'Supermoon', pt: 'Superlua' },
+            '2026-01-10': { type: 'planet', emoji: '🪐', es: 'Júpiter Oposición', en: 'Jupiter Opposition', pt: 'Júpiter Oposição' },
+            '2026-03-03': { type: 'eclipse', emoji: '🌑', es: 'Eclipse Lunar Total', en: 'Total Lunar Eclipse', pt: 'Eclipse Lunar Total' },
+            '2026-04-22': { type: 'meteor', emoji: '☄️', es: 'Líridas', en: 'Lyrids', pt: 'Líridas' },
+            '2026-04-23': { type: 'meteor', emoji: '☄️', es: 'Líridas', en: 'Lyrids', pt: 'Líridas' },
+            '2026-05-31': { type: 'special', emoji: '🔵', es: 'Luna Azul', en: 'Blue Moon', pt: 'Lua Azul' },
+            '2026-06-21': { type: 'special', emoji: '🌌', es: 'Solsticio Invierno', en: 'Winter Solstice', pt: 'Solstício Inverno' },
+            '2026-08-12': { type: 'meteor', emoji: '☄️', es: 'Perseidas ⭐', en: 'Perseids ⭐', pt: 'Perseidas ⭐' },
+            '2026-08-13': { type: 'meteor', emoji: '☄️', es: 'Perseidas ⭐', en: 'Perseids ⭐', pt: 'Perseidas ⭐' },
+            '2026-09-07': { type: 'eclipse', emoji: '🌗', es: 'Eclipse Lunar Parcial', en: 'Partial Lunar Eclipse', pt: 'Eclipse Lunar Parcial' },
+            '2026-10-21': { type: 'meteor', emoji: '☄️', es: 'Oriónidas', en: 'Orionids', pt: 'Orionídeas' },
+            '2026-10-22': { type: 'meteor', emoji: '☄️', es: 'Oriónidas', en: 'Orionids', pt: 'Orionídeas' },
+            '2026-11-24': { type: 'supermoon', emoji: '🌕', es: 'Superluna', en: 'Supermoon', pt: 'Superlua' },
+            '2026-12-13': { type: 'meteor', emoji: '☄️', es: 'Gemínidas', en: 'Geminids', pt: 'Geminídeas' },
+            '2026-12-14': { type: 'meteor', emoji: '☄️', es: 'Gemínidas', en: 'Geminids', pt: 'Geminídeas' },
+            '2026-12-23': { type: 'supermoon', emoji: '🌕', es: 'Superluna', en: 'Supermoon', pt: 'Superlua' }
+        };
+
+        // Función para obtener evento astronómico de una fecha
+        function getAstronomicalEvent(date) {
+            const dateStr = date.toISOString().split('T')[0];
+            return astronomicalEvents[dateStr] || null;
+        }
+
         // Función para obtener textos del calendario traducidos
         function getCalendarText(key, lang) {
             const texts = {
@@ -2141,6 +2172,7 @@
                 const isAdminBlocked = isBlockedByAdmin(date);
                 const latePrivateOnly = isLatePrivateOnly(date);
                 const fullyBlocked = isFullyBlocked(date);
+                const astroEvent = getAstronomicalEvent(date);
 
                 let dayClass = 'calendar-day';
                 if (isPast) dayClass += ' past';
@@ -2188,10 +2220,19 @@
                 // latePrivateOnly es clickeable, fullyBlocked y fechas pasadas no
                 const clickAction = (fullyBlocked || isPast) ? '' : `selectDate(${year}, ${month}, ${day})`;
 
+                // Etiqueta de evento astronómico
+                let eventLabel = '';
+                if (astroEvent && !isPast) {
+                    const eventName = astroEvent[currentLang] || astroEvent.en;
+                    eventLabel = `<span class="astro-event astro-event-${astroEvent.type}" title="${eventName}">${astroEvent.emoji}</span>`;
+                    dayClass += ' has-event';
+                }
+
                 calendarHTML += `
                     <div class="${dayClass}" onclick="${clickAction}"
-                         title="${moonPhase.name} ${moonPhase.emoji} - ${moonPhase.illumination}% iluminación - ${availabilityText}">
+                         title="${moonPhase.name} ${moonPhase.emoji} - ${moonPhase.illumination}% iluminación - ${availabilityText}${astroEvent ? ' - ' + (astroEvent[currentLang] || astroEvent.en) : ''}">
                         <span class="day-number">${day}</span>
+                        ${eventLabel}
                         ${statusLabel}
                         <span class="moon-emoji">${moonPhase.emoji}</span>
                     </div>
@@ -2199,9 +2240,24 @@
             }
 
             const legendTexts = {
-                es: { available: 'Disponible', full: 'Lleno', secondSlot: '2do turno disponible', unavailableMoon: 'No disponible por luna', past: 'Fecha pasada', selected: 'Seleccionado' },
-                en: { available: 'Available', full: 'Sold out', secondSlot: '2nd slot available', unavailableMoon: 'Unavailable (moon)', past: 'Past date', selected: 'Selected' },
-                pt: { available: 'Disponível', full: 'Esgotado', secondSlot: '2º turno disponível', unavailableMoon: 'Indisponível (lua)', past: 'Data passada', selected: 'Selecionado' }
+                es: {
+                    available: 'Disponible', full: 'Lleno', secondSlot: '2do turno disponible',
+                    unavailableMoon: 'No disponible por luna', past: 'Fecha pasada', selected: 'Seleccionado',
+                    meteor: 'Lluvia de estrellas', eclipse: 'Eclipse', supermoon: 'Superluna',
+                    planet: 'Evento planetario', special: 'Evento especial'
+                },
+                en: {
+                    available: 'Available', full: 'Sold out', secondSlot: '2nd slot available',
+                    unavailableMoon: 'Unavailable (moon)', past: 'Past date', selected: 'Selected',
+                    meteor: 'Meteor shower', eclipse: 'Eclipse', supermoon: 'Supermoon',
+                    planet: 'Planet event', special: 'Special event'
+                },
+                pt: {
+                    available: 'Disponível', full: 'Esgotado', secondSlot: '2º turno disponível',
+                    unavailableMoon: 'Indisponível (lua)', past: 'Data passada', selected: 'Selecionado',
+                    meteor: 'Chuva de meteoros', eclipse: 'Eclipse', supermoon: 'Superlua',
+                    planet: 'Evento planetário', special: 'Evento especial'
+                }
             };
             const lt = legendTexts[currentLang];
 
@@ -2214,6 +2270,13 @@
                         <div class="legend-item"><span class="legend-dot sold-out"></span><span>${lt.full}</span></div>
                         <div class="legend-item"><span class="legend-dot unavailable-moon"></span><span>${lt.unavailableMoon}</span></div>
                         <div class="legend-item"><span class="legend-dot past"></span><span>${lt.past}</span></div>
+                    </div>
+                    <div class="legend-events">
+                        <div class="legend-event-item"><span class="event-icon">☄️</span><span>${lt.meteor}</span></div>
+                        <div class="legend-event-item"><span class="event-icon">🌑</span><span>${lt.eclipse}</span></div>
+                        <div class="legend-event-item"><span class="event-icon">🌕</span><span>${lt.supermoon}</span></div>
+                        <div class="legend-event-item"><span class="event-icon">🪐</span><span>${lt.planet}</span></div>
+                        <div class="legend-event-item"><span class="event-icon">🔵</span><span>${lt.special}</span></div>
                     </div>
                 </div>
             `;
