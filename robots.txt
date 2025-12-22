@@ -149,12 +149,8 @@ Disallow: /
 User-agent: BLEXBot
 Disallow: /
 
-# Configuración para sitemap y LLMs
+# Configuración para sitemap
 Sitemap: https://atacamadarksky.cl/sitemap.xml
-
-# Archivo de información para LLMs (Generative Engine Optimization)
-# Más info: https://llmstxt.org/
-LLMs-Txt: https://atacamadarksky.cl/llms.txt
 
 
 # Permitir acceso a archivos importantes para SEO
