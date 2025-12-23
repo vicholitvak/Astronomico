@@ -147,6 +147,7 @@ async function getReviews(req, res) {
       r.helpful_count,
       r.is_featured,
       r.status,
+      COALESCE(r.source, 'direct') as source,
       r.created_at,
       rr.response_text as owner_response,
       rr.created_at as response_date
@@ -525,7 +526,8 @@ async function generateSchema(req, res) {
 
   try {
     const reviewsResult = await pool.query(`
-      SELECT reviewer_name, reviewer_country, overall_rating, title, comment, tour_date, created_at
+      SELECT reviewer_name, reviewer_country, overall_rating, title, comment, tour_date, created_at,
+             COALESCE(source, 'direct') as source
       FROM reviews WHERE status = 'approved' ORDER BY created_at DESC LIMIT 50
     `);
 
@@ -541,7 +543,7 @@ async function generateSchema(req, res) {
       "@id": "https://atacamadarksky.cl/#organization",
       "name": "Atacama Dark Sky",
       "alternateName": ["Tours Astronómicos Atacama", "Atacama Stargazing Tours"],
-      "description": "Tours astronómicos profesionales en San Pedro de Atacama con telescopios inteligentes Unistellar. Observación de nebulosas, galaxias y el cielo más claro del planeta.",
+      "description": "Tours astronómicos profesionales en San Pedro de Atacama con telescopio inteligente Unistellar eVscope 2. Observación de nebulosas, galaxias y el cielo más claro del planeta.",
       "url": "https://atacamadarksky.cl",
       "logo": "https://atacamadarksky.cl/images/Nightskylogo.webp",
       "image": ["https://atacamadarksky.cl/images/hero-bg.webp", "https://atacamadarksky.cl/images/tour1.webp"],
@@ -579,7 +581,15 @@ async function generateSchema(req, res) {
           ...(r.reviewer_country && { "nationality": r.reviewer_country.trim() })
         },
         "datePublished": new Date(r.tour_date || r.created_at).toISOString().split('T')[0],
-        "reviewBody": r.comment.trim()
+        "reviewBody": r.comment.trim(),
+        // Add publisher for reviews from external platforms (good for LLM discovery)
+        ...(r.source === 'getyourguide' && {
+          "publisher": {
+            "@type": "Organization",
+            "name": "GetYourGuide",
+            "sameAs": "https://www.getyourguide.com"
+          }
+        })
       })),
       "hasOfferCatalog": {
         "@type": "OfferCatalog",

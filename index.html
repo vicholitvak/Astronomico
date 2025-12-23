@@ -1016,49 +1016,134 @@
             </div>
 
             <div class="about-content">
-                <div class="about-text">
-                    <p class="intro-text" data-i18n="about.p1">
-                        Mi nombre es Vicente Litvak. Llegué a San Pedro hace 7 años buscando respuestas a mis propios cuestionamientos existenciales a través de la astronomía y el entendimiento del cosmos. Ese camino me llevó a compartir lo que fui descubriendo con personas de todo el mundo que vienen a ver la inmensidad del cielo desde este desierto.
-                    </p>
-
-                    <p data-i18n="about.p2">
-                        Hoy combino tecnología y conocimiento gracias a mi telescopio inteligente, que permite ver el cielo como nunca antes: nebulosas y galaxias a color, en tiempo real, sin necesidad de ser experto para disfrutarlo.
-                    </p>
-
-                    <p data-i18n="about.p3">
-                        Te invito a compartir conmigo una noche bajo las estrellas de Atacama y descubrir juntos la maravilla del cosmos.
-                    </p>
-
-                    <div class="credentials">
-                        <div class="credential-item">
-                            <i class="fas fa-certificate"></i>
-                            <span>Guía Certificado SERNATUR</span>
-                        </div>
-                        <div class="credential-item">
-                            <i class="fas fa-star"></i>
-                            <span>+3,000 Tours Realizados</span>
-                        </div>
-                        <div class="credential-item">
-                            <i class="fas fa-globe-americas"></i>
-                            <span>Visitantes de 50+ Países</span>
-                        </div>
-                        <div class="credential-item">
-                            <i class="fas fa-award"></i>
-                            <span>+6 Años de Experiencia</span>
-                        </div>
-                    </div>
-                </div>
                 <div class="about-image">
                     <img src="images/me2.webp"
                         alt="Vicente Litvak - Guía astronómico apasionado en el desierto de Atacama con telescopio inteligente"
                         loading="lazy" width="400" height="400">
-                    <div class="image-caption">
-                        <i class="fas fa-quote-left"></i>
-                        <p data-i18n="about.quote">"Cada noche bajo las estrellas de Atacama me recuerda por qué elegí
-                            dedicar mi vida a
-                            compartir el universo con otros"</p>
-                        <span>- Vicente Litvak</span>
+                    <div class="credential-badge">
+                        <i class="fas fa-certificate"></i>
+                        <span>Guía Certificado SERNATUR</span>
                     </div>
+                </div>
+                <div class="about-text">
+                    <p class="about-narrative" data-i18n="about.p1">
+                        Mi pasión por la astronomía comenzó observando las estrellas desde niño, pero fue aquí en San Pedro de Atacama donde todo cobró sentido. Vine a conectarme con el universo, y en el proceso de descubrirlo, me descubrí a mí mismo.
+                    </p>
+
+                    <p class="about-narrative" data-i18n="about.p2">
+                        El desierto tiene esa magia: te desnuda de lo superficial y te enfrenta con lo esencial. Bajo este cielo, el más limpio del planeta, entendí que mi propósito no era solo observar las estrellas, sino ser un puente entre el cosmos y las personas.
+                    </p>
+
+                    <blockquote class="about-quote">
+                        <p>No uso telescopios solo para magnificar el cielo—los uso para magnificar la consciencia de que somos <em>polvo de estrellas contemplándose a sí mismo.</em></p>
+                    </blockquote>
+
+                    <p class="about-narrative" data-i18n="about.p3">
+                        Cada noche, cuando alguien mira por primera vez los anillos de Saturno o una galaxia a millones de años luz, veo en sus ojos el mismo asombro que me transformó a mí. Compartir el universo se convirtió en mi forma de vida.
+                    </p>
+
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">3,000+</span>
+                            <span class="stat-label">Tours</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">50+</span>
+                            <span class="stat-label">Países</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">7</span>
+                            <span class="stat-label">Años</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonios" class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2 data-i18n="testimonials.title">Lo que dicen nuestros viajeros</h2>
+                <p class="section-subtitle" data-i18n="testimonials.subtitle">Historias reales bajo las estrellas</p>
+                <div id="reviewsRatingSummary" class="reviews-rating-summary" style="display:none;"></div>
+            </div>
+
+            <div class="testimonial-slider-container">
+                <button class="testimonial-prev" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
+
+                <div class="testimonial-slider" id="testimonialSlider">
+                    <!-- Reviews will be loaded dynamically -->
+                </div>
+
+                <button class="testimonial-next" aria-label="Siguiente"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 data-i18n="contact.title">Contacto y Ubicación</h2>
+                <p class="section-subtitle" data-i18n="contact.subtitle">Estamos a 10km al sur de San Pedro en la
+                    oscuridad absoluta del desierto de Atacama</p>
+            </div>
+
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4 data-i18n="contact.address">Dirección</h4>
+                            <p>Calle Caracoles 123<br>San Pedro de Atacama, Chile</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4 data-i18n="contact.phone">Teléfono</h4>
+                            <p><a href="tel:+56955123456">+56 9 3513 4669</a></p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4 data-i18n="contact.email">Email</h4>
+                            <p><a href="mailto:vicente.litvak@gmail.com">vicente.litvak@gmail.com</a></p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <div>
+                            <h4 data-i18n="contact.whatsapp">WhatsApp</h4>
+                            <p><a href="https://wa.me/56935134669" target="_blank">+56 9 3513 4669</a></p>
+                        </div>
+                    </div>
+
+                    <div class="social-links">
+                        <h4 data-i18n="contact.follow">Síguenos</h4>
+                        <div class="social-icons">
+                            <a href="#" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                            <a href="https://www.instagram.com/vilitvak" target="_blank" aria-label="Instagram"><i
+                                    class="fab fa-instagram"></i></a>
+                            <a href="https://www.tripadvisor.es/Attraction_Review-g303681-d34080204-Reviews-Atacama_Dark_Sky-San_Pedro_de_Atacama_Antofagasta_Region.html" target="_blank" rel="me noopener" aria-label="TripAdvisor"><i class="fab fa-tripadvisor"></i></a>
+                            <a href="#" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-map">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.8890525328354!2d-68.20028768502085!3d-22.911434484260326!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x96ac0919447d2e07%3A0x6b8f1c3c9c2f8c5d!2sSan%20Pedro%20de%20Atacama%2C%20Chile!5e0!3m2!1sen!2scl!4v1643723458123!5m2!1sen!2scl"
+                        width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Ubicación Tours Astronómicos Atacama en San Pedro de Atacama">
+                    </iframe>
                 </div>
             </div>
         </div>
@@ -1129,7 +1214,7 @@
                                 tu hotel/hostal en San Pedro y te traemos de vuelta al finalizar. No tienes que
                                 preocuparte por transporte.</li>
                             <li><i class="fas fa-telescope"></i> <strong>Telescopio profesional:</strong> Unistellar
-                                eVscope eQuinox de última generación (valor $5,000 USD)</li>
+                                eVscope 2 de última generación (valor $5,000 USD)</li>
                             <li><i class="fas fa-user-astronaut"></i> <strong>Guía astronómico experto:</strong>
                                 Astrofotógrafo profesional y conocedor del cielo del hemisferio sur. Explicaciones en
                                 español, inglés o portugués.</li>
@@ -1671,94 +1756,6 @@
                     </div>
                 </div>
 
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section id="testimonios" class="testimonials">
-        <div class="container">
-            <div class="section-header">
-                <h2 data-i18n="testimonials.title">Lo que dicen nuestros viajeros</h2>
-                <p class="section-subtitle" data-i18n="testimonials.subtitle">Historias reales bajo las estrellas</p>
-                <div id="reviewsRatingSummary" class="reviews-rating-summary" style="display:none;"></div>
-            </div>
-
-            <div class="testimonial-slider-container">
-                <button class="testimonial-prev" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
-
-                <div class="testimonial-slider" id="testimonialSlider">
-                    <!-- Reviews will be loaded dynamically -->
-                </div>
-
-                <button class="testimonial-next" aria-label="Siguiente"><i class="fas fa-chevron-right"></i></button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contacto" class="contact">
-        <div class="container">
-            <div class="section-header">
-                <h2 data-i18n="contact.title">Contacto y Ubicación</h2>
-                <p class="section-subtitle" data-i18n="contact.subtitle">Estamos a 10km al sur de San Pedro en la
-                    oscuridad absoluta del desierto de Atacama</p>
-            </div>
-
-            <div class="contact-content">
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <div>
-                            <h4 data-i18n="contact.address">Dirección</h4>
-                            <p>Calle Caracoles 123<br>San Pedro de Atacama, Chile</p>
-                        </div>
-                    </div>
-
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <div>
-                            <h4 data-i18n="contact.phone">Teléfono</h4>
-                            <p><a href="tel:+56955123456">+56 9 3513 4669</a></p>
-                        </div>
-                    </div>
-
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <div>
-                            <h4 data-i18n="contact.email">Email</h4>
-                            <p><a href="mailto:vicente.litvak@gmail.com">vicente.litvak@gmail.com</a></p>
-                        </div>
-                    </div>
-
-                    <div class="contact-item">
-                        <i class="fab fa-whatsapp"></i>
-                        <div>
-                            <h4 data-i18n="contact.whatsapp">WhatsApp</h4>
-                            <p><a href="https://wa.me/56935134669" target="_blank">+56 9 3513 4669</a></p>
-                        </div>
-                    </div>
-
-                    <div class="social-links">
-                        <h4 data-i18n="contact.follow">Síguenos</h4>
-                        <div class="social-icons">
-                            <a href="#" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                            <a href="https://www.instagram.com/vilitvak" target="_blank" aria-label="Instagram"><i
-                                    class="fab fa-instagram"></i></a>
-                            <a href="https://www.tripadvisor.es/Attraction_Review-g303681-d34080204-Reviews-Atacama_Dark_Sky-San_Pedro_de_Atacama_Antofagasta_Region.html" target="_blank" rel="me noopener" aria-label="TripAdvisor"><i class="fab fa-tripadvisor"></i></a>
-                            <a href="#" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="contact-map">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.8890525328354!2d-68.20028768502085!3d-22.911434484260326!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x96ac0919447d2e07%3A0x6b8f1c3c9c2f8c5d!2sSan%20Pedro%20de%20Atacama%2C%20Chile!5e0!3m2!1sen!2scl!4v1643723458123!5m2!1sen!2scl"
-                        width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"
-                        title="Ubicación Tours Astronómicos Atacama en San Pedro de Atacama">
-                    </iframe>
-                </div>
             </div>
         </div>
     </section>

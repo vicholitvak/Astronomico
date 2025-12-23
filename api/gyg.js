@@ -341,6 +341,9 @@ async function handleGetAvailabilities(req, res) {
         const blockInfo = blockedResult.rows[0];
         if (blockInfo.block_type === 'full') {
           vacancies = 0;
+        } else if (blockInfo.block_type === 'late_private_only' && product.tourType === 'private') {
+          // Primer horario bloqueado - GYG no tiene 00:00, bloqueamos tours privados
+          vacancies = 0;
         }
       }
 
@@ -389,6 +392,11 @@ async function handleGetAvailabilities(req, res) {
           isBlocked = true;
         } else if (blockInfo.block_type === 'private_only' && product.tourType === 'regular') {
           // Solo tours privados permitidos
+          vacancies = 0;
+          isBlocked = true;
+        } else if (blockInfo.block_type === 'late_private_only' && product.tourType === 'private') {
+          // Primer horario bloqueado - GYG no tiene 00:00, así que bloqueamos todos los horarios privados
+          // (20:00, 20:30, 21:00 son todos variantes del primer horario)
           vacancies = 0;
           isBlocked = true;
         }
@@ -558,7 +566,8 @@ async function handleReserve(req, res) {
   if (blockedResult.rows.length > 0) {
     const blockInfo = blockedResult.rows[0];
     if (blockInfo.block_type === 'full' ||
-        (blockInfo.block_type === 'private_only' && product.tourType === 'regular')) {
+        (blockInfo.block_type === 'private_only' && product.tourType === 'regular') ||
+        (blockInfo.block_type === 'late_private_only' && product.tourType === 'private')) {
       return res.status(200).json({
         errorCode: 'NO_AVAILABILITY',
         errorMessage: `No availability for ${date}`
@@ -779,6 +788,24 @@ async function handleBook(req, res) {
       message: `GYG Booking: ${gygBookingReference}`
     });
 
+    // Send admin notification email (async, don't wait)
+    sendGygAdminNotificationEmail({
+      bookingId: existingReservation.booking_id,
+      gygReference: gygBookingReference,
+      date: dateFromReservation,
+      time: existingReservation.time,
+      persons: totalPersons || existingReservation.persons,
+      tourType: product.tourType,
+      name: name,
+      email: email,
+      phone: phone,
+      accommodation: travelerHotel,
+      paymentAmount: paymentAmount1
+    });
+
+    // Block first private slot if private tour at 21:00
+    blockFirstPrivateSlotIfNeeded(dateFromReservation, existingReservation.time, product.tourType);
+
     return res.status(200).json({
       data: {
         bookingReference: existingReservation.booking_id,
@@ -838,6 +865,24 @@ async function handleBook(req, res) {
       phone: phone,
       message: `GYG Booking: ${gygBookingReference}`
     });
+
+    // Send admin notification email (async, don't wait)
+    sendGygAdminNotificationEmail({
+      bookingId: existing.booking_id,
+      gygReference: gygBookingReference,
+      date: dateFromExisting,
+      time: existing.time,
+      persons: totalPersons || existing.persons,
+      tourType: product.tourType,
+      name: name,
+      email: email,
+      phone: phone,
+      accommodation: travelerHotel,
+      paymentAmount: paymentAmount2
+    });
+
+    // Block first private slot if private tour at 21:00
+    blockFirstPrivateSlotIfNeeded(dateFromExisting, existing.time, product.tourType);
 
     return res.status(200).json({
       data: {
@@ -901,6 +946,24 @@ async function handleBook(req, res) {
     message: notes
   });
 
+  // Send admin notification email (async, don't wait)
+  sendGygAdminNotificationEmail({
+    bookingId: bookingId,
+    gygReference: gygBookingReference,
+    date: date,
+    time: time,
+    persons: totalPersons || 1,
+    tourType: product.tourType,
+    name: name,
+    email: email,
+    phone: phone,
+    accommodation: travelerHotel,
+    paymentAmount: paymentAmount3
+  });
+
+  // Block first private slot if private tour at 21:00
+  blockFirstPrivateSlotIfNeeded(date, time, product.tourType);
+
   // Generate tickets
   const tickets = generateTickets(bookingId, totalPersons || 1, product);
 
@@ -910,6 +973,114 @@ async function handleBook(req, res) {
       tickets: tickets
     }
   });
+}
+
+// Helper to send admin notification email for GyG bookings
+async function sendGygAdminNotificationEmail(booking) {
+  const resendApiKey = process.env.RESEND_API_KEY;
+  const adminEmail = process.env.ADMIN_EMAIL || 'vicente.litvak@gmail.com';
+  if (!resendApiKey) {
+    console.log('[GYG] Skipping email notification - RESEND_API_KEY not configured');
+    return;
+  }
+
+  try {
+    const dateObj = new Date(booking.date + 'T00:00:00');
+    const formattedDate = dateObj.toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const tourTypes = {
+      'regular': 'Tour Astronómico Regular (GYG)',
+      'private': 'Tour Privado Exclusivo (GYG)',
+      'astrophoto': 'Tour Astrofotográfico (GYG)'
+    };
+
+    const paymentCLP = booking.paymentAmount ? `$${booking.paymentAmount.toLocaleString('es-CL')} CLP` : 'Pagado vía GYG';
+
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'Atacama Dark Sky <onboarding@resend.dev>',
+        to: [adminEmail],
+        subject: `🌟 Nueva Reserva GYG: ${booking.name} - ${formattedDate}`,
+        html: `
+          <h2>Nueva Reserva via GetYourGuide</h2>
+          <p><strong>ID:</strong> ${booking.bookingId}</p>
+          <p><strong>Referencia GYG:</strong> ${booking.gygReference}</p>
+          <p><strong>Fecha:</strong> ${formattedDate}</p>
+          <p><strong>Hora:</strong> ${booking.time}</p>
+          <p><strong>Tour:</strong> ${tourTypes[booking.tourType] || booking.tourType}</p>
+          <p><strong>Personas:</strong> ${booking.persons}</p>
+          <p><strong>Cliente:</strong> ${booking.name}</p>
+          <p><strong>Email:</strong> ${booking.email}</p>
+          <p><strong>Teléfono:</strong> ${booking.phone || 'No proporcionado'}</p>
+          <p><strong>Hotel:</strong> ${booking.accommodation || 'No proporcionado'}</p>
+          <p><strong>Pago:</strong> ${paymentCLP}</p>
+          <hr>
+          <p style="color: #666; font-size: 12px;">Esta reserva fue procesada automáticamente desde GetYourGuide.</p>
+        `,
+        reply_to: booking.email
+      })
+    });
+    console.log(`[GYG] Admin notification email sent for booking ${booking.bookingId}`);
+  } catch (error) {
+    console.error(`[GYG] Failed to send admin notification email: ${error.message}`);
+  }
+}
+
+// Helper to block first private slot when a private tour is booked via GYG
+// GYG private tour times (20:00, 20:30, 21:00) are all "primer horario" variants
+async function blockFirstPrivateSlotIfNeeded(date, time, tourType) {
+  // Only block if it's a private tour at any GYG time slot
+  const gygPrivateTimes = ['20:00', '20:30', '21:00'];
+  if (tourType !== 'private' || !gygPrivateTimes.includes(time)) {
+    return;
+  }
+
+  try {
+    // Check if this date is already blocked
+    const existing = await query('SELECT * FROM blocked_dates WHERE blocked_date = $1', [date]);
+
+    if (existing.rows.length > 0) {
+      // Already blocked, don't overwrite
+      console.log(`[GYG] Date ${date} already has a block entry, skipping`);
+      return;
+    }
+
+    // Insert block for late_private_only (only 00:00 slot available for private on ADS)
+    await query(`
+      INSERT INTO blocked_dates (blocked_date, reason, block_type)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (blocked_date) DO NOTHING
+    `, [date, `GYG private tour booked at ${time}`, 'late_private_only']);
+
+    console.log(`[GYG] Blocked first private slot for date ${date} - only 00:00 available on ADS`);
+
+    // Notify GYG that all private tour times for this date are now unavailable
+    // (since GYG doesn't have 00:00, all their private slots should show 0)
+    notifyGygPrivateUnavailable(date);
+  } catch (error) {
+    console.error(`[GYG] Failed to block first private slot: ${error.message}`);
+  }
+}
+
+// Helper to notify GYG that private tours are unavailable for a date
+async function notifyGygPrivateUnavailable(date) {
+  try {
+    const privateProductId = '1163787'; // Private tour product
+    const product = PRODUCTS[privateProductId];
+    const tzOffset = getChileTimezoneOffset(date);
+
+    // Build availabilities with 0 vacancies for all private tour times
+    const availabilities = product.availableTimes.map(time => ({
+      dateTime: `${date}T${time}:00${tzOffset}`,
+      vacancies: 0
+    }));
+
+    await pushAvailabilityToGYG(privateProductId, availabilities, false);
+    console.log(`[GYG] Pushed unavailability for private tours on ${date}`);
+  } catch (error) {
+    console.error(`[GYG] Failed to notify GYG of private unavailability: ${error.message}`);
+  }
 }
 
 // Helper to sync booking to Google Calendar

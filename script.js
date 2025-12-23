@@ -649,8 +649,8 @@ function generateStars(rating) {
 }
 
 function renderTestimonials(container, reviews) {
-    container.innerHTML = reviews.map(review => `
-        <div class="testimonial-slide">
+    container.innerHTML = reviews.map((review, index) => `
+        <div class="testimonial-slide${index === 0 ? ' active' : ''}">
             <div class="testimonial-content">
                 <div class="stars">${generateStars(review.overall_rating)}</div>
                 <blockquote>"${review.comment || 'Excelente experiencia astronómica en Atacama.'}"</blockquote>
@@ -658,6 +658,8 @@ function renderTestimonials(container, reviews) {
                     <div class="author-info">
                         <h4>${review.reviewer_name}</h4>
                         <span>${review.reviewer_country || 'Cliente verificado'}</span>
+                        <span class="review-tour-type">${getTourTypeName(review.tour_type)}</span>
+                        ${review.source === 'getyourguide' ? '<span class="review-source-badge" title="Reseña verificada en GetYourGuide">✓ GetYourGuide</span>' : ''}
                     </div>
                 </div>
             </div>
@@ -665,9 +667,18 @@ function renderTestimonials(container, reviews) {
     `).join('');
 }
 
+function getTourTypeName(tourType) {
+    const types = {
+        'regular': '🔭 Tour Regular',
+        'private': '✨ Tour Privado',
+        'astrophoto': '📷 Astrofotografía'
+    };
+    return types[tourType] || '🔭 Tour';
+}
+
 function renderFallbackTestimonials(container) {
     container.innerHTML = `
-        <div class="testimonial-slide">
+        <div class="testimonial-slide active">
             <div class="testimonial-content">
                 <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                 <blockquote>"Increíble experiencia. Vicente nos llevó a un lugar alejado, sin contaminación lumínica. Vimos la Nebulosa de Orión en colores que jamás imaginé."</blockquote>
@@ -717,6 +728,12 @@ function initSliderControls() {
     function showSlide(index) {
         slides.forEach((slide, idx) => {
             slide.style.transform = `translateX(${(idx - index) * 100}%)`;
+            // Toggle active class for visibility (CSS uses opacity/visibility)
+            if (idx === index) {
+                slide.classList.add('active');
+            } else {
+                slide.classList.remove('active');
+            }
         });
     }
 
@@ -1205,10 +1222,11 @@ async function loadDynamicTestimonials() {
         slider.innerHTML = '';
 
         // Add dynamic reviews
-        data.reviews.forEach(review => {
+        data.reviews.forEach((review, index) => {
             const stars = '★'.repeat(review.overall_rating) + '☆'.repeat(5 - review.overall_rating);
             const slide = document.createElement('div');
-            slide.className = 'testimonial-slide';
+            slide.className = index === 0 ? 'testimonial-slide active' : 'testimonial-slide';
+            const tourTypes = { 'regular': '🔭 Tour Regular', 'private': '✨ Tour Privado', 'astrophoto': '📷 Astrofotografía' };
             slide.innerHTML = `
                 <div class="testimonial-content">
                     <div class="stars" style="color: #fbbf24; font-size: 1.2rem; margin-bottom: 1rem;">
@@ -1219,6 +1237,8 @@ async function loadDynamicTestimonials() {
                         <div class="author-info">
                             <h4>${escapeHtml(review.reviewer_name)}</h4>
                             <span>${escapeHtml(review.reviewer_country || '')}</span>
+                            <span class="review-tour-type">${tourTypes[review.tour_type] || '🔭 Tour'}</span>
+                            ${review.source === 'getyourguide' ? '<span class="review-source-badge" title="Reseña verificada en GetYourGuide">✓ GetYourGuide</span>' : ''}
                         </div>
                     </div>
                 </div>
@@ -1226,8 +1246,8 @@ async function loadDynamicTestimonials() {
             slider.appendChild(slide);
         });
 
-        // Reinitialize slider with new slides
-        initTestimonialSlider();
+        // Initialize slider controls (not full reload)
+        initSliderControls();
     } catch (error) {
         console.log('Using static testimonials');
     }

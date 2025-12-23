@@ -11,6 +11,175 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
+// ============ GYG NOTIFICATION HELPERS ============
+const GYG_API_URL = 'https://supplier-api.getyourguide.com';
+const GYG_OUTBOUND_USERNAME = process.env.GYG_OUTBOUND_USERNAME || 'AtacamaDarkSky';
+const GYG_OUTBOUND_PASSWORD = process.env.GYG_OUTBOUND_PASSWORD;
+
+// GYG Products configuration
+const GYG_PRODUCTS = {
+  regular: {
+    productId: '1152147',
+    availableTimes: ['21:00'],
+    maxCapacity: 16
+  },
+  private: {
+    productId: '1163787',
+    availableTimes: ['20:00', '20:30', '21:00'],
+    maxCapacity: 4
+  }
+};
+
+// Chile timezone helper
+function getChileTimezoneOffset(dateStr) {
+  const date = new Date(dateStr);
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
+
+  const firstSundayApril = new Date(year, 3, 1);
+  while (firstSundayApril.getDay() !== 0) firstSundayApril.setDate(firstSundayApril.getDate() + 1);
+
+  const firstSundaySept = new Date(year, 8, 1);
+  while (firstSundaySept.getDay() !== 0) firstSundaySept.setDate(firstSundaySept.getDate() + 1);
+
+  const isWinterTime = (
+    (month > 3 || (month === 3 && day >= firstSundayApril.getDate())) &&
+    (month < 8 || (month === 8 && day < firstSundaySept.getDate()))
+  );
+
+  return isWinterTime ? '-04:00' : '-03:00';
+}
+
+// Notify GYG of availability change for a date
+async function notifyGygDateBlocked(date, blockType) {
+  if (!GYG_OUTBOUND_PASSWORD) {
+    console.log('[Admin] Skipping GYG notification - credentials not configured');
+    return;
+  }
+
+  const auth = Buffer.from(`${GYG_OUTBOUND_USERNAME}:${GYG_OUTBOUND_PASSWORD}`).toString('base64');
+  const tzOffset = getChileTimezoneOffset(date);
+
+  try {
+    // Determine which products to block based on block_type
+    const productsToNotify = [];
+
+    if (blockType === 'full') {
+      // Block both regular and private tours
+      productsToNotify.push(GYG_PRODUCTS.regular, GYG_PRODUCTS.private);
+    } else if (blockType === 'late_private_only') {
+      // Only block private tours (regular still available)
+      productsToNotify.push(GYG_PRODUCTS.private);
+    } else if (blockType === 'private_only') {
+      // Only block regular tours (private still available)
+      productsToNotify.push(GYG_PRODUCTS.regular);
+    }
+
+    for (const product of productsToNotify) {
+      const availabilities = product.availableTimes.map(time => ({
+        dateTime: `${date}T${time}:00${tzOffset}`,
+        vacancies: 0
+      }));
+
+      const payload = {
+        data: {
+          productId: product.productId,
+          availabilities: availabilities
+        }
+      };
+
+      const response = await fetch(`${GYG_API_URL}/1/notify-availability-update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Basic ${auth}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+      console.log(`[Admin] GYG notified for ${product.productId} on ${date}: ${response.status}`, result);
+    }
+  } catch (error) {
+    console.error(`[Admin] Failed to notify GYG: ${error.message}`);
+  }
+}
+
+// Notify GYG to restore availability for a date
+async function notifyGygDateUnblocked(date) {
+  if (!GYG_OUTBOUND_PASSWORD) {
+    console.log('[Admin] Skipping GYG notification - credentials not configured');
+    return;
+  }
+
+  const auth = Buffer.from(`${GYG_OUTBOUND_USERNAME}:${GYG_OUTBOUND_PASSWORD}`).toString('base64');
+  const tzOffset = getChileTimezoneOffset(date);
+
+  try {
+    // Get current bookings for this date to calculate actual availability
+    const bookingsResult = await pool.query(`
+      SELECT tour_type, time, COALESCE(SUM(persons), 0) as total_persons, COUNT(*) as booking_count
+      FROM bookings
+      WHERE date = $1 AND status NOT IN ('cancelled', 'rejected')
+      GROUP BY tour_type, time
+    `, [date]);
+
+    const bookingsByTypeTime = {};
+    for (const row of bookingsResult.rows) {
+      const key = `${row.tour_type}-${row.time}`;
+      bookingsByTypeTime[key] = {
+        totalPersons: parseInt(row.total_persons),
+        bookingCount: parseInt(row.booking_count)
+      };
+    }
+
+    // Notify for both products
+    for (const [tourType, product] of Object.entries(GYG_PRODUCTS)) {
+      const availabilities = product.availableTimes.map(time => {
+        const key = `${tourType}-${time}`;
+        const booking = bookingsByTypeTime[key];
+
+        let vacancies;
+        if (tourType === 'private') {
+          // Private: 1 group per time slot
+          vacancies = booking?.bookingCount > 0 ? 0 : 1;
+        } else {
+          // Regular: capacity minus booked persons
+          const bookedPersons = booking?.totalPersons || 0;
+          vacancies = Math.max(0, product.maxCapacity - bookedPersons);
+        }
+
+        return {
+          dateTime: `${date}T${time}:00${tzOffset}`,
+          vacancies: vacancies
+        };
+      });
+
+      const payload = {
+        data: {
+          productId: product.productId,
+          availabilities: availabilities
+        }
+      };
+
+      const response = await fetch(`${GYG_API_URL}/1/notify-availability-update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Basic ${auth}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+      console.log(`[Admin] GYG availability restored for ${product.productId} on ${date}: ${response.status}`, result);
+    }
+  } catch (error) {
+    console.error(`[Admin] Failed to notify GYG of unblock: ${error.message}`);
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
@@ -80,6 +249,7 @@ export default async function handler(req, res) {
       if (req.method === 'POST') {
         const { blocked_date, tour_date, reason, block_type } = req.body;
         const dateToBlock = blocked_date || tour_date;
+        const finalBlockType = block_type || 'full';
 
         if (!dateToBlock) {
           return res.status(400).json({ success: false, error: 'blocked_date is required' });
@@ -90,7 +260,10 @@ export default async function handler(req, res) {
           VALUES ($1, $2, $3)
           ON CONFLICT (blocked_date) DO UPDATE SET reason = EXCLUDED.reason, block_type = EXCLUDED.block_type
           RETURNING *
-        `, [dateToBlock, reason || null, block_type || 'full']);
+        `, [dateToBlock, reason || null, finalBlockType]);
+
+        // Notify GYG of the blocked date (async, don't wait)
+        notifyGygDateBlocked(dateToBlock, finalBlockType);
 
         return res.status(200).json({ success: true, data: result.rows[0] });
       }
@@ -100,6 +273,10 @@ export default async function handler(req, res) {
         if (!date) return res.status(400).json({ success: false, error: 'date is required' });
 
         await pool.query('DELETE FROM blocked_dates WHERE blocked_date = $1', [date]);
+
+        // Notify GYG to restore availability (async, don't wait)
+        notifyGygDateUnblocked(date);
+
         return res.status(200).json({ success: true, message: 'Deleted' });
       }
     }

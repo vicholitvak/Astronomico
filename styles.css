@@ -656,15 +656,139 @@ section {
 /* ===== ABOUT SECTION ===== */
 .about {
     background: var(--bg-secondary);
+    position: relative;
+    overflow: hidden;
+}
+
+.about::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(255, 215, 0, 0.03) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .about-content {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 400px 1fr;
     gap: var(--spacing-xl);
-    align-items: center;
+    align-items: start;
+    position: relative;
 }
 
+.about-image {
+    position: sticky;
+    top: 100px;
+}
+
+.about-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 215, 0, 0.1);
+}
+
+.credential-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: var(--spacing-md);
+    padding: 10px 16px;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 215, 0, 0.05) 100%);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 50px;
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.credential-badge i {
+    font-size: 1rem;
+}
+
+.about-text {
+    padding-left: var(--spacing-lg);
+}
+
+.about-narrative {
+    font-size: 1.15rem;
+    line-height: 1.9;
+    margin-bottom: var(--spacing-lg);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.about-narrative:first-of-type {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+}
+
+.about-quote {
+    margin: var(--spacing-xl) 0;
+    padding: var(--spacing-lg) var(--spacing-xl);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.08) 0%, rgba(255, 215, 0, 0.02) 100%);
+    border-left: 3px solid var(--primary-color);
+    border-radius: 0 12px 12px 0;
+    position: relative;
+}
+
+.about-quote::before {
+    content: '"';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    font-size: 4rem;
+    color: var(--primary-color);
+    opacity: 0.3;
+    font-family: Georgia, serif;
+    line-height: 1;
+}
+
+.about-quote p {
+    font-size: 1.2rem;
+    font-style: italic;
+    line-height: 1.8;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.about-quote em {
+    color: var(--primary-color);
+    font-style: italic;
+    font-weight: 500;
+}
+
+.about-stats {
+    display: flex;
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.about-stats .stat-item {
+    text-align: center;
+}
+
+.about-stats .stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1.2;
+}
+
+.about-stats .stat-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Legacy support */
 .about-text p {
     font-size: 1.1rem;
     line-height: 1.8;
@@ -786,109 +910,7 @@ section {
     font-size: 0.95rem;
 }
 
-.about-image {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.about-image {
-    position: relative;
-    flex-direction: column;
-}
-
-.about-image img {
-    width: 80%;
-    height: auto;
-    max-height: 480px;
-    object-fit: contain;
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-lg);
-    background: rgba(0, 0, 0, 0.05);
-}
-
-.about-text .intro-text {
-    font-size: 1.3rem;
-    font-weight: 500;
-    color: var(--primary-color);
-    margin-bottom: var(--spacing-lg);
-    line-height: 1.6;
-}
-
-.about-text strong {
-    color: var(--accent-color);
-    font-weight: 600;
-}
-
-.credentials {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--spacing-md);
-    margin-top: var(--spacing-xl);
-    padding: var(--spacing-lg);
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-    border-radius: var(--border-radius);
-    border-left: 4px solid var(--primary-color);
-}
-
-.credential-item {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm);
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: var(--border-radius-sm);
-    transition: all var(--transition-normal);
-}
-
-.credential-item:hover {
-    background: rgba(255, 215, 0, 0.1);
-    transform: translateX(5px);
-}
-
-.credential-item i {
-    color: var(--primary-color);
-    font-size: 1.3rem;
-    min-width: 24px;
-}
-
-.credential-item span {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    font-weight: 500;
-}
-
-.image-caption {
-    margin-top: var(--spacing-md);
-    padding: var(--spacing-md);
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
-    border-radius: var(--border-radius);
-    border-left: 3px solid var(--accent-color);
-    width: 80%;
-}
-
-.image-caption i {
-    color: var(--primary-color);
-    font-size: 1.5rem;
-    margin-bottom: var(--spacing-xs);
-}
-
-.image-caption p {
-    font-style: italic;
-    color: var(--text-secondary);
-    margin: var(--spacing-sm) 0;
-    line-height: 1.6;
-    font-size: 1.05rem;
-}
-
-.image-caption span {
-    display: block;
-    text-align: right;
-    color: var(--primary-color);
-    font-weight: 600;
-    margin-top: var(--spacing-xs);
-    font-size: 0.95rem;
-}
+/* Legacy about styles removed - see new styles at line ~680 */
 
 /* ===== TOURS SECTION ===== */
 .tours {
@@ -1273,6 +1295,29 @@ blockquote {
 .author-info span {
     color: var(--text-secondary);
     font-size: 0.9rem;
+}
+
+/* Tour type badge */
+.review-tour-type {
+    display: inline-block;
+    color: var(--accent-color);
+    font-size: 0.85rem;
+    margin-left: 6px;
+}
+
+/* Badge for GetYourGuide verified reviews */
+.review-source-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(255, 90, 95, 0.15), rgba(255, 90, 95, 0.25));
+    color: #ff5a5f;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 12px;
+    margin-left: 8px;
+    border: 1px solid rgba(255, 90, 95, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .testimonial-nav {
@@ -2889,6 +2934,25 @@ blockquote {
     .contact-content {
         grid-template-columns: 1fr;
         gap: var(--spacing-lg);
+    }
+
+    .about-image {
+        position: relative;
+        top: 0;
+        max-width: 350px;
+        margin: 0 auto;
+    }
+
+    .about-text {
+        padding-left: 0;
+    }
+
+    .about-quote {
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+
+    .about-stats {
+        justify-content: center;
     }
     
     .booking-content {
