@@ -1193,12 +1193,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setLanguage(savedLang);
     }
 
-    // Defer dynamic testimonials to avoid blocking LCP
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => loadDynamicTestimonials(), { timeout: 4000 });
-    } else {
-        setTimeout(loadDynamicTestimonials, 2000);
-    }
+    // Testimonials are now loaded by reviews.js - no need to duplicate here
 });
 
 // ===== DYNAMIC TESTIMONIALS =====
