@@ -788,20 +788,22 @@ async function handleBook(req, res) {
       message: `GYG Booking: ${gygBookingReference}`
     });
 
-    // Send admin notification email (async, don't wait)
-    sendGygAdminNotificationEmail({
-      bookingId: existingReservation.booking_id,
-      gygReference: gygBookingReference,
-      date: dateFromReservation,
-      time: existingReservation.time,
-      persons: totalPersons || existingReservation.persons,
-      tourType: product.tourType,
-      name: name,
-      email: email,
-      phone: phone,
-      accommodation: travelerHotel,
-      paymentAmount: paymentAmount1
-    });
+    // Send admin notification email
+    try {
+      await sendGygAdminNotificationEmail({
+        bookingId: existingReservation.booking_id,
+        gygReference: gygBookingReference,
+        date: dateFromReservation,
+        time: existingReservation.time,
+        persons: totalPersons || existingReservation.persons,
+        tourType: product.tourType,
+        name: name,
+        email: email,
+        phone: phone,
+        accommodation: travelerHotel,
+        paymentAmount: paymentAmount1
+      });
+    } catch (e) { console.error('[GYG] Admin email failed:', e); }
 
     // Block first private slot if private tour at 21:00
     blockFirstPrivateSlotIfNeeded(dateFromReservation, existingReservation.time, product.tourType);
@@ -866,20 +868,22 @@ async function handleBook(req, res) {
       message: `GYG Booking: ${gygBookingReference}`
     });
 
-    // Send admin notification email (async, don't wait)
-    sendGygAdminNotificationEmail({
-      bookingId: existing.booking_id,
-      gygReference: gygBookingReference,
-      date: dateFromExisting,
-      time: existing.time,
-      persons: totalPersons || existing.persons,
-      tourType: product.tourType,
-      name: name,
-      email: email,
-      phone: phone,
-      accommodation: travelerHotel,
-      paymentAmount: paymentAmount2
-    });
+    // Send admin notification email
+    try {
+      await sendGygAdminNotificationEmail({
+        bookingId: existing.booking_id,
+        gygReference: gygBookingReference,
+        date: dateFromExisting,
+        time: existing.time,
+        persons: totalPersons || existing.persons,
+        tourType: product.tourType,
+        name: name,
+        email: email,
+        phone: phone,
+        accommodation: travelerHotel,
+        paymentAmount: paymentAmount2
+      });
+    } catch (e) { console.error('[GYG] Admin email failed:', e); }
 
     // Block first private slot if private tour at 21:00
     blockFirstPrivateSlotIfNeeded(dateFromExisting, existing.time, product.tourType);
@@ -946,20 +950,22 @@ async function handleBook(req, res) {
     message: notes
   });
 
-  // Send admin notification email (async, don't wait)
-  sendGygAdminNotificationEmail({
-    bookingId: bookingId,
-    gygReference: gygBookingReference,
-    date: date,
-    time: time,
-    persons: totalPersons || 1,
-    tourType: product.tourType,
-    name: name,
-    email: email,
-    phone: phone,
-    accommodation: travelerHotel,
-    paymentAmount: paymentAmount3
-  });
+  // Send admin notification email
+  try {
+    await sendGygAdminNotificationEmail({
+      bookingId: bookingId,
+      gygReference: gygBookingReference,
+      date: date,
+      time: time,
+      persons: totalPersons || 1,
+      tourType: product.tourType,
+      name: name,
+      email: email,
+      phone: phone,
+      accommodation: travelerHotel,
+      paymentAmount: paymentAmount3
+    });
+  } catch (e) { console.error('[GYG] Admin email failed:', e); }
 
   // Block first private slot if private tour at 21:00
   blockFirstPrivateSlotIfNeeded(date, time, product.tourType);
@@ -999,7 +1005,7 @@ async function sendGygAdminNotificationEmail(booking) {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'Atacama Dark Sky <onboarding@resend.dev>',
+        from: 'Atacama Dark Sky <reservas@atacamadarksky.cl>',
         to: [adminEmail],
         subject: `🌟 Nueva Reserva GYG: ${booking.name} - ${formattedDate}`,
         html: `

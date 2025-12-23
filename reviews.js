@@ -600,6 +600,9 @@ async function loadTestimonials() {
     const data = await reviewsResponse.json();
     const stats = await statsResponse.json();
 
+    console.log('[Testimonials] Loaded reviews:', data.reviews?.length, 'reviews');
+    console.log('[Testimonials] Sources:', data.reviews?.map(r => `${r.reviewer_name} (${r.source})`));
+
     if (data.reviews && data.reviews.length > 0) {
       displayTestimonials(data.reviews);
       initSlider();
