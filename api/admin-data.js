@@ -269,13 +269,14 @@ export default async function handler(req, res) {
       }
 
       if (req.method === 'DELETE') {
-        const { date } = req.query;
-        if (!date) return res.status(400).json({ success: false, error: 'date is required' });
+        const { date, tour_date } = req.query;
+        const dateToUnblock = date || tour_date;
+        if (!dateToUnblock) return res.status(400).json({ success: false, error: 'date is required' });
 
-        await pool.query('DELETE FROM blocked_dates WHERE blocked_date = $1', [date]);
+        await pool.query('DELETE FROM blocked_dates WHERE blocked_date = $1', [dateToUnblock]);
 
         // Notify GYG to restore availability (async, don't wait)
-        notifyGygDateUnblocked(date);
+        notifyGygDateUnblocked(dateToUnblock);
 
         return res.status(200).json({ success: true, message: 'Deleted' });
       }
