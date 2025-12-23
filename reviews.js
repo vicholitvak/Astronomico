@@ -644,6 +644,8 @@ function displayTestimonials(reviews) {
   const slider = document.getElementById('testimonialSlider');
   if (!slider) return;
 
+  console.log('[Testimonials] Rendering', reviews.length, 'reviews to slider');
+
   slider.innerHTML = reviews.map((review, index) => `
     <div class="testimonial-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
       <div class="testimonial-content">
@@ -661,6 +663,7 @@ function displayTestimonials(reviews) {
   `).join('');
 
   testimonialSlides = slider.querySelectorAll('.testimonial-slide');
+  console.log('[Testimonials] Created', testimonialSlides.length, 'slides in DOM');
 }
 
 /**
