@@ -2176,13 +2176,14 @@ Atacama Dark Sky</textarea>
             const firstDay = new Date(year, month, 1);
             const lastDay = new Date(year, month + 1, 0);
             const daysInMonth = lastDay.getDate();
-            const startingDayOfWeek = firstDay.getDay();
+            // Convert to Monday-first: Sunday (0) becomes 6, Monday (1) becomes 0, etc.
+            const startingDayOfWeek = (firstDay.getDay() + 6) % 7;
 
             // Build calendar HTML
             let calendarHTML = '';
 
-            // Day headers
-            const dayHeaders = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+            // Day headers (Monday first)
+            const dayHeaders = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
             dayHeaders.forEach(day => {
                 calendarHTML += `<div class="calendar-day-header">${day}</div>`;
             });
