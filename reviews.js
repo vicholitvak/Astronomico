@@ -587,16 +587,36 @@ let testimonialSlides = [];
  */
 async function loadTestimonials() {
   const slider = document.getElementById('testimonialSlider');
+  const summaryDiv = document.getElementById('reviewsRatingSummary');
   if (!slider) return;
 
   try {
-    const response = await fetch('/api/reviews?status=approved&limit=20');
-    const data = await response.json();
+    // Fetch reviews and stats in parallel
+    const [reviewsResponse, statsResponse] = await Promise.all([
+      fetch('/api/reviews?status=approved&limit=20'),
+      fetch('/api/reviews?stats=true')
+    ]);
+
+    const data = await reviewsResponse.json();
+    const stats = await statsResponse.json();
 
     if (data.reviews && data.reviews.length > 0) {
       displayTestimonials(data.reviews);
       initSlider();
-      updateHeroReviewCount(data.reviews.length);
+
+      // Update hero count with total from stats (not just returned reviews)
+      const totalApproved = parseInt(stats.total_approved) || data.reviews.length;
+      updateHeroReviewCount(totalApproved);
+
+      // Update rating summary
+      if (summaryDiv && stats.average_rating) {
+        const avgRating = parseFloat(stats.average_rating).toFixed(1);
+        summaryDiv.innerHTML = `
+          <div class="rating-stars">${renderStars(Math.round(stats.average_rating))}</div>
+          <span class="rating-text">${avgRating} / 5 basado en ${totalApproved} reseñas verificadas</span>
+        `;
+        summaryDiv.style.display = 'flex';
+      }
     } else {
       slider.innerHTML = `
         <div class="testimonial-slide active">
@@ -631,6 +651,7 @@ function displayTestimonials(reviews) {
           <span class="author-name">${escapeHtml(review.reviewer_name)}</span>
           ${review.reviewer_country ? `<span class="author-country">· ${escapeHtml(review.reviewer_country)}</span>` : ''}
           <span class="author-tour">· ${getTourTypeName(review.tour_type)}</span>
+          ${review.source === 'getyourguide' ? '<span class="review-source-badge" title="Reseña verificada en GetYourGuide">✓ GetYourGuide</span>' : ''}
         </div>
       </div>
     </div>

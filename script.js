@@ -29,12 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize all components
     initNavigation();
     initLanguageToggle();
-    // Defer testimonial loading to avoid blocking LCP
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => initTestimonialSlider(), { timeout: 3000 });
-    } else {
-        setTimeout(initTestimonialSlider, 1500);
-    }
+    // Testimonials are loaded by reviews.js
     initBookingForm();
     initSmoothScrolling();
     initScrollEffects();
