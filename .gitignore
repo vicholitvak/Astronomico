@@ -52,3 +52,4 @@ nul
 
 .env*.local
 .vercel
+.env.production

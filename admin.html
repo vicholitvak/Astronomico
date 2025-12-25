@@ -4391,14 +4391,16 @@ Atacama Dark Sky`;
 
         function renderFinancialAnalysis(data) {
             // Sumar GYG regular + private para los KPIs
-            const gygRegular = data.summary.find(s => s.source === 'gyg_regular') || {};
-            const gygPrivate = data.summary.find(s => s.source === 'gyg_private') || {};
+            // El campo puede ser 'source' o 'channel' dependiendo de la query
+            const getChannel = (s) => s.channel || s.source;
+            const gygRegular = data.summary.find(s => getChannel(s) === 'gyg_regular') || {};
+            const gygPrivate = data.summary.find(s => getChannel(s) === 'gyg_private') || {};
             const gygFin = {
                 gross_revenue: parseFloat(gygRegular.gross_revenue || 0) + parseFloat(gygPrivate.gross_revenue || 0),
                 commission_paid: parseFloat(gygRegular.commission_paid || 0) + parseFloat(gygPrivate.commission_paid || 0),
                 net_revenue: parseFloat(gygRegular.net_revenue || 0) + parseFloat(gygPrivate.net_revenue || 0)
             };
-            const directFin = data.summary.find(s => s.source === 'direct') || {};
+            const directFin = data.summary.find(s => getChannel(s) === 'direct') || {};
 
             document.getElementById('finGrossGyg').textContent = formatCLP(gygFin.gross_revenue || 0);
             document.getElementById('finCommission').textContent = '-' + formatCLP(gygFin.commission_paid || 0);
@@ -4444,30 +4446,33 @@ Atacama Dark Sky`;
             });
 
             // Financial summary table con detalles por tipo de tour
-            const sourceNames = {
+            const channelNames = {
                 'gyg_regular': 'GYG Tour Regular',
                 'gyg_private': 'GYG Tour Privado',
                 'direct': 'Venta Directa'
             };
-            const isGyg = (source) => source === 'gyg_regular' || source === 'gyg_private';
+            const getChannel = (s) => s.channel || s.source;
+            const isGyg = (ch) => ch === 'gyg_regular' || ch === 'gyg_private';
 
             // Ordenar: GYG primero, luego directo
             const sortedSummary = [...data.summary].sort((a, b) => {
                 const order = { 'gyg_private': 0, 'gyg_regular': 1, 'direct': 2 };
-                return (order[a.source] || 3) - (order[b.source] || 3);
+                return (order[getChannel(a)] || 3) - (order[getChannel(b)] || 3);
             });
 
-            document.getElementById('financialTableBody').innerHTML = sortedSummary.map(s => `
+            document.getElementById('financialTableBody').innerHTML = sortedSummary.map(s => {
+                const ch = getChannel(s);
+                return `
                 <tr>
-                    <td><strong>${sourceNames[s.source] || s.source}</strong></td>
+                    <td><strong>${channelNames[ch] || ch}</strong></td>
                     <td>${s.total_bookings}</td>
                     <td>${s.total_persons}</td>
                     <td>${formatCLP(s.gross_revenue)}</td>
-                    <td style="color: #ef4444;">${isGyg(s.source) ? '-' + formatCLP(s.commission_paid) : '-'}</td>
+                    <td style="color: #ef4444;">${isGyg(ch) ? '-' + formatCLP(s.commission_paid) : '-'}</td>
                     <td style="color: #10b981;">${formatCLP(s.net_revenue)}</td>
                     <td>${formatCLP(s.avg_ticket)}</td>
                 </tr>
-            `).join('');
+            `}).join('');
         }
 
         function renderGaAnalytics(data) {

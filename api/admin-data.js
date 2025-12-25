@@ -1169,51 +1169,31 @@ export default async function handler(req, res) {
           // 8. Análisis financiero - Separado por tipo de tour para GYG
           pool.query(`
             SELECT
-              CASE
-                WHEN source = 'gyg' AND tour_type = 'private' THEN 'gyg_private'
-                WHEN source = 'gyg' THEN 'gyg_regular'
-                ELSE 'direct'
-              END as source,
+              channel,
               COUNT(*) as total_bookings,
               COALESCE(SUM(persons), 0) as total_persons,
-              SUM(CASE
+              SUM(gross) as gross_revenue,
+              CASE WHEN channel LIKE 'gyg%' THEN SUM(gross) * 0.70 ELSE SUM(gross) END as net_revenue,
+              CASE WHEN channel LIKE 'gyg%' THEN SUM(gross) * 0.30 ELSE 0 END as commission_paid,
+              ROUND(AVG(gross)::numeric, 0) as avg_ticket
+            FROM (
+              SELECT
+                CASE
+                  WHEN source = 'gyg' AND tour_type = 'private' THEN 'gyg_private'
+                  WHEN source = 'gyg' THEN 'gyg_regular'
+                  ELSE 'direct'
+                END as channel,
+                persons,
+                CASE
                   WHEN source = 'gyg' AND payment_amount IS NULL THEN
                     CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
                   ELSE COALESCE(payment_amount, 0)
-                END) as gross_revenue,
-              CASE
-                WHEN source = 'gyg' THEN SUM(CASE
-                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
-                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
-                  ELSE COALESCE(payment_amount, 0)
-                END) * 0.70
-                ELSE SUM(CASE
-                  WHEN payment_amount IS NULL THEN
-                    CASE WHEN tour_type = 'private' THEN 200000 ELSE persons * 30000 END
-                  ELSE COALESCE(payment_amount, 0)
-                END)
-              END as net_revenue,
-              CASE
-                WHEN source = 'gyg' THEN SUM(CASE
-                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
-                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
-                  ELSE COALESCE(payment_amount, 0)
-                END) * 0.30
-                ELSE 0
-              END as commission_paid,
-              ROUND(AVG(CASE
-                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
-                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
-                  ELSE COALESCE(payment_amount, 0)
-                END)::numeric, 0) as avg_ticket
-            FROM bookings
-            WHERE date >= $1 AND date <= $2
-              AND status IN ('confirmed', 'completed')
-            GROUP BY CASE
-                WHEN source = 'gyg' AND tour_type = 'private' THEN 'gyg_private'
-                WHEN source = 'gyg' THEN 'gyg_regular'
-                ELSE 'direct'
-              END
+                END as gross
+              FROM bookings
+              WHERE date >= $1 AND date <= $2
+                AND status IN ('confirmed', 'completed')
+            ) sub
+            GROUP BY channel
           `, [startDate, endDate]),
 
           // 9. Tendencia semanal - Consolidado para gráfico
