@@ -28,11 +28,13 @@
             color: #e2e8f0;
             min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
+            overflow-x: hidden;
         }
 
         header {
@@ -809,7 +811,7 @@
 
             .calendar-section {
                 padding: 15px;
-                overflow-x: auto;
+                overflow-x: hidden;
             }
 
             .calendar-header {
@@ -874,6 +876,18 @@
                 margin-top: 3px;
             }
 
+            .moon-emoji {
+                display: none;
+            }
+
+            .moon-info {
+                display: none;
+            }
+
+            .day-number {
+                padding-left: 0;
+            }
+
             .calendar-legend {
                 flex-direction: column;
                 gap: 10px;
@@ -924,12 +938,20 @@
         /* Tabs */
         .admin-tabs {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 20px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 5px;
+        }
+        .admin-tabs::-webkit-scrollbar {
+            display: none;
         }
 
         .tab-btn {
-            padding: 12px 24px;
+            padding: 10px 16px;
             background: rgba(30, 41, 59, 0.8);
             border: 1px solid rgba(96, 165, 250, 0.2);
             color: #94a3b8;
@@ -937,6 +959,9 @@
             cursor: pointer;
             font-weight: 500;
             transition: all 0.3s;
+            white-space: nowrap;
+            flex-shrink: 0;
+            font-size: 0.9rem;
         }
 
         .tab-btn:hover {
@@ -950,7 +975,7 @@
             border-color: #3b82f6;
         }
 
-        .tab-content { display: none; }
+        .tab-content { display: none; overflow-x: hidden; }
         .tab-content.active { display: block; }
 
         /* AI Chat Styles */
@@ -1127,6 +1152,7 @@
             border-radius: 12px;
             margin-bottom: 25px;
             border: 1px solid rgba(96, 165, 250, 0.2);
+            overflow-x: hidden;
         }
 
         .analytics-section h3 {
@@ -1154,6 +1180,8 @@
             border-radius: 12px;
             min-height: 300px;
             position: relative;
+            max-width: 100%;
+            overflow: hidden;
         }
 
         .breakdown-section {
@@ -1492,10 +1520,6 @@
             <div class="stat-card clickable" id="cardPending" onclick="filterByStatCard('pending')" title="Ver solo pendientes">
                 <div class="stat-label">Pendientes</div>
                 <div class="stat-value" id="statPending" style="color: #fbbf24;">-</div>
-            </div>
-            <div class="stat-card clickable" id="cardCancelled" onclick="filterByStatCard('cancelled')" title="Ver canceladas">
-                <div class="stat-label">Canceladas</div>
-                <div class="stat-value" id="statCancelled" style="color: #ef4444;">-</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Total Personas</div>
@@ -2337,7 +2361,6 @@ Atacama Dark Sky</textarea>
             document.getElementById('statTotal').textContent = stats.total_bookings || 0;
             document.getElementById('statConfirmed').textContent = stats.confirmed || 0;
             document.getElementById('statPending').textContent = stats.pending || 0;
-            document.getElementById('statCancelled').textContent = stats.cancelled || 0;
             document.getElementById('statPersons').textContent = stats.total_persons || 0;
         }
 
@@ -3443,8 +3466,7 @@ Atacama Dark Sky</textarea>
             const cardMap = {
                 'all': 'cardTotal',
                 'confirmed': 'cardConfirmed',
-                'pending': 'cardPending',
-                'cancelled': 'cardCancelled'
+                'pending': 'cardPending'
             };
 
             const cardId = cardMap[status];
@@ -3743,6 +3765,7 @@ Atacama Dark Sky</textarea>
                 const response = await fetch('/api/claude-chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
                     body: JSON.stringify({
                         message: message,
                         history: apiHistory.slice(0, -1) // Exclude the message we just added
@@ -4558,8 +4581,16 @@ Atacama Dark Sky`;
                 total_bookings: parseInt(gygRegular.total_bookings || 0) + parseInt(gygPrivate.total_bookings || 0),
                 total_persons: parseInt(gygRegular.total_persons || 0) + parseInt(gygPrivate.total_persons || 0)
             };
-            const directData = summary.find(s => s.source === 'direct') || { total_bookings: 0, total_persons: 0 };
-            const totalBookings = summary.reduce((sum, s) => sum + parseInt(s.total_bookings), 0);
+
+            // Sumar todas las fuentes Directas (regular + private)
+            const directRegular = summary.find(s => s.source === 'direct_regular') || { total_bookings: 0, total_persons: 0 };
+            const directPrivate = summary.find(s => s.source === 'direct_private') || { total_bookings: 0, total_persons: 0 };
+            const directData = {
+                total_bookings: parseInt(directRegular.total_bookings || 0) + parseInt(directPrivate.total_bookings || 0),
+                total_persons: parseInt(directRegular.total_persons || 0) + parseInt(directPrivate.total_persons || 0)
+            };
+
+            const totalBookings = gygData.total_bookings + directData.total_bookings;
             const gygPercent = totalBookings > 0 ? ((gygData.total_bookings / totalBookings) * 100).toFixed(1) : 0;
 
             // Sumar financiero GYG
@@ -4569,7 +4600,13 @@ Atacama Dark Sky`;
                 net_revenue: parseFloat(gygFinRegular.net_revenue || 0) + parseFloat(gygFinPrivate.net_revenue || 0),
                 commission_paid: parseFloat(gygFinRegular.commission_paid || 0) + parseFloat(gygFinPrivate.commission_paid || 0)
             };
-            const directFin = financial.find(s => s.source === 'direct') || { net_revenue: 0 };
+
+            // Sumar financiero Directo
+            const directFinRegular = financial.find(s => s.source === 'direct_regular') || { net_revenue: 0 };
+            const directFinPrivate = financial.find(s => s.source === 'direct_private') || { net_revenue: 0 };
+            const directFin = {
+                net_revenue: parseFloat(directFinRegular.net_revenue || 0) + parseFloat(directFinPrivate.net_revenue || 0)
+            };
 
             document.getElementById('kpiGygBookings').textContent = gygData.total_bookings || 0;
             document.getElementById('kpiGygPercent').textContent = `${gygPercent}% del total`;
@@ -4581,51 +4618,41 @@ Atacama Dark Sky`;
         }
 
         function renderChannelComparison(data) {
-            // Bar chart: Channel comparison con labels claros
+            // Bar chart: Channel comparison - 2 bars: Directa vs GYG (solo personas)
             const ctx = document.getElementById('channelComparisonChart').getContext('2d');
             if (analyticsCharts.channelComparison) analyticsCharts.channelComparison.destroy();
 
-            const sourceNames = {
-                'gyg_regular': 'GYG Regular',
-                'gyg_private': 'GYG Privado',
-                'direct': 'Venta Directa'
-            };
-            const sourceColors = {
-                'gyg_regular': '#FF5A5F',
-                'gyg_private': '#FF8A8F',
-                'direct': '#10b981'
-            };
-            const sourceColorsLight = {
-                'gyg_regular': '#FF8A8F',
-                'gyg_private': '#FFB3B6',
-                'direct': '#34d399'
-            };
+            // Sumar personas por canal
+            const directRegular = data.summary.find(s => s.source === 'direct_regular') || { total_persons: 0 };
+            const directPrivate = data.summary.find(s => s.source === 'direct_private') || { total_persons: 0 };
+            const gygRegular = data.summary.find(s => s.source === 'gyg_regular') || { total_persons: 0 };
+            const gygPrivate = data.summary.find(s => s.source === 'gyg_private') || { total_persons: 0 };
 
-            const sources = data.summary.map(s => sourceNames[s.source] || s.source);
-            const bookings = data.summary.map(s => parseInt(s.total_bookings));
-            const persons = data.summary.map(s => parseInt(s.total_persons));
-            const colors = data.summary.map(s => sourceColors[s.source] || '#60a5fa');
-            const colorsLight = data.summary.map(s => sourceColorsLight[s.source] || '#93c5fd');
+            const directPersons = parseInt(directRegular.total_persons || 0) + parseInt(directPrivate.total_persons || 0);
+            const gygPersons = parseInt(gygRegular.total_persons || 0) + parseInt(gygPrivate.total_persons || 0);
 
             analyticsCharts.channelComparison = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: sources,
-                    datasets: [
-                        { label: 'Reservas', data: bookings, backgroundColor: colors },
-                        { label: 'Personas', data: persons, backgroundColor: colorsLight }
-                    ]
+                    labels: ['Venta Directa', 'GetYourGuide'],
+                    datasets: [{
+                        label: 'Personas',
+                        data: [directPersons, gygPersons],
+                        backgroundColor: ['#10b981', '#FF5A5F'],
+                        borderRadius: 6,
+                        barThickness: 60
+                    }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { labels: { color: '#94a3b8' } },
-                        title: { display: true, text: 'Comparativa de Canales', color: '#e2e8f0' }
+                        legend: { display: false },
+                        title: { display: true, text: 'Personas por Canal', color: '#e2e8f0', font: { size: 14 } }
                     },
                     scales: {
-                        x: { ticks: { color: '#94a3b8' } },
-                        y: { ticks: { color: '#94a3b8' } }
+                        x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                        y: { ticks: { color: '#94a3b8' }, beginAtZero: true }
                     }
                 }
             });
