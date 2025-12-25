@@ -953,6 +953,172 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
+        /* AI Chat Styles */
+        .chat-container {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 300px);
+            min-height: 500px;
+            max-height: 700px;
+        }
+        .chat-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-header h3 {
+            color: #60a5fa;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .chat-message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+        .chat-message.user {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #93c5fd;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-message.assistant {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            color: #e2e8f0;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        .chat-message.assistant pre {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 10px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .chat-message.assistant code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .chat-message .timestamp {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 5px;
+        }
+        .chat-suggestions {
+            padding: 10px 20px;
+            border-top: 1px solid rgba(71, 85, 105, 0.2);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .suggestion-btn {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #93c5fd;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .suggestion-btn:hover {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #60a5fa;
+        }
+        .chat-input-area {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(71, 85, 105, 0.3);
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input-area textarea {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            background: rgba(15, 23, 42, 0.6);
+            color: #e2e8f0;
+            font-size: 0.95rem;
+            resize: none;
+            min-height: 50px;
+            max-height: 120px;
+            font-family: inherit;
+        }
+        .chat-input-area textarea:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+        .chat-input-area button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .chat-input-area button:hover:not(:disabled) {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            transform: translateY(-1px);
+        }
+        .chat-input-area button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .chat-typing {
+            display: flex;
+            gap: 4px;
+            padding: 10px;
+        }
+        .chat-typing span {
+            width: 8px;
+            height: 8px;
+            background: #60a5fa;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        .chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+        .chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-8px); opacity: 1; }
+        }
+        .chat-welcome {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+        .chat-welcome i {
+            font-size: 3rem;
+            color: #60a5fa;
+            margin-bottom: 15px;
+        }
+        .chat-welcome h4 {
+            color: #e2e8f0;
+            margin-bottom: 10px;
+        }
+
         /* Analytics Dashboard Styles */
         .analytics-section {
             background: rgba(30, 41, 59, 0.8);
@@ -1305,6 +1471,9 @@
             </button>
             <button class="tab-btn" onclick="switchTab('analytics')">
                 <i class="fas fa-chart-pie"></i> Analytics
+            </button>
+            <button class="tab-btn" onclick="switchTab('ai')">
+                <i class="fas fa-robot"></i> Asistente IA
             </button>
         </div>
 
@@ -1967,6 +2136,45 @@ Atacama Dark Sky</textarea>
                         </div>
                         <span class="funnel-percent" id="funnelBookedPercent">-%</span>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Assistant Tab -->
+        <div id="aiTab" class="tab-content">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h3><i class="fas fa-robot"></i> Asistente IA - Atacama Dark Sky</h3>
+                    <button class="btn-secondary" onclick="clearChat()" style="padding: 8px 15px; font-size: 0.85rem;">
+                        <i class="fas fa-trash"></i> Limpiar
+                    </button>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-welcome">
+                        <i class="fas fa-robot"></i>
+                        <h4>Hola! Soy tu asistente de reservas</h4>
+                        <p>Pregúntame sobre reservas, estadísticas, o cualquier cosa del negocio.</p>
+                    </div>
+                </div>
+                <div class="chat-suggestions">
+                    <button class="suggestion-btn" onclick="askSuggestion('¿Qué reservas hay para hoy?')">
+                        Reservas de hoy
+                    </button>
+                    <button class="suggestion-btn" onclick="askSuggestion('¿Qué reservas hay para mañana?')">
+                        Reservas de mañana
+                    </button>
+                    <button class="suggestion-btn" onclick="askSuggestion('¿Cuántas reservas pendientes de pago tenemos?')">
+                        Pendientes de pago
+                    </button>
+                    <button class="suggestion-btn" onclick="askSuggestion('Dame un resumen de las estadísticas del mes')">
+                        Stats del mes
+                    </button>
+                </div>
+                <div class="chat-input-area">
+                    <textarea id="chatInput" placeholder="Escribe tu pregunta..." onkeydown="handleChatKeydown(event)"></textarea>
+                    <button id="chatSendBtn" onclick="sendChatMessage()">
+                        <i class="fas fa-paper-plane"></i> Enviar
+                    </button>
                 </div>
             </div>
         </div>
@@ -3421,6 +3629,181 @@ Atacama Dark Sky</textarea>
                 loadPhotoLinks();
             } else if (tab === 'reviews') {
                 loadReviews();
+            } else if (tab === 'ai') {
+                loadChatHistory();
+            }
+        }
+
+        // ============ AI CHAT FUNCTIONS ============
+
+        let chatHistory = [];
+        let isChatLoading = false;
+
+        function loadChatHistory() {
+            try {
+                const saved = localStorage.getItem('atacama_chat_history');
+                if (saved) {
+                    chatHistory = JSON.parse(saved);
+                    renderChatMessages();
+                }
+            } catch (e) {
+                console.error('Error loading chat history:', e);
+                chatHistory = [];
+            }
+        }
+
+        function saveChatHistory() {
+            try {
+                // Keep only last 50 messages to avoid localStorage limits
+                const toSave = chatHistory.slice(-50);
+                localStorage.setItem('atacama_chat_history', JSON.stringify(toSave));
+            } catch (e) {
+                console.error('Error saving chat history:', e);
+            }
+        }
+
+        function renderChatMessages() {
+            const container = document.getElementById('chatMessages');
+            if (chatHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="chat-welcome">
+                        <i class="fas fa-robot"></i>
+                        <h4>Hola! Soy tu asistente de reservas</h4>
+                        <p>Pregúntame sobre reservas, estadísticas, o cualquier cosa del negocio.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = chatHistory.map(msg => `
+                <div class="chat-message ${msg.role}">
+                    <div class="content">${formatChatMessage(msg.content)}</div>
+                    <div class="timestamp">${msg.timestamp || ''}</div>
+                </div>
+            `).join('');
+
+            // Scroll to bottom
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function formatChatMessage(content) {
+            // Convert markdown-like formatting to HTML
+            return content
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code>$1</code>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function addTypingIndicator() {
+            const container = document.getElementById('chatMessages');
+            const typing = document.createElement('div');
+            typing.id = 'typingIndicator';
+            typing.className = 'chat-message assistant';
+            typing.innerHTML = `
+                <div class="chat-typing">
+                    <span></span><span></span><span></span>
+                </div>
+            `;
+            container.appendChild(typing);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+
+            if (!message || isChatLoading) return;
+
+            isChatLoading = true;
+            const sendBtn = document.getElementById('chatSendBtn');
+            sendBtn.disabled = true;
+
+            // Add user message
+            const timestamp = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+            chatHistory.push({ role: 'user', content: message, timestamp });
+            renderChatMessages();
+            input.value = '';
+
+            // Show typing indicator
+            addTypingIndicator();
+
+            try {
+                // Prepare history for API (only role and content)
+                const apiHistory = chatHistory.slice(-10).map(m => ({
+                    role: m.role,
+                    content: m.content
+                }));
+
+                const response = await fetch('/api/claude-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: message,
+                        history: apiHistory.slice(0, -1) // Exclude the message we just added
+                    })
+                });
+
+                removeTypingIndicator();
+
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success && data.response) {
+                    const responseTimestamp = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+                    chatHistory.push({
+                        role: 'assistant',
+                        content: data.response,
+                        timestamp: responseTimestamp
+                    });
+                    saveChatHistory();
+                    renderChatMessages();
+                } else {
+                    throw new Error(data.error || 'Unknown error');
+                }
+
+            } catch (error) {
+                removeTypingIndicator();
+                console.error('Chat error:', error);
+
+                chatHistory.push({
+                    role: 'assistant',
+                    content: `Lo siento, hubo un error al procesar tu mensaje. Por favor intenta de nuevo.\n\nError: ${error.message}`,
+                    timestamp: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })
+                });
+                renderChatMessages();
+            }
+
+            isChatLoading = false;
+            sendBtn.disabled = false;
+            input.focus();
+        }
+
+        function askSuggestion(question) {
+            document.getElementById('chatInput').value = question;
+            sendChatMessage();
+        }
+
+        function handleChatKeydown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        }
+
+        function clearChat() {
+            if (confirm('¿Seguro que quieres limpiar el historial del chat?')) {
+                chatHistory = [];
+                localStorage.removeItem('atacama_chat_history');
+                renderChatMessages();
             }
         }
 
