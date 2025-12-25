@@ -498,10 +498,12 @@ async function handleReserve(req, res) {
 
   // Extract date directly from string to avoid timezone conversion issues
   // GYG sends: 2025-01-15T21:00:00-03:00 → we want 2025-01-15
+  console.log(`[GYG] Reserve - Raw dateTime: ${dateTime}`);
   const date = dateTime.split('T')[0];
   // Extract time from ISO string properly
   const timeMatch = dateTime.match(/T(\d{2}:\d{2})/);
   const time = timeMatch ? timeMatch[1] : '21:00';
+  console.log(`[GYG] Reserve - Parsed date: ${date}, time: ${time}`);
 
   // Calculate total persons from bookingItems
   let totalPersons = 0;
@@ -896,10 +898,12 @@ async function handleBook(req, res) {
     });
   }
 
-  // Extract date and time
+  // Extract date and time - log raw values for debugging
+  console.log(`[GYG] Raw dateTime from GYG: ${dateTime}`);
   const timeMatch = dateTime.match(/T(\d{2}:\d{2})/);
   const time = timeMatch ? timeMatch[1] : '21:00';
   const date = dateTime.split('T')[0];
+  console.log(`[GYG] Parsed date: ${date}, time: ${time}`);
 
   // Get traveler info
   const travelerInfo = travelers && travelers[0] ? travelers[0] : {};
@@ -935,7 +939,7 @@ async function handleBook(req, res) {
     created_at: new Date().toISOString()
   });
 
-  console.log(`[GYG] Booking confirmed: ${bookingId} for ${gygBookingReference} (${product.tourType})`);
+  console.log(`[GYG] ✓ Booking confirmed: ${bookingId} | Ref: ${gygBookingReference} | Date: ${date} | Time: ${time} | ${totalPersons || 1}p | ${product.tourType} | $${paymentAmount3} CLP`);
 
   // Sync to Google Calendar (async, don't wait)
   syncGygBookingToCalendar({

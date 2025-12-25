@@ -1006,10 +1006,14 @@ export default async function handler(req, res) {
 
         // Ejecutar todas las queries en paralelo
         const [channelResult, nationalitiesResult, hotelsResult, groupSizeResult, advanceResult, timesResult, weeklyResult, financialResult, trendResult] = await Promise.all([
-          // 1. Comparativa de canales
+          // 1. Comparativa de canales - Separamos GYG por tour_type y consolidamos website+manual como 'direct'
           pool.query(`
             SELECT
-              COALESCE(source, 'website') as source,
+              CASE
+                WHEN source = 'gyg' AND tour_type = 'private' THEN 'gyg_private'
+                WHEN source = 'gyg' THEN 'gyg_regular'
+                ELSE 'direct'
+              END as source,
               COUNT(*) as total_bookings,
               COALESCE(SUM(persons), 0) as total_persons,
               SUM(CASE
@@ -1023,7 +1027,11 @@ export default async function handler(req, res) {
             FROM bookings
             WHERE date >= $1 AND date <= $2
               AND status IN ('confirmed', 'completed')
-            GROUP BY COALESCE(source, 'website')
+            GROUP BY CASE
+                WHEN source = 'gyg' AND tour_type = 'private' THEN 'gyg_private'
+                WHEN source = 'gyg' THEN 'gyg_regular'
+                ELSE 'direct'
+              END
             ORDER BY total_bookings DESC
           `, [startDate, endDate]),
 
@@ -1089,10 +1097,13 @@ export default async function handler(req, res) {
             LIMIT 20
           `, [startDate, endDate]),
 
-          // 4. Tamaño promedio de grupos
+          // 4. Tamaño promedio de grupos - Consolidado
           pool.query(`
             SELECT
-              COALESCE(source, 'website') as source,
+              CASE
+                WHEN source = 'gyg' THEN 'gyg'
+                ELSE 'direct'
+              END as source,
               ROUND(AVG(persons)::numeric, 2) as avg_group_size,
               MIN(persons) as min_group,
               MAX(persons) as max_group,
@@ -1100,13 +1111,16 @@ export default async function handler(req, res) {
             FROM bookings
             WHERE date >= $1 AND date <= $2
               AND status IN ('confirmed', 'completed')
-            GROUP BY COALESCE(source, 'website')
+            GROUP BY CASE WHEN source = 'gyg' THEN 'gyg' ELSE 'direct' END
           `, [startDate, endDate]),
 
-          // 5. Días de anticipación
+          // 5. Días de anticipación - Consolidado
           pool.query(`
             SELECT
-              COALESCE(source, 'website') as source,
+              CASE
+                WHEN source = 'gyg' THEN 'gyg'
+                ELSE 'direct'
+              END as source,
               ROUND(AVG(date - created_at::date)::numeric, 1) as avg_days_advance,
               MIN(date - created_at::date) as min_days,
               MAX(date - created_at::date) as max_days,
@@ -1114,42 +1128,52 @@ export default async function handler(req, res) {
             FROM bookings
             WHERE date >= $1 AND date <= $2
               AND status IN ('confirmed', 'completed')
-            GROUP BY COALESCE(source, 'website')
+            GROUP BY CASE WHEN source = 'gyg' THEN 'gyg' ELSE 'direct' END
           `, [startDate, endDate]),
 
-          // 6. Horarios populares
+          // 6. Horarios populares - Consolidado
           pool.query(`
             SELECT
               time,
-              COALESCE(source, 'website') as source,
+              CASE
+                WHEN source = 'gyg' THEN 'gyg'
+                ELSE 'direct'
+              END as source,
               COUNT(*) as bookings,
               COALESCE(SUM(persons), 0) as total_persons
             FROM bookings
             WHERE date >= $1 AND date <= $2
               AND status IN ('confirmed', 'completed')
-            GROUP BY time, COALESCE(source, 'website')
+            GROUP BY time, CASE WHEN source = 'gyg' THEN 'gyg' ELSE 'direct' END
             ORDER BY bookings DESC
           `, [startDate, endDate]),
 
-          // 7. Distribución semanal
+          // 7. Distribución semanal - Consolidado
           pool.query(`
             SELECT
               TO_CHAR(date, 'Day') as day_name,
               EXTRACT(DOW FROM date) as day_number,
-              COALESCE(source, 'website') as source,
+              CASE
+                WHEN source = 'gyg' THEN 'gyg'
+                ELSE 'direct'
+              END as source,
               COUNT(*) as bookings,
               COALESCE(SUM(persons), 0) as persons
             FROM bookings
             WHERE date >= $1 AND date <= $2
               AND status IN ('confirmed', 'completed')
-            GROUP BY TO_CHAR(date, 'Day'), EXTRACT(DOW FROM date), COALESCE(source, 'website')
+            GROUP BY TO_CHAR(date, 'Day'), EXTRACT(DOW FROM date), CASE WHEN source = 'gyg' THEN 'gyg' ELSE 'direct' END
             ORDER BY day_number
           `, [startDate, endDate]),
 
-          // 8. Análisis financiero
+          // 8. Análisis financiero - Separado por tipo de tour para GYG
           pool.query(`
             SELECT
-              COALESCE(source, 'website') as source,
+              CASE
+                WHEN source = 'gyg' AND tour_type = 'private' THEN 'gyg_private'
+                WHEN source = 'gyg' THEN 'gyg_regular'
+                ELSE 'direct'
+              END as source,
               COUNT(*) as total_bookings,
               COALESCE(SUM(persons), 0) as total_persons,
               SUM(CASE
@@ -1158,19 +1182,19 @@ export default async function handler(req, res) {
                   ELSE COALESCE(payment_amount, 0)
                 END) as gross_revenue,
               CASE
-                WHEN COALESCE(source, 'website') = 'gyg' THEN SUM(CASE
+                WHEN source = 'gyg' THEN SUM(CASE
                   WHEN source = 'gyg' AND payment_amount IS NULL THEN
                     CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
                   ELSE COALESCE(payment_amount, 0)
                 END) * 0.70
                 ELSE SUM(CASE
-                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
-                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
+                  WHEN payment_amount IS NULL THEN
+                    CASE WHEN tour_type = 'private' THEN 200000 ELSE persons * 30000 END
                   ELSE COALESCE(payment_amount, 0)
                 END)
               END as net_revenue,
               CASE
-                WHEN COALESCE(source, 'website') = 'gyg' THEN SUM(CASE
+                WHEN source = 'gyg' THEN SUM(CASE
                   WHEN source = 'gyg' AND payment_amount IS NULL THEN
                     CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
                   ELSE COALESCE(payment_amount, 0)
@@ -1185,14 +1209,21 @@ export default async function handler(req, res) {
             FROM bookings
             WHERE date >= $1 AND date <= $2
               AND status IN ('confirmed', 'completed')
-            GROUP BY COALESCE(source, 'website')
+            GROUP BY CASE
+                WHEN source = 'gyg' AND tour_type = 'private' THEN 'gyg_private'
+                WHEN source = 'gyg' THEN 'gyg_regular'
+                ELSE 'direct'
+              END
           `, [startDate, endDate]),
 
-          // 9. Tendencia semanal
+          // 9. Tendencia semanal - Consolidado para gráfico
           pool.query(`
             SELECT
               DATE_TRUNC('week', date)::date as week_start,
-              COALESCE(source, 'website') as source,
+              CASE
+                WHEN source = 'gyg' THEN 'gyg'
+                ELSE 'direct'
+              END as source,
               COUNT(*) as bookings,
               COALESCE(SUM(persons), 0) as persons,
               SUM(CASE
@@ -1203,16 +1234,19 @@ export default async function handler(req, res) {
             FROM bookings
             WHERE date >= $1 AND date <= $2
               AND status IN ('confirmed', 'completed')
-            GROUP BY DATE_TRUNC('week', date), COALESCE(source, 'website')
+            GROUP BY DATE_TRUNC('week', date), CASE WHEN source = 'gyg' THEN 'gyg' ELSE 'direct' END
             ORDER BY week_start, source
           `, [startDate, endDate])
         ]);
 
-        // Tendencia mensual para el gráfico financiero
+        // Tendencia mensual para el gráfico financiero - Consolidado
         const monthlyTrendResult = await pool.query(`
           SELECT
             DATE_TRUNC('month', date)::date as month,
-            COALESCE(source, 'website') as source,
+            CASE
+              WHEN source = 'gyg' THEN 'gyg'
+              ELSE 'direct'
+            END as source,
             COUNT(*) as bookings,
             SUM(CASE
                   WHEN source = 'gyg' AND payment_amount IS NULL THEN
@@ -1220,21 +1254,21 @@ export default async function handler(req, res) {
                   ELSE COALESCE(payment_amount, 0)
                 END) as gross_revenue,
             CASE
-              WHEN COALESCE(source, 'website') = 'gyg' THEN SUM(CASE
+              WHEN source = 'gyg' THEN SUM(CASE
                   WHEN source = 'gyg' AND payment_amount IS NULL THEN
                     CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
                   ELSE COALESCE(payment_amount, 0)
                 END) * 0.70
               ELSE SUM(CASE
-                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
-                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
+                  WHEN payment_amount IS NULL THEN
+                    CASE WHEN tour_type = 'private' THEN 200000 ELSE persons * 30000 END
                   ELSE COALESCE(payment_amount, 0)
                 END)
             END as net_revenue
           FROM bookings
           WHERE date >= $1 AND date <= $2
             AND status IN ('confirmed', 'completed')
-          GROUP BY DATE_TRUNC('month', date), COALESCE(source, 'website')
+          GROUP BY DATE_TRUNC('month', date), CASE WHEN source = 'gyg' THEN 'gyg' ELSE 'direct' END
           ORDER BY month, source
         `, [startDate, endDate]);
 

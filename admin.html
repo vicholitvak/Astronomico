@@ -4168,13 +4168,25 @@ Atacama Dark Sky`;
             const summary = data.channelComparison.summary;
             const financial = data.financialAnalysis.summary;
 
-            const gygData = summary.find(s => s.source === 'gyg') || { total_bookings: 0, total_persons: 0 };
-            const directData = summary.find(s => s.source === 'website') || { total_bookings: 0, total_persons: 0 };
+            // Sumar todas las fuentes GYG (regular + private)
+            const gygRegular = summary.find(s => s.source === 'gyg_regular') || { total_bookings: 0, total_persons: 0 };
+            const gygPrivate = summary.find(s => s.source === 'gyg_private') || { total_bookings: 0, total_persons: 0 };
+            const gygData = {
+                total_bookings: parseInt(gygRegular.total_bookings || 0) + parseInt(gygPrivate.total_bookings || 0),
+                total_persons: parseInt(gygRegular.total_persons || 0) + parseInt(gygPrivate.total_persons || 0)
+            };
+            const directData = summary.find(s => s.source === 'direct') || { total_bookings: 0, total_persons: 0 };
             const totalBookings = summary.reduce((sum, s) => sum + parseInt(s.total_bookings), 0);
             const gygPercent = totalBookings > 0 ? ((gygData.total_bookings / totalBookings) * 100).toFixed(1) : 0;
 
-            const gygFin = financial.find(s => s.source === 'gyg') || { net_revenue: 0, commission_paid: 0 };
-            const directFin = financial.find(s => s.source === 'website') || { net_revenue: 0 };
+            // Sumar financiero GYG
+            const gygFinRegular = financial.find(s => s.source === 'gyg_regular') || { net_revenue: 0, commission_paid: 0 };
+            const gygFinPrivate = financial.find(s => s.source === 'gyg_private') || { net_revenue: 0, commission_paid: 0 };
+            const gygFin = {
+                net_revenue: parseFloat(gygFinRegular.net_revenue || 0) + parseFloat(gygFinPrivate.net_revenue || 0),
+                commission_paid: parseFloat(gygFinRegular.commission_paid || 0) + parseFloat(gygFinPrivate.commission_paid || 0)
+            };
+            const directFin = financial.find(s => s.source === 'direct') || { net_revenue: 0 };
 
             document.getElementById('kpiGygBookings').textContent = gygData.total_bookings || 0;
             document.getElementById('kpiGygPercent').textContent = `${gygPercent}% del total`;
@@ -4186,28 +4198,48 @@ Atacama Dark Sky`;
         }
 
         function renderChannelComparison(data) {
-            // Bar chart: Channel comparison
+            // Bar chart: Channel comparison con labels claros
             const ctx = document.getElementById('channelComparisonChart').getContext('2d');
             if (analyticsCharts.channelComparison) analyticsCharts.channelComparison.destroy();
 
-            const sourceNames = { 'gyg': 'GetYourGuide', 'website': 'Web Directa', 'manual': 'Manual' };
+            const sourceNames = {
+                'gyg_regular': 'GYG Regular',
+                'gyg_private': 'GYG Privado',
+                'direct': 'Venta Directa'
+            };
+            const sourceColors = {
+                'gyg_regular': '#FF5A5F',
+                'gyg_private': '#FF8A8F',
+                'direct': '#10b981'
+            };
+            const sourceColorsLight = {
+                'gyg_regular': '#FF8A8F',
+                'gyg_private': '#FFB3B6',
+                'direct': '#34d399'
+            };
+
             const sources = data.summary.map(s => sourceNames[s.source] || s.source);
             const bookings = data.summary.map(s => parseInt(s.total_bookings));
             const persons = data.summary.map(s => parseInt(s.total_persons));
+            const colors = data.summary.map(s => sourceColors[s.source] || '#60a5fa');
+            const colorsLight = data.summary.map(s => sourceColorsLight[s.source] || '#93c5fd');
 
             analyticsCharts.channelComparison = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: sources,
                     datasets: [
-                        { label: 'Reservas', data: bookings, backgroundColor: ['#FF5A5F', '#10b981', '#60a5fa'] },
-                        { label: 'Personas', data: persons, backgroundColor: ['#FF8A8F', '#34d399', '#93c5fd'] }
+                        { label: 'Reservas', data: bookings, backgroundColor: colors },
+                        { label: 'Personas', data: persons, backgroundColor: colorsLight }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#94a3b8' } } },
+                    plugins: {
+                        legend: { labels: { color: '#94a3b8' } },
+                        title: { display: true, text: 'Comparativa de Canales', color: '#e2e8f0' }
+                    },
                     scales: {
                         x: { ticks: { color: '#94a3b8' } },
                         y: { ticks: { color: '#94a3b8' } }
@@ -4215,7 +4247,7 @@ Atacama Dark Sky`;
                 }
             });
 
-            // Line chart: Weekly trend
+            // Line chart: Weekly trend (consolidado gyg vs direct)
             const ctxTrend = document.getElementById('channelTrendChart').getContext('2d');
             if (analyticsCharts.channelTrend) analyticsCharts.channelTrend.destroy();
 
@@ -4225,7 +4257,7 @@ Atacama Dark Sky`;
                 return item ? parseInt(item.bookings) : 0;
             });
             const directTrend = weeks.map(w => {
-                const item = data.trend.find(t => t.week_start === w && t.source === 'website');
+                const item = data.trend.find(t => t.week_start === w && t.source === 'direct');
                 return item ? parseInt(item.bookings) : 0;
             });
 
@@ -4234,8 +4266,8 @@ Atacama Dark Sky`;
                 data: {
                     labels: weeks.map(w => new Date(w).toLocaleDateString('es-CL', { day: '2-digit', month: 'short' })),
                     datasets: [
-                        { label: 'GyG', data: gygTrend, borderColor: '#FF5A5F', backgroundColor: 'rgba(255, 90, 95, 0.1)', fill: true, tension: 0.3 },
-                        { label: 'Directas', data: directTrend, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.3 }
+                        { label: 'GetYourGuide', data: gygTrend, borderColor: '#FF5A5F', backgroundColor: 'rgba(255, 90, 95, 0.1)', fill: true, tension: 0.3 },
+                        { label: 'Venta Directa', data: directTrend, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.3 }
                     ]
                 },
                 options: {
@@ -4275,14 +4307,15 @@ Atacama Dark Sky`;
             const ctx = document.getElementById('groupSizeChart').getContext('2d');
             if (analyticsCharts.groupSize) analyticsCharts.groupSize.destroy();
 
-            const sourceNames = { 'gyg': 'GyG', 'website': 'Directas', 'manual': 'Manual' };
+            const sourceNames = { 'gyg': 'GetYourGuide', 'direct': 'Venta Directa' };
+            const sourceColors = { 'gyg': '#FF5A5F', 'direct': '#10b981' };
             analyticsCharts.groupSize = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: data.groupSizes.map(g => sourceNames[g.source] || g.source),
                     datasets: [{
                         data: data.groupSizes.map(g => parseFloat(g.avg_group_size) || 0),
-                        backgroundColor: ['#FF5A5F', '#10b981', '#60a5fa']
+                        backgroundColor: data.groupSizes.map(g => sourceColors[g.source] || '#60a5fa')
                     }]
                 },
                 options: {
@@ -4301,7 +4334,8 @@ Atacama Dark Sky`;
             const ctx = document.getElementById('advanceBookingChart').getContext('2d');
             if (analyticsCharts.advanceBooking) analyticsCharts.advanceBooking.destroy();
 
-            const sourceNames = { 'gyg': 'GyG', 'website': 'Directas', 'manual': 'Manual' };
+            const sourceNames = { 'gyg': 'GetYourGuide', 'direct': 'Venta Directa' };
+            const sourceColors = { 'gyg': '#FF5A5F', 'direct': '#10b981' };
             analyticsCharts.advanceBooking = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -4309,7 +4343,7 @@ Atacama Dark Sky`;
                     datasets: [{
                         label: 'Días Promedio de Anticipación',
                         data: data.advanceBooking.map(a => parseFloat(a.avg_days_advance) || 0),
-                        backgroundColor: ['#FF5A5F', '#10b981', '#60a5fa']
+                        backgroundColor: data.advanceBooking.map(a => sourceColors[a.source] || '#60a5fa')
                     }]
                 },
                 options: {
@@ -4333,7 +4367,7 @@ Atacama Dark Sky`;
                 return item ? parseInt(item.bookings) : 0;
             });
             const directWeekly = days.map((_, i) => {
-                const item = data.weeklyDistribution.find(w => parseInt(w.day_number) === i && w.source === 'website');
+                const item = data.weeklyDistribution.find(w => parseInt(w.day_number) === i && w.source === 'direct');
                 return item ? parseInt(item.bookings) : 0;
             });
 
@@ -4342,8 +4376,8 @@ Atacama Dark Sky`;
                 data: {
                     labels: days,
                     datasets: [
-                        { label: 'GyG', data: gygWeekly, borderColor: '#FF5A5F', backgroundColor: 'rgba(255, 90, 95, 0.2)' },
-                        { label: 'Directas', data: directWeekly, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.2)' }
+                        { label: 'GetYourGuide', data: gygWeekly, borderColor: '#FF5A5F', backgroundColor: 'rgba(255, 90, 95, 0.2)' },
+                        { label: 'Venta Directa', data: directWeekly, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.2)' }
                     ]
                 },
                 options: {
@@ -4356,15 +4390,22 @@ Atacama Dark Sky`;
         }
 
         function renderFinancialAnalysis(data) {
-            const gygFin = data.summary.find(s => s.source === 'gyg') || {};
-            const directFin = data.summary.find(s => s.source === 'website') || {};
+            // Sumar GYG regular + private para los KPIs
+            const gygRegular = data.summary.find(s => s.source === 'gyg_regular') || {};
+            const gygPrivate = data.summary.find(s => s.source === 'gyg_private') || {};
+            const gygFin = {
+                gross_revenue: parseFloat(gygRegular.gross_revenue || 0) + parseFloat(gygPrivate.gross_revenue || 0),
+                commission_paid: parseFloat(gygRegular.commission_paid || 0) + parseFloat(gygPrivate.commission_paid || 0),
+                net_revenue: parseFloat(gygRegular.net_revenue || 0) + parseFloat(gygPrivate.net_revenue || 0)
+            };
+            const directFin = data.summary.find(s => s.source === 'direct') || {};
 
             document.getElementById('finGrossGyg').textContent = formatCLP(gygFin.gross_revenue || 0);
             document.getElementById('finCommission').textContent = '-' + formatCLP(gygFin.commission_paid || 0);
             document.getElementById('finNetGyg').textContent = formatCLP(gygFin.net_revenue || 0);
             document.getElementById('finNetDirect').textContent = formatCLP(directFin.net_revenue || 0);
 
-            // Revenue comparison chart
+            // Revenue comparison chart (consolidado)
             const ctx = document.getElementById('revenueComparisonChart').getContext('2d');
             if (analyticsCharts.revenue) analyticsCharts.revenue.destroy();
 
@@ -4374,7 +4415,7 @@ Atacama Dark Sky`;
                 return item ? parseFloat(item.net_revenue) : 0;
             });
             const directNet = months.map(m => {
-                const item = data.monthlyTrend.find(t => t.month === m && t.source === 'website');
+                const item = data.monthlyTrend.find(t => t.month === m && t.source === 'direct');
                 return item ? parseFloat(item.net_revenue) : 0;
             });
 
@@ -4383,8 +4424,8 @@ Atacama Dark Sky`;
                 data: {
                     labels: months.map(m => new Date(m).toLocaleDateString('es-CL', { month: 'short', year: '2-digit' })),
                     datasets: [
-                        { label: 'GyG (Neto)', data: gygNet, backgroundColor: 'rgba(255, 90, 95, 0.7)', borderColor: '#FF5A5F', borderWidth: 1 },
-                        { label: 'Directas', data: directNet, backgroundColor: 'rgba(16, 185, 129, 0.7)', borderColor: '#10b981', borderWidth: 1 }
+                        { label: 'GetYourGuide (Neto)', data: gygNet, backgroundColor: 'rgba(255, 90, 95, 0.7)', borderColor: '#FF5A5F', borderWidth: 1 },
+                        { label: 'Venta Directa', data: directNet, backgroundColor: 'rgba(16, 185, 129, 0.7)', borderColor: '#10b981', borderWidth: 1 }
                     ]
                 },
                 options: {
@@ -4402,15 +4443,27 @@ Atacama Dark Sky`;
                 }
             });
 
-            // Financial summary table
-            const sourceNames = { 'gyg': 'GetYourGuide', 'website': 'Web Directa', 'manual': 'Manual' };
-            document.getElementById('financialTableBody').innerHTML = data.summary.map(s => `
+            // Financial summary table con detalles por tipo de tour
+            const sourceNames = {
+                'gyg_regular': 'GYG Tour Regular',
+                'gyg_private': 'GYG Tour Privado',
+                'direct': 'Venta Directa'
+            };
+            const isGyg = (source) => source === 'gyg_regular' || source === 'gyg_private';
+
+            // Ordenar: GYG primero, luego directo
+            const sortedSummary = [...data.summary].sort((a, b) => {
+                const order = { 'gyg_private': 0, 'gyg_regular': 1, 'direct': 2 };
+                return (order[a.source] || 3) - (order[b.source] || 3);
+            });
+
+            document.getElementById('financialTableBody').innerHTML = sortedSummary.map(s => `
                 <tr>
                     <td><strong>${sourceNames[s.source] || s.source}</strong></td>
                     <td>${s.total_bookings}</td>
                     <td>${s.total_persons}</td>
                     <td>${formatCLP(s.gross_revenue)}</td>
-                    <td style="color: #ef4444;">${s.source === 'gyg' ? '-' + formatCLP(s.commission_paid) : '-'}</td>
+                    <td style="color: #ef4444;">${isGyg(s.source) ? '-' + formatCLP(s.commission_paid) : '-'}</td>
                     <td style="color: #10b981;">${formatCLP(s.net_revenue)}</td>
                     <td>${formatCLP(s.avg_ticket)}</td>
                 </tr>
