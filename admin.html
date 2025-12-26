@@ -5220,12 +5220,13 @@ ID: ${booking.booking_id}`;
 
         let floatingChatOpen = false;
         let isDragging = false;
+        let hasMoved = false;
+        let dragStart = { x: 0, y: 0 };
         let dragOffset = { x: 0, y: 0 };
         let fabPosition = { x: null, y: null };
 
         function initFloatingChat() {
             const fab = document.getElementById('chatFab');
-            const panel = document.getElementById('floatingChatPanel');
 
             // Load saved position
             const savedPos = localStorage.getItem('chatFabPosition');
@@ -5245,8 +5246,18 @@ ID: ${booking.booking_id}`;
             document.addEventListener('mouseup', endDrag);
             document.addEventListener('touchend', endDrag);
 
+            // Click handler (separate from drag)
+            fab.addEventListener('click', handleFabClick);
+
             // Render initial messages
             renderFloatingChatMessages();
+        }
+
+        function handleFabClick(e) {
+            // Only toggle if we didn't just finish dragging
+            if (!hasMoved) {
+                toggleFloatingChat();
+            }
         }
 
         function startDrag(e) {
@@ -5256,15 +5267,15 @@ ID: ${booking.booking_id}`;
             const rect = fab.getBoundingClientRect();
 
             isDragging = true;
-            fab.classList.add('dragging');
+            hasMoved = false;
 
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
+            dragStart.x = clientX;
+            dragStart.y = clientY;
             dragOffset.x = clientX - rect.left;
             dragOffset.y = clientY - rect.top;
-
-            e.preventDefault();
         }
 
         function onDrag(e) {
@@ -5274,21 +5285,30 @@ ID: ${booking.booking_id}`;
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
-            let newX = clientX - dragOffset.x;
-            let newY = clientY - dragOffset.y;
+            // Check if moved more than 10px from start
+            const deltaX = Math.abs(clientX - dragStart.x);
+            const deltaY = Math.abs(clientY - dragStart.y);
 
-            // Keep within viewport
-            newX = Math.max(0, Math.min(newX, window.innerWidth - 60));
-            newY = Math.max(0, Math.min(newY, window.innerHeight - 60));
+            if (deltaX > 10 || deltaY > 10) {
+                hasMoved = true;
+                fab.classList.add('dragging');
 
-            fab.style.right = 'auto';
-            fab.style.bottom = 'auto';
-            fab.style.left = newX + 'px';
-            fab.style.top = newY + 'px';
+                let newX = clientX - dragOffset.x;
+                let newY = clientY - dragOffset.y;
 
-            fabPosition = { x: newX, y: newY };
+                // Keep within viewport
+                newX = Math.max(0, Math.min(newX, window.innerWidth - 60));
+                newY = Math.max(0, Math.min(newY, window.innerHeight - 60));
 
-            e.preventDefault();
+                fab.style.right = 'auto';
+                fab.style.bottom = 'auto';
+                fab.style.left = newX + 'px';
+                fab.style.top = newY + 'px';
+
+                fabPosition = { x: newX, y: newY };
+            }
+
+            if (e.touches) e.preventDefault();
         }
 
         function endDrag(e) {
@@ -5297,19 +5317,15 @@ ID: ${booking.booking_id}`;
             const fab = document.getElementById('chatFab');
             fab.classList.remove('dragging');
 
-            // Check if it was a click (minimal movement)
-            const moved = Math.abs(dragOffset.x) > 5 || Math.abs(dragOffset.y) > 5;
-
-            if (fabPosition.x !== null) {
+            // Save position if moved
+            if (hasMoved && fabPosition.x !== null) {
                 localStorage.setItem('chatFabPosition', JSON.stringify(fabPosition));
             }
 
-            // If minimal movement, treat as click
-            if (!moved || !fabPosition.x) {
-                setTimeout(() => toggleFloatingChat(), 10);
-            }
-
             isDragging = false;
+
+            // Reset hasMoved after a short delay to allow click handler to check it
+            setTimeout(() => { hasMoved = false; }, 100);
         }
 
         function toggleFloatingChat() {
@@ -5457,7 +5473,7 @@ ID: ${booking.booking_id}`;
     </script>
 
     <!-- Floating Chat Button -->
-    <button id="chatFab" class="chat-fab" onclick="toggleFloatingChat()">
+    <button id="chatFab" class="chat-fab">
         <i class="fas fa-robot"></i>
         <span class="chat-fab-badge" id="chatBadge">!</span>
     </button>
