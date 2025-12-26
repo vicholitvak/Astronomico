@@ -5,6 +5,7 @@
 
 import { query } from './lib/db.js';
 import { sendWhatsAppMessage, sendBulkWhatsApp, isWhatsAppConfigured } from './lib/whatsapp.js';
+import { pushAvailabilityToGYG } from './gyg.js';
 
 // ============ HELPER FUNCTIONS ============
 
@@ -342,6 +343,60 @@ const tools = [
     input_schema: {
       type: "object",
       properties: {}
+    }
+  },
+  {
+    name: "block_date",
+    description: "Bloquear una fecha para tours. Notifica automáticamente a GetYourGuide. Tipos: 'full' (todo bloqueado), 'private_only' (solo privados bloqueados), 'regular_only' (solo regulares bloqueados).",
+    input_schema: {
+      type: "object",
+      properties: {
+        date: {
+          type: "string",
+          description: "Fecha a bloquear en formato YYYY-MM-DD"
+        },
+        block_type: {
+          type: "string",
+          enum: ["full", "private_only", "regular_only"],
+          description: "Tipo de bloqueo: full (todo), private_only (solo privados), regular_only (solo regulares)"
+        },
+        reason: {
+          type: "string",
+          description: "Motivo del bloqueo (ej: mal clima, evento especial, mantenimiento)"
+        }
+      },
+      required: ["date", "reason"]
+    }
+  },
+  {
+    name: "unblock_date",
+    description: "Desbloquear una fecha previamente bloqueada. Notifica automáticamente a GetYourGuide para restaurar disponibilidad.",
+    input_schema: {
+      type: "object",
+      properties: {
+        date: {
+          type: "string",
+          description: "Fecha a desbloquear en formato YYYY-MM-DD"
+        }
+      },
+      required: ["date"]
+    }
+  },
+  {
+    name: "list_blocked_dates",
+    description: "Ver todas las fechas bloqueadas y sus motivos.",
+    input_schema: {
+      type: "object",
+      properties: {
+        from_date: {
+          type: "string",
+          description: "Fecha inicio (opcional, default: hoy)"
+        },
+        to_date: {
+          type: "string",
+          description: "Fecha fin (opcional, default: +30 días)"
+        }
+      }
     }
   }
 ];
@@ -1122,6 +1177,204 @@ async function handleGetAlerts(params) {
   }
 }
 
+// GYG Product IDs for availability notifications
+const GYG_PRODUCTS = {
+  regular: '1152147',
+  private: '1163787'
+};
+
+async function handleBlockDate(params) {
+  try {
+    const blockType = params.block_type || 'full';
+    const date = params.date;
+    const reason = params.reason;
+
+    // Check if already blocked
+    const existing = await query(
+      'SELECT * FROM blocked_dates WHERE blocked_date = $1',
+      [date]
+    );
+
+    if (existing.rows.length > 0) {
+      // Update existing block
+      await query(
+        `UPDATE blocked_dates SET block_type = $1, reason = $2, updated_at = NOW() WHERE blocked_date = $3`,
+        [blockType, reason, date]
+      );
+    } else {
+      // Insert new block
+      await query(
+        `INSERT INTO blocked_dates (blocked_date, block_type, reason, created_at) VALUES ($1, $2, $3, NOW())`,
+        [date, blockType, reason]
+      );
+    }
+
+    // Notify GYG - set vacancies to 0 for blocked products
+    const gygResults = [];
+
+    if (blockType === 'full' || blockType === 'regular_only') {
+      // Block regular tours
+      try {
+        const availability = [{
+          dateTime: `${date}T21:00:00`,
+          vacancies: 0
+        }];
+        await pushAvailabilityToGYG(GYG_PRODUCTS.regular, availability, false);
+        gygResults.push({ product: 'regular', status: 'notified' });
+      } catch (e) {
+        gygResults.push({ product: 'regular', status: 'error', message: e.message });
+      }
+    }
+
+    if (blockType === 'full' || blockType === 'private_only') {
+      // Block private tours (multiple time slots)
+      try {
+        const availability = [
+          { dateTime: `${date}T20:00:00`, vacancies: 0 },
+          { dateTime: `${date}T20:30:00`, vacancies: 0 },
+          { dateTime: `${date}T21:00:00`, vacancies: 0 }
+        ];
+        await pushAvailabilityToGYG(GYG_PRODUCTS.private, availability, false);
+        gygResults.push({ product: 'private', status: 'notified' });
+      } catch (e) {
+        gygResults.push({ product: 'private', status: 'error', message: e.message });
+      }
+    }
+
+    return {
+      success: true,
+      message: `Fecha ${date} bloqueada`,
+      bloqueo: {
+        fecha: date,
+        tipo: blockType,
+        motivo: reason
+      },
+      gyg_notificacion: gygResults
+    };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+async function handleUnblockDate(params) {
+  try {
+    const date = params.date;
+
+    // Check if blocked
+    const existing = await query(
+      'SELECT * FROM blocked_dates WHERE blocked_date = $1',
+      [date]
+    );
+
+    if (existing.rows.length === 0) {
+      return { success: false, error: `La fecha ${date} no está bloqueada` };
+    }
+
+    const blockInfo = existing.rows[0];
+
+    // Remove block
+    await query('DELETE FROM blocked_dates WHERE blocked_date = $1', [date]);
+
+    // Calculate current bookings to restore correct availability
+    const bookingsResult = await query(`
+      SELECT tour_type, SUM(persons) as booked
+      FROM bookings
+      WHERE date = $1 AND status != 'cancelled'
+      GROUP BY tour_type
+    `, [date]);
+
+    const bookedByType = {};
+    bookingsResult.rows.forEach(r => {
+      bookedByType[r.tour_type] = parseInt(r.booked) || 0;
+    });
+
+    // Notify GYG with restored availability
+    const gygResults = [];
+    const CAPACITY = { regular: 16, private: 4 };
+
+    // Restore regular tours
+    try {
+      const regularVacancies = Math.max(0, CAPACITY.regular - (bookedByType.regular || 0));
+      const availability = [{
+        dateTime: `${date}T21:00:00`,
+        vacancies: regularVacancies
+      }];
+      await pushAvailabilityToGYG(GYG_PRODUCTS.regular, availability, false);
+      gygResults.push({ product: 'regular', status: 'restored', vacancies: regularVacancies });
+    } catch (e) {
+      gygResults.push({ product: 'regular', status: 'error', message: e.message });
+    }
+
+    // Restore private tours
+    try {
+      const privateVacancies = Math.max(0, CAPACITY.private - (bookedByType.private || 0));
+      const availability = [
+        { dateTime: `${date}T20:00:00`, vacancies: privateVacancies },
+        { dateTime: `${date}T20:30:00`, vacancies: privateVacancies },
+        { dateTime: `${date}T21:00:00`, vacancies: privateVacancies }
+      ];
+      await pushAvailabilityToGYG(GYG_PRODUCTS.private, availability, false);
+      gygResults.push({ product: 'private', status: 'restored', vacancies: privateVacancies });
+    } catch (e) {
+      gygResults.push({ product: 'private', status: 'error', message: e.message });
+    }
+
+    return {
+      success: true,
+      message: `Fecha ${date} desbloqueada`,
+      bloqueo_anterior: {
+        tipo: blockInfo.block_type,
+        motivo: blockInfo.reason
+      },
+      gyg_notificacion: gygResults
+    };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+async function handleListBlockedDates(params) {
+  try {
+    const today = getChileDate();
+    const fromDate = params.from_date || today;
+
+    // Default to 30 days ahead
+    const defaultEnd = new Date(today + 'T12:00:00');
+    defaultEnd.setDate(defaultEnd.getDate() + 30);
+    const toDate = params.to_date || defaultEnd.toISOString().split('T')[0];
+
+    const result = await query(`
+      SELECT blocked_date, block_type, reason, created_at
+      FROM blocked_dates
+      WHERE blocked_date >= $1 AND blocked_date <= $2
+      ORDER BY blocked_date ASC
+    `, [fromDate, toDate]);
+
+    if (result.rows.length === 0) {
+      return {
+        success: true,
+        message: 'No hay fechas bloqueadas en este rango',
+        rango: { desde: fromDate, hasta: toDate },
+        fechas_bloqueadas: []
+      };
+    }
+
+    return {
+      success: true,
+      rango: { desde: fromDate, hasta: toDate },
+      total: result.rows.length,
+      fechas_bloqueadas: result.rows.map(r => ({
+        fecha: r.blocked_date,
+        tipo: r.block_type,
+        motivo: r.reason,
+        bloqueado_desde: r.created_at
+      }))
+    };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
 // Tool execution router
 async function executeTool(toolName, toolInput) {
   console.log(`Executing tool: ${toolName}`, toolInput);
@@ -1153,6 +1406,12 @@ async function executeTool(toolName, toolInput) {
       return await handleSendReminder(toolInput);
     case 'get_alerts':
       return await handleGetAlerts(toolInput);
+    case 'block_date':
+      return await handleBlockDate(toolInput);
+    case 'unblock_date':
+      return await handleUnblockDate(toolInput);
+    case 'list_blocked_dates':
+      return await handleListBlockedDates(toolInput);
     default:
       return { error: `Unknown tool: ${toolName}` };
   }
@@ -1177,16 +1436,20 @@ TU ROL:
 5. CONSULTAR CLIMA con weather_check para decidir si hacer tours
 6. ENVIAR RECORDATORIOS con send_reminder (24h antes o 2h antes)
 7. VER ALERTAS del sistema con get_alerts (pendientes, capacidad, etc.)
-8. COMUNICARTE con clientes via WhatsApp
-9. APRENDER y recordar información con save_memory/recall_memory
+8. BLOQUEAR/DESBLOQUEAR fechas con block_date/unblock_date (notifica automáticamente a GetYourGuide)
+9. VER FECHAS BLOQUEADAS con list_blocked_dates
+10. COMUNICARTE con clientes via WhatsApp
+11. APRENDER y recordar información con save_memory/recall_memory
 
 REGLAS IMPORTANTES:
 - Para CREAR o MODIFICAR reservas: PRIMERO muestra los datos y pregunta "¿Confirmo?"
+- Para BLOQUEAR fechas: PRIMERO confirma la fecha, tipo de bloqueo y motivo
 - Para enviar WhatsApp: PRIMERO muestra el mensaje propuesto y pregunta "¿Envío?"
 - Solo ejecuta cuando el usuario confirme con "sí", "ok", "dale", "confirma", etc.
 - Mensajes a clientes deben ser en INGLÉS (son turistas internacionales)
 - Usa get_alerts al inicio del día para ver el estado general
 - Usa weather_check antes de decidir cancelar tours por clima
+- Cuando bloquees una fecha, GetYourGuide se actualiza automáticamente
 - Sé conciso y profesional
 
 CONTEXTO DEL NEGOCIO:
