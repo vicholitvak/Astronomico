@@ -1144,6 +1144,221 @@
             margin-bottom: 10px;
         }
 
+        /* Floating Chat Button & Panel */
+        .chat-fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 9999;
+            touch-action: none;
+        }
+        .chat-fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(59, 130, 246, 0.5);
+        }
+        .chat-fab i {
+            font-size: 24px;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+        .chat-fab.open i {
+            transform: rotate(90deg);
+        }
+        .chat-fab.dragging {
+            cursor: grabbing;
+            transform: scale(1.15);
+        }
+        .chat-fab-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 20px;
+            height: 20px;
+            background: #ef4444;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .floating-chat-panel {
+            position: fixed;
+            bottom: 100px;
+            right: 24px;
+            width: 380px;
+            height: 520px;
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            display: none;
+            flex-direction: column;
+            z-index: 9998;
+            overflow: hidden;
+            transform-origin: bottom right;
+            animation: slideUp 0.3s ease;
+        }
+        .floating-chat-panel.open {
+            display: flex;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .floating-chat-header {
+            padding: 16px 20px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+            border-bottom: 1px solid rgba(96, 165, 250, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+        }
+        .floating-chat-header h4 {
+            color: #e2e8f0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+        }
+        .floating-chat-header h4 i {
+            color: #60a5fa;
+        }
+        .floating-chat-header .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .floating-chat-header button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #94a3b8;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .floating-chat-header button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #e2e8f0;
+        }
+
+        .floating-chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .floating-chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        .floating-chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(96, 165, 250, 0.3);
+            border-radius: 3px;
+        }
+
+        .floating-chat-input {
+            padding: 12px 16px;
+            border-top: 1px solid rgba(96, 165, 250, 0.2);
+            display: flex;
+            gap: 10px;
+            background: rgba(30, 41, 59, 0.5);
+        }
+        .floating-chat-input textarea {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            background: rgba(15, 23, 42, 0.8);
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            resize: none;
+            height: 44px;
+            font-family: inherit;
+        }
+        .floating-chat-input textarea:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+        .floating-chat-input button {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .floating-chat-input button:hover:not(:disabled) {
+            transform: scale(1.05);
+        }
+        .floating-chat-input button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .floating-quick-actions {
+            padding: 8px 16px;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            border-top: 1px solid rgba(96, 165, 250, 0.1);
+            background: rgba(30, 41, 59, 0.3);
+        }
+        .floating-quick-actions button {
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #93c5fd;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .floating-quick-actions button:hover {
+            background: rgba(59, 130, 246, 0.25);
+        }
+
+        @media (max-width: 480px) {
+            .floating-chat-panel {
+                width: calc(100vw - 32px);
+                right: 16px;
+                bottom: 90px;
+                height: 60vh;
+            }
+            .chat-fab {
+                right: 16px;
+                bottom: 16px;
+            }
+        }
+
         /* Analytics Dashboard Styles */
         .analytics-section {
             background: rgba(30, 41, 59, 0.8);
@@ -5000,6 +5215,279 @@ ID: ${booking.booking_id}`;
                 alert('Error al copiar. Intenta de nuevo.');
             });
         }
+
+        // ============ FLOATING CHAT ============
+
+        let floatingChatOpen = false;
+        let isDragging = false;
+        let dragOffset = { x: 0, y: 0 };
+        let fabPosition = { x: null, y: null };
+
+        function initFloatingChat() {
+            const fab = document.getElementById('chatFab');
+            const panel = document.getElementById('floatingChatPanel');
+
+            // Load saved position
+            const savedPos = localStorage.getItem('chatFabPosition');
+            if (savedPos) {
+                fabPosition = JSON.parse(savedPos);
+                fab.style.right = 'auto';
+                fab.style.bottom = 'auto';
+                fab.style.left = fabPosition.x + 'px';
+                fab.style.top = fabPosition.y + 'px';
+            }
+
+            // Drag handlers
+            fab.addEventListener('mousedown', startDrag);
+            fab.addEventListener('touchstart', startDrag, { passive: false });
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('touchmove', onDrag, { passive: false });
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchend', endDrag);
+
+            // Render initial messages
+            renderFloatingChatMessages();
+        }
+
+        function startDrag(e) {
+            if (e.target.closest('.floating-chat-panel')) return;
+
+            const fab = document.getElementById('chatFab');
+            const rect = fab.getBoundingClientRect();
+
+            isDragging = true;
+            fab.classList.add('dragging');
+
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            dragOffset.x = clientX - rect.left;
+            dragOffset.y = clientY - rect.top;
+
+            e.preventDefault();
+        }
+
+        function onDrag(e) {
+            if (!isDragging) return;
+
+            const fab = document.getElementById('chatFab');
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            let newX = clientX - dragOffset.x;
+            let newY = clientY - dragOffset.y;
+
+            // Keep within viewport
+            newX = Math.max(0, Math.min(newX, window.innerWidth - 60));
+            newY = Math.max(0, Math.min(newY, window.innerHeight - 60));
+
+            fab.style.right = 'auto';
+            fab.style.bottom = 'auto';
+            fab.style.left = newX + 'px';
+            fab.style.top = newY + 'px';
+
+            fabPosition = { x: newX, y: newY };
+
+            e.preventDefault();
+        }
+
+        function endDrag(e) {
+            if (!isDragging) return;
+
+            const fab = document.getElementById('chatFab');
+            fab.classList.remove('dragging');
+
+            // Check if it was a click (minimal movement)
+            const moved = Math.abs(dragOffset.x) > 5 || Math.abs(dragOffset.y) > 5;
+
+            if (fabPosition.x !== null) {
+                localStorage.setItem('chatFabPosition', JSON.stringify(fabPosition));
+            }
+
+            // If minimal movement, treat as click
+            if (!moved || !fabPosition.x) {
+                setTimeout(() => toggleFloatingChat(), 10);
+            }
+
+            isDragging = false;
+        }
+
+        function toggleFloatingChat() {
+            const fab = document.getElementById('chatFab');
+            const panel = document.getElementById('floatingChatPanel');
+
+            floatingChatOpen = !floatingChatOpen;
+
+            fab.classList.toggle('open', floatingChatOpen);
+            panel.classList.toggle('open', floatingChatOpen);
+
+            if (floatingChatOpen) {
+                document.getElementById('floatingChatInput').focus();
+                renderFloatingChatMessages();
+                scrollFloatingChat();
+            }
+        }
+
+        function renderFloatingChatMessages() {
+            const container = document.getElementById('floatingChatMessages');
+            if (chatHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="chat-welcome" style="padding: 20px;">
+                        <i class="fas fa-robot" style="font-size: 2rem;"></i>
+                        <h4 style="margin: 10px 0 5px;">Hola! Soy Hikaru</h4>
+                        <p style="font-size: 0.85rem;">Tu asistente de reservas</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = chatHistory.map(msg => `
+                <div class="chat-message ${msg.role}">
+                    <div class="content">${formatChatMessage(msg.content)}</div>
+                </div>
+            `).join('');
+
+            scrollFloatingChat();
+        }
+
+        function scrollFloatingChat() {
+            const container = document.getElementById('floatingChatMessages');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendFloatingChatMessage() {
+            const input = document.getElementById('floatingChatInput');
+            const message = input.value.trim();
+
+            if (!message || isChatLoading) return;
+
+            isChatLoading = true;
+            const sendBtn = document.getElementById('floatingSendBtn');
+            sendBtn.disabled = true;
+            input.value = '';
+
+            const timestamp = new Date().toISOString();
+            chatHistory.push({ role: 'user', content: message, timestamp });
+            renderFloatingChatMessages();
+
+            // Show typing indicator
+            const container = document.getElementById('floatingChatMessages');
+            container.innerHTML += `
+                <div class="chat-message assistant" id="floatingTyping">
+                    <div class="chat-typing">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            `;
+            scrollFloatingChat();
+
+            try {
+                const apiHistory = chatHistory.slice(-10).map(m => ({
+                    role: m.role,
+                    content: m.content
+                }));
+
+                const response = await fetch('/api/claude-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        message: message,
+                        history: apiHistory.slice(0, -1)
+                    })
+                });
+
+                const data = await response.json();
+                document.getElementById('floatingTyping')?.remove();
+
+                if (data.success) {
+                    chatHistory.push({
+                        role: 'assistant',
+                        content: data.response,
+                        timestamp: new Date().toISOString()
+                    });
+                    saveChatHistory();
+                } else {
+                    chatHistory.push({
+                        role: 'assistant',
+                        content: 'Error: ' + (data.error || 'Unknown error'),
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            } catch (error) {
+                document.getElementById('floatingTyping')?.remove();
+                chatHistory.push({
+                    role: 'assistant',
+                    content: 'Error de conexión. Intenta de nuevo.',
+                    timestamp: new Date().toISOString()
+                });
+            }
+
+            isChatLoading = false;
+            sendBtn.disabled = false;
+            renderFloatingChatMessages();
+
+            // Also update the main chat tab if visible
+            renderChatMessages();
+        }
+
+        function handleFloatingKeydown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendFloatingChatMessage();
+            }
+        }
+
+        function floatingQuickAction(question) {
+            document.getElementById('floatingChatInput').value = question;
+            sendFloatingChatMessage();
+        }
+
+        function clearFloatingChat() {
+            if (confirm('¿Limpiar historial?')) {
+                chatHistory = [];
+                localStorage.removeItem('atacama_chat_history');
+                renderFloatingChatMessages();
+                renderChatMessages();
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initFloatingChat);
     </script>
+
+    <!-- Floating Chat Button -->
+    <button id="chatFab" class="chat-fab" onclick="toggleFloatingChat()">
+        <i class="fas fa-robot"></i>
+        <span class="chat-fab-badge" id="chatBadge">!</span>
+    </button>
+
+    <!-- Floating Chat Panel -->
+    <div id="floatingChatPanel" class="floating-chat-panel">
+        <div class="floating-chat-header">
+            <h4><i class="fas fa-robot"></i> Hikaru</h4>
+            <div class="header-actions">
+                <button onclick="clearFloatingChat()" title="Limpiar chat">
+                    <i class="fas fa-trash"></i>
+                </button>
+                <button onclick="toggleFloatingChat()" title="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="floating-chat-messages" id="floatingChatMessages"></div>
+        <div class="floating-quick-actions">
+            <button onclick="floatingQuickAction('¿Qué alertas hay?')">Alertas</button>
+            <button onclick="floatingQuickAction('¿Cómo está el clima?')">Clima</button>
+            <button onclick="floatingQuickAction('Reservas de hoy')">Hoy</button>
+            <button onclick="floatingQuickAction('Reservas de mañana')">Mañana</button>
+        </div>
+        <div class="floating-chat-input">
+            <textarea id="floatingChatInput" placeholder="Pregunta algo..." onkeydown="handleFloatingKeydown(event)"></textarea>
+            <button id="floatingSendBtn" onclick="sendFloatingChatMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
 </body>
 </html>
