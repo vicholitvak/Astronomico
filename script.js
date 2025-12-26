@@ -170,7 +170,7 @@ function initLanguageToggle() {
             'Reserva Ahora': 'Reserva Ahora',
             
             // Hero Section
-            'hero-title': ['Atacama Dark Skies', 'El Cielo Más Puro del Mundo', 'en San Pedro de Atacama'],
+            'hero-title': ['Atacama Dark Sky', 'El Cielo Más Puro del Mundo', 'en San Pedro de Atacama'],
             'hero-subtitle': 'Tours astronómicos en San Pedro de Atacama con telescopio inteligente. Observación de estrellas, astrofotografía y experiencias únicas bajo el cielo más oscuro del mundo.',
             'btn-reserve': 'Reserva Tu Tour',
             'btn-see-tours': 'Ver Tours',
@@ -233,7 +233,7 @@ function initLanguageToggle() {
             'Reserva Ahora': 'Book Now',
 
             // Hero Section
-            'hero-title': ['Atacama Dark Skies', 'The Purest Sky in the World', 'in San Pedro de Atacama'],
+            'hero-title': ['Atacama Dark Sky', 'The Purest Sky in the World', 'in San Pedro de Atacama'],
             'hero-subtitle': 'Stargazing tours in San Pedro de Atacama with smart telescope. Star observation, astrophotography and unique experiences under the darkest sky on Earth.',
             'btn-reserve': 'Book Your Tour',
             'btn-see-tours': 'View Tours',
@@ -296,7 +296,7 @@ function initLanguageToggle() {
             'Reserva Ahora': 'Reserve Agora',
 
             // Hero Section
-            'hero-title': ['Atacama Dark Skies', 'O Céu Mais Puro do Mundo', 'em San Pedro de Atacama'],
+            'hero-title': ['Atacama Dark Sky', 'O Céu Mais Puro do Mundo', 'em San Pedro de Atacama'],
             'hero-subtitle': 'Passeios astronômicos em San Pedro de Atacama com telescópio inteligente. Observação de estrelas, astrofotografia e experiências únicas sob o céu mais escuro do mundo.',
             'btn-reserve': 'Reserve Seu Passeio',
             'btn-see-tours': 'Ver Passeios',
@@ -360,7 +360,7 @@ function initLanguageToggle() {
             'nav.booking': 'Reservas',
             'nav.contact': 'Contacto',
             'hero.cta': 'Reserva Ahora',
-            'hero.title1': 'Atacama Dark Skies',
+            'hero.title1': 'Atacama Dark Sky',
             'hero.title2': 'El cielo más puro del mundo',
             'hero.title3': 'En San Pedro de Atacama',
             'hero.subtitle': 'Tours astronómicos en San Pedro de Atacama con telescopio inteligente. Observación de estrellas, astrofotografía y experiencias únicas bajo el cielo más oscuro del mundo.',
@@ -422,7 +422,7 @@ function initLanguageToggle() {
             'nav.booking': 'Bookings',
             'nav.contact': 'Contact',
             'hero.cta': 'Book Now',
-            'hero.title1': 'Atacama Dark Skies',
+            'hero.title1': 'Atacama Dark Sky',
             'hero.title2': 'The Purest Sky in the World',
             'hero.title3': 'In San Pedro de Atacama',
             'hero.subtitle': 'Stargazing tours in San Pedro de Atacama with smart telescope. Star observation, astrophotography and unique experiences under the darkest sky on Earth.',
@@ -485,7 +485,7 @@ function initLanguageToggle() {
             'nav.booking': 'Reservas',
             'nav.contact': 'Contato',
             'hero.cta': 'Reserve Agora',
-            'hero.title1': 'Atacama Dark Skies',
+            'hero.title1': 'Atacama Dark Sky',
             'hero.title2': 'O céu mais puro do mundo',
             'hero.title3': 'Em San Pedro de Atacama',
             'hero.subtitle': 'Passeios astronômicos em San Pedro de Atacama com telescópio inteligente. Observação de estrelas, astrofotografia e experiências únicas sob o céu mais escuro do mundo.',

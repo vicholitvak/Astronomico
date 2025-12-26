@@ -40,8 +40,8 @@
     "deny": [],
     "defaultMode": "acceptEdits"
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "google-analytics"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }

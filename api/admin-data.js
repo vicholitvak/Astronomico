@@ -1006,33 +1006,37 @@ export default async function handler(req, res) {
 
         // Ejecutar todas las queries en paralelo
         const [channelResult, nationalitiesResult, hotelsResult, groupSizeResult, advanceResult, timesResult, weeklyResult, financialResult, trendResult] = await Promise.all([
-          // 1. Comparativa de canales - Separamos GYG por tour_type y consolidamos website+manual como 'direct'
+          // 1. Comparativa de canales - Separamos por fuente (GYG vs Direct) y tipo de tour
           pool.query(`
             SELECT
               CASE
-                WHEN source = 'gyg' AND tour_type = 'private' THEN 'gyg_private'
-                WHEN source = 'gyg' THEN 'gyg_regular'
-                ELSE 'direct'
+                WHEN b.source = 'gyg' AND b.tour_type = 'private' THEN 'gyg_private'
+                WHEN b.source = 'gyg' THEN 'gyg_regular'
+                WHEN b.tour_type = 'private' THEN 'direct_private'
+                ELSE 'direct_regular'
               END as source,
               COUNT(*) as total_bookings,
-              COALESCE(SUM(persons), 0) as total_persons,
+              COALESCE(SUM(b.persons), 0) as total_persons,
               SUM(CASE
-                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
-                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
-                  ELSE COALESCE(payment_amount, 0)
+                  WHEN b.source = 'gyg' AND b.payment_amount IS NULL THEN
+                    CASE WHEN b.tour_type = 'private' THEN b.persons * 142855 ELSE b.persons * 53600 END
+                  WHEN b.payment_amount IS NULL THEN
+                    CASE WHEN b.tour_type = 'private' THEN 200000 ELSE b.persons * 30000 END
+                  ELSE COALESCE(b.payment_amount, 0)
                 END) as total_revenue,
-              ROUND(AVG(persons)::numeric, 2) as avg_group_size,
-              COUNT(*) FILTER (WHERE status = 'confirmed') as confirmed,
-              COUNT(*) FILTER (WHERE status = 'cancelled') as cancelled
-            FROM bookings
-            WHERE date >= $1 AND date <= $2
-              AND status IN ('confirmed', 'completed')
+              ROUND(AVG(b.persons)::numeric, 2) as avg_group_size,
+              COUNT(*) FILTER (WHERE b.status = 'confirmed') as confirmed,
+              COUNT(*) FILTER (WHERE b.status = 'cancelled') as cancelled
+            FROM bookings b
+            WHERE b.date >= $1 AND b.date <= $2
+              AND b.status IN ('confirmed', 'completed')
             GROUP BY CASE
-                WHEN source = 'gyg' AND tour_type = 'private' THEN 'gyg_private'
-                WHEN source = 'gyg' THEN 'gyg_regular'
-                ELSE 'direct'
+                WHEN b.source = 'gyg' AND b.tour_type = 'private' THEN 'gyg_private'
+                WHEN b.source = 'gyg' THEN 'gyg_regular'
+                WHEN b.tour_type = 'private' THEN 'direct_private'
+                ELSE 'direct_regular'
               END
-            ORDER BY total_bookings DESC
+            ORDER BY source
           `, [startDate, endDate]),
 
           // 2. Nacionalidades (del prefijo telefónico)
@@ -1101,75 +1105,75 @@ export default async function handler(req, res) {
           pool.query(`
             SELECT
               CASE
-                WHEN source = 'gyg' THEN 'gyg'
+                WHEN b.source = 'gyg' THEN 'gyg'
                 ELSE 'direct'
               END as source,
-              ROUND(AVG(persons)::numeric, 2) as avg_group_size,
-              MIN(persons) as min_group,
-              MAX(persons) as max_group,
-              PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY persons) as median_group
-            FROM bookings
-            WHERE date >= $1 AND date <= $2
-              AND status IN ('confirmed', 'completed')
-            GROUP BY CASE WHEN source = 'gyg' THEN 'gyg' ELSE 'direct' END
+              ROUND(AVG(b.persons)::numeric, 2) as avg_group_size,
+              MIN(b.persons) as min_group,
+              MAX(b.persons) as max_group,
+              PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY b.persons) as median_group
+            FROM bookings b
+            WHERE b.date >= $1 AND b.date <= $2
+              AND b.status IN ('confirmed', 'completed')
+            GROUP BY CASE WHEN b.source = 'gyg' THEN 'gyg' ELSE 'direct' END
           `, [startDate, endDate]),
 
           // 5. Días de anticipación - Consolidado
           pool.query(`
             SELECT
               CASE
-                WHEN source = 'gyg' THEN 'gyg'
+                WHEN b.source = 'gyg' THEN 'gyg'
                 ELSE 'direct'
               END as source,
-              ROUND(AVG(date - created_at::date)::numeric, 1) as avg_days_advance,
-              MIN(date - created_at::date) as min_days,
-              MAX(date - created_at::date) as max_days,
-              PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY date - created_at::date) as median_days
-            FROM bookings
-            WHERE date >= $1 AND date <= $2
-              AND status IN ('confirmed', 'completed')
-            GROUP BY CASE WHEN source = 'gyg' THEN 'gyg' ELSE 'direct' END
+              ROUND(AVG(b.date - b.created_at::date)::numeric, 1) as avg_days_advance,
+              MIN(b.date - b.created_at::date) as min_days,
+              MAX(b.date - b.created_at::date) as max_days,
+              PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY b.date - b.created_at::date) as median_days
+            FROM bookings b
+            WHERE b.date >= $1 AND b.date <= $2
+              AND b.status IN ('confirmed', 'completed')
+            GROUP BY CASE WHEN b.source = 'gyg' THEN 'gyg' ELSE 'direct' END
           `, [startDate, endDate]),
 
           // 6. Horarios populares - Consolidado
           pool.query(`
             SELECT
-              time,
+              b.time,
               CASE
-                WHEN source = 'gyg' THEN 'gyg'
+                WHEN b.source = 'gyg' THEN 'gyg'
                 ELSE 'direct'
               END as source,
               COUNT(*) as bookings,
-              COALESCE(SUM(persons), 0) as total_persons
-            FROM bookings
-            WHERE date >= $1 AND date <= $2
-              AND status IN ('confirmed', 'completed')
-            GROUP BY time, CASE WHEN source = 'gyg' THEN 'gyg' ELSE 'direct' END
+              COALESCE(SUM(b.persons), 0) as total_persons
+            FROM bookings b
+            WHERE b.date >= $1 AND b.date <= $2
+              AND b.status IN ('confirmed', 'completed')
+            GROUP BY b.time, CASE WHEN b.source = 'gyg' THEN 'gyg' ELSE 'direct' END
             ORDER BY bookings DESC
           `, [startDate, endDate]),
 
           // 7. Distribución semanal - Consolidado
           pool.query(`
             SELECT
-              TO_CHAR(date, 'Day') as day_name,
-              EXTRACT(DOW FROM date) as day_number,
+              TO_CHAR(b.date, 'Day') as day_name,
+              EXTRACT(DOW FROM b.date) as day_number,
               CASE
-                WHEN source = 'gyg' THEN 'gyg'
+                WHEN b.source = 'gyg' THEN 'gyg'
                 ELSE 'direct'
               END as source,
               COUNT(*) as bookings,
-              COALESCE(SUM(persons), 0) as persons
-            FROM bookings
-            WHERE date >= $1 AND date <= $2
-              AND status IN ('confirmed', 'completed')
-            GROUP BY TO_CHAR(date, 'Day'), EXTRACT(DOW FROM date), CASE WHEN source = 'gyg' THEN 'gyg' ELSE 'direct' END
+              COALESCE(SUM(b.persons), 0) as persons
+            FROM bookings b
+            WHERE b.date >= $1 AND b.date <= $2
+              AND b.status IN ('confirmed', 'completed')
+            GROUP BY TO_CHAR(b.date, 'Day'), EXTRACT(DOW FROM b.date), CASE WHEN b.source = 'gyg' THEN 'gyg' ELSE 'direct' END
             ORDER BY day_number
           `, [startDate, endDate]),
 
-          // 8. Análisis financiero - Separado por tipo de tour para GYG
+          // 8. Análisis financiero - Separado por tipo de tour
           pool.query(`
             SELECT
-              channel,
+              channel as source,
               COUNT(*) as total_bookings,
               COALESCE(SUM(persons), 0) as total_persons,
               SUM(gross) as gross_revenue,
@@ -1181,12 +1185,15 @@ export default async function handler(req, res) {
                 CASE
                   WHEN source = 'gyg' AND tour_type = 'private' THEN 'gyg_private'
                   WHEN source = 'gyg' THEN 'gyg_regular'
-                  ELSE 'direct'
+                  WHEN tour_type = 'private' THEN 'direct_private'
+                  ELSE 'direct_regular'
                 END as channel,
                 persons,
                 CASE
                   WHEN source = 'gyg' AND payment_amount IS NULL THEN
                     CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
+                  WHEN payment_amount IS NULL THEN
+                    CASE WHEN tour_type = 'private' THEN 200000 ELSE persons * 30000 END
                   ELSE COALESCE(payment_amount, 0)
                 END as gross
               FROM bookings
@@ -1199,57 +1206,58 @@ export default async function handler(req, res) {
           // 9. Tendencia semanal - Consolidado para gráfico
           pool.query(`
             SELECT
-              DATE_TRUNC('week', date)::date as week_start,
+              DATE_TRUNC('week', b.date)::date as week_start,
               CASE
-                WHEN source = 'gyg' THEN 'gyg'
+                WHEN b.source = 'gyg' THEN 'gyg'
                 ELSE 'direct'
               END as source,
               COUNT(*) as bookings,
-              COALESCE(SUM(persons), 0) as persons,
+              COALESCE(SUM(b.persons), 0) as persons,
               SUM(CASE
-                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
-                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
-                  ELSE COALESCE(payment_amount, 0)
+                  WHEN b.source = 'gyg' AND b.payment_amount IS NULL THEN
+                    CASE WHEN b.tour_type = 'private' THEN b.persons * 142855 ELSE b.persons * 53600 END
+                  ELSE COALESCE(b.payment_amount, 0)
                 END) as revenue
-            FROM bookings
-            WHERE date >= $1 AND date <= $2
-              AND status IN ('confirmed', 'completed')
-            GROUP BY DATE_TRUNC('week', date), CASE WHEN source = 'gyg' THEN 'gyg' ELSE 'direct' END
-            ORDER BY week_start, source
+            FROM bookings b
+            WHERE b.date >= $1 AND b.date <= $2
+              AND b.status IN ('confirmed', 'completed')
+            GROUP BY DATE_TRUNC('week', b.date), CASE WHEN b.source = 'gyg' THEN 'gyg' ELSE 'direct' END
+            ORDER BY week_start
           `, [startDate, endDate])
         ]);
 
         // Tendencia mensual para el gráfico financiero - Consolidado
         const monthlyTrendResult = await pool.query(`
           SELECT
-            DATE_TRUNC('month', date)::date as month,
+            month,
+            source,
+            bookings,
+            gross_revenue,
             CASE
-              WHEN source = 'gyg' THEN 'gyg'
-              ELSE 'direct'
-            END as source,
-            COUNT(*) as bookings,
-            SUM(CASE
-                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
-                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
-                  ELSE COALESCE(payment_amount, 0)
-                END) as gross_revenue,
-            CASE
-              WHEN source = 'gyg' THEN SUM(CASE
-                  WHEN source = 'gyg' AND payment_amount IS NULL THEN
-                    CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
-                  ELSE COALESCE(payment_amount, 0)
-                END) * 0.70
-              ELSE SUM(CASE
-                  WHEN payment_amount IS NULL THEN
-                    CASE WHEN tour_type = 'private' THEN 200000 ELSE persons * 30000 END
-                  ELSE COALESCE(payment_amount, 0)
-                END)
+              WHEN source = 'gyg' THEN gross_revenue * 0.70
+              ELSE gross_revenue
             END as net_revenue
-          FROM bookings
-          WHERE date >= $1 AND date <= $2
-            AND status IN ('confirmed', 'completed')
-          GROUP BY DATE_TRUNC('month', date), CASE WHEN source = 'gyg' THEN 'gyg' ELSE 'direct' END
-          ORDER BY month, source
+          FROM (
+            SELECT
+              DATE_TRUNC('month', b.date)::date as month,
+              CASE
+                WHEN b.source = 'gyg' THEN 'gyg'
+                ELSE 'direct'
+              END as source,
+              COUNT(*) as bookings,
+              SUM(CASE
+                    WHEN b.source = 'gyg' AND b.payment_amount IS NULL THEN
+                      CASE WHEN b.tour_type = 'private' THEN b.persons * 142855 ELSE b.persons * 53600 END
+                    WHEN b.source != 'gyg' AND b.payment_amount IS NULL THEN
+                      CASE WHEN b.tour_type = 'private' THEN 200000 ELSE b.persons * 30000 END
+                    ELSE COALESCE(b.payment_amount, 0)
+                  END) as gross_revenue
+            FROM bookings b
+            WHERE b.date >= $1 AND b.date <= $2
+              AND b.status IN ('confirmed', 'completed')
+            GROUP BY DATE_TRUNC('month', b.date), CASE WHEN b.source = 'gyg' THEN 'gyg' ELSE 'direct' END
+          ) sub
+          ORDER BY month
         `, [startDate, endDate]);
 
         return res.status(200).json({
@@ -1277,7 +1285,54 @@ export default async function handler(req, res) {
       }
     }
 
-    return res.status(400).json({ success: false, error: 'Invalid type. Use ?type=photos, ?type=blocked, ?type=income, ?type=conversion, ?type=calendar, ?type=sync-payments, ?type=gyg-analytics, or ?type=ga-analytics' });
+    // ============ AI MIGRATION ============
+    if (type === 'migrate-ai') {
+      // Create AI tables if they don't exist
+      try {
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS ai_memory (
+            id SERIAL PRIMARY KEY,
+            category VARCHAR(50) NOT NULL,
+            key VARCHAR(100) NOT NULL,
+            content TEXT NOT NULL,
+            metadata JSONB DEFAULT '{}',
+            created_at TIMESTAMPTZ DEFAULT NOW(),
+            updated_at TIMESTAMPTZ DEFAULT NOW()
+          )
+        `);
+
+        await pool.query(`CREATE INDEX IF NOT EXISTS idx_memory_category ON ai_memory(category)`);
+        await pool.query(`CREATE INDEX IF NOT EXISTS idx_memory_key ON ai_memory(key)`);
+
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS whatsapp_messages (
+            id SERIAL PRIMARY KEY,
+            booking_id VARCHAR(50),
+            phone VARCHAR(30) NOT NULL,
+            message TEXT NOT NULL,
+            direction VARCHAR(10) DEFAULT 'outbound',
+            status VARCHAR(20) DEFAULT 'sent',
+            whatsapp_message_id VARCHAR(100),
+            sent_by VARCHAR(50) DEFAULT 'ai_assistant',
+            error_message TEXT,
+            created_at TIMESTAMPTZ DEFAULT NOW()
+          )
+        `);
+
+        await pool.query(`CREATE INDEX IF NOT EXISTS idx_wa_phone ON whatsapp_messages(phone)`);
+        await pool.query(`CREATE INDEX IF NOT EXISTS idx_wa_booking ON whatsapp_messages(booking_id)`);
+
+        return res.status(200).json({
+          success: true,
+          message: 'AI tables created successfully',
+          tables: ['ai_memory', 'whatsapp_messages']
+        });
+      } catch (error) {
+        return res.status(500).json({ success: false, error: error.message });
+      }
+    }
+
+    return res.status(400).json({ success: false, error: 'Invalid type' });
 
   } catch (error) {
     console.error('Admin data API error:', error);
