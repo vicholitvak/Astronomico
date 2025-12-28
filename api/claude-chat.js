@@ -3,8 +3,8 @@
  * Central intelligence for Atacama Dark Sky operations
  */
 
-import { query } from './lib/db.js';
-import { sendWhatsAppMessage, sendBulkWhatsApp, isWhatsAppConfigured } from './lib/whatsapp.js';
+import { query } from '../lib/db.js';
+import { sendWhatsAppMessage, sendBulkWhatsApp, isWhatsAppConfigured } from '../lib/whatsapp.js';
 import { pushAvailabilityToGYG } from './gyg.js';
 
 // ============ HELPER FUNCTIONS ============

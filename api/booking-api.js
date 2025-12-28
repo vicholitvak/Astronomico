@@ -2,7 +2,7 @@
  * Booking API - Combined create (POST) and list (GET)
  */
 
-import { insert, query } from './lib/db.js';
+import { insert, query } from '../lib/db.js';
 import { addToGoogleCalendar } from './google-calendar.js';
 import fetch from 'node-fetch';
 

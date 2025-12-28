@@ -12,7 +12,7 @@
  * Documentation: https://docs.viator.com/supplier-api/technical/
  */
 
-import { insert, query } from './lib/db.js';
+import { insert, query } from '../lib/db.js';
 import { addToGoogleCalendar } from './google-calendar.js';
 
 // ============ VIATOR API CREDENTIALS ============

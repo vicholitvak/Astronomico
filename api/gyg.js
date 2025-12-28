@@ -11,7 +11,7 @@
  * - GET /api/gyg/1/products/{productId}/pricing-categories/
  */
 
-import { insert, query } from './lib/db.js';
+import { insert, query } from '../lib/db.js';
 import { addToGoogleCalendar } from './google-calendar.js';
 
 // ============ GYG API CREDENTIALS (for calling GYG endpoints) ============
