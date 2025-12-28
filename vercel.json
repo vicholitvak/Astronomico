@@ -70,6 +70,26 @@
     {
       "source": "/api/gyg/:version/:action/",
       "destination": "/api/gyg"
+    },
+    {
+      "source": "/api/viator/:action",
+      "destination": "/api/viator"
+    },
+    {
+      "source": "/api/viator/:action/",
+      "destination": "/api/viator"
+    },
+    {
+      "source": "/api/viator/admin/:endpoint",
+      "destination": "/api/viator"
+    },
+    {
+      "source": "/api/agencies/:agencyId/:action",
+      "destination": "/api/agencies"
+    },
+    {
+      "source": "/api/agencies/:agencyId",
+      "destination": "/api/agencies"
     }
   ]
 }

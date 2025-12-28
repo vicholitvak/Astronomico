@@ -2201,6 +2201,11 @@ Atacama Dark Sky</textarea>
                     <div class="stat-value" id="kpiGygBookings" style="color: #FF5A5F;">-</div>
                     <div style="font-size: 0.85rem; color: #94a3b8;" id="kpiGygPercent">-% del total</div>
                 </div>
+                <div class="stat-card" style="border-color: rgba(59, 130, 246, 0.5); background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);">
+                    <div class="stat-label">Reservas Viator</div>
+                    <div class="stat-value" id="kpiViatorBookings" style="color: #3b82f6;">-</div>
+                    <div style="font-size: 0.85rem; color: #94a3b8;" id="kpiViatorPercent">-% del total</div>
+                </div>
                 <div class="stat-card" style="border-color: rgba(16, 185, 129, 0.5); background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);">
                     <div class="stat-label">Reservas Directas</div>
                     <div class="stat-value" id="kpiDirectBookings" style="color: #10b981;">-</div>
@@ -2210,6 +2215,11 @@ Atacama Dark Sky</textarea>
                     <div class="stat-label">Ingresos Netos GyG</div>
                     <div class="stat-value" id="kpiGygNetRevenue" style="color: #fbbf24;">-</div>
                     <div style="font-size: 0.85rem; color: #ef4444;" id="kpiGygCommission">-$0 comisión</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Ingresos Netos Viator</div>
+                    <div class="stat-value" id="kpiViatorNetRevenue" style="color: #3b82f6;">-</div>
+                    <div style="font-size: 0.85rem; color: #ef4444;" id="kpiViatorCommission">-$0 comisión</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Ingresos Directos</div>
@@ -2281,6 +2291,18 @@ Atacama Dark Sky</textarea>
                     <div class="stat-card">
                         <div class="stat-label">Ingresos Netos GyG</div>
                         <div class="stat-value" id="finNetGyg" style="color: #fbbf24;">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Ingresos Brutos Viator</div>
+                        <div class="stat-value" id="finGrossViator" style="color: #3b82f6;">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Comisión Viator (30%)</div>
+                        <div class="stat-value" id="finCommissionViator" style="color: #ef4444;">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Ingresos Netos Viator</div>
+                        <div class="stat-value" id="finNetViator" style="color: #3b82f6;">-</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Ingresos Directos</div>
@@ -3287,6 +3309,7 @@ Atacama Dark Sky</textarea>
                             <select name="source" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
                                 <option value="manual">Manual (Admin)</option>
                                 <option value="getyourguide">GetYourGuide</option>
+                                <option value="viator">Viator</option>
                                 <option value="whatsapp">WhatsApp</option>
                                 <option value="email">Email</option>
                                 <option value="phone">Teléfono</option>
@@ -4797,6 +4820,14 @@ Atacama Dark Sky`;
                 total_persons: parseInt(gygRegular.total_persons || 0) + parseInt(gygPrivate.total_persons || 0)
             };
 
+            // Sumar todas las fuentes Viator (regular + private)
+            const viatorRegular = summary.find(s => s.source === 'viator_regular') || { total_bookings: 0, total_persons: 0 };
+            const viatorPrivate = summary.find(s => s.source === 'viator_private') || { total_bookings: 0, total_persons: 0 };
+            const viatorData = {
+                total_bookings: parseInt(viatorRegular.total_bookings || 0) + parseInt(viatorPrivate.total_bookings || 0),
+                total_persons: parseInt(viatorRegular.total_persons || 0) + parseInt(viatorPrivate.total_persons || 0)
+            };
+
             // Sumar todas las fuentes Directas (regular + private)
             const directRegular = summary.find(s => s.source === 'direct_regular') || { total_bookings: 0, total_persons: 0 };
             const directPrivate = summary.find(s => s.source === 'direct_private') || { total_bookings: 0, total_persons: 0 };
@@ -4805,8 +4836,9 @@ Atacama Dark Sky`;
                 total_persons: parseInt(directRegular.total_persons || 0) + parseInt(directPrivate.total_persons || 0)
             };
 
-            const totalBookings = gygData.total_bookings + directData.total_bookings;
+            const totalBookings = gygData.total_bookings + viatorData.total_bookings + directData.total_bookings;
             const gygPercent = totalBookings > 0 ? ((gygData.total_bookings / totalBookings) * 100).toFixed(1) : 0;
+            const viatorPercent = totalBookings > 0 ? ((viatorData.total_bookings / totalBookings) * 100).toFixed(1) : 0;
 
             // Sumar financiero GYG
             const gygFinRegular = financial.find(s => s.source === 'gyg_regular') || { net_revenue: 0, commission_paid: 0 };
@@ -4814,6 +4846,14 @@ Atacama Dark Sky`;
             const gygFin = {
                 net_revenue: parseFloat(gygFinRegular.net_revenue || 0) + parseFloat(gygFinPrivate.net_revenue || 0),
                 commission_paid: parseFloat(gygFinRegular.commission_paid || 0) + parseFloat(gygFinPrivate.commission_paid || 0)
+            };
+
+            // Sumar financiero Viator
+            const viatorFinRegular = financial.find(s => s.source === 'viator_regular') || { net_revenue: 0, commission_paid: 0 };
+            const viatorFinPrivate = financial.find(s => s.source === 'viator_private') || { net_revenue: 0, commission_paid: 0 };
+            const viatorFin = {
+                net_revenue: parseFloat(viatorFinRegular.net_revenue || 0) + parseFloat(viatorFinPrivate.net_revenue || 0),
+                commission_paid: parseFloat(viatorFinRegular.commission_paid || 0) + parseFloat(viatorFinPrivate.commission_paid || 0)
             };
 
             // Sumar financiero Directo
@@ -4825,15 +4865,19 @@ Atacama Dark Sky`;
 
             document.getElementById('kpiGygBookings').textContent = gygData.total_bookings || 0;
             document.getElementById('kpiGygPercent').textContent = `${gygPercent}% del total`;
+            document.getElementById('kpiViatorBookings').textContent = viatorData.total_bookings || 0;
+            document.getElementById('kpiViatorPercent').textContent = `${viatorPercent}% del total`;
             document.getElementById('kpiDirectBookings').textContent = directData.total_bookings || 0;
             document.getElementById('kpiDirectPersons').textContent = `${directData.total_persons || 0} personas`;
             document.getElementById('kpiGygNetRevenue').textContent = formatCLP(gygFin.net_revenue || 0);
-            document.getElementById('kpiGygCommission').textContent = `-${formatCLP(gygFin.commission_paid || 0)} comisión`;
+            document.getElementById('kpiGygCommission').textContent = `-${formatCLP(gygFin.commission_paid || 0)} comision`;
+            document.getElementById('kpiViatorNetRevenue').textContent = formatCLP(viatorFin.net_revenue || 0);
+            document.getElementById('kpiViatorCommission').textContent = `-${formatCLP(viatorFin.commission_paid || 0)} comision`;
             document.getElementById('kpiDirectRevenue').textContent = formatCLP(directFin.net_revenue || 0);
         }
 
         function renderChannelComparison(data) {
-            // Bar chart: Channel comparison - 2 bars: Directa vs GYG (solo personas)
+            // Bar chart: Channel comparison - 3 bars: Directa vs GYG vs Viator (solo personas)
             const ctx = document.getElementById('channelComparisonChart').getContext('2d');
             if (analyticsCharts.channelComparison) analyticsCharts.channelComparison.destroy();
 
@@ -4842,20 +4886,23 @@ Atacama Dark Sky`;
             const directPrivate = data.summary.find(s => s.source === 'direct_private') || { total_persons: 0 };
             const gygRegular = data.summary.find(s => s.source === 'gyg_regular') || { total_persons: 0 };
             const gygPrivate = data.summary.find(s => s.source === 'gyg_private') || { total_persons: 0 };
+            const viatorRegular = data.summary.find(s => s.source === 'viator_regular') || { total_persons: 0 };
+            const viatorPrivate = data.summary.find(s => s.source === 'viator_private') || { total_persons: 0 };
 
             const directPersons = parseInt(directRegular.total_persons || 0) + parseInt(directPrivate.total_persons || 0);
             const gygPersons = parseInt(gygRegular.total_persons || 0) + parseInt(gygPrivate.total_persons || 0);
+            const viatorPersons = parseInt(viatorRegular.total_persons || 0) + parseInt(viatorPrivate.total_persons || 0);
 
             analyticsCharts.channelComparison = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Venta Directa', 'GetYourGuide'],
+                    labels: ['Venta Directa', 'GetYourGuide', 'Viator'],
                     datasets: [{
                         label: 'Personas',
-                        data: [directPersons, gygPersons],
-                        backgroundColor: ['#10b981', '#FF5A5F'],
+                        data: [directPersons, gygPersons, viatorPersons],
+                        backgroundColor: ['#10b981', '#FF5A5F', '#3b82f6'],
                         borderRadius: 6,
-                        barThickness: 60
+                        barThickness: 50
                     }]
                 },
                 options: {
@@ -4872,13 +4919,17 @@ Atacama Dark Sky`;
                 }
             });
 
-            // Line chart: Weekly trend (consolidado gyg vs direct)
+            // Line chart: Weekly trend (consolidado gyg vs viator vs direct)
             const ctxTrend = document.getElementById('channelTrendChart').getContext('2d');
             if (analyticsCharts.channelTrend) analyticsCharts.channelTrend.destroy();
 
             const weeks = [...new Set(data.trend.map(t => t.week_start))].sort();
             const gygTrend = weeks.map(w => {
                 const item = data.trend.find(t => t.week_start === w && t.source === 'gyg');
+                return item ? parseInt(item.bookings) : 0;
+            });
+            const viatorTrend = weeks.map(w => {
+                const item = data.trend.find(t => t.week_start === w && t.source === 'viator');
                 return item ? parseInt(item.bookings) : 0;
             });
             const directTrend = weeks.map(w => {
@@ -4892,6 +4943,7 @@ Atacama Dark Sky`;
                     labels: weeks.map(w => new Date(w).toLocaleDateString('es-CL', { day: '2-digit', month: 'short' })),
                     datasets: [
                         { label: 'GetYourGuide', data: gygTrend, borderColor: '#FF5A5F', backgroundColor: 'rgba(255, 90, 95, 0.1)', fill: true, tension: 0.3 },
+                        { label: 'Viator', data: viatorTrend, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.3 },
                         { label: 'Venta Directa', data: directTrend, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.3 }
                     ]
                 },
@@ -4932,8 +4984,8 @@ Atacama Dark Sky`;
             const ctx = document.getElementById('groupSizeChart').getContext('2d');
             if (analyticsCharts.groupSize) analyticsCharts.groupSize.destroy();
 
-            const sourceNames = { 'gyg': 'GetYourGuide', 'direct': 'Venta Directa' };
-            const sourceColors = { 'gyg': '#FF5A5F', 'direct': '#10b981' };
+            const sourceNames = { 'gyg': 'GetYourGuide', 'viator': 'Viator', 'direct': 'Venta Directa' };
+            const sourceColors = { 'gyg': '#FF5A5F', 'viator': '#3b82f6', 'direct': '#10b981' };
             analyticsCharts.groupSize = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -4959,14 +5011,14 @@ Atacama Dark Sky`;
             const ctx = document.getElementById('advanceBookingChart').getContext('2d');
             if (analyticsCharts.advanceBooking) analyticsCharts.advanceBooking.destroy();
 
-            const sourceNames = { 'gyg': 'GetYourGuide', 'direct': 'Venta Directa' };
-            const sourceColors = { 'gyg': '#FF5A5F', 'direct': '#10b981' };
+            const sourceNames = { 'gyg': 'GetYourGuide', 'viator': 'Viator', 'direct': 'Venta Directa' };
+            const sourceColors = { 'gyg': '#FF5A5F', 'viator': '#3b82f6', 'direct': '#10b981' };
             analyticsCharts.advanceBooking = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: data.advanceBooking.map(a => sourceNames[a.source] || a.source),
                     datasets: [{
-                        label: 'Días Promedio de Anticipación',
+                        label: 'Dias Promedio de Anticipacion',
                         data: data.advanceBooking.map(a => parseFloat(a.avg_days_advance) || 0),
                         backgroundColor: data.advanceBooking.map(a => sourceColors[a.source] || '#60a5fa')
                     }]
@@ -4974,7 +5026,7 @@ Atacama Dark Sky`;
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#94a3b8' } }, title: { display: true, text: 'Anticipación de Reserva', color: '#e2e8f0' } },
+                    plugins: { legend: { labels: { color: '#94a3b8' } }, title: { display: true, text: 'Anticipacion de Reserva', color: '#e2e8f0' } },
                     scales: {
                         x: { ticks: { color: '#94a3b8' } },
                         y: { ticks: { color: '#94a3b8' } }
@@ -4986,9 +5038,13 @@ Atacama Dark Sky`;
             const ctxWeekly = document.getElementById('weeklyDistributionChart').getContext('2d');
             if (analyticsCharts.weeklyDist) analyticsCharts.weeklyDist.destroy();
 
-            const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+            const days = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
             const gygWeekly = days.map((_, i) => {
                 const item = data.weeklyDistribution.find(w => parseInt(w.day_number) === i && w.source === 'gyg');
+                return item ? parseInt(item.bookings) : 0;
+            });
+            const viatorWeekly = days.map((_, i) => {
+                const item = data.weeklyDistribution.find(w => parseInt(w.day_number) === i && w.source === 'viator');
                 return item ? parseInt(item.bookings) : 0;
             });
             const directWeekly = days.map((_, i) => {
@@ -5002,6 +5058,7 @@ Atacama Dark Sky`;
                     labels: days,
                     datasets: [
                         { label: 'GetYourGuide', data: gygWeekly, borderColor: '#FF5A5F', backgroundColor: 'rgba(255, 90, 95, 0.2)' },
+                        { label: 'Viator', data: viatorWeekly, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.2)' },
                         { label: 'Venta Directa', data: directWeekly, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.2)' }
                     ]
                 },
@@ -5025,11 +5082,24 @@ Atacama Dark Sky`;
                 commission_paid: parseFloat(gygRegular.commission_paid || 0) + parseFloat(gygPrivate.commission_paid || 0),
                 net_revenue: parseFloat(gygRegular.net_revenue || 0) + parseFloat(gygPrivate.net_revenue || 0)
             };
+
+            // Sumar Viator regular + private
+            const viatorRegular = data.summary.find(s => getChannel(s) === 'viator_regular') || {};
+            const viatorPrivate = data.summary.find(s => getChannel(s) === 'viator_private') || {};
+            const viatorFin = {
+                gross_revenue: parseFloat(viatorRegular.gross_revenue || 0) + parseFloat(viatorPrivate.gross_revenue || 0),
+                commission_paid: parseFloat(viatorRegular.commission_paid || 0) + parseFloat(viatorPrivate.commission_paid || 0),
+                net_revenue: parseFloat(viatorRegular.net_revenue || 0) + parseFloat(viatorPrivate.net_revenue || 0)
+            };
+
             const directFin = data.summary.find(s => getChannel(s) === 'direct') || {};
 
             document.getElementById('finGrossGyg').textContent = formatCLP(gygFin.gross_revenue || 0);
             document.getElementById('finCommission').textContent = '-' + formatCLP(gygFin.commission_paid || 0);
             document.getElementById('finNetGyg').textContent = formatCLP(gygFin.net_revenue || 0);
+            document.getElementById('finGrossViator').textContent = formatCLP(viatorFin.gross_revenue || 0);
+            document.getElementById('finCommissionViator').textContent = '-' + formatCLP(viatorFin.commission_paid || 0);
+            document.getElementById('finNetViator').textContent = formatCLP(viatorFin.net_revenue || 0);
             document.getElementById('finNetDirect').textContent = formatCLP(directFin.net_revenue || 0);
 
             // Revenue comparison chart (consolidado)
@@ -5039,6 +5109,10 @@ Atacama Dark Sky`;
             const months = [...new Set(data.monthlyTrend.map(m => m.month))].sort();
             const gygNet = months.map(m => {
                 const item = data.monthlyTrend.find(t => t.month === m && t.source === 'gyg');
+                return item ? parseFloat(item.net_revenue) : 0;
+            });
+            const viatorNet = months.map(m => {
+                const item = data.monthlyTrend.find(t => t.month === m && t.source === 'viator');
                 return item ? parseFloat(item.net_revenue) : 0;
             });
             const directNet = months.map(m => {
@@ -5052,6 +5126,7 @@ Atacama Dark Sky`;
                     labels: months.map(m => new Date(m).toLocaleDateString('es-CL', { month: 'short', year: '2-digit' })),
                     datasets: [
                         { label: 'GetYourGuide (Neto)', data: gygNet, backgroundColor: 'rgba(255, 90, 95, 0.7)', borderColor: '#FF5A5F', borderWidth: 1 },
+                        { label: 'Viator (Neto)', data: viatorNet, backgroundColor: 'rgba(59, 130, 246, 0.7)', borderColor: '#3b82f6', borderWidth: 1 },
                         { label: 'Venta Directa', data: directNet, backgroundColor: 'rgba(16, 185, 129, 0.7)', borderColor: '#10b981', borderWidth: 1 }
                     ]
                 },
@@ -5060,7 +5135,7 @@ Atacama Dark Sky`;
                     maintainAspectRatio: false,
                     plugins: {
                         legend: { labels: { color: '#94a3b8' } },
-                        title: { display: true, text: 'Evolución Mensual de Ingresos Netos', color: '#e2e8f0' },
+                        title: { display: true, text: 'Evolucion Mensual de Ingresos Netos', color: '#e2e8f0' },
                         tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${formatCLP(ctx.raw)}` } }
                     },
                     scales: {
@@ -5074,13 +5149,15 @@ Atacama Dark Sky`;
             const channelNames = {
                 'gyg_regular': 'GYG Tour Regular',
                 'gyg_private': 'GYG Tour Privado',
+                'viator_regular': 'Viator Tour Regular',
+                'viator_private': 'Viator Tour Privado',
                 'direct': 'Venta Directa'
             };
-            const isGyg = (ch) => ch === 'gyg_regular' || ch === 'gyg_private';
+            const isOTA = (ch) => ch === 'gyg_regular' || ch === 'gyg_private' || ch === 'viator_regular' || ch === 'viator_private';
 
-            // Ordenar: GYG primero, luego directo
+            // Ordenar: GYG, Viator, luego directo
             const sortedSummary = [...data.summary].sort((a, b) => {
-                const order = { 'gyg_private': 0, 'gyg_regular': 1, 'direct': 2 };
+                const order = { 'gyg_private': 0, 'gyg_regular': 1, 'viator_private': 2, 'viator_regular': 3, 'direct': 4 };
                 return (order[getChannel(a)] || 3) - (order[getChannel(b)] || 3);
             });
 
@@ -5092,7 +5169,7 @@ Atacama Dark Sky`;
                     <td>${s.total_bookings}</td>
                     <td>${s.total_persons}</td>
                     <td>${formatCLP(s.gross_revenue)}</td>
-                    <td style="color: #ef4444;">${isGyg(ch) ? '-' + formatCLP(s.commission_paid) : '-'}</td>
+                    <td style="color: #ef4444;">${isOTA(ch) ? '-' + formatCLP(s.commission_paid) : '-'}</td>
                     <td style="color: #10b981;">${formatCLP(s.net_revenue)}</td>
                     <td>${formatCLP(s.avg_ticket)}</td>
                 </tr>

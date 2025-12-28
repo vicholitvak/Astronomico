@@ -35,7 +35,9 @@
       "Bash(pipx install:*)",
       "Bash(curl:*)",
       "WebFetch(domain:atacamadarksky.cl)",
-      "mcp__atacama-dark-sky__get_deployment"
+      "mcp__atacama-dark-sky__get_deployment",
+      "WebFetch(domain:docs.viator.com)",
+      "WebFetch(domain:partnerresources.viator.com)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
