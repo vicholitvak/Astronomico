@@ -1491,7 +1491,7 @@ async function callClaudeWithTools(messages, pendingToolResults = []) {
       'anthropic-version': '2023-06-01'
     },
     body: JSON.stringify({
-      model: 'claude-3-haiku-20240307',
+      model: 'claude-opus-4-5-20251101',
       max_tokens: 2048,
       system: getSystemPrompt(),
       tools: tools,
