@@ -14,10 +14,20 @@
 
 import { insert, query } from '../lib/db.js';
 import { addToGoogleCalendar } from './google-calendar.js';
+import { syncDateAvailabilityToGYG } from './gyg.js';
 
 // ============ VIATOR API CREDENTIALS ============
 const VIATOR_API_KEY = process.env.VIATOR_API_KEY || '';
 const VIATOR_SUPPLIER_ID = process.env.VIATOR_SUPPLIER_ID || 'ATACAMA_DARKSKY';
+
+// ============ VIATOR AFFILIATE API ============
+const VIATOR_AFFILIATE_ENV = process.env.VIATOR_AFFILIATE_ENV || 'sandbox';
+const VIATOR_AFFILIATE_API_BASE = VIATOR_AFFILIATE_ENV === 'production'
+  ? 'https://api.viator.com/partner'
+  : 'https://api.sandbox.viator.com/partner';
+const VIATOR_AFFILIATE_API_KEY = process.env.VIATOR_AFFILIATE_API_KEY || '';
+const VIATOR_AFFILIATE_CAMPAIGN_ID = process.env.VIATOR_AFFILIATE_CAMPAIGN_ID || '';
+const SAN_PEDRO_DESTINATION_ID = '5499'; // San Pedro de Atacama
 
 // ============ CONFIGURATION ============
 const PRODUCTS = {
@@ -125,25 +135,30 @@ function getTimestamp() {
 export default async function handler(req, res) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  // Viator only uses POST
-  if (req.method !== 'POST') {
-    return res.status(405).json({
-      Success: false,
-      ErrorMessage: 'Method not allowed. Use POST.',
-      Timestamp: getTimestamp()
-    });
-  }
-
   const url = new URL(req.url, `https://${req.headers.host}`);
   const path = url.pathname.replace('/api/viator', '');
   const data = req.body || {};
+
+  // ============ AFFILIATE API (GET requests) ============
+  if (req.method === 'GET' || req.query.affiliate === 'true') {
+    return await handleAffiliateAPI(req, res);
+  }
+
+  // Viator Supplier API uses POST
+  if (req.method !== 'POST') {
+    return res.status(405).json({
+      Success: false,
+      ErrorMessage: 'Method not allowed. Use POST for Supplier API, GET for Affiliate API.',
+      Timestamp: getTimestamp()
+    });
+  }
 
   // Admin endpoints (no auth required - internal use)
   if (path.includes('/admin/') || req.query.admin === 'true') {
@@ -592,6 +607,11 @@ async function handleBooking(req, res, data) {
     });
   } catch (e) { console.error('[VIATOR] Admin email failed:', e); }
 
+  // Sync availability to GYG (non-blocking)
+  syncDateAvailabilityToGYG(StartDate).catch(err => {
+    console.error('[VIATOR] GYG sync failed:', err.message);
+  });
+
   return res.status(200).json({
     Success: true,
     SupplierBookingReference: bookingId,
@@ -673,6 +693,17 @@ async function handleCancel(req, res, data) {
   );
 
   console.log(`[VIATOR] Booking cancelled: ${booking.booking_id}`);
+
+  // Sync availability to GYG after cancellation (non-blocking)
+  let dateStr = booking.date;
+  if (dateStr instanceof Date) {
+    dateStr = dateStr.toISOString().split('T')[0];
+  } else if (typeof dateStr === 'string' && dateStr.includes('T')) {
+    dateStr = dateStr.split('T')[0];
+  }
+  syncDateAvailabilityToGYG(dateStr).catch(err => {
+    console.error('[VIATOR] GYG sync failed on cancel:', err.message);
+  });
 
   return res.status(200).json({
     Success: true,
@@ -756,6 +787,24 @@ async function handleAmend(req, res, data) {
   );
 
   console.log(`[VIATOR] Booking amended: ${booking.booking_id}`);
+
+  // Sync availability to GYG after amendment (non-blocking)
+  // Sync both old date and new date if date changed
+  let oldDateStr = booking.date;
+  if (oldDateStr instanceof Date) {
+    oldDateStr = oldDateStr.toISOString().split('T')[0];
+  } else if (typeof oldDateStr === 'string' && oldDateStr.includes('T')) {
+    oldDateStr = oldDateStr.split('T')[0];
+  }
+  syncDateAvailabilityToGYG(oldDateStr).catch(err => {
+    console.error('[VIATOR] GYG sync failed on amend (old date):', err.message);
+  });
+
+  if (NewStartDate && NewStartDate !== oldDateStr) {
+    syncDateAvailabilityToGYG(NewStartDate).catch(err => {
+      console.error('[VIATOR] GYG sync failed on amend (new date):', err.message);
+    });
+  }
 
   return res.status(200).json({
     Success: true,
@@ -920,6 +969,564 @@ async function sendViatorAdminNotificationEmail(booking) {
   } catch (error) {
     console.error(`[VIATOR] Failed to send admin notification email: ${error.message}`);
   }
+}
+
+// ============ AFFILIATE API HANDLER ============
+async function handleAffiliateAPI(req, res) {
+  const { action, code, date, adults, children, limit, offset, sort } = req.query;
+
+  // Check if API key is configured
+  if (!VIATOR_AFFILIATE_API_KEY) {
+    return res.status(200).json({
+      success: false,
+      error: 'Viator Affiliate API not configured yet',
+      message: 'API key pending activation (up to 24 hours)',
+      configured: false
+    });
+  }
+
+  try {
+    switch (action) {
+      case 'search': {
+        const results = await affiliateSearchTours({
+          limit: parseInt(limit) || 20,
+          offset: parseInt(offset) || 0,
+          sort: sort || 'TRAVELER_RATING'
+        });
+        // Format products for easier frontend consumption
+        const formattedProducts = (results.products || []).map(p => ({
+          code: p.productCode,
+          title: p.title,
+          description: p.description?.substring(0, 300) + (p.description?.length > 300 ? '...' : ''),
+          image: p.images?.[0]?.variants?.find(v => v.width >= 400)?.url || p.images?.[0]?.variants?.[0]?.url,
+          rating: p.reviews?.combinedAverageRating || 0,
+          reviewCount: p.reviews?.totalReviews || 0,
+          duration: p.duration?.fixedDurationInMinutes ? `${Math.round(p.duration.fixedDurationInMinutes / 60 * 10) / 10}h` : null,
+          price: p.pricing?.summary?.fromPrice,
+          currency: p.pricing?.currency || 'USD',
+          bookingUrl: generateAffiliateUrl(p.productCode, p.productUrl)
+        }));
+        return res.status(200).json({
+          success: true,
+          totalCount: results.totalCount,
+          products: formattedProducts,
+          raw: results // Include raw response for debugging
+        });
+      }
+
+      case 'product': {
+        if (!code) {
+          return res.status(400).json({ success: false, error: 'Product code required' });
+        }
+        const product = await affiliateGetProduct(code);
+        return res.status(200).json({
+          success: true,
+          product: formatAffiliateProduct(product)
+        });
+      }
+
+      case 'schedules': {
+        // Get availability schedules (can cache for 1 hour)
+        if (!code) {
+          return res.status(400).json({ success: false, error: 'Product code required' });
+        }
+        const schedules = await affiliateGetSchedules(code);
+        return res.status(200).json({
+          success: true,
+          schedules
+        });
+      }
+
+      case 'availability': {
+        // Real-time availability check (use before booking)
+        if (!code || !date) {
+          return res.status(400).json({ success: false, error: 'Product code and date required' });
+        }
+        const availability = await affiliateCheckAvailability(code, date, {
+          adults: parseInt(adults) || 2,
+          children: parseInt(children) || 0
+        });
+        return res.status(200).json({
+          success: true,
+          availability
+        });
+      }
+
+      // ============ BOOKING FLOW ENDPOINTS (Full+Booking Access) ============
+
+      case 'booking-questions': {
+        if (!code) {
+          return res.status(400).json({ success: false, error: 'Product code required' });
+        }
+        const questions = await affiliateGetBookingQuestions(code);
+        return res.status(200).json({
+          success: true,
+          questions
+        });
+      }
+
+      case 'cart-hold': {
+        // Hold items in cart before booking
+        const holdData = req.body || JSON.parse(req.query.data || '{}');
+        if (!holdData.items || !holdData.items.length) {
+          return res.status(400).json({ success: false, error: 'Cart items required' });
+        }
+        const holdResult = await affiliateCartHold(holdData);
+        return res.status(200).json({
+          success: true,
+          hold: holdResult
+        });
+      }
+
+      case 'cart-book': {
+        // Complete booking after payment
+        const bookData = req.body || JSON.parse(req.query.data || '{}');
+        if (!bookData.cartId) {
+          return res.status(400).json({ success: false, error: 'Cart ID required' });
+        }
+        const bookResult = await affiliateCartBook(bookData);
+        return res.status(200).json({
+          success: true,
+          booking: bookResult
+        });
+      }
+
+      case 'checkout-session': {
+        // Create checkout session for iframe payment
+        const sessionData = req.body || JSON.parse(req.query.data || '{}');
+        if (!sessionData.cartId) {
+          return res.status(400).json({ success: false, error: 'Cart ID required' });
+        }
+        const session = await affiliateCreateCheckoutSession(sessionData);
+        return res.status(200).json({
+          success: true,
+          session
+        });
+      }
+
+      case 'booking-status': {
+        // Check booking status
+        const bookingRef = req.query.ref || req.query.bookingRef;
+        if (!bookingRef) {
+          return res.status(400).json({ success: false, error: 'Booking reference required' });
+        }
+        const status = await affiliateGetBookingStatus(bookingRef);
+        return res.status(200).json({
+          success: true,
+          status
+        });
+      }
+
+      case 'cancel-quote': {
+        // Get cancellation quote (refund amount)
+        const bookingRef = req.query.ref || req.query.bookingRef;
+        if (!bookingRef) {
+          return res.status(400).json({ success: false, error: 'Booking reference required' });
+        }
+        const quote = await affiliateGetCancelQuote(bookingRef);
+        return res.status(200).json({
+          success: true,
+          quote
+        });
+      }
+
+      case 'cancel-booking': {
+        // Cancel a booking
+        const cancelData = req.body || {};
+        const bookingRef = cancelData.bookingRef || req.query.ref;
+        if (!bookingRef) {
+          return res.status(400).json({ success: false, error: 'Booking reference required' });
+        }
+        const cancelResult = await affiliateCancelBooking(bookingRef, cancelData.reasonCode);
+        return res.status(200).json({
+          success: true,
+          cancellation: cancelResult
+        });
+      }
+
+      case 'cancel-reasons': {
+        // Get list of cancellation reasons
+        const reasons = await affiliateGetCancelReasons();
+        return res.status(200).json({
+          success: true,
+          reasons
+        });
+      }
+
+      case 'modified-bookings': {
+        // Get bookings modified since timestamp (supplier cancellations)
+        const since = req.query.since || new Date(Date.now() - 5 * 60 * 1000).toISOString();
+        const modified = await affiliateGetModifiedBookings(since);
+        return res.status(200).json({
+          success: true,
+          modified
+        });
+      }
+
+      case 'acknowledge-cancellation': {
+        // Acknowledge a supplier cancellation
+        const ackData = req.body || {};
+        if (!ackData.bookingRef) {
+          return res.status(400).json({ success: false, error: 'Booking reference required' });
+        }
+        const ackResult = await affiliateAcknowledgeCancellation(ackData.bookingRef);
+        return res.status(200).json({
+          success: true,
+          acknowledged: ackResult
+        });
+      }
+
+      // ============ AUXILIARY DATA ENDPOINTS ============
+
+      case 'exchange-rates': {
+        const rates = await affiliateGetExchangeRates();
+        return res.status(200).json({
+          success: true,
+          rates
+        });
+      }
+
+      case 'destinations': {
+        const destinations = await affiliateGetDestinations();
+        return res.status(200).json({
+          success: true,
+          destinations
+        });
+      }
+
+      case 'tags': {
+        const tags = await affiliateGetTags();
+        return res.status(200).json({
+          success: true,
+          tags
+        });
+      }
+
+      case 'reviews': {
+        if (!code) {
+          return res.status(400).json({ success: false, error: 'Product code required' });
+        }
+        const reviews = await affiliateGetReviews(code);
+        return res.status(200).json({
+          success: true,
+          reviews
+        });
+      }
+
+      default:
+        return res.status(200).json({
+          success: true,
+          status: 'ready',
+          message: 'Viator Affiliate API - Full Booking Access',
+          environment: VIATOR_AFFILIATE_ENV,
+          apiBase: VIATOR_AFFILIATE_API_BASE,
+          destinationId: SAN_PEDRO_DESTINATION_ID,
+          accessLevel: 'full_booking',
+          endpoints: {
+            // Product Discovery
+            search: '/api/viator?action=search&limit=20&offset=0&sort=TRAVELER_RATING',
+            product: '/api/viator?action=product&code=XXX',
+            tags: '/api/viator?action=tags',
+            // Availability (cache schedules for 1hr, check before booking)
+            schedules: '/api/viator?action=schedules&code=XXX',
+            availability: '/api/viator?action=availability&code=XXX&date=YYYY-MM-DD&adults=2',
+            // Booking Flow
+            bookingQuestions: '/api/viator?action=booking-questions&code=XXX',
+            cartHold: 'POST /api/viator?action=cart-hold',
+            cartBook: 'POST /api/viator?action=cart-book',
+            // Booking Management
+            bookingStatus: '/api/viator?action=booking-status&ref=XXX',
+            cancelQuote: '/api/viator?action=cancel-quote&ref=XXX',
+            cancelBooking: 'POST /api/viator?action=cancel-booking',
+            cancelReasons: '/api/viator?action=cancel-reasons'
+          },
+          bookingFlow: [
+            '1. Search products → action=search',
+            '2. Get product details → action=product&code=XXX',
+            '3. Get schedules (cacheable 1hr) → action=schedules&code=XXX',
+            '4. User selects date/time → Show checkout',
+            '5. Check real-time availability → action=availability&code=XXX&date=YYYY-MM-DD',
+            '6. Get booking questions → action=booking-questions&code=XXX',
+            '7. Hold cart (strong purchase intent only) → action=cart-hold',
+            '8. Collect payment',
+            '9. Complete booking → action=cart-book'
+          ],
+          configured: !!VIATOR_AFFILIATE_API_KEY
+        });
+    }
+  } catch (error) {
+    console.error('[VIATOR AFFILIATE] API error:', error);
+    return res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+}
+
+// Make authenticated request to Viator Partner API
+async function affiliateRequest(endpoint, options = {}) {
+  const url = `${VIATOR_AFFILIATE_API_BASE}${endpoint}`;
+
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      'Accept': 'application/json;version=2.0',
+      'Content-Type': 'application/json',
+      'Accept-Language': 'en-US',
+      'exp-api-key': VIATOR_AFFILIATE_API_KEY,
+      ...options.headers
+    }
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    console.error(`[VIATOR AFFILIATE] API error: ${response.status}`, error);
+    throw new Error(`Viator API error: ${response.status} - ${error}`);
+  }
+
+  return response.json();
+}
+
+// Search for tours in San Pedro de Atacama
+async function affiliateSearchTours(filters = {}) {
+  const body = {
+    filtering: {
+      destination: SAN_PEDRO_DESTINATION_ID
+    },
+    sorting: {
+      sort: filters.sort || 'TRAVELER_RATING',
+      order: filters.order || 'DESCENDING'
+    },
+    pagination: {
+      start: filters.offset || 1,
+      count: filters.limit || 20
+    },
+    currency: filters.currency || 'USD'
+  };
+
+  return affiliateRequest('/products/search', {
+    method: 'POST',
+    body: JSON.stringify(body)
+  });
+}
+
+// Get detailed product information
+async function affiliateGetProduct(productCode) {
+  return affiliateRequest(`/products/${productCode}`);
+}
+
+// Get availability schedules for a product (can cache for 1 hour)
+async function affiliateGetSchedules(productCode) {
+  return affiliateRequest(`/availability/schedules/${productCode}`);
+}
+
+// Check real-time availability (use before booking)
+async function affiliateCheckAvailability(productCode, travelDate, travelers = { adults: 2 }) {
+  const body = {
+    productCode,
+    travelDate,
+    currency: 'USD',
+    paxMix: [
+      { ageBand: 'ADULT', numberOfTravelers: travelers.adults || 2 },
+      ...(travelers.children ? [{ ageBand: 'CHILD', numberOfTravelers: travelers.children }] : [])
+    ]
+  };
+
+  return affiliateRequest('/availability/check', {
+    method: 'POST',
+    body: JSON.stringify(body)
+  });
+}
+
+// ============ BOOKING FLOW FUNCTIONS (Full+Booking Access) ============
+
+// Get booking questions for a product
+async function affiliateGetBookingQuestions(productCode) {
+  return affiliateRequest(`/products/booking-questions/${productCode}`);
+}
+
+// Hold items in cart (before payment)
+async function affiliateCartHold(data) {
+  /*
+   * data.items = [{
+   *   productCode: string,
+   *   productOptionCode: string,
+   *   startTime: string (ISO),
+   *   bookingQuestionAnswers: [...],
+   *   paxMix: [{ ageBand, numberOfTravelers }],
+   *   languageOptionCode?: string
+   * }]
+   * data.currency: string (USD)
+   */
+  const body = {
+    items: data.items.map(item => ({
+      productCode: item.productCode,
+      productOptionCode: item.productOptionCode,
+      startTime: item.startTime,
+      paxMix: item.paxMix || [{ ageBand: 'ADULT', numberOfTravelers: 2 }],
+      bookingQuestionAnswers: item.bookingQuestionAnswers || [],
+      languageOptionCode: item.languageOptionCode
+    })),
+    currency: data.currency || 'USD'
+  };
+
+  return affiliateRequest('/bookings/cart/hold', {
+    method: 'POST',
+    body: JSON.stringify(body)
+  });
+}
+
+// Complete booking after payment (using cart)
+async function affiliateCartBook(data) {
+  /*
+   * data.cartId: string (from cart/hold response)
+   * data.booker: { firstName, lastName, email, phone? }
+   * data.paymentToken?: string (from iframe)
+   * data.partnerBookingRef?: string (your reference)
+   */
+  const body = {
+    cartId: data.cartId,
+    booker: {
+      firstName: data.booker?.firstName || 'Guest',
+      lastName: data.booker?.lastName || 'User',
+      email: data.booker?.email,
+      phone: data.booker?.phone
+    },
+    communication: {
+      email: data.booker?.email
+    },
+    partnerBookingRef: data.partnerBookingRef || `ADS-${Date.now()}`,
+    ...(data.paymentToken && { paymentToken: data.paymentToken })
+  };
+
+  return affiliateRequest('/bookings/cart/book', {
+    method: 'POST',
+    body: JSON.stringify(body)
+  });
+}
+
+// Create checkout session for iframe payment
+async function affiliateCreateCheckoutSession(data) {
+  /*
+   * data.cartId: string
+   * data.currency: string
+   * data.returnUrl?: string (redirect after payment)
+   */
+  const body = {
+    cartId: data.cartId,
+    currency: data.currency || 'USD',
+    ...(data.returnUrl && { returnUrl: data.returnUrl })
+  };
+
+  return affiliateRequest('/v1/checkout/sessions', {
+    method: 'POST',
+    body: JSON.stringify(body)
+  });
+}
+
+// Get booking status
+async function affiliateGetBookingStatus(bookingRef) {
+  return affiliateRequest(`/bookings/status`, {
+    method: 'POST',
+    body: JSON.stringify({ bookingRef })
+  });
+}
+
+// Get cancellation quote (refund amount)
+async function affiliateGetCancelQuote(bookingRef) {
+  return affiliateRequest(`/bookings/${bookingRef}/cancel-quote`);
+}
+
+// Cancel a booking
+async function affiliateCancelBooking(bookingRef, reasonCode = 'Customer_Service.I_decided_not_to_go_on_this_trip') {
+  return affiliateRequest(`/bookings/${bookingRef}/cancel`, {
+    method: 'POST',
+    body: JSON.stringify({ reasonCode })
+  });
+}
+
+// Get cancellation reasons
+async function affiliateGetCancelReasons() {
+  return affiliateRequest('/bookings/cancel-reasons');
+}
+
+// Get modified bookings (supplier cancellations) - poll every 2-5 min
+async function affiliateGetModifiedBookings(modifiedSince) {
+  return affiliateRequest('/bookings/modified-since', {
+    method: 'POST',
+    body: JSON.stringify({ modifiedSince })
+  });
+}
+
+// Acknowledge a supplier cancellation (must be done within 5 min)
+async function affiliateAcknowledgeCancellation(bookingRef) {
+  return affiliateRequest('/bookings/modified-since/acknowledge', {
+    method: 'POST',
+    body: JSON.stringify({ bookingRef })
+  });
+}
+
+// ============ AUXILIARY DATA FUNCTIONS ============
+
+// Get exchange rates (cache daily)
+async function affiliateGetExchangeRates() {
+  return affiliateRequest('/exchange-rates');
+}
+
+// Get destinations taxonomy (cache weekly)
+async function affiliateGetDestinations() {
+  return affiliateRequest('/v1/taxonomy/destinations');
+}
+
+// Get product tags (cache weekly)
+async function affiliateGetTags() {
+  return affiliateRequest('/products/tags');
+}
+
+// Get product reviews (cache weekly)
+async function affiliateGetReviews(productCode) {
+  return affiliateRequest(`/reviews/product/${productCode}`);
+}
+
+// Generate affiliate booking URL
+function generateAffiliateUrl(productCode, productUrl) {
+  const baseUrl = productUrl || `https://www.viator.com/tours/${productCode}`;
+  if (!VIATOR_AFFILIATE_CAMPAIGN_ID) return baseUrl;
+
+  const affiliateParams = new URLSearchParams({
+    pid: VIATOR_AFFILIATE_CAMPAIGN_ID,
+    mcid: 'affiliate',
+    medium: 'link'
+  });
+  return `${baseUrl}?${affiliateParams.toString()}`;
+}
+
+// Format product for frontend display
+function formatAffiliateProduct(product) {
+  return {
+    code: product.productCode,
+    title: product.title,
+    description: product.description,
+    shortDescription: product.shortDescription,
+    duration: product.duration,
+    images: product.images?.map(img => ({
+      url: img.variants?.find(v => v.width >= 800)?.url || img.variants?.[0]?.url,
+      caption: img.caption
+    })) || [],
+    rating: {
+      average: product.reviews?.combinedAverageRating,
+      count: product.reviews?.totalReviews
+    },
+    pricing: {
+      from: product.pricing?.summary?.fromPrice,
+      currency: product.pricing?.currency || 'USD',
+      pricingType: product.pricing?.pricingType
+    },
+    bookingUrl: generateAffiliateUrl(product.productCode, product.productUrl),
+    highlights: product.highlights || [],
+    inclusions: product.inclusions || [],
+    exclusions: product.exclusions || []
+  };
 }
 
 // Export for use in other modules

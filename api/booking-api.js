@@ -4,6 +4,7 @@
 
 import { insert, query } from '../lib/db.js';
 import { addToGoogleCalendar } from './google-calendar.js';
+import { syncDateAvailabilityToGYG } from './gyg.js';
 import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
@@ -99,9 +100,27 @@ async function updateBooking(req, res) {
         message: updatedBooking.message
       });
       console.log(`[BOOKING] Calendar synced for: ${updatedBooking.booking_id}`);
+
+      // Sync availability to GYG when booking changes affect availability
+      syncDateAvailabilityToGYG(dateStr).catch(err => {
+        console.error(`[BOOKING] GYG sync failed:`, err.message);
+      });
     } catch (calendarError) {
       console.error(`[BOOKING] Calendar sync failed:`, calendarError.message);
     }
+  }
+
+  // If status changed to cancelled, sync GYG availability
+  if (status === 'cancelled') {
+    let dateStr = updatedBooking.date;
+    if (dateStr instanceof Date) {
+      dateStr = dateStr.toISOString().split('T')[0];
+    } else if (typeof dateStr === 'string' && dateStr.includes('T')) {
+      dateStr = dateStr.split('T')[0];
+    }
+    syncDateAvailabilityToGYG(dateStr).catch(err => {
+      console.error(`[BOOKING] GYG sync failed on cancellation:`, err.message);
+    });
   }
 
   return res.status(200).json({ success: true, data: updatedBooking });
@@ -119,6 +138,20 @@ async function deleteBooking(req, res) {
 
   if (result.rows.length === 0) {
     return res.status(404).json({ success: false, error: 'Booking not found' });
+  }
+
+  // Sync availability to GYG after deletion (non-blocking)
+  const deletedBooking = result.rows[0];
+  if (deletedBooking.date) {
+    let dateStr = deletedBooking.date;
+    if (dateStr instanceof Date) {
+      dateStr = dateStr.toISOString().split('T')[0];
+    } else if (typeof dateStr === 'string' && dateStr.includes('T')) {
+      dateStr = dateStr.split('T')[0];
+    }
+    syncDateAvailabilityToGYG(dateStr).catch(err => {
+      console.error('[BOOKING] GYG sync failed on delete:', err.message);
+    });
   }
 
   return res.status(200).json({ success: true, message: 'Booking deleted' });
@@ -213,6 +246,11 @@ async function createBooking(req, res) {
   try {
     await addToGoogleCalendar({ bookingId, date, time: assignedTime, persons, tourType, name, email, phone, message });
   } catch (e) { console.error('Google Calendar failed:', e); }
+
+  // Sync availability to GYG (non-blocking)
+  syncDateAvailabilityToGYG(date).catch(err => {
+    console.error('[BOOKING] GYG sync failed:', err.message);
+  });
 
   return res.status(200).json({ success: true, bookingId, message: 'Booking created successfully' });
 }

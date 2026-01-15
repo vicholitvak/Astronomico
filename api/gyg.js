@@ -240,6 +240,10 @@ export default async function handler(req, res) {
     if (path.includes('/push-availability') || path.includes('/notify-availability-update')) {
       return await handlePushAvailability(req, res);
     }
+    // Sync availability to GYG (calculates current availability and pushes)
+    if (path.includes('/sync-availability') || path.includes('/sync')) {
+      return await handleSyncAvailability(req, res);
+    }
     // Supplier products list
     if (path.match(/\/suppliers\/([^/]+)\/products/)) {
       return await handleSupplierProducts(req, res, path);
@@ -1599,5 +1603,206 @@ Atacama Dark Sky Team`
   return res.status(200).json(report);
 }
 
+// ============ SYNC AVAILABILITY TO GYG ============
+// This function calculates current availability and pushes it to GYG
+// Called when bookings are created, cancelled, or modified
+
+/**
+ * Calculate current availability for a specific date and product
+ */
+async function calculateAvailabilityForDate(productId, date) {
+  const product = PRODUCTS[productId];
+  if (!product) {
+    console.error(`[GYG-SYNC] Invalid product: ${productId}`);
+    return null;
+  }
+
+  const tzOffset = getChileTimezoneOffset(date);
+  const availabilities = [];
+
+  // Check if date is blocked
+  const blockedResult = await query(
+    `SELECT * FROM blocked_dates WHERE blocked_date = $1`,
+    [date]
+  );
+
+  const blockInfo = blockedResult.rows[0];
+  let isFullyBlocked = false;
+  let isPrivateBlocked = false;
+
+  if (blockInfo) {
+    if (blockInfo.block_type === 'full') {
+      isFullyBlocked = true;
+    } else if (blockInfo.block_type === 'private_only' && product.tourType === 'regular') {
+      isFullyBlocked = true;
+    } else if (blockInfo.block_type === 'late_private_only' && product.tourType === 'private') {
+      isPrivateBlocked = true;
+    }
+  }
+
+  // For each available time slot
+  for (const time of product.availableTimes) {
+    let vacancies = product.maxCapacity;
+
+    if (isFullyBlocked || isPrivateBlocked) {
+      vacancies = 0;
+    } else {
+      // Count current bookings for this time slot
+      const bookingsResult = await query(
+        `SELECT COALESCE(SUM(persons), 0) as total_persons
+         FROM bookings
+         WHERE date = $1 AND time = $2 AND tour_type = $3
+         AND status NOT IN ('cancelled', 'rejected')`,
+        [date, time, product.tourType]
+      );
+
+      const bookedPersons = parseInt(bookingsResult.rows[0]?.total_persons || 0);
+      vacancies = Math.max(0, product.maxCapacity - bookedPersons);
+    }
+
+    availabilities.push({
+      dateTime: `${date}T${time}:00${tzOffset}`,
+      vacancies: vacancies
+    });
+  }
+
+  return availabilities;
+}
+
+/**
+ * Sync availability for a specific date to GYG
+ * Called after booking changes
+ */
+async function syncDateAvailabilityToGYG(date) {
+  console.log(`[GYG-SYNC] Syncing availability for date: ${date}`);
+
+  const results = [];
+
+  // Sync both products (regular and private)
+  for (const productId of Object.keys(PRODUCTS)) {
+    try {
+      const availabilities = await calculateAvailabilityForDate(productId, date);
+
+      if (!availabilities || availabilities.length === 0) {
+        console.log(`[GYG-SYNC] No availabilities calculated for ${productId} on ${date}`);
+        continue;
+      }
+
+      console.log(`[GYG-SYNC] Pushing ${productId}: ${availabilities.map(a => `${a.dateTime.split('T')[1].slice(0,5)}=${a.vacancies}`).join(', ')}`);
+
+      const result = await pushAvailabilityToGYG(productId, availabilities, true);
+      results.push({
+        productId,
+        date,
+        success: result.success,
+        availabilities: availabilities.map(a => ({ time: a.dateTime.split('T')[1].slice(0, 5), vacancies: a.vacancies }))
+      });
+
+      if (result.success) {
+        console.log(`[GYG-SYNC] ✓ ${productId} synced successfully`);
+      } else {
+        console.error(`[GYG-SYNC] ✗ ${productId} sync failed:`, result.error || result.data);
+      }
+    } catch (error) {
+      console.error(`[GYG-SYNC] Error syncing ${productId}:`, error.message);
+      results.push({
+        productId,
+        date,
+        success: false,
+        error: error.message
+      });
+    }
+  }
+
+  return results;
+}
+
+/**
+ * Sync availability for multiple dates to GYG
+ * Useful for bulk updates
+ */
+async function syncMultipleDatesAvailabilityToGYG(dates) {
+  console.log(`[GYG-SYNC] Syncing ${dates.length} dates to GYG`);
+  const allResults = [];
+
+  for (const date of dates) {
+    const results = await syncDateAvailabilityToGYG(date);
+    allResults.push(...results);
+    // Small delay to avoid rate limiting
+    await new Promise(resolve => setTimeout(resolve, 200));
+  }
+
+  return allResults;
+}
+
+/**
+ * Sync availability for a date range to GYG
+ */
+async function syncDateRangeAvailabilityToGYG(startDate, endDate) {
+  const dates = [];
+  let current = new Date(startDate + 'T12:00:00');
+  const end = new Date(endDate + 'T12:00:00');
+
+  while (current <= end) {
+    dates.push(current.toISOString().split('T')[0]);
+    current.setDate(current.getDate() + 1);
+  }
+
+  return await syncMultipleDatesAvailabilityToGYG(dates);
+}
+
+/**
+ * Handler for manual sync endpoint
+ * POST /api/gyg/sync-availability
+ */
+async function handleSyncAvailability(req, res) {
+  const { date, startDate, endDate, dates } = req.body || req.query;
+
+  try {
+    let results;
+
+    if (date) {
+      // Sync single date
+      results = await syncDateAvailabilityToGYG(date);
+    } else if (startDate && endDate) {
+      // Sync date range
+      results = await syncDateRangeAvailabilityToGYG(startDate, endDate);
+    } else if (dates && Array.isArray(dates)) {
+      // Sync specific dates
+      results = await syncMultipleDatesAvailabilityToGYG(dates);
+    } else {
+      // Default: sync next 30 days
+      const today = new Date();
+      const thirtyDaysLater = new Date(today);
+      thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 30);
+
+      const startDateStr = today.toISOString().split('T')[0];
+      const endDateStr = thirtyDaysLater.toISOString().split('T')[0];
+
+      results = await syncDateRangeAvailabilityToGYG(startDateStr, endDateStr);
+    }
+
+    const successCount = results.filter(r => r.success).length;
+    const failCount = results.filter(r => !r.success).length;
+
+    return res.status(200).json({
+      success: true,
+      message: `Synced ${successCount} successfully, ${failCount} failed`,
+      summary: {
+        total: results.length,
+        success: successCount,
+        failed: failCount
+      },
+      results
+    });
+  } catch (error) {
+    console.error('[GYG-SYNC] Sync failed:', error);
+    return res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+}
+
 // Export the push function for use in other modules
-export { pushAvailabilityToGYG };
+export { pushAvailabilityToGYG, syncDateAvailabilityToGYG, syncMultipleDatesAvailabilityToGYG, syncDateRangeAvailabilityToGYG };
