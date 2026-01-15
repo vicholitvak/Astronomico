@@ -4,12 +4,21 @@
  * - Enviar recordatorio de pago a las 12h
  * - Limpiar reservas abandonadas muy antiguas
  * - Sincronizar reservas con Google Calendar
+ * - Sincronizar cancelaciones de GYG y Viator
  *
  * Configurar en Vercel: diario a las 10:00 UTC
  */
 
 import { Pool } from 'pg';
 import { addToGoogleCalendar } from './google-calendar.js';
+import { syncDateAvailabilityToGYG } from './gyg.js';
+
+// Viator Affiliate API config
+const VIATOR_AFFILIATE_ENV = process.env.VIATOR_AFFILIATE_ENV || 'sandbox';
+const VIATOR_AFFILIATE_API_BASE = VIATOR_AFFILIATE_ENV === 'production'
+  ? 'https://api.viator.com/partner'
+  : 'https://api.sandbox.viator.com/partner';
+const VIATOR_AFFILIATE_API_KEY = process.env.VIATOR_AFFILIATE_API_KEY || '';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -35,6 +44,9 @@ export default async function handler(req, res) {
     bookings_cancelled: 0,
     old_bookings_cleaned: 0,
     calendar_synced: 0,
+    viator_sync: { checked: 0, cancelled: 0, errors: [] },
+    gyg_sync: { checked: 0, cancelled: 0, errors: [] },
+    availability_synced: [],
     errors: []
   };
 
@@ -50,6 +62,31 @@ export default async function handler(req, res) {
 
     // 4. Sincronizar reservas confirmadas con Google Calendar
     results.calendar_synced = await syncCalendar();
+
+    // 5. Sincronizar cancelaciones de Viator (si tenemos acceso)
+    if (VIATOR_AFFILIATE_API_KEY) {
+      results.viator_sync = await syncViatorCancellations();
+    }
+
+    // 6. Verificar reservas GYG (buscar abandonadas)
+    results.gyg_sync = await verifyGygBookings();
+
+    // 7. Sincronizar disponibilidad para fechas con cancelaciones
+    const cancelledDates = new Set();
+    if (results.viator_sync.cancelledBookings) {
+      results.viator_sync.cancelledBookings.forEach(b => cancelledDates.add(b.date));
+    }
+    if (results.gyg_sync.cancelledBookings) {
+      results.gyg_sync.cancelledBookings.forEach(b => cancelledDates.add(b.date));
+    }
+    for (const date of cancelledDates) {
+      try {
+        await syncDateAvailabilityToGYG(date);
+        results.availability_synced.push(date);
+      } catch (err) {
+        console.error(`[CRON] Failed to sync availability for ${date}:`, err.message);
+      }
+    }
 
   } catch (error) {
     console.error('[CRON] Error:', error);
@@ -430,4 +467,167 @@ async function syncCalendar() {
   }
 
   return count;
+}
+
+/**
+ * Sync cancellations from Viator using /bookings/modified-since
+ */
+async function syncViatorCancellations() {
+  const results = {
+    checked: 0,
+    cancelled: 0,
+    acknowledged: 0,
+    errors: [],
+    cancelledBookings: []
+  };
+
+  try {
+    // Check last 24 hours for daily cron
+    const checkSince = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    console.log(`[VIATOR-SYNC] Checking modifications since: ${checkSince}`);
+
+    const response = await fetch(`${VIATOR_AFFILIATE_API_BASE}/bookings/modified-since`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json;version=2.0',
+        'Content-Type': 'application/json',
+        'Accept-Language': 'en-US',
+        'exp-api-key': VIATOR_AFFILIATE_API_KEY
+      },
+      body: JSON.stringify({ modifiedSince: checkSince })
+    });
+
+    if (!response.ok) {
+      if (response.status === 403) {
+        console.log('[VIATOR-SYNC] Booking access not available yet');
+        results.errors.push('Booking access not available');
+        return results;
+      }
+      const error = await response.text();
+      throw new Error(`Viator API error: ${response.status} - ${error}`);
+    }
+
+    const data = await response.json();
+    const modifiedBookings = data.bookings || [];
+    results.checked = modifiedBookings.length;
+
+    for (const booking of modifiedBookings) {
+      try {
+        if (booking.status === 'CANCELLED' || booking.status === 'REJECTED') {
+          const localBooking = await pool.query(
+            `SELECT * FROM bookings WHERE viator_reference = $1`,
+            [booking.viatorReference || booking.bookingRef]
+          );
+
+          if (localBooking.rows.length > 0) {
+            const local = localBooking.rows[0];
+            if (local.status !== 'cancelled') {
+              await pool.query(`
+                UPDATE bookings
+                SET status = 'cancelled',
+                    cancellation_reason = $2,
+                    updated_at = NOW()
+                WHERE id = $1
+              `, [local.id, `Cancelled via Viator: ${booking.cancellationReason || 'No reason'}`]);
+
+              results.cancelled++;
+              results.cancelledBookings.push({
+                bookingId: local.booking_id,
+                viatorRef: booking.viatorReference,
+                date: local.date instanceof Date ? local.date.toISOString().split('T')[0] : local.date,
+                reason: booking.cancellationReason
+              });
+              console.log(`[VIATOR-SYNC] Cancelled booking ${local.booking_id}`);
+            }
+          }
+
+          // Acknowledge to Viator
+          if (booking.acknowledgeBy) {
+            await acknowledgeViatorCancellation(booking.bookingRef);
+            results.acknowledged++;
+          }
+        }
+      } catch (err) {
+        results.errors.push(err.message);
+      }
+    }
+  } catch (error) {
+    results.errors.push(error.message);
+  }
+
+  return results;
+}
+
+async function acknowledgeViatorCancellation(bookingRef) {
+  try {
+    await fetch(`${VIATOR_AFFILIATE_API_BASE}/bookings/modified-since/acknowledge`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json;version=2.0',
+        'Content-Type': 'application/json',
+        'exp-api-key': VIATOR_AFFILIATE_API_KEY
+      },
+      body: JSON.stringify({ bookingRef })
+    });
+  } catch (err) {
+    console.error(`[VIATOR-SYNC] Failed to acknowledge ${bookingRef}:`, err.message);
+  }
+}
+
+/**
+ * Verify GYG bookings - find stale reservations
+ */
+async function verifyGygBookings() {
+  const results = {
+    checked: 0,
+    cancelled: 0,
+    errors: [],
+    cancelledBookings: []
+  };
+
+  try {
+    const gygBookings = await pool.query(`
+      SELECT * FROM bookings
+      WHERE source = 'gyg'
+      AND status = 'confirmed'
+      AND date >= CURRENT_DATE
+      ORDER BY date ASC
+      LIMIT 50
+    `);
+    results.checked = gygBookings.rows.length;
+
+    // Check for stale pending reservations (>2 hours old)
+    const staleReservations = await pool.query(`
+      SELECT * FROM bookings
+      WHERE source = 'gyg'
+      AND status = 'pending'
+      AND created_at < NOW() - INTERVAL '2 hours'
+      AND date >= CURRENT_DATE
+    `);
+
+    for (const reservation of staleReservations.rows) {
+      await pool.query(`
+        UPDATE bookings
+        SET status = 'expired',
+            cancellation_reason = 'GYG reservation expired - booking never completed',
+            updated_at = NOW()
+        WHERE id = $1
+      `, [reservation.id]);
+
+      results.cancelled++;
+      results.cancelledBookings.push({
+        bookingId: reservation.booking_id,
+        gygRef: reservation.gyg_reference,
+        date: reservation.date instanceof Date
+          ? reservation.date.toISOString().split('T')[0]
+          : reservation.date,
+        reason: 'Reservation expired'
+      });
+      console.log(`[GYG-SYNC] Expired stale reservation: ${reservation.booking_id}`);
+    }
+  } catch (error) {
+    results.errors.push(error.message);
+  }
+
+  return results;
 }

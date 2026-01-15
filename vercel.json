@@ -24,10 +24,6 @@
     {
       "path": "/api/cron-bookings",
       "schedule": "0 10 * * *"
-    },
-    {
-      "path": "/api/cron-sync-cancellations",
-      "schedule": "0 6 * * *"
     }
   ],
   "rewrites": [
