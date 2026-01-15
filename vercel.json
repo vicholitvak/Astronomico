@@ -27,7 +27,7 @@
     },
     {
       "path": "/api/cron-sync-cancellations",
-      "schedule": "*/5 * * * *"
+      "schedule": "0 */4 * * *"
     }
   ],
   "rewrites": [
