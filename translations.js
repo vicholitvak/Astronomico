@@ -63,6 +63,10 @@ const translations = {
         'tours.southern.omega': 'El cúmulo globular más grande y brillante del cielo',
         'tours.southern.info': 'Además: el centro de la Vía Láctea se ve completo y brillante solo desde aquí',
 
+        // Tours Section
+        'tours.title': 'Expedición Astronómica Privada',
+        'tours.subtitle': 'Una experiencia exclusiva bajo el cielo más oscuro del planeta',
+
         // Tour Cards - Common
         'tours.includes': 'Incluye:',
         'tours.payBtn': 'Pagar',
@@ -247,6 +251,10 @@ const translations = {
         'tours.southern.omega': 'The largest and brightest globular cluster in the sky',
         'tours.southern.info': 'Plus: the Milky Way\'s center is fully visible and bright only from here',
 
+        // Tours Section
+        'tours.title': 'Private Astronomical Expedition',
+        'tours.subtitle': 'An exclusive experience under the darkest sky on the planet',
+
         // Tour Cards - Common
         'tours.includes': 'Includes:',
         'tours.payBtn': 'Pay',
@@ -430,6 +438,10 @@ const translations = {
         'tours.southern.alpha': 'O sistema estelar mais próximo do Sol (4,37 anos-luz)',
         'tours.southern.omega': 'O maior e mais brilhante aglomerado globular do céu',
         'tours.southern.info': 'Além disso: o centro da Via Láctea só é totalmente visível e brilhante daqui',
+
+        // Tours Section
+        'tours.title': 'Expedição Astronômica Privada',
+        'tours.subtitle': 'Uma experiência exclusiva sob o céu mais escuro do planeta',
 
         // Tour Cards - Common
         'tours.includes': 'Inclui:',

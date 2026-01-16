@@ -291,7 +291,7 @@ export default async function handler(req, res) {
         const startDate = start_date || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
         // Precios por persona según tipo de tour (para cuando no hay payment_amount)
-        const TOUR_PRICES = { regular: 30000, private: 145000, astrophoto: 150000 };
+        const TOUR_PRICES = { regular: 42000, private: 150000, astrophoto: 120000 };
         // All tours are now per-person pricing (private tour matches GYG at 145k/person)
 
         // Construir query con filtro opcional de método de pago
@@ -1021,7 +1021,7 @@ export default async function handler(req, res) {
                   WHEN b.source = 'gyg' AND b.payment_amount IS NULL THEN
                     CASE WHEN b.tour_type = 'private' THEN b.persons * 142855 ELSE b.persons * 53600 END
                   WHEN b.payment_amount IS NULL THEN
-                    CASE WHEN b.tour_type = 'private' THEN b.persons * 145000 ELSE b.persons * 30000 END
+                    CASE WHEN b.tour_type = 'private' THEN b.persons * 150000 ELSE b.persons * 42000 END
                   ELSE COALESCE(b.payment_amount, 0)
                 END) as total_revenue,
               ROUND(AVG(b.persons)::numeric, 2) as avg_group_size,
@@ -1193,7 +1193,7 @@ export default async function handler(req, res) {
                   WHEN source = 'gyg' AND payment_amount IS NULL THEN
                     CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
                   WHEN payment_amount IS NULL THEN
-                    CASE WHEN tour_type = 'private' THEN persons * 145000 ELSE persons * 30000 END
+                    CASE WHEN tour_type = 'private' THEN persons * 150000 ELSE persons * 42000 END
                   ELSE COALESCE(payment_amount, 0)
                 END as gross
               FROM bookings
@@ -1249,7 +1249,7 @@ export default async function handler(req, res) {
                     WHEN b.source = 'gyg' AND b.payment_amount IS NULL THEN
                       CASE WHEN b.tour_type = 'private' THEN b.persons * 142855 ELSE b.persons * 53600 END
                     WHEN b.source != 'gyg' AND b.payment_amount IS NULL THEN
-                      CASE WHEN b.tour_type = 'private' THEN b.persons * 145000 ELSE b.persons * 30000 END
+                      CASE WHEN b.tour_type = 'private' THEN b.persons * 150000 ELSE b.persons * 42000 END
                     ELSE COALESCE(b.payment_amount, 0)
                   END) as gross_revenue
             FROM bookings b

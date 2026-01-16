@@ -29,13 +29,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Obtener precio según tipo de tour
         let price, tourName;
         if (tourType === 'regular') {
-            price = '30000';
+            price = '42000';
             tourName = 'Tour Astronómico Regular';
         } else if (tourType === 'astro') {
             price = '120000';
             tourName = 'Tour Astrofotografía';
         } else if (tourType === 'private') {
-            price = '145000';
+            price = '150000';
             tourName = 'Tour Privado VIP';
         }
 
@@ -177,7 +177,7 @@ function showBookingModal(tourType, price, tourName) {
 
                     <div class="price-summary">
                         <p><strong>${t('checkout.tour')}</strong> ${tourName}</p>
-                        <p id="base-price"><strong>${tourType === 'private' ? t('checkout.fixedPrice') : t('checkout.pricePerPerson')}</strong> $${parseInt(price).toLocaleString('es-CL')} CLP</p>
+                        <p id="base-price"><strong>${t('checkout.pricePerPerson')}</strong> $${parseInt(price).toLocaleString('es-CL')} CLP</p>
                         <p id="subtotal-price" style="display:none;"><strong>${t('checkout.subtotal')}:</strong> $0 CLP</p>
                         <p id="mp-fee" style="display:none; color: #6b7280; font-size: 0.9rem;"><strong>${t('checkout.mpFee')}</strong> $0 CLP</p>
                         <p id="total-price"><strong>${t('checkout.totalToPay')}</strong> $0 CLP</p>
@@ -262,13 +262,8 @@ function showBookingModal(tourType, price, tourName) {
         const MP_COMMISSION_RATE = 0.0464; // 4.64% = 3.9% + IVA
 
         let subtotal;
-        if (tourType === 'private') {
-            // Tour privado: precio fijo sin importar personas (1-6)
-            subtotal = basePrice;
-        } else {
-            // Tours regular y astrofoto: precio por persona
-            subtotal = basePrice * persons;
-        }
+        // Todos los tours cobran por persona
+        subtotal = basePrice * persons;
 
         // Calcular tarifa de MercadoPago
         const totalWithFee = Math.round(subtotal / (1 - MP_COMMISSION_RATE));
@@ -276,12 +271,10 @@ function showBookingModal(tourType, price, tourName) {
 
         // Show/hide breakdown
         if (persons > 0) {
-            if (tourType !== 'private') {
-                const personText = persons > 1 ? t('checkout.persons') : t('checkout.person');
-                document.getElementById('subtotal-price').style.display = 'block';
-                document.getElementById('subtotal-price').innerHTML =
-                    `<strong>${t('checkout.subtotal')} (${persons} ${personText}):</strong> $${subtotal.toLocaleString('es-CL')} CLP`;
-            }
+            const personText = persons > 1 ? t('checkout.persons') : t('checkout.person');
+            document.getElementById('subtotal-price').style.display = 'block';
+            document.getElementById('subtotal-price').innerHTML =
+                `<strong>${t('checkout.subtotal')} (${persons} ${personText}):</strong> $${subtotal.toLocaleString('es-CL')} CLP`;
             // Mostrar tarifa de MercadoPago
             document.getElementById('mp-fee').style.display = 'block';
             document.getElementById('mp-fee').innerHTML =

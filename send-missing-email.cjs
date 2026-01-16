@@ -39,7 +39,7 @@ async function sendMissingEmail() {
                 tourName: `Tour Astronómico ${booking.tour_type}`,
                 tourDate: booking.date,
                 persons: booking.persons,
-                totalAmount: 30000, // Assuming regular tour
+                totalAmount: 42000, // Assuming regular tour
                 paymentId: paymentId,
                 bookingId: booking.booking_id
             })

@@ -244,57 +244,7 @@
     }
     </script>
 
-    <!-- Product Schema - Tour Regular -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Product",
-      "name": "Tour Astronómico Regular",
-      "description": "Experiencia de 2.5 horas bajo el mejor cielo del mundo. Incluye charla astronómica, observación con telescopio inteligente, fotos de nebulosas y galaxias a color, cóctel bajo las estrellas, transporte y bebidas calientes.",
-      "image": "https://atacamadarksky.cl/images/hero1.webp",
-      "brand": {
-        "@type": "Brand",
-        "name": "Atacama Dark Sky"
-      },
-      "offers": {
-        "@type": "Offer",
-        "url": "https://atacamadarksky.cl/#reservas",
-        "priceCurrency": "CLP",
-        "price": "30000",
-        "priceValidUntil": "2025-12-31",
-        "availability": "https://schema.org/InStock",
-        "validFrom": "2025-01-01"
-      },
-      "category": "Tours Astronómicos"
-    }
-    </script>
-
-    <!-- Product Schema - Tour Astrofotografía -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Product",
-      "name": "Tour de Astrofotografía Especializado",
-      "description": "Tour de 4-5 horas para fotógrafos. Incluye asesoría técnica personalizada, acceso a ubicaciones secretas Bortle 1-2, préstamo de trípodes y trackers, taller de edición post-tour, retrato bajo la Vía Láctea.",
-      "image": "https://atacamadarksky.cl/images/hero1.webp",
-      "brand": {
-        "@type": "Brand",
-        "name": "Atacama Dark Sky"
-      },
-      "offers": {
-        "@type": "Offer",
-        "url": "https://atacamadarksky.cl/#reservas",
-        "priceCurrency": "CLP",
-        "price": "120000",
-        "priceValidUntil": "2025-12-31",
-        "availability": "https://schema.org/InStock",
-        "validFrom": "2025-01-01"
-      },
-      "category": "Tours Astronómicos"
-    }
-    </script>
-
-    <!-- Product Schema - Tour Privado VIP -->
+    <!-- Product Schema - Expedición Privada a Vallecito -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -310,7 +260,7 @@
         "@type": "Offer",
         "url": "https://atacamadarksky.cl/#reservas",
         "priceCurrency": "CLP",
-        "price": "145000",
+        "price": "150000",
         "priceValidUntil": "2026-12-31",
         "availability": "https://schema.org/InStock",
         "validFrom": "2025-01-01"
@@ -419,137 +369,23 @@
     <section id="tours" class="tours">
         <div class="container">
             <div class="section-header">
-                <h2 data-i18n="tours.title">Nuestros Tours Astronómicos</h2>
-                <p class="section-subtitle" data-i18n="tours.subtitle">Experiencias únicas bajo el cielo más claro del
-                    mundo</p>
+                <h2 data-i18n="tours.title">Expedición Astronómica Privada</h2>
+                <p class="section-subtitle" data-i18n="tours.subtitle">Una experiencia exclusiva bajo el cielo más oscuro del planeta</p>
             </div>
 
-            <div class="tours-grid">
-                <!-- Tour 1: Complete Experience -->
-                <div class="tour-card featured">
-                    <div class="featured-badge" data-i18n="tours.regular.badge">Más Popular</div>
+            <div class="tours-grid tours-single">
+                <!-- Tour Principal: Expedición Privada a Vallecito -->
+                <div class="tour-card featured tour-hero">
+                    <div class="featured-badge">Experiencia Premium</div>
                     <div class="tour-image">
-                        <img src="images/regular3-2.webp" alt="Tour astronómico regular con telescopio profesional"
-                            loading="lazy" width="600" height="400">
-                    </div>
-                    <div class="tour-content">
-                        <h3 data-i18n="tours.regular.title">Tour Astronómico Regular</h3>
-                        <div class="tour-price">
-                            <span class="price-amount">$30.000 CLP</span>
-                            <span class="price-note">≈ $30 USD</span>
-                        </div>
-                        <p class="tour-description" data-i18n="tours.regular.desc1">
-                            <strong>Una noche para entender el universo, no solo mirarlo.</strong>
-                            Comenzamos con una charla sobre el universo bajo el cielo más limpio del planeta, usando un puntero láser para señalar lo que vamos viendo.
-                        </p>
-                        <p class="tour-description" data-i18n="tours.regular.desc2">
-                            Después del cóctel bajo las estrellas, pasamos a los telescopios: uno <strong>óptico para planetas</strong>
-                            —los anillos de Saturno, los cráteres de la Luna— y otro <strong>digital para nebulosas y galaxias</strong>
-                            a millones de años luz, con colores que no creerás. Terminamos con una <strong>sesión de fotos</strong> para que te
-                            lleves el recuerdo de esta noche. Somos el Universo mirándose a sí mismo.
-                        </p>
-
-                        <div class="tour-details">
-                            <div class="detail">
-                                <i class="fas fa-clock"></i>
-                                <span data-i18n="tours.regular.duration">2.5 horas</span>
-                            </div>
-                            <div class="detail">
-                                <i class="fas fa-users"></i>
-                                <span data-i18n="tours.regular.maxPersons">Max 16 personas</span>
-                            </div>
-                        </div>
-
-                        <div class="tour-includes">
-                            <h4 data-i18n="tours.includes">Incluye:</h4>
-                            <ul>
-                                <li><i class="fas fa-check"></i> <span data-i18n="tours.regular.include1">Transporte: pickup Plaza Apacheta, regreso a hotel</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="tours.regular.include2">Charla astronómica con puntero láser</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="tours.regular.include3">Telescopio óptico (planetas y Luna)</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="tours.regular.include4">Telescopio digital (nebulosas y galaxias)</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="tours.regular.include5">Cóctel bajo las estrellas</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="tours.regular.include6">Sesión de fotos de recuerdo</span></li>
-                            </ul>
-                        </div>
-
-                        <div class="tour-buttons">
-                            <button class="btn btn-mercadopago" data-tour="regular" data-price="30000"
-                                data-tour-name="Tour Astronómico Regular">
-                                <i class="fas fa-lock"></i> <span data-i18n="tours.payBtn">Pagar</span>
-                            </button>
-                            <a href="#reservas" class="btn btn-secondary-outline btn-tour"
-                                data-i18n="tours.regular.btn">Reservar</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tour 2: Astrophotography -->
-                <div class="tour-card">
-                    <div class="tour-image">
-                        <img src="images/fotografico.webp" alt="Tour de astrofotografía en el desierto de Atacama"
-                            loading="lazy" width="600" height="400">
-                    </div>
-                    <div class="tour-content">
-                        <h3 data-i18n="tours.photo.title">Tour de Astrofotografía Especializado</h3>
-                        <div class="tour-price">
-                            <span class="price-amount">$120.000 CLP</span>
-                            <span class="price-note">≈ $128 USD</span>
-                        </div>
-                        <p class="tour-description" data-i18n="tours.photo.desc1">
-                            <strong>La foto que siempre quisiste: tú bajo la Vía Láctea en el desierto más seco del mundo.</strong>
-                            Te llevo a locaciones que solo conocemos los locales — formaciones rocosas ancestrales, paisajes
-                            que parecen de otro planeta. Cielo Bortle 1-2, sin contaminación lumínica.
-                        </p>
-                        <p class="tour-description" data-i18n="tours.photo.desc2">
-                            Trabajamos juntos en tu cámara: configuración, composición, técnicas de larga exposición.
-                            Te enseño a capturar la Vía Láctea, hacer retratos nocturnos con luz pintada, y sacar el máximo
-                            a tu equipo. Si no tienes cámara profesional, no hay problema — con un buen celular también
-                            logramos resultados que te van a sorprender.
-                        </p>
-
-                        <div class="tour-details">
-                            <div class="detail">
-                                <i class="fas fa-clock"></i>
-                                <span data-i18n="tours.photo.duration">3 horas</span>
-                            </div>
-                            <div class="detail">
-                                <i class="fas fa-users"></i>
-                                <span data-i18n="tours.photo.maxPersons">Max 6 personas</span>
-                            </div>
-                        </div>
-
-                        <div class="tour-includes">
-                            <h4 data-i18n="tours.includes">Incluye:</h4>
-                            <ul>
-                                <li><i class="fas fa-check"></i> <span data-i18n="tours.photo.include1">Pickup Plaza Apacheta, regreso a hotel</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="tours.photo.include2">Asesoría técnica personalizada</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="tours.photo.include3">Préstamo de trípodes y trackers</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="tours.photo.include4">Taller de edición post-tour</span></li>
-                                <li><i class="fas fa-check"></i> <span data-i18n="tours.photo.include5">Snack y bebidas calientes</span></li>
-                            </ul>
-                        </div>
-
-                        <div class="tour-buttons">
-                            <button class="btn btn-mercadopago" data-tour="astro" data-price="120000"
-                                data-tour-name="Tour Astrofotografía">
-                                <i class="fas fa-lock"></i> <span data-i18n="tours.payBtn">Pagar</span>
-                            </button>
-                            <a href="#reservas" class="btn btn-secondary-outline btn-tour"
-                                data-i18n="tours.photo.btn">Reservar</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tour 3: Private VIP -->
-                <div class="tour-card">
-                    <div class="tour-image">
-                        <img src="images/privado1.webp" alt="Tour astronómico privado VIP en Vallecito" loading="lazy" width="600" height="400">
+                        <img src="images/privado1.webp" alt="Expedición astronómica privada VIP en Vallecito, Atacama" loading="eager" width="600" height="400" fetchpriority="high">
                     </div>
                     <div class="tour-content">
                         <h3 data-i18n="tours.private.title">Expedición Privada a Vallecito</h3>
                         <div class="tour-price">
-                            <span class="price-amount">$145.000 CLP</span>
-                            <span class="price-note" data-i18n="tours.private.priceNote">Por persona</span>
+                            <span class="price-amount">$150.000 CLP</span>
+                            <span class="price-note">≈ $160 USD / €150 EUR</span>
+                            <span class="price-per" data-i18n="tours.private.priceNote">Por persona</span>
                         </div>
                         <p class="tour-description" data-i18n="tours.private.desc1">
                             <strong>Donde termina el camino, comienza el mejor cielo del planeta.</strong>
@@ -568,6 +404,10 @@
                                 <i class="fas fa-user-friends"></i>
                                 <span data-i18n="tours.private.maxPersons">1-6 personas</span>
                             </div>
+                            <div class="detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Bortle 1</span>
+                            </div>
                         </div>
 
                         <div class="tour-includes">
@@ -583,18 +423,21 @@
                             </ul>
                         </div>
 
-                        <div class="tour-buttons">
-                            <button class="btn btn-mercadopago" data-tour="private" data-price="145000"
-                                data-tour-name="Tour Privado VIP">
-                                <i class="fas fa-lock"></i> <span data-i18n="tours.payBtn">Pagar</span>
+                        <div class="payment-buttons">
+                            <button class="btn btn-mercadopago" data-tour="private" data-price="150000"
+                                data-tour-name="Expedición Privada a Vallecito">
+                                <i class="fas fa-credit-card"></i> <span>Tarjeta</span>
                             </button>
-                            <a href="#reservas" class="btn btn-secondary-outline btn-tour"
-                                data-i18n="tours.private.btn">Reservar</a>
+                            <button class="btn btn-wise" data-tour="private" data-price="150000"
+                                data-tour-name="Expedición Privada a Vallecito">
+                                <i class="fas fa-university"></i> <span>Transferencia</span>
+                            </button>
                         </div>
+                        <p class="payment-note"><i class="fas fa-globe"></i> Aceptamos pagos internacionales EUR/USD</p>
                     </div>
                 </div>
 
-                <!-- Tour 4: Educational Study Tours -->
+                <!-- Servicios para Grupos -->
                 <div class="tour-card">
                     <div class="tour-image">
                         <img src="images/_DSC1725.webp" alt="Viajes de estudio educativos con telescopio"
@@ -1445,34 +1288,23 @@
                     </button>
                     <div class="faq-answer">
                         <div class="pricing-faq">
-                            <div class="price-item">
-                                <h4>Tour Regular</h4>
-                                <p class="price"><strong>$30.000 CLP</strong> por persona</p>
-                                <p class="price-usd">(≈ $30 USD)</p>
-                                <p>Duración: 2.5 horas | Máx. 6 personas</p>
-                            </div>
-                            <div class="price-item">
-                                <h4>Tour de Astrofotografía</h4>
-                                <p class="price"><strong>$120.000 CLP</strong> por persona</p>
-                                <p class="price-usd">(≈ $128 USD)</p>
-                                <p>Duración: 5 horas | Máx. 4 personas</p>
-                            </div>
-                            <div class="price-item">
-                                <h4>Tour Privado VIP</h4>
-                                <p class="price"><strong>$145.000 CLP</strong> por persona</p>
-                                <p class="price-usd">(≈ $155 USD)</p>
-                                <p>Duración: 3 horas | 1-6 personas exclusivo</p>
+                            <div class="price-item" style="max-width: 400px; margin: 0 auto;">
+                                <h4>Expedición Privada a Vallecito</h4>
+                                <p class="price"><strong>$150.000 CLP</strong> por persona</p>
+                                <p class="price-usd">(≈ $160 USD / €150 EUR)</p>
+                                <p>Duración: 3-4 horas | 1-6 personas exclusivo</p>
+                                <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-secondary);">
+                                    Experiencia 100% privada en ubicación Bortle 1
+                                </p>
                             </div>
                         </div>
                         <p><strong>Métodos de pago aceptados:</strong></p>
                         <ul>
-                            <li><i class="fas fa-credit-card"></i> Tarjeta de crédito/débito (Mercado Pago - aceptamos
-                                tarjetas de todo el mundo)</li>
-                            <li><i class="fas fa-money-bill-wave"></i> Efectivo (pesos chilenos o dólares)</li>
-                            <li><i class="fas fa-exchange-alt"></i> Transferencia bancaria (Chile)</li>
+                            <li><i class="fas fa-credit-card"></i> Tarjeta de crédito/débito (Mercado Pago - tarjetas internacionales)</li>
+                            <li><i class="fas fa-university"></i> Transferencia bancaria internacional (Wise - EUR/USD)</li>
+                            <li><i class="fas fa-money-bill-wave"></i> Efectivo en destino (pesos chilenos o dólares)</li>
                         </ul>
-                        <p><em>Descuentos especiales para grupos de 4+ personas en tour regular. Contáctanos para
-                                cotización.</em></p>
+                        <p><em>Para grupos educativos o eventos corporativos, contáctanos para cotización personalizada.</em></p>
                     </div>
                 </div>
 
@@ -1666,13 +1498,7 @@
                         <ul>
                             <li><strong>Te traemos de vuelta a tu hotel/hostal al finalizar el tour</strong></li>
                             <li>Te dejamos en la misma puerta donde te recogimos</li>
-                            <li>Horario de regreso:
-                                <ul>
-                                    <li>Tour Regular: Aprox. 23:30-00:00</li>
-                                    <li>Tour Astrofotografía: Aprox. 01:30-02:00</li>
-                                    <li>Tour Privado VIP: Según duración acordada</li>
-                                </ul>
-                            </li>
+                            <li>Horario de regreso: Entre 00:00 y 01:00, según duración acordada</li>
                         </ul>
 
                         <p><strong>💡 Importante:</strong></p>
@@ -3946,6 +3772,9 @@ ${msg.contact}`);
 
     <!-- Mercado Pago Checkout -->
     <script src="mercadopago-checkout.js"></script>
+
+    <!-- Wise Bank Transfer Payment -->
+    <script src="wise-payment.js"></script>
 
     <!-- GA4 Enhanced Tracking -->
     <script>

@@ -4241,3 +4241,414 @@ body.modal-open {
         padding: 0 var(--spacing-sm) var(--spacing-sm);
     }
 }
+
+/* ===== TOUR HERO - Single Private Tour Focus ===== */
+.tours-single {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.tour-hero {
+    max-width: 800px;
+    margin: 0 auto 2rem;
+}
+
+.tour-hero .tour-image img {
+    height: 400px;
+    object-fit: cover;
+}
+
+.tour-hero .tour-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+}
+
+.tour-hero .price-amount {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.tour-hero .price-note {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.tour-hero .price-per {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.payment-note {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+}
+
+.payment-note i {
+    color: var(--primary-color);
+    margin-right: 0.25rem;
+}
+
+/* Secondary tours (study, corporate) */
+.tours-single .tour-card:not(.tour-hero) {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .tours-single {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .tour-hero {
+        grid-column: 1;
+    }
+
+    /* Side by side for secondary tours */
+    .tours-single .tour-card:not(.tour-hero) {
+        max-width: none;
+    }
+}
+
+@media (min-width: 992px) {
+    .tours-single {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .tour-hero {
+        grid-column: 1 / -1;
+        max-width: 900px;
+    }
+
+    .tour-hero .tour-image img {
+        height: 450px;
+    }
+}
+
+/* ===== WISE PAYMENT MODAL ===== */
+.wise-modal {
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+    border-radius: 16px;
+    max-width: 500px;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.wise-header {
+    background: linear-gradient(135deg, #00d4ff15, #7b68ee15);
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.wise-logo {
+    height: 32px;
+    margin-bottom: 0.75rem;
+    filter: brightness(0) invert(1);
+}
+
+.wise-header h2 {
+    margin: 0.5rem 0 0.25rem;
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+.wise-subtitle {
+    color: #9ca3af;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.booking-summary {
+    padding: 1.25rem;
+    background: rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+.booking-summary h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.price-options {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.price-tag {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    text-align: center;
+}
+
+.price-tag .currency {
+    display: block;
+    font-size: 0.7rem;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.price-tag .amount {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.price-tag .per-person {
+    display: block;
+    font-size: 0.7rem;
+    color: #6b7280;
+}
+
+.price-tag.price-eur { border-color: #0052cc; }
+.price-tag.price-usd { border-color: #22c55e; }
+
+.currency-tabs {
+    display: flex;
+    padding: 0 1rem;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.currency-tabs .tab-btn {
+    flex: 1;
+    padding: 0.75rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px 8px 0 0;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.currency-tabs .tab-btn:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.currency-tabs .tab-btn.active {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.currency-tabs .tab-btn .flag {
+    font-size: 1.1rem;
+}
+
+.bank-details {
+    display: none;
+    padding: 1rem;
+    background: rgba(0,0,0,0.2);
+    margin: 0 1rem;
+    border-radius: 0 0 8px 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-top: none;
+}
+
+.bank-details.active {
+    display: block;
+}
+
+.bank-details .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.bank-details .detail-row:last-child {
+    border-bottom: none;
+}
+
+.bank-details .detail-row.small {
+    font-size: 0.85rem;
+}
+
+.bank-details .label {
+    color: #9ca3af;
+    font-size: 0.85rem;
+}
+
+.bank-details .value {
+    color: #fff;
+    font-weight: 500;
+    text-align: right;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.bank-details .value.copyable {
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.bank-details .value.copyable:hover {
+    background: rgba(0, 212, 255, 0.1);
+}
+
+.bank-details .value.copyable i {
+    margin-left: 0.5rem;
+    font-size: 0.75rem;
+    opacity: 0.5;
+}
+
+.wise-instructions {
+    margin: 1rem;
+    padding: 1rem;
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    border-radius: 8px;
+}
+
+.wise-instructions h4 {
+    color: #ffc107;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.wise-instructions h4 i {
+    margin-right: 0.5rem;
+}
+
+.wise-instructions ol {
+    margin: 0;
+    padding-left: 1.25rem;
+    color: #e5e7eb;
+    font-size: 0.9rem;
+}
+
+.wise-instructions li {
+    margin-bottom: 0.5rem;
+}
+
+.btn-whatsapp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: calc(100% - 2rem);
+    margin: 1rem;
+    padding: 1rem;
+    background: #25D366;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.btn-whatsapp:hover {
+    background: #128C7E;
+    color: white;
+}
+
+.wise-note {
+    text-align: center;
+    padding: 0 1rem 1.5rem;
+    color: #6b7280;
+    font-size: 0.8rem;
+}
+
+.wise-note i {
+    color: #22c55e;
+    margin-right: 0.25rem;
+}
+
+/* Wise button style */
+.btn-wise {
+    background: linear-gradient(135deg, #9fe870 0%, #37d058 100%);
+    color: #1a1a2e;
+    border: none;
+    font-weight: 600;
+}
+
+.btn-wise:hover {
+    background: linear-gradient(135deg, #8dd85f 0%, #2cb548 100%);
+    transform: translateY(-2px);
+}
+
+.btn-wise i {
+    margin-right: 0.5rem;
+}
+
+/* Payment buttons container */
+.payment-buttons {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.payment-buttons .btn {
+    flex: 1;
+    min-width: 140px;
+}
+
+@media (max-width: 480px) {
+    .wise-modal {
+        margin: 0.5rem;
+    }
+
+    .price-options {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .price-tag {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+    }
+
+    .price-tag .currency {
+        font-size: 0.8rem;
+    }
+
+    .price-tag .amount {
+        font-size: 1.25rem;
+    }
+
+    .bank-details .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+
+    .bank-details .value {
+        text-align: left;
+    }
+
+    .payment-buttons {
+        flex-direction: column;
+    }
+
+    .payment-buttons .btn {
+        width: 100%;
+    }
+}

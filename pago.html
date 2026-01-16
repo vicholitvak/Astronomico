@@ -243,7 +243,7 @@
         // Configuración de precios (todos por persona)
         const TOUR_PRICES = {
             regular: 42000,
-            private: 145000,
+            private: 150000,
             astrophoto: 120000
         };
 
@@ -289,12 +289,9 @@
             document.getElementById('pay-button').disabled = true;
         }
 
-        // Calcular precio
+        // Calcular precio (todos los tours cobran por persona)
         function calculatePrice() {
-            const basePrice = TOUR_PRICES[bookingData.tour] || TOUR_PRICES.regular;
-            if (bookingData.tour === 'private') {
-                return basePrice;
-            }
+            const basePrice = TOUR_PRICES[bookingData.tour] || TOUR_PRICES.private;
             return basePrice * bookingData.persons;
         }
 
