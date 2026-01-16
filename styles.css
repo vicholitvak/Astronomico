@@ -4249,14 +4249,88 @@ body.modal-open {
     gap: 2rem;
 }
 
-.tour-hero {
-    max-width: 800px;
-    margin: 0 auto 2rem;
+/* Desktop: Horizontal layout for hero tour */
+@media (min-width: 992px) {
+    .tour-hero {
+        max-width: 1100px;
+        margin: 0 auto 2rem;
+    }
+
+    .tour-hero.tour-card {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        overflow: hidden;
+    }
+
+    .tour-hero .tour-image {
+        border-radius: var(--border-radius-lg) 0 0 var(--border-radius-lg);
+        height: 100%;
+        min-height: 500px;
+    }
+
+    .tour-hero .tour-image img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .tour-hero .tour-content {
+        padding: 2rem 2.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .tour-hero .featured-badge {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+    }
 }
 
-.tour-hero .tour-image img {
-    height: 400px;
-    object-fit: cover;
+/* Tablet: Still horizontal but smaller */
+@media (min-width: 768px) and (max-width: 991px) {
+    .tour-hero {
+        max-width: 900px;
+        margin: 0 auto 2rem;
+    }
+
+    .tour-hero.tour-card {
+        display: grid;
+        grid-template-columns: 45% 55%;
+        gap: 0;
+        overflow: hidden;
+    }
+
+    .tour-hero .tour-image {
+        border-radius: var(--border-radius-lg) 0 0 var(--border-radius-lg);
+        height: 100%;
+        min-height: 450px;
+    }
+
+    .tour-hero .tour-image img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .tour-hero .tour-content {
+        padding: 1.5rem 2rem;
+    }
+}
+
+/* Mobile: Vertical layout */
+@media (max-width: 767px) {
+    .tour-hero {
+        max-width: 100%;
+        margin: 0 auto 2rem;
+    }
+
+    .tour-hero .tour-image img {
+        height: 300px;
+        object-fit: cover;
+    }
 }
 
 .tour-hero .tour-price {
@@ -4264,21 +4338,22 @@ body.modal-open {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.25rem;
+    margin-bottom: 1rem;
 }
 
 .tour-hero .price-amount {
-    font-size: 2rem;
+    font-size: 2.25rem;
     font-weight: 700;
     color: var(--primary-color);
 }
 
 .tour-hero .price-note {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: var(--text-secondary);
 }
 
 .tour-hero .price-per {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: var(--text-muted);
     font-style: italic;
 }
@@ -4293,6 +4368,39 @@ body.modal-open {
 .payment-note i {
     color: var(--primary-color);
     margin-right: 0.25rem;
+}
+
+/* Secondary tours (study, corporate) - horizontal on desktop */
+@media (min-width: 992px) {
+    .tours-single {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .tours-single .tour-card:not(.tour-hero) {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        max-width: 900px;
+        margin: 0 auto;
+        gap: 0;
+        overflow: hidden;
+    }
+
+    .tours-single .tour-card:not(.tour-hero) .tour-image {
+        border-radius: var(--border-radius-lg) 0 0 var(--border-radius-lg);
+        height: 100%;
+    }
+
+    .tours-single .tour-card:not(.tour-hero) .tour-image img {
+        height: 100%;
+        min-height: 280px;
+        object-fit: cover;
+    }
+
+    .tours-single .tour-card:not(.tour-hero) .tour-content {
+        padding: 1.5rem 2rem;
+    }
 }
 
 /* Secondary tours (study, corporate) */
