@@ -102,7 +102,7 @@ const translations = {
         'tours.private.include7': 'Buena compañía',
         'tours.private.duration': '3-4 horas',
         'tours.private.maxPersons': '1-6 personas',
-        'tours.private.priceNote': 'Por grupo (1-6 pers)',
+        'tours.private.priceNote': 'Por persona',
 
         // Tour Study - Includes
         'tours.study.include1': 'Material didáctico especializado',
@@ -286,7 +286,7 @@ const translations = {
         'tours.private.include7': 'Good company',
         'tours.private.duration': '3-4 hours',
         'tours.private.maxPersons': '1-6 people',
-        'tours.private.priceNote': 'Per group (1-6 ppl)',
+        'tours.private.priceNote': 'Per person',
 
         // Tour Study - Includes
         'tours.study.include1': 'Specialized educational materials',
@@ -470,7 +470,7 @@ const translations = {
         'tours.private.include7': 'Boa companhia',
         'tours.private.duration': '3-4 horas',
         'tours.private.maxPersons': '1-6 pessoas',
-        'tours.private.priceNote': 'Por grupo (1-6 pess)',
+        'tours.private.priceNote': 'Por pessoa',
 
         // Tour Study - Includes
         'tours.study.include1': 'Material didático especializado',

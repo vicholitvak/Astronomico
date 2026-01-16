@@ -232,9 +232,9 @@ async function sendPaymentReminderEmail(booking) {
     'astrophoto': 'Tour Astrofotográfico'
   };
 
-  const tourPrices = { 'regular': 42000, 'private': 200000, 'astrophoto': 120000 };
+  const tourPrices = { 'regular': 42000, 'private': 145000, 'astrophoto': 120000 };
   const basePrice = tourPrices[booking.tour_type] || 42000;
-  const totalPrice = booking.tour_type === 'private' ? basePrice : basePrice * booking.persons;
+  const totalPrice = basePrice * booking.persons;
 
   // URL de pago directo (nueva página)
   const paymentUrl = `https://atacamadarksky.cl/pago?tour=${booking.tour_type}&date=${booking.date}&persons=${booking.persons}&email=${encodeURIComponent(booking.email)}&name=${encodeURIComponent(booking.name)}&phone=${encodeURIComponent(booking.phone || '')}`;
@@ -334,9 +334,9 @@ async function sendCancellationEmail(booking) {
     'astrophoto': 'Tour Astrofotográfico'
   };
 
-  const tourPrices = { 'regular': 42000, 'private': 200000, 'astrophoto': 120000 };
+  const tourPrices = { 'regular': 42000, 'private': 145000, 'astrophoto': 120000 };
   const basePrice = tourPrices[booking.tour_type] || 42000;
-  const totalPrice = booking.tour_type === 'private' ? basePrice : basePrice * booking.persons;
+  const totalPrice = basePrice * booking.persons;
 
   // URL de pago directo (nueva página)
   const paymentUrl = `https://atacamadarksky.cl/pago?tour=${booking.tour_type}&date=${booking.date}&persons=${booking.persons}&email=${encodeURIComponent(booking.email)}&name=${encodeURIComponent(booking.name)}&phone=${encodeURIComponent(booking.phone || '')}`;

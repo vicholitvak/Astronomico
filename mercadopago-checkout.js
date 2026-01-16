@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
             price = '120000';
             tourName = 'Tour Astrofotografía';
         } else if (tourType === 'private') {
-            price = '200000';
+            price = '145000';
             tourName = 'Tour Privado VIP';
         }
 

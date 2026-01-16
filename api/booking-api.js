@@ -382,24 +382,14 @@ async function sendConfirmationEmail(booking) {
     'astrophoto': 'Astrophotography Tour'
   };
 
-  const tourPrices = { 'regular': 42000, 'private': 200000, 'astrophoto': 120000 };
+  const tourPrices = { 'regular': 42000, 'private': 145000, 'astrophoto': 120000 };
 
-  // Get price and calculate total
+  // Get price and calculate total (all tours now use per-person pricing)
   const basePrice = tourPrices[booking.tourType] || 42000;
   const personsCount = parseInt(booking.persons);
-  let totalPrice;
-  let priceDisplayEs;
-  let priceDisplayEn;
-
-  if (booking.tourType === 'private') {
-    totalPrice = basePrice;
-    priceDisplayEs = `$${basePrice.toLocaleString('es-CL')} CLP (grupo completo)`;
-    priceDisplayEn = `$${basePrice.toLocaleString('es-CL')} CLP (full group)`;
-  } else {
-    totalPrice = basePrice * personsCount;
-    priceDisplayEs = `$${basePrice.toLocaleString('es-CL')} CLP × ${personsCount} persona(s) = $${totalPrice.toLocaleString('es-CL')} CLP`;
-    priceDisplayEn = `$${basePrice.toLocaleString('es-CL')} CLP × ${personsCount} person(s) = $${totalPrice.toLocaleString('es-CL')} CLP`;
-  }
+  const totalPrice = basePrice * personsCount;
+  const priceDisplayEs = `$${basePrice.toLocaleString('es-CL')} CLP × ${personsCount} persona(s) = $${totalPrice.toLocaleString('es-CL')} CLP`;
+  const priceDisplayEn = `$${basePrice.toLocaleString('es-CL')} CLP × ${personsCount} person(s) = $${totalPrice.toLocaleString('es-CL')} CLP`;
 
   // URL de pago directo (nueva página)
   const paymentUrl = `https://atacamadarksky.cl/pago?tour=${booking.tourType}&date=${booking.date}&persons=${booking.persons}&email=${encodeURIComponent(booking.email)}&name=${encodeURIComponent(booking.name)}`;

@@ -74,17 +74,13 @@ export default async function handler(req, res) {
         let unitPrice;
         let description;
 
+        // All tours now use per-person pricing (including private tour to match GYG)
+        subtotal = priceWithCommission * personsCount;
+        quantity = personsCount;
+        unitPrice = priceWithCommission;
         if (tourType === 'private') {
-            // Tour privado: precio fijo sin importar personas
-            subtotal = priceWithCommission;
-            quantity = 1;
-            unitPrice = priceWithCommission;
             description = `Tour Privado VIP para ${personsCount} persona(s) - Fecha: ${date}`;
         } else {
-            // Tours regular y astrofoto: precio por persona (con comisión incluida)
-            subtotal = priceWithCommission * personsCount;
-            quantity = personsCount;
-            unitPrice = priceWithCommission;
             description = `Tour para ${personsCount} persona(s) - Fecha: ${date}`;
         }
 
