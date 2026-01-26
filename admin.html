@@ -2784,6 +2784,109 @@ Atacama Dark Sky</textarea>
             return dateStr < todayStr;
         }
 
+        async function loadPlatformAvailability(dateStr) {
+            try {
+                const response = await fetch(`/api/booking-api?action=availability&date=${dateStr}`);
+                const data = await response.json();
+
+                if (!data.success) {
+                    document.getElementById('platformAvailabilityContent').innerHTML = `
+                        <div style="color: #ef4444; font-size: 0.85rem;">Error al cargar disponibilidad</div>
+                    `;
+                    return;
+                }
+
+                const { summary, platforms, bySource, blockInfo } = data;
+
+                let html = '';
+
+                // GYG Regular
+                const gygRegular = platforms.gyg.regular;
+                const gygRegularStatus = gygRegular.blocked ? 'Bloqueado' : (gygRegular.available > 0 ? `${gygRegular.available} cupos` : 'Agotado');
+                const gygRegularColor = gygRegular.blocked ? '#ef4444' : (gygRegular.available > 0 ? '#10b981' : '#fbbf24');
+
+                html += `
+                    <div style="padding: 10px; background: rgba(16, 185, 129, 0.1); border-radius: 6px; border-left: 3px solid #10b981;">
+                        <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 4px;">GYG Regular (21:00)</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 1rem; font-weight: bold; color: #10b981;">${gygRegular.booked}/${gygRegular.capacity}</span>
+                            <span style="font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; background: ${gygRegularColor}22; color: ${gygRegularColor};">${gygRegularStatus}</span>
+                        </div>
+                    </div>
+                `;
+
+                // GYG Private
+                const gygPrivate = platforms.gyg.private;
+                const gygPrivateStatus = gygPrivate.blocked ? 'Bloqueado' : (gygPrivate.available > 0 ? `${gygPrivate.available} cupos` : 'Agotado');
+                const gygPrivateColor = gygPrivate.blocked ? '#ef4444' : (gygPrivate.available > 0 ? '#a78bfa' : '#fbbf24');
+
+                html += `
+                    <div style="padding: 10px; background: rgba(167, 139, 250, 0.1); border-radius: 6px; border-left: 3px solid #a78bfa;">
+                        <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 4px;">GYG Privado (20:00-21:00)</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 1rem; font-weight: bold; color: #a78bfa;">${gygPrivate.booked}/${gygPrivate.capacity}</span>
+                            <span style="font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; background: ${gygPrivateColor}22; color: ${gygPrivateColor};">${gygPrivateStatus}</span>
+                        </div>
+                    </div>
+                `;
+
+                // Viator
+                const viatorPrivate = platforms.viator.private;
+                const viatorStatus = viatorPrivate.blocked ? 'Bloqueado' : (viatorPrivate.available > 0 ? `${viatorPrivate.available} cupos` : 'Agotado');
+                const viatorColor = viatorPrivate.blocked ? '#ef4444' : (viatorPrivate.available > 0 ? '#f97316' : '#fbbf24');
+
+                html += `
+                    <div style="padding: 10px; background: rgba(249, 115, 22, 0.1); border-radius: 6px; border-left: 3px solid #f97316;">
+                        <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 4px;">Viator Privado (21:00)</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 1rem; font-weight: bold; color: #f97316;">${viatorPrivate.booked}/${viatorPrivate.capacity}</span>
+                            <span style="font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; background: ${viatorColor}22; color: ${viatorColor};">${viatorStatus}</span>
+                        </div>
+                    </div>
+                `;
+
+                // By Source breakdown
+                html += `
+                    <div style="padding: 10px; background: rgba(71, 85, 105, 0.3); border-radius: 6px;">
+                        <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 8px;">Por Fuente</div>
+                        <div style="display: flex; gap: 12px; font-size: 0.8rem;">
+                            <span style="color: #60a5fa;"><i class="fas fa-globe"></i> GYG: ${bySource.gyg.count} (${bySource.gyg.persons}p)</span>
+                            <span style="color: #f97316;"><i class="fas fa-plane"></i> Viator: ${bySource.viator.count} (${bySource.viator.persons}p)</span>
+                            <span style="color: #94a3b8;"><i class="fas fa-laptop"></i> Web: ${bySource.web.count} (${bySource.web.persons}p)</span>
+                        </div>
+                    </div>
+                `;
+
+                // Block info
+                if (blockInfo) {
+                    const blockTypeLabels = {
+                        'full': 'Completamente bloqueado',
+                        'late_private_only': 'Solo privado bloqueado',
+                        'private_only': 'Solo regular bloqueado'
+                    };
+                    html += `
+                        <div style="grid-column: 1 / -1; padding: 10px; background: rgba(239, 68, 68, 0.15); border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.3);">
+                            <div style="display: flex; align-items: center; gap: 8px; color: #ef4444; font-size: 0.85rem;">
+                                <i class="fas fa-ban"></i>
+                                <span><strong>${blockTypeLabels[blockInfo.block_type] || blockInfo.block_type}</strong></span>
+                            </div>
+                            ${blockInfo.reason ? `<div style="color: #94a3b8; font-size: 0.8rem; margin-top: 4px;">${blockInfo.reason}</div>` : ''}
+                        </div>
+                    `;
+                }
+
+                document.getElementById('platformAvailabilityContent').innerHTML = html;
+                document.getElementById('platformLoadingSpinner').style.display = 'none';
+
+            } catch (error) {
+                console.error('Error loading platform availability:', error);
+                document.getElementById('platformAvailabilityContent').innerHTML = `
+                    <div style="color: #ef4444; font-size: 0.85rem;">Error: ${error.message}</div>
+                `;
+                document.getElementById('platformLoadingSpinner').style.display = 'none';
+            }
+        }
+
         function showDayModal(dateStr) {
             const dayBookings = bookingsByDate[dateStr] || [];
             const isBlocked = blockedDates.has(dateStr);
@@ -2850,7 +2953,24 @@ Atacama Dark Sky</textarea>
             }
 
             summaryHTML += '</div>';
+
+            // Add platform availability section (will be populated async)
+            summaryHTML += `
+                <div id="platformAvailability" style="margin-top: 15px; padding: 15px; background: rgba(30, 41, 59, 0.5); border-radius: 8px; border: 1px solid rgba(71, 85, 105, 0.5);">
+                    <div style="font-size: 0.85rem; font-weight: 600; color: #94a3b8; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-globe"></i> Disponibilidad en Plataformas
+                        <span id="platformLoadingSpinner" style="margin-left: auto;"><i class="fas fa-spinner fa-spin" style="color: #60a5fa;"></i></span>
+                    </div>
+                    <div id="platformAvailabilityContent" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                        <div style="color: #64748b; font-size: 0.85rem;">Cargando...</div>
+                    </div>
+                </div>
+            `;
+
             document.getElementById('modalSummary').innerHTML = summaryHTML;
+
+            // Load platform availability async
+            loadPlatformAvailability(dateStr);
 
             // Build bookings list HTML
             let bookingsHTML = '';

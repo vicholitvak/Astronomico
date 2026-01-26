@@ -22,6 +22,10 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'GET') {
+      // Check if requesting availability info
+      if (req.query.action === 'availability') {
+        return await getDateAvailability(req, res);
+      }
       return await listBookings(req, res);
     }
 
@@ -334,6 +338,110 @@ async function listBookings(req, res) {
       pagination: { page: pageNum, limit: limitNum, total, totalPages: Math.ceil(total / limitNum) },
       stats: statsResult.rows[0]
     }
+  });
+}
+
+// ============ DATE AVAILABILITY ============
+async function getDateAvailability(req, res) {
+  const { date } = req.query;
+
+  if (!date) {
+    return res.status(400).json({ success: false, error: 'Date is required' });
+  }
+
+  // Get all bookings for this date (not cancelled)
+  const bookingsResult = await query(`
+    SELECT id, booking_id, name, tour_type, persons, status, time, source, payment_method
+    FROM bookings
+    WHERE date = $1 AND status NOT IN ('cancelled', 'rejected')
+    ORDER BY tour_type, time
+  `, [date]);
+
+  // Calculate occupancy by tour type
+  const bookings = bookingsResult.rows;
+  const regularBookings = bookings.filter(b => b.tour_type === 'regular');
+  const privateBookings = bookings.filter(b => b.tour_type === 'private');
+
+  const regularPersons = regularBookings.reduce((sum, b) => sum + b.persons, 0);
+  const privatePersons = privateBookings.reduce((sum, b) => sum + b.persons, 0);
+
+  // Capacities
+  const REGULAR_CAPACITY = 16;
+  const PRIVATE_CAPACITY = 4;
+
+  // Check if date is blocked
+  const blockedResult = await query('SELECT * FROM blocked_dates WHERE blocked_date = $1', [date]);
+  const blockInfo = blockedResult.rows[0] || null;
+
+  // Calculate what GYG should show
+  const gygAvailability = {
+    regular: {
+      productId: '1152147',
+      time: '21:00',
+      capacity: REGULAR_CAPACITY,
+      booked: regularPersons,
+      available: Math.max(0, REGULAR_CAPACITY - regularPersons),
+      blocked: blockInfo?.block_type === 'full' || blockInfo?.block_type === 'private_only'
+    },
+    private: {
+      productId: '1163787',
+      times: ['20:00', '20:30', '21:00'],
+      capacity: PRIVATE_CAPACITY,
+      booked: privatePersons,
+      available: Math.max(0, PRIVATE_CAPACITY - privatePersons),
+      blocked: blockInfo?.block_type === 'full' || blockInfo?.block_type === 'late_private_only'
+    }
+  };
+
+  // Viator availability (same logic)
+  const viatorAvailability = {
+    private: {
+      productCode: '5624520P1',
+      time: '21:00',
+      capacity: PRIVATE_CAPACITY,
+      booked: privatePersons,
+      available: Math.max(0, PRIVATE_CAPACITY - privatePersons),
+      blocked: blockInfo?.block_type === 'full' || blockInfo?.block_type === 'late_private_only'
+    }
+  };
+
+  // Breakdown by source
+  const bySource = {
+    gyg: bookings.filter(b => b.source === 'gyg'),
+    viator: bookings.filter(b => b.source === 'viator'),
+    web: bookings.filter(b => b.source === 'web' || !b.source)
+  };
+
+  return res.status(200).json({
+    success: true,
+    date,
+    summary: {
+      totalBookings: bookings.length,
+      totalPersons: regularPersons + privatePersons,
+      regular: { bookings: regularBookings.length, persons: regularPersons, available: REGULAR_CAPACITY - regularPersons },
+      private: { bookings: privateBookings.length, persons: privatePersons, available: PRIVATE_CAPACITY - privatePersons }
+    },
+    blockInfo,
+    platforms: {
+      gyg: gygAvailability,
+      viator: viatorAvailability
+    },
+    bySource: {
+      gyg: { count: bySource.gyg.length, persons: bySource.gyg.reduce((s, b) => s + b.persons, 0) },
+      viator: { count: bySource.viator.length, persons: bySource.viator.reduce((s, b) => s + b.persons, 0) },
+      web: { count: bySource.web.length, persons: bySource.web.reduce((s, b) => s + b.persons, 0) }
+    },
+    bookings: bookings.map(b => ({
+      id: b.id,
+      bookingId: b.booking_id,
+      name: b.name,
+      tourType: b.tour_type,
+      persons: b.persons,
+      status: b.status,
+      time: b.time,
+      source: b.source || 'web',
+      paymentMethod: b.payment_method
+    }))
   });
 }
 
