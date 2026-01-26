@@ -37,7 +37,15 @@
       "WebFetch(domain:atacamadarksky.cl)",
       "mcp__atacama-dark-sky__get_deployment",
       "WebFetch(domain:docs.viator.com)",
-      "WebFetch(domain:partnerresources.viator.com)"
+      "WebFetch(domain:partnerresources.viator.com)",
+      "Bash(npx playwright install:*)",
+      "Bash(npx playwright:*)",
+      "Bash(npm install:*)",
+      "Bash(npm --version)",
+      "Bash(powershell -Command \"$content = \\(Invoke-WebRequest -Uri ''https://atacamadarksky.cl'' -UseBasicParsing\\).Content; if \\($content -match ''tours-single''\\) { Write-Host ''tours-single found'' } else { Write-Host ''NOT found'' }\")",
+      "Bash(where npm:*)",
+      "Bash(npm.cmd install:*)",
+      "Bash(test:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

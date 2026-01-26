@@ -18,7 +18,7 @@
     "mercadopago": "^2.0.15",
     "next-auth": "^4.24.13",
     "node-fetch": "^2.7.0",
-    "pg": "^8.16.3",
+    "pg": "^8.17.1",
     "resend": "^6.4.2"
   },
   "engines": {

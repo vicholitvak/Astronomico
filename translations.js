@@ -95,8 +95,8 @@ const translations = {
 
         // Tour Private - Expedición a Vallecito
         'tours.private.title': 'Expedición Privada a Vallecito',
-        'tours.private.desc1': '<strong>Donde termina el camino, comienza el mejor cielo del planeta.</strong> En 4x4 atravesamos el desierto hasta Vallecito, un lugar sin nombre en los mapas donde la escala Bortle marca 1 —oscuridad absoluta, cero contaminación lumínica. Aquí la Vía Láctea proyecta sombras.',
-        'tours.private.desc2': 'Te esperan sillas reclinables bajo las estrellas, mantas, telescopio inteligente capturando nebulosas en tiempo real, y un cooler con vino, agua caliente y variedades de té. Sin apuros, sin extraños, sin límites. <strong>El desierto es tuyo por una noche.</strong>',
+        'tours.private.desc1': '<strong>En 4x4 nos adentramos al desierto hasta la Cordillera de la Sal, un rincón sin luz artificial donde el plano galáctico cruza el cielo.</strong> Hay tantas estrellas que cuesta encontrar las constelaciones.',
+        'tours.private.desc2': 'Ahí montamos tu campamento privado: sillas reclinables, mantas, vino, té, y un telescopio inteligente capturando nebulosas en vivo. Conversamos del cosmos, de la vida, de lo que surja. <strong>Sin grupos, sin itinerario fijo, sin apuro. El desierto es tuyo por una noche.</strong>',
         'tours.private.include1': 'Transporte 4x4 privado desde tu hotel',
         'tours.private.include2': 'Ubicación exclusiva Bortle 1 en Vallecito',
         'tours.private.include3': 'Telescopio inteligente + cámara astrofotográfica',
@@ -283,8 +283,8 @@ const translations = {
 
         // Tour Private - Vallecito Expedition
         'tours.private.title': 'Private Vallecito Expedition',
-        'tours.private.desc1': '<strong>Where the road ends, the best sky on Earth begins.</strong> In a 4x4 we cross the desert to Vallecito, a place with no name on maps where the Bortle scale reads 1 —absolute darkness, zero light pollution. Here the Milky Way casts shadows.',
-        'tours.private.desc2': 'Reclining chairs under the stars await you, blankets, smart telescope capturing nebulae in real time, and a cooler with wine, hot water and tea varieties. No rush, no strangers, no limits. <strong>The desert is yours for a night.</strong>',
+        'tours.private.desc1': '<strong>We drive into the desert in a 4x4 to Cordillera de la Sal, a corner with no artificial light where the galactic plane crosses the sky.</strong> There are so many stars it\'s hard to find the constellations.',
+        'tours.private.desc2': 'There we set up your private camp: reclining chairs, blankets, wine, tea, and a smart telescope capturing nebulae live. We talk about the cosmos, about life, about whatever comes up. <strong>No groups, no fixed itinerary, no rush. The desert is yours for a night.</strong>',
         'tours.private.include1': 'Private 4x4 transport from your hotel',
         'tours.private.include2': 'Exclusive Bortle 1 location in Vallecito',
         'tours.private.include3': 'Smart telescope + astrophotography camera',
@@ -471,8 +471,8 @@ const translations = {
 
         // Tour Private - Expedição Vallecito
         'tours.private.title': 'Expedição Privada a Vallecito',
-        'tours.private.desc1': '<strong>Onde a estrada termina, começa o melhor céu do planeta.</strong> Em 4x4 atravessamos o deserto até Vallecito, um lugar sem nome nos mapas onde a escala Bortle marca 1 —escuridão absoluta, zero poluição luminosa. Aqui a Via Láctea projeta sombras.',
-        'tours.private.desc2': 'Te esperam cadeiras reclináveis sob as estrelas, mantas, telescópio inteligente capturando nebulosas em tempo real, e um cooler com vinho, água quente e variedades de chá. Sem pressa, sem estranhos, sem limites. <strong>O deserto é seu por uma noite.</strong>',
+        'tours.private.desc1': '<strong>De 4x4 entramos no deserto até a Cordillera de la Sal, um canto sem luz artificial onde o plano galáctico cruza o céu.</strong> São tantas estrelas que é difícil encontrar as constelações.',
+        'tours.private.desc2': 'Lá montamos seu acampamento privado: cadeiras reclináveis, mantas, vinho, chá, e um telescópio inteligente capturando nebulosas ao vivo. Conversamos sobre o cosmos, sobre a vida, sobre o que surgir. <strong>Sem grupos, sem roteiro fixo, sem pressa. O deserto é seu por uma noite.</strong>',
         'tours.private.include1': 'Transporte 4x4 privado do seu hotel',
         'tours.private.include2': 'Localização exclusiva Bortle 1 em Vallecito',
         'tours.private.include3': 'Telescópio inteligente + câmera astrofotográfica',

@@ -66,6 +66,25 @@ const PRODUCTS = {
     ageRange: { min: 0, max: 99 },
     city: 'San Pedro de Atacama',
     country: 'CL'
+  },
+  // Viator product code mapping (actual product in Viator portal)
+  // This maps the Viator product code to our private tour
+  '5624520P1': {
+    supplierProductCode: '5624520P1',
+    supplierOptionCode: 'TG1~21:00',
+    name: 'Atacama: Semi-Private Stargazing Tour to Secret Spot',
+    description: 'Semi-private stargazing experience in the Atacama Desert. Maximum 4 guests per tour.',
+    maxCapacity: 4,
+    tourType: 'private', // Maps to private tour internally
+    currency: 'USD',
+    pricePerPerson: 117.00, // USD ($351/3 persons from actual booking)
+    netPricePerPerson: 82.00, // Net price (approx 70%)
+    cutoffHours: 4, // 4 hours before tour
+    duration: 180, // 3 hours
+    availableTimes: ['21:00'],
+    ageRange: { min: 0, max: 99 },
+    city: 'San Pedro de Atacama',
+    country: 'CL'
   }
 };
 
