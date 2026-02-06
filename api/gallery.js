@@ -176,7 +176,7 @@ async function renderGallery(slug, res) {
   });
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.setHeader('Cache-Control', 'public, s-maxage=86400');
+  res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=86400');
   return res.send(html);
 }
 
