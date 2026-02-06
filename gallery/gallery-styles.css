@@ -1,0 +1,824 @@
+/* Gallery Styles — Atacama Dark Sky Tour Galleries
+   Reuses variables from main site styles.css */
+
+/* ============================================
+   CSS Variables (mirrors main site)
+   ============================================ */
+:root {
+  --primary-color: #00D4FF;
+  --secondary-color: #7B68EE;
+  --accent-color: #FF6B6B;
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a1a2e;
+  --bg-tertiary: #16213e;
+  --text-primary: #ffffff;
+  --text-secondary: #b8b8b8;
+  --text-muted: #888888;
+  --border-radius: 8px;
+  --border-radius-lg: 16px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --glow-primary: 0 0 20px rgba(0, 212, 255, 0.4);
+  --glow-secondary: 0 0 30px rgba(123, 104, 238, 0.4);
+}
+
+/* ============================================
+   Base / Reset
+   ============================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: #33DDFF;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ============================================
+   Navigation
+   ============================================ */
+.gallery-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(10, 10, 10, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.75rem 0;
+}
+
+.gallery-nav .nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gallery-nav .nav-logo img {
+  height: 36px;
+  width: auto;
+}
+
+.gallery-nav .nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  list-style: none;
+}
+
+.gallery-nav .nav-links a {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  transition: color 0.3s;
+}
+
+.gallery-nav .nav-links a:hover {
+  color: var(--primary-color);
+}
+
+/* ============================================
+   Hero Section
+   ============================================ */
+.gallery-hero {
+  padding: 8rem 1.5rem 3rem;
+  text-align: center;
+  background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.gallery-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.gallery-hero h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
+
+.gallery-hero .hero-subtitle {
+  font-size: 1.15rem;
+  color: var(--text-secondary);
+  max-width: 640px;
+  margin: 0 auto 1.5rem;
+}
+
+.badge-bortle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(0, 212, 255, 0.12);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  color: var(--primary-color);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.35rem 1rem;
+  border-radius: 50px;
+  margin-bottom: 1rem;
+}
+
+.badge-conditions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(123, 104, 238, 0.1);
+  border: 1px solid rgba(123, 104, 238, 0.25);
+  color: var(--secondary-color);
+  font-size: 0.8rem;
+  padding: 0.3rem 0.85rem;
+  border-radius: 50px;
+  margin-left: 0.5rem;
+}
+
+.hero-date {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+/* ============================================
+   Section Common
+   ============================================ */
+.gallery-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+.gallery-section h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+.section-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+/* ============================================
+   Observation Log (Object Cards)
+   ============================================ */
+.observation-log {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.25rem;
+}
+
+.object-card {
+  background: var(--bg-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+  transition: border-color 0.3s, transform 0.3s;
+}
+
+.object-card:hover {
+  border-color: rgba(0, 212, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.object-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.object-card h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.object-card .catalog-id {
+  font-size: 0.8rem;
+  color: var(--primary-color);
+  background: rgba(0, 212, 255, 0.1);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.object-card .object-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.object-card .object-meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.object-card .object-meta .icon {
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+.object-card .description {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+/* ============================================
+   Photo Gallery Grid
+   ============================================ */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.photo-item {
+  position: relative;
+  aspect-ratio: 4/3;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--bg-secondary);
+}
+
+.photo-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.photo-item:hover img {
+  transform: scale(1.05);
+}
+
+.photo-item .photo-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.photo-item:hover .photo-overlay {
+  opacity: 1;
+}
+
+.photo-overlay .expand-icon {
+  width: 40px;
+  height: 40px;
+  border: 2px solid white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.1rem;
+}
+
+/* ============================================
+   Lightbox
+   ============================================ */
+.gallery-lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.95);
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.gallery-lightbox.active {
+  display: flex;
+}
+
+.gallery-lightbox img {
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  line-height: 1;
+  z-index: 10001;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.lightbox-close:hover {
+  opacity: 1;
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2.5rem;
+  color: white;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  padding: 1rem 1.25rem;
+  border-radius: var(--border-radius);
+  opacity: 0.6;
+  transition: opacity 0.3s, background 0.3s;
+  z-index: 10001;
+}
+
+.lightbox-nav:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.lightbox-prev {
+  left: 1rem;
+}
+
+.lightbox-next {
+  right: 1rem;
+}
+
+.lightbox-counter {
+  margin-top: 1rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.lightbox-download {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.85rem;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: background 0.3s;
+}
+
+.lightbox-download:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+/* ============================================
+   Guests Section
+   ============================================ */
+.guests-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.guest-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 50px;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.95rem;
+}
+
+.guest-chip .flag {
+  font-size: 1.2rem;
+}
+
+.guest-chip .guest-name {
+  color: var(--text-primary);
+}
+
+.guest-chip .guest-country {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* ============================================
+   Social Sharing
+   ============================================ */
+.sharing-section {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+}
+
+.sharing-section p {
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+  font-size: 0.95rem;
+}
+
+.sharing-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s;
+  text-decoration: none;
+}
+
+.share-btn:hover {
+  transform: translateY(-1px);
+}
+
+.share-btn.whatsapp {
+  background: rgba(37, 211, 102, 0.12);
+  color: #25D366;
+  border-color: rgba(37, 211, 102, 0.25);
+}
+
+.share-btn.whatsapp:hover {
+  background: rgba(37, 211, 102, 0.2);
+}
+
+.share-btn.facebook {
+  background: rgba(66, 103, 178, 0.12);
+  color: #4267B2;
+  border-color: rgba(66, 103, 178, 0.25);
+}
+
+.share-btn.facebook:hover {
+  background: rgba(66, 103, 178, 0.2);
+}
+
+.share-btn.copy-link {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.share-btn.copy-link:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-primary);
+}
+
+.share-btn .share-icon {
+  font-size: 1.1rem;
+}
+
+.copy-feedback {
+  display: none;
+  color: var(--primary-color);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+/* ============================================
+   Booking CTA
+   ============================================ */
+.booking-cta {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background: linear-gradient(180deg, transparent, rgba(0, 212, 255, 0.03), transparent);
+}
+
+.booking-cta h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.booking-cta p {
+  color: var(--text-secondary);
+  max-width: 500px;
+  margin: 0 auto 1.5rem;
+}
+
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.85rem 2rem;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glow-primary);
+  color: white;
+}
+
+/* ============================================
+   Astro Footer (conditions strip)
+   ============================================ */
+.astro-footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 2rem 1.5rem;
+}
+
+.astro-footer .container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.astro-stats {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.astro-stat {
+  text-align: center;
+  min-width: 120px;
+}
+
+.astro-stat .stat-emoji {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.astro-stat .stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.astro-stat .stat-value {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.gallery-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.85rem;
+}
+
+.gallery-pagination a {
+  color: var(--text-muted);
+  transition: color 0.3s;
+}
+
+.gallery-pagination a:hover {
+  color: var(--primary-color);
+}
+
+/* ============================================
+   Footer
+   ============================================ */
+.gallery-footer {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.gallery-footer a {
+  color: var(--text-muted);
+}
+
+.gallery-footer a:hover {
+  color: var(--primary-color);
+}
+
+/* ============================================
+   Highlights Section
+   ============================================ */
+.highlights-section {
+  background: rgba(123, 104, 238, 0.05);
+  border: 1px solid rgba(123, 104, 238, 0.12);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 0;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.highlights-section strong {
+  color: var(--secondary-color);
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+@media (max-width: 1024px) {
+  .photo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .observation-log {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .gallery-hero {
+    padding: 6rem 1rem 2rem;
+  }
+
+  .gallery-hero h1 {
+    font-size: 1.75rem;
+  }
+
+  .gallery-hero .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .gallery-section {
+    padding: 2rem 1rem;
+  }
+
+  .gallery-section h2 {
+    font-size: 1.35rem;
+  }
+
+  .photo-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .photo-item {
+    aspect-ratio: 16/10;
+  }
+
+  .observation-log {
+    grid-template-columns: 1fr;
+  }
+
+  .lightbox-nav {
+    padding: 0.75rem 1rem;
+    font-size: 1.8rem;
+  }
+
+  .lightbox-prev {
+    left: 0.5rem;
+  }
+
+  .lightbox-next {
+    right: 0.5rem;
+  }
+
+  .astro-stats {
+    gap: 1.25rem;
+  }
+
+  .gallery-pagination {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .badge-conditions {
+    display: block;
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+
+  .gallery-nav .nav-links {
+    gap: 1rem;
+  }
+
+  .gallery-nav .nav-links a {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .guests-list {
+    gap: 0.5rem;
+  }
+
+  .guest-chip {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  .sharing-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .share-btn {
+    justify-content: center;
+  }
+}
+
+/* ============================================
+   Lazy loading placeholder
+   ============================================ */
+.photo-item img[data-src] {
+  background: var(--bg-secondary);
+  min-height: 200px;
+}
+
+/* ============================================
+   Print styles
+   ============================================ */
+@media print {
+  .gallery-nav,
+  .sharing-section,
+  .booking-cta,
+  .gallery-lightbox,
+  .photo-overlay {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+
+  .photo-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

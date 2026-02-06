@@ -3,12 +3,17 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Astronomical tours website for Atacama Desert",
+  "bin": {
+    "ads-gallery": "./bin/ads-gallery.js"
+  },
   "scripts": {
     "dev": "vercel dev",
     "build": "echo 'Static site - no build needed'",
     "start": "echo 'Static site'",
     "optimize-images": "node optimize-in-place.js",
-    "create-responsive": "node create-responsive-images.js"
+    "create-responsive": "node create-responsive-images.js",
+    "gallery:create": "node bin/ads-gallery.js create",
+    "gallery:list": "node bin/ads-gallery.js list"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.0",

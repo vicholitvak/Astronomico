@@ -14,6 +14,7 @@ Allow: /manifest.json
 Allow: /images/
 Allow: /icons/
 Allow: /assets/
+Allow: /gallery/
 
 # Bloquear archivos sensibles o innecesarios
 Disallow: /api/

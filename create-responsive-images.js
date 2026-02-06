@@ -1,6 +1,6 @@
-const sharp = require('sharp');
-const fs = require('fs').promises;
-const path = require('path');
+import sharp from 'sharp';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 // Configuration based on PageSpeed Insights analysis
 const IMAGES_DIR = './images';
@@ -170,13 +170,8 @@ Object.entries(DISPLAY_DIMENSIONS).forEach(([key, value]) => {
   console.log(`   ${key}: ${value}`);
 });
 
-if (require.main === module) {
+if (process.argv[1] && import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}`) {
   generateResponsiveImages().catch(console.error);
 }
 
-module.exports = {
-  generateResponsiveImages,
-  generateSrcSet,
-  IMAGE_SIZES,
-  DISPLAY_DIMENSIONS
-};
+export { generateResponsiveImages, generateSrcSet, IMAGE_SIZES, DISPLAY_DIMENSIONS };

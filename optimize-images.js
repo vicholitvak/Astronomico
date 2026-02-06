@@ -1,9 +1,9 @@
-const sharp = require('sharp');
-const imagemin = require('imagemin');
-const imageminWebp = require('imagemin-webp');
-const imageminMozjpeg = require('imagemin-mozjpeg');
-const fs = require('fs').promises;
-const path = require('path');
+import sharp from 'sharp';
+import imagemin from 'imagemin';
+import imageminWebp from 'imagemin-webp';
+import imageminMozjpeg from 'imagemin-mozjpeg';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 // Configuration
 const IMAGES_DIR = './images';
@@ -150,11 +150,8 @@ function generatePictureElement(imageName, alt, className = '', loading = 'lazy'
 }
 
 // Run the optimization
-if (require.main === module) {
+if (process.argv[1] && import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}`) {
   processImages().catch(console.error);
 }
 
-module.exports = {
-  processImages,
-  generatePictureElement
-};
+export { processImages, generatePictureElement };

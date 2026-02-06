@@ -90,6 +90,14 @@
     {
       "source": "/api/agencies/:agencyId",
       "destination": "/api/agencies"
+    },
+    {
+      "source": "/gallery",
+      "destination": "/gallery/gallery-index.html"
+    },
+    {
+      "source": "/observatory-log",
+      "destination": "/gallery/observatory-log.html"
     }
   ]
 }

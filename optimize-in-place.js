@@ -1,6 +1,6 @@
-const sharp = require('sharp');
-const fs = require('fs').promises;
-const path = require('path');
+import sharp from 'sharp';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 const IMAGES_DIR = './images';
 const BACKUP_DIR = './images/backup';
@@ -99,8 +99,8 @@ async function optimizeImages() {
 }
 
 // Run optimization
-if (require.main === module) {
+if (process.argv[1] && import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}`) {
   optimizeImages().catch(console.error);
 }
 
-module.exports = { optimizeImages };
+export { optimizeImages };

@@ -1,6 +1,6 @@
-const sharp = require('sharp');
-const fs = require('fs').promises;
-const path = require('path');
+import sharp from 'sharp';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 // Aggressive optimization for hero images
 const HERO_OPTIMIZATION = {
