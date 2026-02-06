@@ -13,6 +13,16 @@
       ],
       "destination": "https://atacamadarksky.cl/:path*",
       "permanent": true
+    },
+    {
+      "source": "/stargazing-guide-2026.html",
+      "destination": "/sky-guide",
+      "permanent": true
+    },
+    {
+      "source": "/stargazing-guide-2026",
+      "destination": "/sky-guide",
+      "permanent": true
     }
   ],
   "functions": {
@@ -36,52 +46,80 @@
       "destination": "/pago.html"
     },
     {
+      "source": "/api/klook/octo/bookings/:uuid/confirm",
+      "destination": "/api/suppliers"
+    },
+    {
+      "source": "/api/klook/octo/bookings/:uuid/cancel",
+      "destination": "/api/suppliers"
+    },
+    {
+      "source": "/api/klook/octo/bookings/:uuid",
+      "destination": "/api/suppliers"
+    },
+    {
+      "source": "/api/klook/octo/availability/calendar",
+      "destination": "/api/suppliers"
+    },
+    {
+      "source": "/api/klook/octo/products/:id",
+      "destination": "/api/suppliers"
+    },
+    {
+      "source": "/api/klook/octo/:path*",
+      "destination": "/api/suppliers"
+    },
+    {
+      "source": "/api/klook/octo",
+      "destination": "/api/suppliers"
+    },
+    {
       "source": "/api/gyg/:version/suppliers/:supplierId/products/",
-      "destination": "/api/gyg"
+      "destination": "/api/suppliers"
     },
     {
       "source": "/api/gyg/:version/suppliers/:supplierId/products",
-      "destination": "/api/gyg"
+      "destination": "/api/suppliers"
     },
     {
       "source": "/api/gyg/:version/products/:productId/pricing-categories/",
-      "destination": "/api/gyg"
+      "destination": "/api/suppliers"
     },
     {
       "source": "/api/gyg/:version/products/:productId/pricing-categories",
-      "destination": "/api/gyg"
+      "destination": "/api/suppliers"
     },
     {
       "source": "/api/gyg/:version/products/:productId/addons/",
-      "destination": "/api/gyg"
+      "destination": "/api/suppliers"
     },
     {
       "source": "/api/gyg/:version/products/:productId/addons",
-      "destination": "/api/gyg"
+      "destination": "/api/suppliers"
     },
     {
       "source": "/api/gyg/:version/products/:productId",
-      "destination": "/api/gyg"
+      "destination": "/api/suppliers"
     },
     {
       "source": "/api/gyg/:version/:action",
-      "destination": "/api/gyg"
+      "destination": "/api/suppliers"
     },
     {
       "source": "/api/gyg/:version/:action/",
-      "destination": "/api/gyg"
+      "destination": "/api/suppliers"
     },
     {
       "source": "/api/viator/:action",
-      "destination": "/api/viator"
+      "destination": "/api/suppliers"
     },
     {
       "source": "/api/viator/:action/",
-      "destination": "/api/viator"
+      "destination": "/api/suppliers"
     },
     {
       "source": "/api/viator/admin/:endpoint",
-      "destination": "/api/viator"
+      "destination": "/api/suppliers"
     },
     {
       "source": "/api/agencies/:agencyId/:action",
@@ -92,12 +130,44 @@
       "destination": "/api/agencies"
     },
     {
+      "source": "/gallery/:slug/",
+      "destination": "/api/gallery?slug=:slug"
+    },
+    {
+      "source": "/gallery/:slug",
+      "destination": "/api/gallery?slug=:slug"
+    },
+    {
+      "source": "/gallery/",
+      "destination": "/api/gallery?action=page-index"
+    },
+    {
       "source": "/gallery",
-      "destination": "/gallery/gallery-index.html"
+      "destination": "/api/gallery?action=page-index"
     },
     {
       "source": "/observatory-log",
-      "destination": "/gallery/observatory-log.html"
+      "destination": "/api/gallery?action=page-log"
+    },
+    {
+      "source": "/experience",
+      "destination": "/experience.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/faq",
+      "destination": "/faq.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/contact.html"
+    },
+    {
+      "source": "/sky-guide",
+      "destination": "/sky-guide.html"
     }
   ]
 }

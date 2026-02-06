@@ -1,85 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <!-- Página principal -->
+  <!-- Home -->
   <url>
     <loc>https://atacamadarksky.cl/</loc>
-    <lastmod>2025-12-22</lastmod>
+    <lastmod>2026-02-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- Versión en inglés -->
+  <!-- Experience (booking + calendar) -->
   <url>
-    <loc>https://atacamadarksky.cl/?lang=en</loc>
-    <lastmod>2025-12-22</lastmod>
+    <loc>https://atacamadarksky.cl/experience</loc>
+    <lastmod>2026-02-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.95</priority>
   </url>
 
-  <!-- Versión en portugués -->
+  <!-- About -->
   <url>
-    <loc>https://atacamadarksky.cl/?lang=pt</loc>
-    <lastmod>2025-12-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- Página de pago/checkout -->
-  <url>
-    <loc>https://atacamadarksky.cl/pago.html</loc>
-    <lastmod>2025-12-22</lastmod>
+    <loc>https://atacamadarksky.cl/about</loc>
+    <lastmod>2026-02-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
-  <!-- Confirmación de reserva -->
+  <!-- FAQ -->
   <url>
-    <loc>https://atacamadarksky.cl/confirmacion.html</loc>
-    <lastmod>2025-12-22</lastmod>
+    <loc>https://atacamadarksky.cl/faq</loc>
+    <lastmod>2026-02-06</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.8</priority>
   </url>
 
-  <!-- Resultado de pago exitoso -->
+  <!-- Contact -->
   <url>
-    <loc>https://atacamadarksky.cl/payment-success.html</loc>
-    <lastmod>2025-12-22</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-
-  <!-- Formulario de reseñas -->
-  <url>
-    <loc>https://atacamadarksky.cl/review-form.html</loc>
-    <lastmod>2025-12-22</lastmod>
+    <loc>https://atacamadarksky.cl/contact</loc>
+    <lastmod>2026-02-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
-  <!-- Archivo llms.txt para buscadores LLM -->
+  <!-- Sky Guide 2026 — high-value SEO content -->
   <url>
-    <loc>https://atacamadarksky.cl/llms.txt</loc>
-    <lastmod>2025-12-22</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <!-- Guía Stargazing 2026 (Inglés) - Contenido de alto valor -->
-  <url>
-    <loc>https://atacamadarksky.cl/stargazing-guide-2026.html</loc>
-    <lastmod>2025-12-22</lastmod>
+    <loc>https://atacamadarksky.cl/sky-guide</loc>
+    <lastmod>2026-02-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
-
-  <!-- Tour galleries index -->
+  <!-- Gallery index -->
   <url>
     <loc>https://atacamadarksky.cl/gallery/</loc>
     <lastmod>2026-02-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+  </url>
+
+  <!-- Payment/checkout -->
+  <url>
+    <loc>https://atacamadarksky.cl/pago.html</loc>
+    <lastmod>2025-12-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Review form -->
+  <url>
+    <loc>https://atacamadarksky.cl/review-form.html</loc>
+    <lastmod>2025-12-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- LLMs.txt -->
+  <url>
+    <loc>https://atacamadarksky.cl/llms.txt</loc>
+    <lastmod>2025-12-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
   </url>
 
 </urlset>

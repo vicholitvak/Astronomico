@@ -1,0 +1,45 @@
+/* ============================================
+   ATACAMA DARK SKY — Design Tokens
+   ============================================ */
+
+:root {
+  /* Colors */
+  --color-bg-deep:      #0a0a14;
+  --color-bg-primary:   #0d1117;
+  --color-bg-card:      #141821;
+  --color-bg-elevated:  #1a1f2e;
+  --color-accent:       #c9a96e;
+  --color-accent-light: #d4a853;
+  --color-accent-glow:  rgba(201, 169, 110, 0.15);
+  --color-text-primary: #f0ece2;
+  --color-text-secondary: #a0998b;
+  --color-text-muted:   #6b6560;
+  --color-white:        #ffffff;
+  --color-border:       rgba(201, 169, 110, 0.12);
+
+  /* Typography */
+  --font-display:  'Cormorant Garamond', 'Georgia', serif;
+  --font-body:     'Outfit', 'Helvetica Neue', sans-serif;
+  --font-mono:     'JetBrains Mono', 'Consolas', monospace;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+  --space-4xl: 10rem;
+
+  /* Layout */
+  --max-width:        1200px;
+  --max-width-narrow: 800px;
+  --header-height:    72px;
+
+  /* Transitions */
+  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 200ms;
+  --duration-med:  400ms;
+  --duration-slow: 800ms;
+}

@@ -10,8 +10,8 @@
  */
 
 import { Pool } from 'pg';
-import { addToGoogleCalendar } from './google-calendar.js';
-import { syncDateAvailabilityToGYG } from './gyg.js';
+import { addToGoogleCalendar } from '../lib/google-calendar.js';
+import { syncDateAvailabilityToGYG } from './suppliers.js';
 
 // Viator Affiliate API config
 const VIATOR_AFFILIATE_ENV = process.env.VIATOR_AFFILIATE_ENV || 'sandbox';

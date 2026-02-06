@@ -5,7 +5,7 @@
 
 import { query } from '../lib/db.js';
 import { sendWhatsAppMessage, sendBulkWhatsApp, isWhatsAppConfigured } from '../lib/whatsapp.js';
-import { pushAvailabilityToGYG } from './gyg.js';
+import { pushAvailabilityToGYG } from './suppliers.js';
 
 // ============ HELPER FUNCTIONS ============
 

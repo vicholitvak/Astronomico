@@ -2,7 +2,7 @@
 import { Pool } from 'pg';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { Resend } from 'resend';
-import { addToGoogleCalendar } from './google-calendar.js';
+import { addToGoogleCalendar } from '../lib/google-calendar.js';
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,

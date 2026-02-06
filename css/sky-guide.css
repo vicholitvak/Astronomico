@@ -1,0 +1,323 @@
+/* ============================================
+   ATACAMA DARK SKY — Sky Guide Page Styles
+   ============================================ */
+
+.skyguide-hero {
+  padding: calc(var(--header-height) + var(--space-4xl)) 0 var(--space-3xl);
+  text-align: center;
+  background: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.skyguide-hero h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: var(--space-sm);
+}
+
+.skyguide-hero .section-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 1.125rem;
+  margin-bottom: var(--space-xl);
+}
+
+.author-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.author-box .author-name {
+  font-family: var(--font-body);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  font-size: 0.95rem;
+}
+
+.author-box .author-title {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+/* Content wrapper */
+.skyguide-content {
+  max-width: var(--max-width-narrow);
+  margin: 0 auto;
+}
+
+.skyguide-content h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 400;
+  margin: var(--space-3xl) 0 var(--space-lg);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.skyguide-content h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--color-accent);
+  margin: var(--space-xl) 0 var(--space-md);
+}
+
+.skyguide-content p {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  margin-bottom: var(--space-lg);
+}
+
+.skyguide-content strong {
+  color: var(--color-text-primary);
+}
+
+/* Fact grid */
+.fact-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+  margin: var(--space-xl) 0;
+}
+
+.fact-item {
+  text-align: center;
+  padding: var(--space-lg);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+}
+
+.fact-number {
+  font-family: var(--font-mono);
+  font-size: 1.75rem;
+  color: var(--color-accent);
+}
+
+.fact-label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-top: var(--space-xs);
+}
+
+/* Month cards */
+.month-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: var(--space-xl);
+  margin: var(--space-xl) 0;
+}
+
+.month-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.month-name {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--color-text-primary);
+}
+
+.rating {
+  display: flex;
+  gap: 3px;
+}
+
+.star {
+  color: var(--color-accent);
+  font-size: 0.9rem;
+}
+
+.star.empty {
+  opacity: 0.25;
+}
+
+.date-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+.date-item {
+  background: var(--color-bg-elevated, rgba(201, 169, 110, 0.05));
+  padding: var(--space-md);
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+}
+
+.date-label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.date-value {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  margin-top: var(--space-xs);
+}
+
+.event-tag {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 2px;
+  margin-top: var(--space-sm);
+  background: rgba(201, 169, 110, 0.15);
+  color: var(--color-accent);
+  border: 1px solid rgba(201, 169, 110, 0.2);
+}
+
+.event-tag.meteor {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f5a623;
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.event-tag.eclipse {
+  background: rgba(220, 80, 80, 0.15);
+  color: #dc5050;
+  border-color: rgba(220, 80, 80, 0.2);
+}
+
+.event-tag.planet {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.month-card h4 {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-accent);
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-sm);
+}
+
+/* Highlight box */
+.highlight-box {
+  background: var(--color-bg-elevated, #1a1f2e);
+  border-left: 2px solid var(--color-accent);
+  padding: var(--space-lg);
+  margin: var(--space-lg) 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.highlight-box h4 {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-accent);
+  margin-bottom: var(--space-sm);
+  margin-top: 0;
+}
+
+.highlight-box p {
+  font-size: 0.9rem;
+  margin-bottom: 0;
+}
+
+/* Tables */
+.skyguide-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-lg) 0;
+  font-size: 0.9rem;
+}
+
+.skyguide-content th,
+.skyguide-content td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.skyguide-content th {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.skyguide-content td {
+  color: var(--color-text-secondary);
+}
+
+.skyguide-content tr:last-child td {
+  border-bottom: none;
+}
+
+/* CTA box */
+.skyguide-cta {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  padding: var(--space-2xl);
+  border-radius: 4px;
+  text-align: center;
+  margin: var(--space-3xl) 0;
+}
+
+.skyguide-cta h3 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-sm);
+  margin-top: 0;
+}
+
+.skyguide-cta p {
+  margin-bottom: var(--space-lg);
+}
+
+.last-updated {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-border);
+}
+
+@media (max-width: 767px) {
+  .fact-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .date-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .month-card {
+    padding: var(--space-lg);
+  }
+
+  .skyguide-content table {
+    font-size: 0.8rem;
+  }
+
+  .skyguide-content th,
+  .skyguide-content td {
+    padding: 0.5rem;
+  }
+}

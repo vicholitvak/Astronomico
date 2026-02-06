@@ -3,8 +3,8 @@
  */
 
 import { insert, query } from '../lib/db.js';
-import { addToGoogleCalendar } from './google-calendar.js';
-import { syncDateAvailabilityToGYG } from './gyg.js';
+import { addToGoogleCalendar, refreshCalendarAfterCancellation } from '../lib/google-calendar.js';
+import { syncDateAvailabilityToGYG } from './suppliers.js';
 import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
@@ -114,7 +114,7 @@ async function updateBooking(req, res) {
     }
   }
 
-  // If status changed to cancelled, sync GYG availability
+  // If status changed to cancelled, sync GYG availability and refresh calendar
   if (status === 'cancelled') {
     let dateStr = updatedBooking.date;
     if (dateStr instanceof Date) {
@@ -122,9 +122,19 @@ async function updateBooking(req, res) {
     } else if (typeof dateStr === 'string' && dateStr.includes('T')) {
       dateStr = dateStr.split('T')[0];
     }
+    const tourType = updatedBooking.tour_type;
+
+    // Sync availability to GYG
     syncDateAvailabilityToGYG(dateStr).catch(err => {
       console.error(`[BOOKING] GYG sync failed on cancellation:`, err.message);
     });
+
+    // Refresh Google Calendar (remove or recalculate event)
+    refreshCalendarAfterCancellation(dateStr, tourType).catch(err => {
+      console.error(`[BOOKING] Calendar refresh failed on cancellation:`, err.message);
+    });
+
+    console.log(`[BOOKING] Cancellation synced - GYG and Calendar updated for ${dateStr}/${tourType}`);
   }
 
   return res.status(200).json({ success: true, data: updatedBooking });
@@ -144,7 +154,7 @@ async function deleteBooking(req, res) {
     return res.status(404).json({ success: false, error: 'Booking not found' });
   }
 
-  // Sync availability to GYG after deletion (non-blocking)
+  // Sync availability to GYG and calendar after deletion (non-blocking)
   const deletedBooking = result.rows[0];
   if (deletedBooking.date) {
     let dateStr = deletedBooking.date;
@@ -153,9 +163,17 @@ async function deleteBooking(req, res) {
     } else if (typeof dateStr === 'string' && dateStr.includes('T')) {
       dateStr = dateStr.split('T')[0];
     }
+    const tourType = deletedBooking.tour_type;
+
     syncDateAvailabilityToGYG(dateStr).catch(err => {
       console.error('[BOOKING] GYG sync failed on delete:', err.message);
     });
+
+    refreshCalendarAfterCancellation(dateStr, tourType).catch(err => {
+      console.error('[BOOKING] Calendar refresh failed on delete:', err.message);
+    });
+
+    console.log(`[BOOKING] Deletion synced - GYG and Calendar updated for ${dateStr}/${tourType}`);
   }
 
   return res.status(200).json({ success: true, message: 'Booking deleted' });
@@ -389,7 +407,7 @@ async function getDateAvailability(req, res) {
       capacity: PRIVATE_CAPACITY,
       booked: privatePersons,
       available: Math.max(0, PRIVATE_CAPACITY - privatePersons),
-      blocked: blockInfo?.block_type === 'full' || blockInfo?.block_type === 'late_private_only'
+      blocked: blockInfo?.block_type === 'full'
     }
   };
 
@@ -401,7 +419,7 @@ async function getDateAvailability(req, res) {
       capacity: PRIVATE_CAPACITY,
       booked: privatePersons,
       available: Math.max(0, PRIVATE_CAPACITY - privatePersons),
-      blocked: blockInfo?.block_type === 'full' || blockInfo?.block_type === 'late_private_only'
+      blocked: blockInfo?.block_type === 'full'
     }
   };
 

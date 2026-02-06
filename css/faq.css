@@ -1,0 +1,119 @@
+/* ============================================
+   ATACAMA DARK SKY — FAQ Page Styles
+   ============================================ */
+
+.faq-hero {
+  padding: calc(var(--header-height) + var(--space-4xl)) 0 var(--space-3xl);
+  text-align: center;
+  background: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.faq-hero h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: var(--space-sm);
+}
+
+.faq-hero p {
+  color: var(--color-text-secondary);
+  font-size: 1.125rem;
+}
+
+/* Category */
+.faq-category {
+  margin-bottom: var(--space-3xl);
+}
+
+.faq-category-title {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Accordion */
+.faq-item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.faq-question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-lg) 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 400;
+  transition: color var(--duration-fast);
+}
+
+.faq-question:hover {
+  color: var(--color-accent);
+}
+
+.faq-question .chevron {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  stroke: var(--color-text-muted);
+  transition: transform var(--duration-med) var(--ease-out);
+}
+
+.faq-item.open .faq-question .chevron {
+  transform: rotate(180deg);
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--duration-med) var(--ease-out);
+}
+
+.faq-answer-inner {
+  padding: 0 0 var(--space-xl);
+}
+
+.faq-answer-inner p {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  margin-bottom: var(--space-md);
+}
+
+.faq-answer-inner ul {
+  margin: var(--space-sm) 0 var(--space-md) var(--space-lg);
+}
+
+.faq-answer-inner ul li {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+  list-style: disc;
+}
+
+.faq-answer-inner strong {
+  color: var(--color-text-primary);
+}
+
+.faq-content {
+  max-width: var(--max-width-narrow);
+  margin: 0 auto;
+}
+
+@media (max-width: 767px) {
+  .faq-question {
+    font-size: 1rem;
+    padding: var(--space-md) 0;
+  }
+}

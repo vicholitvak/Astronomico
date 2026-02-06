@@ -68,9 +68,6 @@ async function notifyGygDateBlocked(date, blockType) {
     if (blockType === 'full') {
       // Block both regular and private tours
       productsToNotify.push(GYG_PRODUCTS.regular, GYG_PRODUCTS.private);
-    } else if (blockType === 'late_private_only') {
-      // Only block private tours (regular still available)
-      productsToNotify.push(GYG_PRODUCTS.private);
     } else if (blockType === 'private_only') {
       // Only block regular tours (private still available)
       productsToNotify.push(GYG_PRODUCTS.regular);
@@ -141,14 +138,9 @@ async function notifyGygDateUnblocked(date) {
         const booking = bookingsByTypeTime[key];
 
         let vacancies;
-        if (tourType === 'private') {
-          // Private: 1 group per time slot
-          vacancies = booking?.bookingCount > 0 ? 0 : 1;
-        } else {
-          // Regular: capacity minus booked persons
-          const bookedPersons = booking?.totalPersons || 0;
-          vacancies = Math.max(0, product.maxCapacity - bookedPersons);
-        }
+        // Both tour types: capacity minus booked persons
+        const bookedPersons = booking?.totalPersons || 0;
+        vacancies = Math.max(0, product.maxCapacity - bookedPersons);
 
         return {
           dateTime: `${date}T${time}:00${tzOffset}`,
@@ -584,7 +576,7 @@ export default async function handler(req, res) {
         }
 
         const booking = bookingResult.rows[0];
-        const { addToGoogleCalendar } = await import('./google-calendar.js');
+        const { addToGoogleCalendar } = await import('../lib/google-calendar.js');
 
         // Normalize date to string format YYYY-MM-DD
         let dateStr = booking.date;
@@ -673,7 +665,7 @@ export default async function handler(req, res) {
         const bookingsResult = await pool.query(query, params);
         const bookings = bookingsResult.rows;
 
-        const { addToGoogleCalendar } = await import('./google-calendar.js');
+        const { addToGoogleCalendar } = await import('../lib/google-calendar.js');
         const results = [];
 
         // Helper to normalize date
