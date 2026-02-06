@@ -978,6 +978,57 @@
         .tab-content { display: none; overflow-x: hidden; }
         .tab-content.active { display: block; }
 
+        /* Gallery Admin Styles */
+        .gallery-list-table { width: 100%; border-collapse: collapse; }
+        .gallery-list-table th { text-align: left; padding: 12px 15px; color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid rgba(71, 85, 105, 0.3); }
+        .gallery-list-table td { padding: 12px 15px; border-bottom: 1px solid rgba(71, 85, 105, 0.15); vertical-align: middle; }
+        .gallery-list-table tr:hover td { background: rgba(96, 165, 250, 0.05); }
+        .gallery-status { padding: 3px 10px; border-radius: 50px; font-size: 0.75rem; font-weight: 500; }
+        .gallery-status.draft { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+        .gallery-status.published { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+
+        details.filters-section summary::-webkit-details-marker { display: none; }
+        details.filters-section[open] summary .fa-chevron-right { transform: rotate(90deg); }
+
+        .gallery-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 10000; align-items: flex-start; justify-content: center; padding: 20px; overflow-y: auto; }
+        .gallery-modal.active { display: flex; }
+        .gallery-modal-content { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid rgba(96, 165, 250, 0.3); border-radius: 16px; max-width: 900px; width: 100%; margin: 20px auto; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+        .gallery-modal-header { padding: 20px 25px; border-bottom: 1px solid rgba(71, 85, 105, 0.3); display: flex; justify-content: space-between; align-items: center; }
+        .gallery-modal-title { font-size: 1.3rem; font-weight: 600; color: #60a5fa; }
+        .gallery-modal-body { padding: 25px; }
+        .gallery-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .gallery-form-full { grid-column: span 2; }
+        .gallery-form-grid label { display: block; font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+        .gallery-form-grid input, .gallery-form-grid select, .gallery-form-grid textarea { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(96, 165, 250, 0.3); background: rgba(15, 23, 42, 0.6); color: #e2e8f0; font-size: 0.95rem; font-family: inherit; }
+        .gallery-form-grid textarea { resize: vertical; min-height: 60px; }
+
+        .upload-zone { border: 2px dashed rgba(96, 165, 250, 0.3); border-radius: 12px; padding: 30px; text-align: center; cursor: pointer; transition: all 0.3s; margin-bottom: 15px; }
+        .upload-zone:hover, .upload-zone.dragover { border-color: #60a5fa; background: rgba(96, 165, 250, 0.05); }
+        .upload-zone i { font-size: 2rem; color: #60a5fa; margin-bottom: 10px; }
+        .upload-zone p { color: #94a3b8; font-size: 0.9rem; }
+
+        .photo-preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .photo-preview-item { position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; border: 1px solid rgba(71, 85, 105, 0.3); background: #0f172a; }
+        .photo-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-preview-item .delete-photo { position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; background: rgba(239, 68, 68, 0.8); border: none; border-radius: 50%; color: white; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+        .photo-preview-item:hover .delete-photo { opacity: 1; }
+        .photo-preview-item .upload-progress { position: absolute; bottom: 0; left: 0; height: 3px; background: #3b82f6; transition: width 0.3s; }
+        .photo-preview-item .upload-status { position: absolute; top: 4px; left: 4px; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+        .photo-preview-item .upload-status.uploading { background: rgba(59, 130, 246, 0.8); }
+        .photo-preview-item .upload-status.done { background: rgba(34, 197, 94, 0.8); }
+        .photo-preview-item .upload-status.error { background: rgba(239, 68, 68, 0.8); }
+        .photo-preview-item .sort-handle { position: absolute; bottom: 4px; left: 4px; color: white; font-size: 14px; opacity: 0; cursor: grab; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+        .photo-preview-item:hover .sort-handle { opacity: 0.7; }
+        .photo-preview-item.dragging { opacity: 0.5; border: 2px solid #3b82f6; }
+
+        .gallery-modal-actions { display: flex; gap: 10px; flex-wrap: wrap; padding: 15px 25px; border-top: 1px solid rgba(71, 85, 105, 0.3); }
+
+        @media (max-width: 768px) {
+            .gallery-form-grid { grid-template-columns: 1fr; }
+            .gallery-form-full { grid-column: span 1; }
+            .photo-preview-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); }
+        }
+
         /* AI Chat Styles */
         .chat-container {
             background: rgba(30, 41, 59, 0.8);
@@ -1706,8 +1757,8 @@
             <button class="tab-btn" onclick="switchTab('reviews')">
                 <i class="fas fa-star"></i> Reseñas <span id="pendingReviewsBadge" style="background:#fbbf24;color:#000;padding:2px 8px;border-radius:10px;font-size:0.75rem;margin-left:5px;display:none;">0</span>
             </button>
-            <button class="tab-btn" onclick="switchTab('photos')">
-                <i class="fas fa-images"></i> Links Fotos
+            <button class="tab-btn" onclick="switchTab('gallery')">
+                <i class="fas fa-images"></i> Fotos
             </button>
             <button class="tab-btn" onclick="switchTab('income')">
                 <i class="fas fa-dollar-sign"></i> Ingresos
@@ -1960,126 +2011,6 @@
             </div>
         </div>
 
-        <!-- Photos Tab -->
-        <div id="photosTab" class="tab-content">
-            <div class="filters-section">
-                <h3 style="color: #60a5fa; margin-bottom: 20px;"><i class="fas fa-images"></i> Gestionar Links de Fotos por Fecha</h3>
-                <p style="color: #94a3b8; margin-bottom: 20px;">Agrega el link de Google Drive para cada día de tour. Los clientes verán este link después de dejar su reseña.</p>
-
-                <div class="filters-grid" style="max-width: 800px;">
-                    <div class="filter-group">
-                        <label for="photoDate">Fecha del Tour</label>
-                        <input type="date" id="photoDate" required>
-                    </div>
-                    <div class="filter-group" style="grid-column: span 2;">
-                        <label for="photoUrl">Link de Google Drive</label>
-                        <input type="text" id="photoUrl" placeholder="https://drive.google.com/drive/folders/..." required>
-                    </div>
-                    <div class="filter-group">
-                        <label for="photoDesc">Descripción (opcional)</label>
-                        <input type="text" id="photoDesc" placeholder="Ej: Tour nocturno luna nueva">
-                    </div>
-                </div>
-
-                <div class="filter-buttons" style="margin-top: 20px;">
-                    <button class="btn-primary" onclick="savePhotoLink()">
-                        <i class="fas fa-save"></i> Guardar Link
-                    </button>
-                </div>
-            </div>
-
-            <div class="bookings-table-container">
-                <h3 style="color: #60a5fa; margin-bottom: 20px;">Links Guardados</h3>
-                <div id="photoLinksLoading" class="loading">
-                    <i class="fas fa-spinner"></i> Cargando links...
-                </div>
-                <table id="photoLinksTable" style="display: none;">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Link</th>
-                            <th>Descripción</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="photoLinksBody"></tbody>
-                </table>
-                <p id="noPhotoLinks" style="display: none; text-align: center; color: #94a3b8; padding: 40px;">No hay links guardados aún.</p>
-            </div>
-
-            <!-- Sección de Herramientas de Comunicación -->
-            <div class="filters-section" style="margin-top: 30px; background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); border: 1px solid #3b82f6;">
-                <h3 style="color: #60a5fa; margin-bottom: 10px;"><i class="fas fa-paper-plane"></i> Mensaje para Clientes</h3>
-                <p style="color: #94a3b8; margin-bottom: 20px;">Copia el mensaje para enviar por WhatsApp. El cliente completa la encuesta y al final recibe el link de las fotos.</p>
-
-                <!-- Links Rápidos -->
-                <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px; padding: 15px; background: rgba(59, 130, 246, 0.1); border-radius: 8px;">
-                    <div style="flex: 1; min-width: 200px;">
-                        <label style="color: #94a3b8; font-size: 0.85rem; display: block; margin-bottom: 5px;">Link de Encuesta/Review:</label>
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <input type="text" value="https://atacamadarksky.cl/review-form.html" readonly
-                                   style="flex: 1; background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 8px; border-radius: 4px; font-size: 0.85rem;"
-                                   id="reviewLinkInput">
-                            <button class="btn-secondary" onclick="copyToClipboard('reviewLinkInput', this)" style="padding: 8px 12px;">
-                                <i class="fas fa-copy"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Personalización -->
-                <div class="filters-grid" style="max-width: 800px; margin-bottom: 20px;">
-                    <div class="filter-group">
-                        <label for="msgClientName">Nombre del Cliente (opcional)</label>
-                        <input type="text" id="msgClientName" placeholder="Ej: Juan" oninput="updatePhotoMessage()">
-                    </div>
-                    <div class="filter-group">
-                        <label for="msgPhotoDate">Verificar fotos de fecha</label>
-                        <select id="msgPhotoDate" onchange="updatePhotoMessage()">
-                            <option value="">-- Sin verificar --</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label for="msgLanguage">Idioma del mensaje</label>
-                        <select id="msgLanguage" onchange="updatePhotoMessage()">
-                            <option value="es">Español</option>
-                            <option value="en">English</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Mensaje con fotos -->
-                <div>
-                    <label style="color: #e2e8f0; font-weight: 500; display: block; margin-bottom: 10px;">
-                        <i class="fab fa-whatsapp" style="color: #25D366;"></i> Mensaje para WhatsApp (con fotos al final de encuesta):
-                    </label>
-                    <textarea id="photoMessageText" readonly rows="10"
-                              style="width: 100%; background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 15px; border-radius: 8px; font-family: inherit; font-size: 0.95rem; line-height: 1.5; resize: vertical;">¡Hola! 🌌
-
-Gracias por vivir esta experiencia bajo las estrellas con nosotros.
-
-Tu opinión es muy importante para ayudarnos a mejorar y para que más personas descubran el cielo de Atacama.
-
-¿Podrías compartir tu experiencia? Solo te tomará 2 minutos y al finalizar podrás descargar las fotos del tour:
-👉 https://atacamadarksky.cl/review-form.html
-
-¡Esperamos verte pronto nuevamente! ✨
-
-Vicente
-Atacama Dark Sky</textarea>
-
-                    <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; align-items: center;">
-                        <button class="btn-primary" onclick="copyPhotoMessage()" id="copyMsgBtn">
-                            <i class="fas fa-copy"></i> Copiar Mensaje
-                        </button>
-                        <button class="btn-secondary" onclick="openWhatsAppWithMessage()" id="whatsappMsgBtn" style="background: #25D366; border-color: #25D366;">
-                            <i class="fab fa-whatsapp"></i> Abrir WhatsApp
-                        </button>
-                        <span id="photoStatusMsg" style="color: #94a3b8; font-size: 0.85rem; margin-left: 10px;"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Income Tab -->
         <div id="incomeTab" class="tab-content">
@@ -2440,6 +2371,233 @@ Atacama Dark Sky</textarea>
             </div>
         </div>
 
+        <!-- Gallery Tab -->
+        <div id="galleryTab" class="tab-content">
+            <div class="filters-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <h3 style="color: #60a5fa;"><i class="fas fa-camera-retro"></i> Galerias de Fotos</h3>
+                    <button class="btn-primary" onclick="openGalleryEditor()">
+                        <i class="fas fa-plus"></i> Nueva Galeria
+                    </button>
+                </div>
+            </div>
+
+            <div class="bookings-table-container">
+                <div id="galleryListLoading" class="loading">
+                    <i class="fas fa-spinner"></i> Cargando galerias...
+                </div>
+                <table class="gallery-list-table" id="galleryListTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Titulo</th>
+                            <th>Tipo</th>
+                            <th>Fotos</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="galleryListBody"></tbody>
+                </table>
+                <p id="noGalleries" style="display: none; text-align: center; color: #94a3b8; padding: 40px;">No hay galerias creadas aun.</p>
+            </div>
+
+            <!-- Google Drive Links Section -->
+            <details class="filters-section" style="margin-top: 30px; cursor: default;" id="driveLinksDetails">
+                <summary style="color: #60a5fa; font-size: 1.1rem; font-weight: 600; cursor: pointer; padding: 5px 0; list-style: none; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-chevron-right" style="font-size: 0.8rem; transition: transform 0.2s;"></i>
+                    <i class="fas fa-link"></i> Links de Google Drive
+                </summary>
+                <div style="margin-top: 20px;">
+                    <p style="color: #94a3b8; margin-bottom: 20px;">Agrega el link de Google Drive para cada día de tour. Los clientes verán este link después de dejar su reseña.</p>
+
+                    <div class="filters-grid" style="max-width: 800px;">
+                        <div class="filter-group">
+                            <label for="photoDate">Fecha del Tour</label>
+                            <input type="date" id="photoDate" required>
+                        </div>
+                        <div class="filter-group" style="grid-column: span 2;">
+                            <label for="photoUrl">Link de Google Drive</label>
+                            <input type="text" id="photoUrl" placeholder="https://drive.google.com/drive/folders/..." required>
+                        </div>
+                        <div class="filter-group">
+                            <label for="photoDesc">Descripción (opcional)</label>
+                            <input type="text" id="photoDesc" placeholder="Ej: Tour nocturno luna nueva">
+                        </div>
+                    </div>
+
+                    <div class="filter-buttons" style="margin-top: 20px;">
+                        <button class="btn-primary" onclick="savePhotoLink()">
+                            <i class="fas fa-save"></i> Guardar Link
+                        </button>
+                    </div>
+
+                    <div class="bookings-table-container" style="margin-top: 20px;">
+                        <div id="photoLinksLoading" class="loading">
+                            <i class="fas fa-spinner"></i> Cargando links...
+                        </div>
+                        <table id="photoLinksTable" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Link</th>
+                                    <th>Descripción</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="photoLinksBody"></tbody>
+                        </table>
+                        <p id="noPhotoLinks" style="display: none; text-align: center; color: #94a3b8; padding: 40px;">No hay links guardados aún.</p>
+                    </div>
+                </div>
+            </details>
+
+            <!-- Unified WhatsApp Message Section -->
+            <div class="filters-section" style="margin-top: 30px; background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); border: 1px solid #3b82f6;">
+                <h3 style="color: #60a5fa; margin-bottom: 10px;"><i class="fab fa-whatsapp" style="color: #25D366;"></i> Mensaje WhatsApp para Clientes</h3>
+
+                <div class="filters-grid" style="max-width: 800px; margin-bottom: 15px;">
+                    <div class="filter-group">
+                        <label for="waMsgType">Tipo de mensaje</label>
+                        <select id="waMsgType" onchange="switchMessageType()">
+                            <option value="gallery">Link de Galeria</option>
+                            <option value="review">Review + Link Fotos</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="waMsgName">Nombre del cliente</label>
+                        <input type="text" id="waMsgName" placeholder="Ej: Juan" oninput="updateUnifiedMessage()">
+                    </div>
+                    <div class="filter-group">
+                        <label for="waMsgLang">Idioma</label>
+                        <select id="waMsgLang" onchange="updateUnifiedMessage()">
+                            <option value="es">Español</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+                    <!-- Gallery-specific: gallery selector -->
+                    <div class="filter-group" id="waMsgGalleryGroup">
+                        <label for="waMsgGallery">Galeria</label>
+                        <select id="waMsgGallery" onchange="updateUnifiedMessage()">
+                            <option value="">-- Seleccionar galeria --</option>
+                        </select>
+                    </div>
+                    <!-- Review-specific: date selector -->
+                    <div class="filter-group" id="waMsgDateGroup" style="display: none;">
+                        <label for="waMsgDate">Verificar fotos de fecha</label>
+                        <select id="waMsgDate" onchange="updateUnifiedMessage()">
+                            <option value="">-- Selecciona fecha --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Quick link for review mode -->
+                <div id="waMsgReviewLink" style="display: none; margin-bottom: 15px; padding: 12px 15px; background: rgba(59, 130, 246, 0.1); border-radius: 8px;">
+                    <label style="color: #94a3b8; font-size: 0.85rem; display: block; margin-bottom: 5px;">Link de Encuesta/Review:</label>
+                    <div style="display: flex; gap: 8px; align-items: center; max-width: 500px;">
+                        <input type="text" value="https://atacamadarksky.cl/review-form.html" readonly
+                               style="flex: 1; background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 8px; border-radius: 4px; font-size: 0.85rem;"
+                               id="reviewLinkInput">
+                        <button class="btn-secondary" onclick="copyToClipboard('reviewLinkInput', this)" style="padding: 8px 12px;">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <textarea id="waMsgText" readonly rows="10" style="width: 100%; background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 15px; border-radius: 8px; font-family: inherit; font-size: 0.95rem; line-height: 1.5; resize: vertical;"></textarea>
+                <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; align-items: center;">
+                    <button class="btn-primary" onclick="copyUnifiedMessage()" id="waCopyBtn">
+                        <i class="fas fa-copy"></i> Copiar Mensaje
+                    </button>
+                    <button class="btn-secondary" onclick="openUnifiedWhatsApp()" style="background: #25D366; border-color: #25D366; color: white;">
+                        <i class="fab fa-whatsapp"></i> Abrir WhatsApp
+                    </button>
+                    <span id="waMsgStatus" style="color: #94a3b8; font-size: 0.85rem; margin-left: 10px;"></span>
+                </div>
+            </div>
+        </div>
+
+    <!-- Gallery Editor Modal -->
+    <div id="galleryModal" class="gallery-modal" onclick="if(event.target===this)closeGalleryEditor()">
+        <div class="gallery-modal-content">
+            <div class="gallery-modal-header">
+                <span class="gallery-modal-title" id="galleryModalTitle">Nueva Galeria</span>
+                <button class="day-modal-close" onclick="closeGalleryEditor()">&times;</button>
+            </div>
+            <div class="gallery-modal-body">
+                <input type="hidden" id="galEditId">
+                <input type="hidden" id="galEditSlug">
+
+                <div class="gallery-form-grid">
+                    <div>
+                        <label for="galDate">Fecha del tour</label>
+                        <input type="date" id="galDate" required>
+                    </div>
+                    <div>
+                        <label for="galTourType">Tipo de tour</label>
+                        <select id="galTourType">
+                            <option value="regular">Regular</option>
+                            <option value="private">Privado</option>
+                            <option value="astrophoto">Astrophoto</option>
+                        </select>
+                    </div>
+                    <div class="gallery-form-full">
+                        <label for="galTitle">Titulo</label>
+                        <input type="text" id="galTitle" placeholder="Ej: Stargazing Night — Orion Nebula & Milky Way">
+                    </div>
+                    <div class="gallery-form-full">
+                        <label for="galSubtitle">Subtitulo</label>
+                        <input type="text" id="galSubtitle" placeholder="Ej: A stunning night under Bortle 1 skies...">
+                    </div>
+                    <div>
+                        <label for="galBortle">Bortle</label>
+                        <select id="galBortle">
+                            <option value="1" selected>1 - Excellent</option>
+                            <option value="2">2 - Very Dark</option>
+                            <option value="3">3 - Rural</option>
+                            <option value="4">4 - Rural/Suburban</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="galConditions">Condiciones</label>
+                        <input type="text" id="galConditions" placeholder="Ej: Clear skies, no wind">
+                    </div>
+                    <div class="gallery-form-full">
+                        <label for="galHighlights">Highlights</label>
+                        <textarea id="galHighlights" rows="2" placeholder="Ej: Incredible Milky Way visibility with naked-eye nebulae..."></textarea>
+                    </div>
+                    <div class="gallery-form-full">
+                        <label for="galGuests">Invitados (Nombre (Pais), separados por coma)</label>
+                        <input type="text" id="galGuests" placeholder="Ej: Maria (Germany), John (USA), Carlos (Chile)">
+                    </div>
+                    <div class="gallery-form-full">
+                        <label for="galObjects">Objetos observados (separados por coma)</label>
+                        <textarea id="galObjects" rows="2" placeholder="Ej: Orion Nebula, Carina Nebula, Omega Centauri, Saturn, Jupiter"></textarea>
+                    </div>
+                </div>
+
+                <!-- Photo Upload -->
+                <h4 style="color: #60a5fa; margin-bottom: 10px;"><i class="fas fa-images"></i> Fotos</h4>
+                <div class="upload-zone" id="uploadZone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Arrastra fotos aqui o haz click para seleccionar</p>
+                    <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">JPG, PNG, WebP — originales sin comprimir</p>
+                    <input type="file" id="photoFileInput" multiple accept="image/*" style="display: none;">
+                </div>
+                <div class="photo-preview-grid" id="photoPreviewGrid"></div>
+            </div>
+            <div class="gallery-modal-actions">
+                <button class="btn-secondary" onclick="saveGalleryDraft()" id="galSaveDraftBtn">
+                    <i class="fas fa-save"></i> Guardar Borrador
+                </button>
+                <button class="btn-primary" onclick="publishGallery()" id="galPublishBtn">
+                    <i class="fas fa-globe"></i> Publicar
+                </button>
+                <span id="galSaveStatus" style="color: #94a3b8; font-size: 0.85rem; margin-left: auto; align-self: center;"></span>
+            </div>
+        </div>
+    </div>
+
     <!-- Day Modal -->
     <div id="dayModal" class="day-modal">
         <div class="day-modal-content">
@@ -2519,6 +2677,7 @@ Atacama Dark Sky</textarea>
             }
             loadBookings();
             loadBlockedDates();
+            loadCalendarBookings(); // Load all bookings for calendar view
             loadReviewStats(); // Load review badge count
         });
 
@@ -2758,13 +2917,58 @@ Atacama Dark Sky</textarea>
 
         function changeMonth(delta) {
             currentCalendarMonth = new Date(currentCalendarMonth.getFullYear(), currentCalendarMonth.getMonth() + delta, 1);
-            renderCalendar();
+            loadCalendarBookings();
+        }
+
+        // Load bookings specifically for the calendar view (all bookings for current month + buffer)
+        async function loadCalendarBookings() {
+            try {
+                const year = currentCalendarMonth.getFullYear();
+                const month = currentCalendarMonth.getMonth();
+
+                // Get first day of previous month and last day of next month for buffer
+                const dateFrom = new Date(year, month - 1, 1).toISOString().split('T')[0];
+                const dateTo = new Date(year, month + 2, 0).toISOString().split('T')[0];
+
+                const params = new URLSearchParams({
+                    date_from: dateFrom,
+                    date_to: dateTo,
+                    limit: 500 // High limit to get all bookings in range
+                });
+
+                const response = await fetch(`/api/booking-api?${params}`);
+                const data = await response.json();
+
+                if (data.success && data.data.bookings) {
+                    // Merge with existing bookings (don't lose current page data)
+                    const calendarBookings = data.data.bookings;
+
+                    // Update bookingsByDate with calendar-specific data
+                    calendarBookings.forEach(booking => {
+                        if (booking.date) {
+                            if (!bookingsByDate[booking.date]) {
+                                bookingsByDate[booking.date] = [];
+                            }
+                            // Check if booking already exists
+                            const exists = bookingsByDate[booking.date].some(b => b.id === booking.id);
+                            if (!exists) {
+                                bookingsByDate[booking.date].push(booking);
+                            }
+                        }
+                    });
+                }
+
+                renderCalendar();
+            } catch (error) {
+                console.error('Error loading calendar bookings:', error);
+                renderCalendar(); // Still render with existing data
+            }
         }
 
         function goToToday() {
             currentCalendarMonth = new Date();
             selectedDate = null;
-            renderCalendar();
+            loadCalendarBookings();
             // Remove date filter
             document.getElementById('filterDateFrom').value = '';
             document.getElementById('filterDateTo').value = '';
@@ -3075,9 +3279,9 @@ Atacama Dark Sky</textarea>
                             <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 8px;">
                                 Creado: ${formatDateTime(booking.created_at)} | Fuente: ${booking.source || 'web'} | Pago: ${getPaymentMethodDisplay(booking.payment_method || 'pending')}
                             </div>
-                            ${isPastDate(dateStr) || booking.payment_method === 'mercadopago' ? `
+                            ${booking.payment_method === 'mercadopago' ? `
                                 <div style="padding: 8px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 4px; margin-bottom: 8px; font-size: 0.75rem; color: #fca5a5;">
-                                    <i class="fas fa-lock"></i> ${booking.payment_method === 'mercadopago' ? 'No se puede modificar - Pago confirmado' : 'No se puede modificar - Fecha pasada'}
+                                    <i class="fas fa-lock"></i> Pago confirmado vía MercadoPago
                                 </div>
                             ` : ''}
                             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
@@ -3087,7 +3291,7 @@ Atacama Dark Sky</textarea>
                                 <button onclick="changeBookingStatus(${booking.id}, 'pending')" style="background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'pending' || booking.payment_method === 'mercadopago' || isPastDate(dateStr) ? 'disabled' : ''}>
                                     <i class="fas fa-clock"></i> Pendiente
                                 </button>
-                                <button onclick="changeBookingStatus(${booking.id}, 'cancelled')" style="background: #6b7280; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'cancelled' || booking.payment_method === 'mercadopago' || isPastDate(dateStr) ? 'disabled' : ''}>
+                                <button onclick="changeBookingStatus(${booking.id}, 'cancelled')" style="background: #6b7280; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; flex: 1;" ${booking.status === 'cancelled' || booking.payment_method === 'mercadopago' ? 'disabled' : ''}>
                                     <i class="fas fa-times"></i> Cancelar
                                 </button>
                                 <button onclick="deleteBooking(${booking.id}, '${booking.name.replace(/'/g, "\\'")}')" style="background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;" ${booking.payment_method === 'mercadopago' ? 'disabled' : ''}>
@@ -4005,9 +4209,7 @@ Atacama Dark Sky</textarea>
             document.querySelector(`.tab-btn[onclick*="${tab}"]`).classList.add('active');
 
             // Load data for tab
-            if (tab === 'photos') {
-                loadPhotoLinks();
-            } else if (tab === 'reviews') {
+            if (tab === 'reviews') {
                 loadReviews();
             } else if (tab === 'ai') {
                 loadChatHistory();
@@ -4462,7 +4664,7 @@ Atacama Dark Sky</textarea>
         // Actualizar el select de fechas cuando se cargan los links
         function updatePhotoDateSelect(links) {
             photoLinksData = links;
-            const select = document.getElementById('msgPhotoDate');
+            const select = document.getElementById('waMsgDate');
             select.innerHTML = '<option value="">-- Selecciona fecha --</option>';
 
             links.forEach(link => {
@@ -4474,62 +4676,56 @@ Atacama Dark Sky</textarea>
             });
         }
 
-        // Generar mensaje con fotos y link de review
-        function updatePhotoMessage() {
-            const select = document.getElementById('msgPhotoDate');
-            const clientName = document.getElementById('msgClientName').value.trim();
-            const language = document.getElementById('msgLanguage').value;
-            const textarea = document.getElementById('photoMessageText');
-            const statusMsg = document.getElementById('photoStatusMsg');
+        // ---- Unified WhatsApp Message ----
 
-            // Actualizar estado de verificación de fotos
-            if (select.value) {
-                statusMsg.innerHTML = '<i class="fas fa-check-circle" style="color: #4ade80;"></i> Fotos verificadas para esta fecha';
-            } else {
-                statusMsg.innerHTML = '';
-            }
-
-            let message;
-            if (language === 'en') {
-                const greeting = clientName ? `Hi ${clientName}!` : 'Hi!';
-                message = `${greeting} 🌌
-
-Thank you for sharing this experience under the stars with us.
-
-Your feedback is very important to help us improve and to help more people discover the Atacama sky.
-
-Could you share your experience? It only takes 2 minutes and at the end you'll be able to download your tour photos:
-👉 https://atacamadarksky.cl/review-form.html
-
-Hope to see you again soon! ✨
-
-Vicente
-Atacama Dark Sky`;
-            } else {
-                const greeting = clientName ? `¡Hola ${clientName}!` : '¡Hola!';
-                message = `${greeting} 🌌
-
-Gracias por vivir esta experiencia bajo las estrellas con nosotros.
-
-Tu opinión es muy importante para ayudarnos a mejorar y para que más personas descubran el cielo de Atacama.
-
-¿Podrías compartir tu experiencia? Solo te tomará 2 minutos y al finalizar podrás descargar las fotos del tour:
-👉 https://atacamadarksky.cl/review-form.html
-
-¡Esperamos verte pronto nuevamente! ✨
-
-Vicente
-Atacama Dark Sky`;
-            }
-
-            textarea.value = message;
+        function switchMessageType() {
+            const type = document.getElementById('waMsgType').value;
+            document.getElementById('waMsgGalleryGroup').style.display = type === 'gallery' ? '' : 'none';
+            document.getElementById('waMsgDateGroup').style.display = type === 'review' ? '' : 'none';
+            document.getElementById('waMsgReviewLink').style.display = type === 'review' ? '' : 'none';
+            updateUnifiedMessage();
         }
 
-        // Copiar mensaje de fotos al portapapeles
-        function copyPhotoMessage() {
-            const textarea = document.getElementById('photoMessageText');
+        function updateUnifiedMessage() {
+            const type = document.getElementById('waMsgType').value;
+            const name = document.getElementById('waMsgName').value.trim();
+            const lang = document.getElementById('waMsgLang').value;
+            const textarea = document.getElementById('waMsgText');
+            const statusMsg = document.getElementById('waMsgStatus');
+
+            if (type === 'gallery') {
+                const slug = document.getElementById('waMsgGallery').value;
+                const url = slug ? `https://atacamadarksky.cl/gallery/${slug}/` : '';
+                statusMsg.innerHTML = '';
+
+                if (lang === 'en') {
+                    textarea.value = `Hi${name ? ' ' + name : ''}!\n\nThank you for joining our stargazing experience under the incredible Atacama skies.\n\nYour tour photos are ready! You can view and download them here:\n${url || '[Select a gallery above]'}\n\nFeel free to share them with friends and family.\n\nClear skies!\nVicente\nAtacama Dark Sky`;
+                } else {
+                    textarea.value = `Hola${name ? ' ' + name : ''}!\n\nGracias por vivir esta experiencia bajo las estrellas del desierto de Atacama.\n\nLas fotos de tu tour estan listas! Puedes verlas y descargarlas aqui:\n${url || '[Selecciona una galeria arriba]'}\n\nCompartelas con tus amigos y familia.\n\nCielos despejados!\nVicente\nAtacama Dark Sky`;
+                }
+            } else {
+                // Review message
+                const dateSelect = document.getElementById('waMsgDate');
+                if (dateSelect.value) {
+                    statusMsg.innerHTML = '<i class="fas fa-check-circle" style="color: #4ade80;"></i> Fotos verificadas para esta fecha';
+                } else {
+                    statusMsg.innerHTML = '';
+                }
+
+                if (lang === 'en') {
+                    const greeting = name ? `Hi ${name}!` : 'Hi!';
+                    textarea.value = `${greeting} 🌌\n\nThank you for sharing this experience under the stars with us.\n\nYour feedback is very important to help us improve and to help more people discover the Atacama sky.\n\nCould you share your experience? It only takes 2 minutes and at the end you'll be able to download your tour photos:\n👉 https://atacamadarksky.cl/review-form.html\n\nHope to see you again soon! ✨\n\nVicente\nAtacama Dark Sky`;
+                } else {
+                    const greeting = name ? `¡Hola ${name}!` : '¡Hola!';
+                    textarea.value = `${greeting} 🌌\n\nGracias por vivir esta experiencia bajo las estrellas con nosotros.\n\nTu opinión es muy importante para ayudarnos a mejorar y para que más personas descubran el cielo de Atacama.\n\n¿Podrías compartir tu experiencia? Solo te tomará 2 minutos y al finalizar podrás descargar las fotos del tour:\n👉 https://atacamadarksky.cl/review-form.html\n\n¡Esperamos verte pronto nuevamente! ✨\n\nVicente\nAtacama Dark Sky`;
+                }
+            }
+        }
+
+        function copyUnifiedMessage() {
+            const textarea = document.getElementById('waMsgText');
             navigator.clipboard.writeText(textarea.value).then(() => {
-                const btn = document.getElementById('copyMsgBtn');
+                const btn = document.getElementById('waCopyBtn');
                 const originalHTML = btn.innerHTML;
                 btn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
                 btn.style.background = '#10b981';
@@ -4540,6 +4736,11 @@ Atacama Dark Sky`;
             }).catch(err => {
                 alert('Error al copiar: ' + err);
             });
+        }
+
+        function openUnifiedWhatsApp() {
+            const text = document.getElementById('waMsgText').value;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         }
 
         // Copiar cualquier texto al portapapeles
@@ -4557,13 +4758,6 @@ Atacama Dark Sky`;
             }).catch(err => {
                 alert('Error al copiar: ' + err);
             });
-        }
-
-        // Abrir WhatsApp con el mensaje
-        function openWhatsAppWithMessage() {
-            const textarea = document.getElementById('photoMessageText');
-            const message = encodeURIComponent(textarea.value);
-            window.open(`https://wa.me/?text=${message}`, '_blank');
         }
 
         // ============ BLOCKED DATES FUNCTIONS ============
@@ -4847,7 +5041,520 @@ Atacama Dark Sky`;
                     loadAllAnalytics();
                 }
             }
+            if (tab === 'gallery') {
+                loadGalleryList();
+                loadPhotoLinks();
+            }
         };
+
+        // ============ GALLERY ADMIN ============
+        let galleryList = [];
+        let galleryPhotos = []; // photos in current editor
+        let galleryUploading = false;
+
+        async function loadGalleryList() {
+            const loading = document.getElementById('galleryListLoading');
+            const table = document.getElementById('galleryListTable');
+            const noMsg = document.getElementById('noGalleries');
+            loading.style.display = 'block';
+            table.style.display = 'none';
+            noMsg.style.display = 'none';
+
+            try {
+                const res = await fetch('/api/gallery?action=list');
+                galleryList = await res.json();
+
+                if (!galleryList.length) {
+                    noMsg.style.display = 'block';
+                    loading.style.display = 'none';
+                    return;
+                }
+
+                const tbody = document.getElementById('galleryListBody');
+                tbody.innerHTML = galleryList.map(g => {
+                    const dateStr = new Date(g.date).toLocaleDateString('es-CL');
+                    const statusClass = g.status === 'published' ? 'published' : 'draft';
+                    const statusLabel = g.status === 'published' ? 'Publicado' : 'Borrador';
+                    return `<tr>
+                        <td>${dateStr}</td>
+                        <td>${escHtml(g.title)}</td>
+                        <td>${g.tour_type}</td>
+                        <td>${g.photo_count}</td>
+                        <td><span class="gallery-status ${statusClass}">${statusLabel}</span></td>
+                        <td>
+                            <button class="btn-secondary" onclick="editGallery(${g.id})" style="padding:5px 10px;font-size:0.8rem;"><i class="fas fa-edit"></i></button>
+                            ${g.status === 'published'
+                                ? `<button class="btn-secondary" onclick="toggleGalleryPublish(${g.id}, false)" style="padding:5px 10px;font-size:0.8rem;" title="Despublicar"><i class="fas fa-eye-slash"></i></button>
+                                   <a href="/gallery/${escHtml(g.slug)}/" target="_blank" class="btn-secondary" style="padding:5px 10px;font-size:0.8rem;text-decoration:none;display:inline-flex;"><i class="fas fa-external-link-alt"></i></a>`
+                                : `<button class="btn-primary" onclick="toggleGalleryPublish(${g.id}, true)" style="padding:5px 10px;font-size:0.8rem;" title="Publicar"><i class="fas fa-globe"></i></button>`
+                            }
+                            <button class="btn-secondary" onclick="deleteGallery(${g.id})" style="padding:5px 10px;font-size:0.8rem;color:#f87171;" title="Eliminar"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+                }).join('');
+
+                // Update WhatsApp gallery selector
+                const sel = document.getElementById('waMsgGallery');
+                sel.innerHTML = '<option value="">-- Seleccionar galeria --</option>' +
+                    galleryList.filter(g => g.status === 'published').map(g =>
+                        `<option value="${escHtml(g.slug)}">${new Date(g.date).toLocaleDateString('es-CL')} - ${escHtml(g.title)}</option>`
+                    ).join('');
+
+                table.style.display = 'table';
+                loading.style.display = 'none';
+            } catch (err) {
+                console.error('Error loading galleries:', err);
+                loading.innerHTML = '<span style="color:#f87171;">Error al cargar galerias</span>';
+            }
+        }
+
+        function escHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ---- Gallery Editor ----
+
+        function openGalleryEditor(data) {
+            document.getElementById('galEditId').value = data ? data.id : '';
+            document.getElementById('galEditSlug').value = data ? data.slug : '';
+            document.getElementById('galDate').value = data ? data.date.split('T')[0] : new Date().toISOString().split('T')[0];
+            document.getElementById('galTourType').value = data ? data.tour_type : 'regular';
+            document.getElementById('galTitle').value = data ? data.title : '';
+            document.getElementById('galSubtitle').value = data ? (data.subtitle || '') : '';
+            document.getElementById('galBortle').value = data ? data.bortle : '1';
+            document.getElementById('galConditions').value = data ? (data.conditions || '') : '';
+            document.getElementById('galHighlights').value = data ? (data.highlights || '') : '';
+
+            const guests = data && Array.isArray(data.guests) ? data.guests : [];
+            document.getElementById('galGuests').value = guests.map(g => typeof g === 'string' ? g : `${g.name} (${g.country})`).join(', ');
+
+            const objects = data && Array.isArray(data.objects) ? data.objects : [];
+            document.getElementById('galObjects').value = objects.join(', ');
+
+            document.getElementById('galleryModalTitle').textContent = data ? 'Editar Galeria' : 'Nueva Galeria';
+
+            // Load existing photos
+            galleryPhotos = data && data.photos ? data.photos.map(p => ({
+                id: p.id,
+                url: p.thumbnail_url,
+                originalUrl: p.original_url,
+                filename: p.filename,
+                uploaded: true
+            })) : [];
+            renderPhotoGrid();
+
+            document.getElementById('galleryModal').classList.add('active');
+            document.getElementById('galSaveStatus').textContent = '';
+        }
+
+        function closeGalleryEditor() {
+            document.getElementById('galleryModal').classList.remove('active');
+        }
+
+        async function editGallery(id) {
+            try {
+                const res = await fetch(`/api/gallery?action=get&id=${id}`);
+                const data = await res.json();
+                openGalleryEditor(data);
+            } catch (err) {
+                console.error('Error loading gallery:', err);
+                alert('Error al cargar la galeria');
+            }
+        }
+
+        function getGalleryFormData() {
+            const guestsStr = document.getElementById('galGuests').value.trim();
+            const guests = guestsStr ? guestsStr.split(',').map(g => {
+                const match = g.trim().match(/^(.+?)\s*\((.+?)\)$/);
+                if (match) return { name: match[1].trim(), country: match[2].trim() };
+                return { name: g.trim(), country: 'Unknown' };
+            }) : [];
+
+            const objectsStr = document.getElementById('galObjects').value.trim();
+            const objects = objectsStr ? objectsStr.split(',').map(o => o.trim()).filter(Boolean) : [];
+
+            return {
+                date: document.getElementById('galDate').value,
+                tour_type: document.getElementById('galTourType').value,
+                title: document.getElementById('galTitle').value,
+                subtitle: document.getElementById('galSubtitle').value,
+                bortle: parseInt(document.getElementById('galBortle').value),
+                conditions: document.getElementById('galConditions').value,
+                highlights: document.getElementById('galHighlights').value,
+                guests,
+                objects
+            };
+        }
+
+        async function saveGalleryDraft() {
+            const statusEl = document.getElementById('galSaveStatus');
+            const formData = getGalleryFormData();
+
+            if (!formData.date || !formData.title) {
+                statusEl.textContent = 'Fecha y titulo son obligatorios';
+                statusEl.style.color = '#f87171';
+                return;
+            }
+
+            statusEl.textContent = 'Guardando...';
+            statusEl.style.color = '#94a3b8';
+
+            try {
+                const id = document.getElementById('galEditId').value;
+                let result;
+
+                if (id) {
+                    // Update
+                    const res = await fetch('/api/gallery?action=update', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: parseInt(id), ...formData })
+                    });
+                    result = await res.json();
+                } else {
+                    // Create
+                    const res = await fetch('/api/gallery?action=create', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                    result = await res.json();
+                    if (result.id) {
+                        document.getElementById('galEditId').value = result.id;
+                        document.getElementById('galEditSlug').value = result.slug;
+                    }
+                }
+
+                if (result.error) throw new Error(result.error);
+                statusEl.textContent = 'Guardado';
+                statusEl.style.color = '#22c55e';
+            } catch (err) {
+                console.error('Error saving gallery:', err);
+                statusEl.textContent = 'Error al guardar';
+                statusEl.style.color = '#f87171';
+            }
+        }
+
+        async function publishGallery() {
+            // Save first
+            await saveGalleryDraft();
+            const id = document.getElementById('galEditId').value;
+            if (!id) return;
+
+            try {
+                const res = await fetch('/api/gallery?action=publish', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: parseInt(id) })
+                });
+                const result = await res.json();
+                if (result.error) throw new Error(result.error);
+
+                document.getElementById('galSaveStatus').textContent = 'Publicado!';
+                document.getElementById('galSaveStatus').style.color = '#22c55e';
+                loadGalleryList();
+            } catch (err) {
+                console.error('Error publishing:', err);
+                document.getElementById('galSaveStatus').textContent = 'Error al publicar';
+                document.getElementById('galSaveStatus').style.color = '#f87171';
+            }
+        }
+
+        async function toggleGalleryPublish(id, publish) {
+            try {
+                const action = publish ? 'publish' : 'unpublish';
+                await fetch(`/api/gallery?action=${action}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                });
+                loadGalleryList();
+            } catch (err) {
+                console.error('Error toggling publish:', err);
+            }
+        }
+
+        async function deleteGallery(id) {
+            if (!confirm('Eliminar esta galeria y todas sus fotos?')) return;
+            try {
+                await fetch(`/api/gallery?action=delete&id=${id}`, { method: 'DELETE' });
+                loadGalleryList();
+            } catch (err) {
+                console.error('Error deleting gallery:', err);
+            }
+        }
+
+        // ---- Photo Upload ----
+
+        function setupUploadZone() {
+            const zone = document.getElementById('uploadZone');
+            const input = document.getElementById('photoFileInput');
+
+            zone.addEventListener('click', () => input.click());
+            zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
+            zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('dragover');
+                handleFiles(e.dataTransfer.files);
+            });
+            input.addEventListener('change', () => {
+                handleFiles(input.files);
+                input.value = '';
+            });
+        }
+
+        function uniqueFilename(originalName) {
+            const ext = originalName.lastIndexOf('.') >= 0
+                ? originalName.slice(originalName.lastIndexOf('.')).toLowerCase()
+                : '.jpg';
+            const base = originalName.slice(0, originalName.lastIndexOf('.')).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 40);
+            const ts = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+            return `${base}_${ts}${ext}`;
+        }
+
+        async function handleFiles(fileList) {
+            const id = document.getElementById('galEditId').value;
+            const slug = document.getElementById('galEditSlug').value;
+
+            // If gallery not yet saved, save draft first
+            if (!id) {
+                await saveGalleryDraft();
+            }
+
+            const currentId = document.getElementById('galEditId').value;
+            const currentSlug = document.getElementById('galEditSlug').value;
+            if (!currentId || !currentSlug) {
+                alert('Primero guarda la galeria antes de subir fotos');
+                return;
+            }
+
+            for (const file of fileList) {
+                if (!file.type.startsWith('image/')) continue;
+
+                const safeFilename = uniqueFilename(file.name);
+                const idx = galleryPhotos.length;
+                const entry = {
+                    file,
+                    url: URL.createObjectURL(file),
+                    filename: safeFilename,
+                    uploaded: false,
+                    progress: 0,
+                    status: 'uploading'
+                };
+                galleryPhotos.push(entry);
+                renderPhotoGrid();
+
+                // Upload in background
+                uploadPhoto(entry, currentId, currentSlug, idx);
+            }
+        }
+
+        async function uploadPhoto(entry, galleryId, slug, idx) {
+            try {
+                // Generate thumbnail client-side
+                let thumbBlob;
+                try {
+                    thumbBlob = await generateThumbnail(entry.file, 400);
+                } catch (thumbErr) {
+                    console.error('Thumbnail generation failed:', thumbErr);
+                    entry.status = 'error';
+                    entry.errorMsg = 'Formato no soportado: ' + entry.file.type;
+                    renderPhotoGrid();
+                    return;
+                }
+
+                // Ensure filename has .jpg extension if original was HEIC/other
+                let uploadFilename = entry.filename;
+                const contentType = entry.file.type || 'image/jpeg';
+                const thumbFilename = `thumb_${uploadFilename}`;
+
+                // Get signed URLs for original + thumbnail
+                const [origUrlRes, thumbUrlRes] = await Promise.all([
+                    fetch('/api/gallery?action=upload-url', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ slug, filename: uploadFilename, contentType })
+                    }).then(r => r.json()),
+                    fetch('/api/gallery?action=upload-url', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ slug, filename: thumbFilename, contentType: 'image/jpeg' })
+                    }).then(r => r.json())
+                ]);
+
+                if (origUrlRes.error || thumbUrlRes.error) {
+                    throw new Error(origUrlRes.error || thumbUrlRes.error);
+                }
+
+                // Upload original with progress
+                await uploadWithProgress(origUrlRes.signedUrl, origUrlRes.token, entry.file, contentType, (p) => {
+                    entry.progress = p * 0.8; // 80% for original
+                    renderPhotoGrid();
+                });
+
+                // Upload thumbnail
+                await uploadWithProgress(thumbUrlRes.signedUrl, thumbUrlRes.token, thumbBlob, 'image/jpeg', (p) => {
+                    entry.progress = 0.8 + p * 0.2; // last 20% for thumb
+                    renderPhotoGrid();
+                });
+
+                // Save photo record to DB
+                const addRes = await fetch('/api/gallery?action=add-photo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        gallery_id: parseInt(galleryId),
+                        original_url: origUrlRes.publicUrl,
+                        thumbnail_url: thumbUrlRes.publicUrl,
+                        filename: uploadFilename,
+                        size_bytes: entry.file.size
+                    })
+                });
+
+                if (!addRes.ok) {
+                    throw new Error(`Failed to save photo: ${addRes.status}`);
+                }
+                const photo = await addRes.json();
+
+                entry.id = photo.id;
+                entry.originalUrl = origUrlRes.publicUrl;
+                entry.uploaded = true;
+                entry.status = 'done';
+                entry.progress = 1;
+                renderPhotoGrid();
+            } catch (err) {
+                console.error('Upload error:', err);
+                entry.status = 'error';
+                entry.errorMsg = err.message;
+                renderPhotoGrid();
+            }
+        }
+
+        function uploadWithProgress(signedUrl, token, blob, contentType, onProgress) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('PUT', signedUrl);
+                xhr.setRequestHeader('Content-Type', contentType);
+                if (token) xhr.setRequestHeader('x-upsert', 'true');
+                xhr.upload.onprogress = (e) => {
+                    if (e.lengthComputable) onProgress(e.loaded / e.total);
+                };
+                xhr.onload = () => {
+                    if (xhr.status >= 200 && xhr.status < 300) resolve();
+                    else reject(new Error(`Upload failed: ${xhr.status}`));
+                };
+                xhr.onerror = () => reject(new Error('Upload network error'));
+                xhr.send(blob);
+            });
+        }
+
+        function generateThumbnail(file, maxSize) {
+            return new Promise((resolve, reject) => {
+                const blobUrl = URL.createObjectURL(file);
+                const img = new Image();
+                img.onload = () => {
+                    URL.revokeObjectURL(blobUrl);
+                    const canvas = document.createElement('canvas');
+                    let w = img.width, h = img.height;
+                    if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+                    else { w = Math.round(w * maxSize / h); h = maxSize; }
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    canvas.toBlob((blob) => {
+                        if (blob) resolve(blob);
+                        else reject(new Error('Failed to create thumbnail blob'));
+                    }, 'image/jpeg', 0.8);
+                };
+                img.onerror = () => {
+                    URL.revokeObjectURL(blobUrl);
+                    reject(new Error(`Cannot decode image: ${file.name} (${file.type})`));
+                };
+                img.src = blobUrl;
+            });
+        }
+
+        function renderPhotoGrid() {
+            const grid = document.getElementById('photoPreviewGrid');
+            grid.innerHTML = galleryPhotos.map((p, i) => {
+                const statusIcon = p.status === 'done' || p.uploaded ? '<i class="fas fa-check"></i>'
+                    : p.status === 'error' ? '<i class="fas fa-times"></i>'
+                    : '<i class="fas fa-spinner fa-spin"></i>';
+                const statusClass = p.status === 'done' || p.uploaded ? 'done' : p.status === 'error' ? 'error' : 'uploading';
+                const progressWidth = p.uploaded ? 100 : Math.round((p.progress || 0) * 100);
+
+                const errorTitle = p.errorMsg ? ` title="${escHtml(p.errorMsg)}"` : '';
+                return `<div class="photo-preview-item" draggable="true" data-idx="${i}"
+                            ondragstart="photoDragStart(event, ${i})" ondragover="photoDragOver(event)" ondrop="photoDrop(event, ${i})">
+                    <img src="${p.url}" alt="${escHtml(p.filename)}">
+                    <span class="upload-status ${statusClass}"${errorTitle}>${statusIcon}</span>
+                    ${p.uploaded || p.id || p.status === 'error' ? `<button class="delete-photo" onclick="deletePhoto(${i})" title="Eliminar">&times;</button>` : ''}
+                    <div class="upload-progress" style="width:${progressWidth}%"></div>
+                    <span class="sort-handle"><i class="fas fa-grip-vertical"></i></span>
+                </div>`;
+            }).join('');
+        }
+
+        async function deletePhoto(idx) {
+            const photo = galleryPhotos[idx];
+            if (photo.id) {
+                try {
+                    await fetch(`/api/gallery?action=delete-photo&id=${photo.id}`, { method: 'DELETE' });
+                } catch (err) {
+                    console.error('Error deleting photo:', err);
+                }
+            }
+            if (photo.url && photo.url.startsWith('blob:')) URL.revokeObjectURL(photo.url);
+            galleryPhotos.splice(idx, 1);
+            renderPhotoGrid();
+        }
+
+        // Drag & drop reorder
+        let photoDragIdx = null;
+
+        function photoDragStart(e, idx) {
+            photoDragIdx = idx;
+            e.dataTransfer.effectAllowed = 'move';
+            e.target.closest('.photo-preview-item').classList.add('dragging');
+        }
+
+        function photoDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        async function photoDrop(e, targetIdx) {
+            e.preventDefault();
+            if (photoDragIdx === null || photoDragIdx === targetIdx) return;
+
+            const item = galleryPhotos.splice(photoDragIdx, 1)[0];
+            galleryPhotos.splice(targetIdx, 0, item);
+            photoDragIdx = null;
+            renderPhotoGrid();
+
+            // Save new order to DB
+            const photoIds = galleryPhotos.filter(p => p.id).map(p => p.id);
+            if (photoIds.length) {
+                try {
+                    await fetch('/api/gallery?action=reorder-photos', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ photo_ids: photoIds })
+                    });
+                } catch (err) {
+                    console.error('Error reordering:', err);
+                }
+            }
+        }
+
+
+        // Init upload zone on load
+        document.addEventListener('DOMContentLoaded', setupUploadZone);
 
         // ============ ANALYTICS DASHBOARD ============
         let analyticsCharts = {};
