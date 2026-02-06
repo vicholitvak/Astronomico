@@ -22,6 +22,7 @@ import { getAstroSummary } from '../lib/gallery/astro-calculator.js';
 import { saveGalleryData, updateGalleriesIndex, buildIndexEntry, parseGuests, loadGalleriesIndex } from '../lib/gallery/gallery-data.js';
 import { generateGalleryHTML } from '../lib/gallery/html-generator.js';
 import { addToSitemap, addGalleryIndexToSitemap } from '../lib/gallery/sitemap-updater.js';
+import { generateIndexPages } from '../lib/gallery/index-generator.js';
 
 // ==========================================
 // Argument parsing
@@ -234,7 +235,11 @@ async function createGallery(args) {
   await addToSitemap(slug, date);
   await addGalleryIndexToSitemap();
 
-  // 13. Print summary
+  // 13. Regenerate index pages
+  console.log('📄 Generating index pages...');
+  await generateIndexPages();
+
+  // 14. Print summary
   const totalSizeKB = photos.reduce((sum, p) => sum + p.sizeKB + p.thumbSizeKB, 0);
   console.log('\n✅ Gallery created successfully!\n');
   console.log(`  📁 Path:   gallery/${slug}/`);

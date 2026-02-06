@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Observatory Log — Atacama Dark Sky</title>
+  <meta name="description" content="Cumulative astronomical observation log from 0 stargazing nights in the Atacama Desert. 0 unique celestial objects observed.">
+  <link rel="canonical" href="https://atacamadarksky.cl/observatory-log">
+
+  <meta property="og:title" content="Observatory Log — Atacama Dark Sky">
+  <meta property="og:description" content="Cumulative observation log from the darkest skies on Earth">
+  <meta property="og:url" content="https://atacamadarksky.cl/observatory-log">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/gallery/gallery-styles.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+  <style>
+    .log-hero { padding: 8rem 1.5rem 2.5rem; text-align: center; background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%); }
+    .log-hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .log-hero p { color: var(--text-secondary); font-size: 1.1rem; }
+
+    .log-stats { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; padding: 2rem 1.5rem; }
+    .log-stats .stat { text-align: center; }
+    .log-stats .stat-number { font-size: 2.2rem; font-weight: 700; color: var(--primary-color); }
+    .log-stats .stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .log-section { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .log-section h2 { font-size: 1.5rem; margin-bottom: 1.25rem; }
+
+    .ranking-list { list-style: none; }
+    .ranking-item { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .ranking-position { width: 2rem; font-size: 1.1rem; font-weight: 700; color: var(--text-muted); text-align: right; }
+    .ranking-position.top3 { color: var(--primary-color); }
+    .ranking-info { flex: 1; }
+    .ranking-name { font-weight: 500; font-size: 1rem; }
+    .ranking-meta { font-size: 0.8rem; color: var(--text-muted); }
+    .ranking-count { font-size: 0.9rem; color: var(--text-secondary); background: var(--bg-secondary); padding: 0.2rem 0.6rem; border-radius: 50px; }
+
+    .monthly-log { display: grid; gap: 1.25rem; }
+    .month-card { background: var(--bg-secondary); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--border-radius-lg); padding: 1.25rem; }
+    .month-card h3 { font-size: 1.1rem; color: var(--primary-color); margin-bottom: 0.5rem; }
+    .month-stats { display: flex; gap: 1.5rem; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .month-objects { font-size: 0.85rem; color: var(--text-secondary); }
+
+    .countries-section { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; padding: 1rem 0; }
+    .country-badge { background: var(--bg-secondary); border: 1px solid rgba(255,255,255,0.06); border-radius: 50px; padding: 0.4rem 1rem; font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .log-hero { padding: 6rem 1rem 2rem; }
+      .log-hero h1 { font-size: 1.75rem; }
+      .log-stats { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="gallery-nav">
+    <div class="nav-container">
+      <a href="/" class="nav-logo">
+        <img src="/images/Nightskylogo.webp" alt="Atacama Dark Sky" width="120" height="40" loading="eager">
+      </a>
+      <ul class="nav-links">
+        <li><a href="/gallery/">Galleries</a></li>
+        <li><a href="/observatory-log">Observatory Log</a></li>
+        <li><a href="/#tours">Book a Tour</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="log-hero">
+    <h1>Observatory Log</h1>
+    <p>Cumulative astronomical observations from the Atacama Desert</p>
+  </header>
+
+  
+  <div style="text-align: center; padding: 4rem 1.5rem; color: var(--text-muted);">
+    <h2 style="color: var(--text-secondary); margin-bottom: 0.5rem;">No observations yet</h2>
+    <p>The observatory log will build up as tours are conducted.</p>
+  </div>
+  
+
+  <hr class="section-divider">
+
+  <section class="booking-cta">
+    <h2>Experience the Darkest Skies on Earth</h2>
+    <p>Join us for an unforgettable night of stargazing under Bortle Class 1 skies in the Atacama Desert.</p>
+    <a href="/#tours" class="cta-btn">Book Your Tour &#10141;</a>
+  </section>
+
+  <footer class="gallery-footer">
+    <p>&copy; 2026 <a href="/">Atacama Dark Sky</a> &middot; San Pedro de Atacama, Chile</p>
+  </footer>
+</body>
+</html>

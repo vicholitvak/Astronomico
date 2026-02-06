@@ -9,6 +9,7 @@ const translations = {
         'nav.faq': 'Preguntas',
         'nav.booking': 'Reservar',
         'nav.contact': 'Contacto',
+        'nav.gallery': 'Galería',
 
         // Hero Section
         'hero.title': 'Observa el Universo con el Cielo Más Claro del Mundo',

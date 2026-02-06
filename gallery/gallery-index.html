@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tour Galleries — Atacama Dark Sky</title>
+  <meta name="description" content="Browse 0 stargazing tour galleries from the Atacama Desert. 0 guests from 0 countries have observed under Bortle Class 1 skies.">
+  <link rel="canonical" href="https://atacamadarksky.cl/gallery/">
+
+  <meta property="og:title" content="Tour Galleries — Atacama Dark Sky">
+  <meta property="og:description" content="Stargazing tour galleries from the darkest skies on Earth">
+  <meta property="og:url" content="https://atacamadarksky.cl/gallery/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Atacama Dark Sky">
+  
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Tour Galleries — Atacama Dark Sky">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/gallery/gallery-styles.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+  <style>
+    .index-hero { padding: 8rem 1.5rem 2.5rem; text-align: center; background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%); }
+    .index-hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .index-hero p { color: var(--text-secondary); font-size: 1.1rem; }
+
+    .stats-strip { display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap; padding: 1.5rem; margin-bottom: 1rem; }
+    .stats-strip .stat { text-align: center; }
+    .stats-strip .stat-number { font-size: 1.8rem; font-weight: 700; color: var(--primary-color); }
+    .stats-strip .stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .filters { display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; padding: 0 1.5rem 2rem; }
+    .filter-btn { background: var(--bg-secondary); border: 1px solid rgba(255,255,255,0.08); color: var(--text-secondary); padding: 0.4rem 1rem; border-radius: 50px; cursor: pointer; font-size: 0.85rem; transition: all 0.3s; }
+    .filter-btn:hover, .filter-btn.active { background: rgba(0,212,255,0.12); border-color: rgba(0,212,255,0.3); color: var(--primary-color); }
+
+    .gallery-cards { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 3rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; }
+
+    .gallery-card { background: var(--bg-secondary); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--border-radius-lg); overflow: hidden; transition: border-color 0.3s, transform 0.3s; text-decoration: none; color: inherit; display: block; }
+    .gallery-card:hover { border-color: rgba(0,212,255,0.2); transform: translateY(-3px); color: inherit; }
+    .gallery-card .card-image { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+    .gallery-card .card-body { padding: 1.25rem; }
+    .gallery-card .card-date { font-size: 0.8rem; color: var(--primary-color); margin-bottom: 0.25rem; }
+    .gallery-card .card-title { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .gallery-card .card-meta { display: flex; gap: 1rem; font-size: 0.82rem; color: var(--text-muted); flex-wrap: wrap; }
+
+    .empty-state { text-align: center; padding: 4rem 1.5rem; color: var(--text-muted); }
+    .empty-state h2 { color: var(--text-secondary); margin-bottom: 0.5rem; }
+
+    .observatory-link { text-align: center; padding: 2rem 1.5rem; }
+    .observatory-link a { color: var(--text-secondary); font-size: 0.95rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 2px; }
+
+    @media (max-width: 768px) {
+      .index-hero { padding: 6rem 1rem 2rem; }
+      .index-hero h1 { font-size: 1.75rem; }
+      .stats-strip { gap: 1.5rem; }
+      .gallery-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="gallery-nav">
+    <div class="nav-container">
+      <a href="/" class="nav-logo">
+        <img src="/images/Nightskylogo.webp" alt="Atacama Dark Sky" width="120" height="40" loading="eager">
+      </a>
+      <ul class="nav-links">
+        <li><a href="/gallery/">Galleries</a></li>
+        <li><a href="/observatory-log">Observatory Log</a></li>
+        <li><a href="/#tours">Book a Tour</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="index-hero">
+    <h1>Tour Galleries</h1>
+    <p>Stargazing experiences from the darkest skies on Earth</p>
+  </header>
+
+  
+  <div class="empty-state">
+    <h2>No galleries yet</h2>
+    <p>Tour galleries will appear here after each stargazing session.</p>
+    <p style="margin-top: 1rem;"><a href="/#tours" class="cta-btn">Book Your Tour</a></p>
+  </div>
+  
+
+  <section class="booking-cta">
+    <h2>Experience the Darkest Skies on Earth</h2>
+    <p>Join us for an unforgettable night of stargazing under Bortle Class 1 skies in the Atacama Desert.</p>
+    <a href="/#tours" class="cta-btn">Book Your Tour &#10141;</a>
+  </section>
+
+  <footer class="gallery-footer">
+    <p>&copy; 2026 <a href="/">Atacama Dark Sky</a> &middot; San Pedro de Atacama, Chile</p>
+  </footer>
+
+  
+</body>
+</html>
