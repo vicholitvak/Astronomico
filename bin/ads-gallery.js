@@ -14,6 +14,7 @@
 //     --photos ./fotos-tour/ \
 //     --highlights "First time guests saw the Magellanic Clouds"
 
+import crypto from 'crypto';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { processPhotos, generateOGImage, generateInstagramCard } from '../lib/gallery/image-processor.js';
@@ -86,14 +87,18 @@ function generateWhatsAppMessage(data) {
   else if (names.length === 2) greeting = `Hi ${names[0]} and ${names[1]}!`;
   else greeting = `Hi ${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}!`;
 
+  const galleryUrl = data.accessToken
+    ? `https://atacamadarksky.cl/gallery/${data.slug}/?key=${data.accessToken}`
+    : `https://atacamadarksky.cl/gallery/${data.slug}/`;
+
   return `${greeting} 🌌
 
 Thank you for joining our ${data.tourType} tour tonight!
 Here are your photos and observation log:
 
-👉 https://atacamadarksky.cl/gallery/${data.slug}/
+👉 ${galleryUrl}
 
-Feel free to share — there's a share button on the page!
+This is your private link — only people with this link can see the photos.
 
 Clear skies,
 Vicente — Atacama Dark Sky ✨`;
@@ -183,6 +188,8 @@ async function createGallery(args) {
   });
 
   // 7. Build gallery data
+  const accessToken = crypto.randomBytes(9).toString('base64url'); // 12 chars
+
   const galleryData = {
     slug,
     date,
@@ -192,6 +199,7 @@ async function createGallery(args) {
     bortle,
     conditions,
     highlights,
+    accessToken,
     objects: objects.map(o => ({
       name: o.name,
       catalog: o.catalog,
@@ -244,6 +252,7 @@ async function createGallery(args) {
   console.log('\n✅ Gallery created successfully!\n');
   console.log(`  📁 Path:   gallery/${slug}/`);
   console.log(`  🌐 URL:    https://atacamadarksky.cl/gallery/${slug}/`);
+  console.log(`  🔑 Private: https://atacamadarksky.cl/gallery/${slug}/?key=${accessToken}`);
   console.log(`  📷 Photos: ${photos.length} (${totalSizeKB}KB total)`);
   console.log(`  🔭 Objects: ${objects.length}`);
   console.log(`  👥 Guests: ${guests.length}`);

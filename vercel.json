@@ -122,14 +122,6 @@
       "destination": "/api/suppliers"
     },
     {
-      "source": "/api/agencies/:agencyId/:action",
-      "destination": "/api/agencies"
-    },
-    {
-      "source": "/api/agencies/:agencyId",
-      "destination": "/api/agencies"
-    },
-    {
       "source": "/gallery/:slug/",
       "destination": "/api/gallery?slug=:slug"
     },

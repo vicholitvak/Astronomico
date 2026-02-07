@@ -10,9 +10,10 @@
  *   ?action=list|get|create|update|publish|unpublish|delete|upload-url|add-photo|delete-photo|reorder-photos
  */
 
+import crypto from 'crypto';
 import { Pool } from 'pg';
 import { createClient } from '@supabase/supabase-js';
-import { generateGalleryHTML } from '../lib/gallery/html-generator.js';
+import { generateGalleryHTML, generatePrivateGalleryHTML } from '../lib/gallery/html-generator.js';
 import { enrichObjects } from '../lib/gallery/astronomical-catalog.js';
 import { getAstroSummary } from '../lib/gallery/astro-calculator.js';
 import { parseGuests } from '../lib/gallery/gallery-data.js';
@@ -29,6 +30,10 @@ const BASE_URL = 'https://atacamadarksky.cl';
 
 function getSupabase() {
   return createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+}
+
+function generateAccessToken() {
+  return crypto.randomBytes(9).toString('base64url'); // 12 chars
 }
 
 // ============ AUTH ============
@@ -72,7 +77,7 @@ export default async function handler(req, res) {
   try {
     // Public routes (no auth)
     if (slug) {
-      return await renderGallery(slug, res);
+      return await renderGallery(slug, req, res);
     }
     if (PUBLIC_ACTIONS.has(action)) {
       if (action === 'page-index') return await renderIndex(res);
@@ -121,7 +126,7 @@ export default async function handler(req, res) {
 // PUBLIC PAGE RENDERING
 // ================================================================
 
-async function renderGallery(slug, res) {
+async function renderGallery(slug, req, res) {
   const galleryResult = await pool.query(
     "SELECT * FROM galleries WHERE slug = $1 AND status = 'published'",
     [slug]
@@ -133,6 +138,29 @@ async function renderGallery(slug, res) {
   }
 
   const gallery = galleryResult.rows[0];
+  const dateStr = gallery.date.toISOString().split('T')[0];
+
+  // Token validation: if gallery has an access_token, require ?key= match
+  if (gallery.access_token) {
+    const key = req.query.key;
+    if (!key || key !== gallery.access_token) {
+      const rawGuests = Array.isArray(gallery.guests) ? gallery.guests : [];
+      const objectNames = Array.isArray(gallery.objects) ? gallery.objects : [];
+      const html = generatePrivateGalleryHTML({
+        slug: gallery.slug,
+        date: dateStr,
+        tourType: gallery.tour_type,
+        title: gallery.title,
+        subtitle: gallery.subtitle || '',
+        bortle: gallery.bortle,
+        objects: objectNames,
+        guests: rawGuests
+      });
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.setHeader('Cache-Control', 'public, s-maxage=60');
+      return res.send(html);
+    }
+  }
 
   const photosResult = await pool.query(
     'SELECT * FROM gallery_photos WHERE gallery_id = $1 ORDER BY sort_order ASC',
@@ -156,11 +184,11 @@ async function renderGallery(slug, res) {
   const conditionLevel = gallery.bortle <= 2 ? 'excellent' : gallery.bortle <= 3 ? 'good' : 'standard';
   const enrichedObjects = enrichObjects(objectNames, conditionLevel);
 
-  const astro = getAstroSummary(gallery.date.toISOString().split('T')[0]);
+  const astro = getAstroSummary(dateStr);
 
   const html = generateGalleryHTML({
     slug: gallery.slug,
-    date: gallery.date.toISOString().split('T')[0],
+    date: dateStr,
     tourType: gallery.tour_type,
     title: gallery.title,
     subtitle: gallery.subtitle || '',
@@ -310,12 +338,14 @@ async function handleCreate(req, res) {
     slug = `${slug}-${Date.now().toString(36).slice(-4)}`;
   }
 
+  const accessToken = generateAccessToken();
+
   const result = await pool.query(`
-    INSERT INTO galleries (slug, date, tour_type, title, subtitle, bortle, conditions, highlights, guests, objects)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    INSERT INTO galleries (slug, date, tour_type, title, subtitle, bortle, conditions, highlights, guests, objects, access_token)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
     RETURNING *
   `, [slug, date, tour_type, title, subtitle || null, bortle || 1, conditions || null, highlights || null,
-      JSON.stringify(guests || []), JSON.stringify(objects || [])]);
+      JSON.stringify(guests || []), JSON.stringify(objects || []), accessToken]);
 
   return res.json(result.rows[0]);
 }
@@ -350,9 +380,11 @@ async function handlePublish(req, res) {
   const { id } = req.body;
   if (!id) return res.status(400).json({ error: 'Missing id' });
 
+  // Generate access_token if not already set
+  const accessToken = generateAccessToken();
   const result = await pool.query(
-    "UPDATE galleries SET status = 'published', updated_at = NOW() WHERE id = $1 RETURNING *",
-    [id]
+    "UPDATE galleries SET status = 'published', access_token = COALESCE(access_token, $2), updated_at = NOW() WHERE id = $1 RETURNING *",
+    [id, accessToken]
   );
   if (!result.rows.length) return res.status(404).json({ error: 'Gallery not found' });
   return res.json(result.rows[0]);
@@ -546,10 +578,10 @@ function generateIndexHTML(galleries, stats) {
     const dateStr = g.date.toISOString().split('T')[0];
     const guests = Array.isArray(g.guests) ? g.guests : [];
     const objects = Array.isArray(g.objects) ? g.objects : [];
-    const coverImg = g.cover_image || '/images/Nightskylogo.webp';
+    const objectNames = objects.slice(0, 5).map(o => typeof o === 'string' ? o : o.name || o).join(', ');
+    const moreObjects = objects.length > 5 ? ` +${objects.length - 5} more` : '';
 
-    return `<a href="/gallery/${esc(g.slug)}/" class="gallery-card">
-      <img class="card-image" src="${esc(coverImg)}" alt="${esc(g.title)}" loading="lazy">
+    return `<div class="gallery-card no-link">
       <div class="card-body">
         <div class="card-date">${formatDateShort(dateStr)}</div>
         <div class="card-title">${esc(g.title)}</div>
@@ -559,8 +591,10 @@ function generateIndexHTML(galleries, stats) {
           <span>&#9734; ${objects.length} objects</span>
           <span>Bortle ${g.bortle}</span>
         </div>
+        ${objectNames ? `<div class="card-objects">&#128301; ${esc(objectNames)}${esc(moreObjects)}</div>` : ''}
+        <div class="card-private">&#128274; Private gallery</div>
       </div>
-    </a>`;
+    </div>`;
   }).join('\n') : '';
 
   const statsStrip = stats.totalGalleries > 0 ? `
@@ -603,12 +637,13 @@ function generateIndexHTML(galleries, stats) {
     .stats-strip .stat{text-align:center}.stats-strip .stat-number{font-size:1.8rem;font-weight:700;color:var(--primary-color)}
     .stats-strip .stat-label{font-size:.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
     .gallery-cards{max-width:1200px;margin:0 auto;padding:0 1.5rem 3rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:1.5rem}
-    .gallery-card{background:var(--bg-secondary);border:1px solid rgba(255,255,255,.06);border-radius:var(--border-radius-lg);overflow:hidden;transition:border-color .3s,transform .3s;text-decoration:none;color:inherit;display:block}
-    .gallery-card:hover{border-color:rgba(0,212,255,.2);transform:translateY(-3px);color:inherit}
-    .gallery-card .card-image{width:100%;aspect-ratio:16/9;object-fit:cover}.gallery-card .card-body{padding:1.25rem}
+    .gallery-card{background:var(--bg-secondary);border:1px solid rgba(255,255,255,.06);border-radius:var(--border-radius-lg);overflow:hidden;text-decoration:none;color:inherit;display:block}
+    .gallery-card.no-link{cursor:default}.gallery-card .card-body{padding:1.25rem}
     .gallery-card .card-date{font-size:.8rem;color:var(--primary-color);margin-bottom:.25rem}
     .gallery-card .card-title{font-size:1.15rem;font-weight:600;margin-bottom:.5rem}
     .gallery-card .card-meta{display:flex;gap:1rem;font-size:.82rem;color:var(--text-muted);flex-wrap:wrap}
+    .gallery-card .card-objects{font-size:.82rem;color:var(--text-secondary);margin-top:.5rem}
+    .gallery-card .card-private{font-size:.78rem;color:var(--text-muted);margin-top:.5rem;opacity:.6}
     .empty-state{text-align:center;padding:4rem 1.5rem;color:var(--text-muted)}.empty-state h2{color:var(--text-secondary);margin-bottom:.5rem}
     @media(max-width:768px){.index-hero{padding:6rem 1rem 2rem}.index-hero h1{font-size:1.75rem}.gallery-cards{grid-template-columns:1fr}}
   </style>
