@@ -2586,6 +2586,13 @@
                     <input type="file" id="photoFileInput" multiple accept="image/*" style="display: none;">
                 </div>
                 <div class="photo-preview-grid" id="photoPreviewGrid"></div>
+
+                <!-- Testimonials -->
+                <div id="galTestimonialsSection" style="display:none; margin-top: 20px;">
+                    <h4 style="color: #60a5fa; margin-bottom: 10px;"><i class="fas fa-quote-left"></i> Testimonios</h4>
+                    <div id="galTestimonialsList" style="display:flex; flex-direction:column; gap:8px;"></div>
+                    <p id="galNoTestimonials" style="display:none; color:#64748b; font-size:0.85rem;">Sin testimonios todavia.</p>
+                </div>
             </div>
             <div class="gallery-modal-actions">
                 <button class="btn-secondary" onclick="saveGalleryDraft()" id="galSaveDraftBtn">
@@ -5078,9 +5085,10 @@
                     const dateStr = new Date(g.date).toLocaleDateString('es-CL');
                     const statusClass = g.status === 'published' ? 'published' : 'draft';
                     const statusLabel = g.status === 'published' ? 'Publicado' : 'Borrador';
+                    const pendingBadge = g.pending_testimonials > 0 ? ` <span style="background:#f59e0b;color:#000;font-size:0.7rem;padding:1px 5px;border-radius:8px;font-weight:600;" title="${g.pending_testimonials} testimonios pendientes">${g.pending_testimonials}</span>` : '';
                     return `<tr>
                         <td>${dateStr}</td>
-                        <td>${escHtml(g.title)}</td>
+                        <td>${escHtml(g.title)}${pendingBadge}</td>
                         <td>${g.tour_type}</td>
                         <td>${g.photo_count}</td>
                         <td><span class="gallery-status ${statusClass}">${statusLabel}</span></td>
@@ -5171,6 +5179,9 @@
                 uploaded: true
             })) : [];
             renderPhotoGrid();
+
+            // Load testimonials for existing gallery
+            loadTestimonials(data ? data.id : null);
 
             document.getElementById('galleryModal').classList.add('active');
             document.getElementById('galSaveStatus').textContent = '';
@@ -5310,6 +5321,93 @@
                 loadGalleryList();
             } catch (err) {
                 console.error('Error deleting gallery:', err);
+            }
+        }
+
+        // ---- Testimonials ----
+
+        async function loadTestimonials(galleryId) {
+            const section = document.getElementById('galTestimonialsSection');
+            const list = document.getElementById('galTestimonialsList');
+            const noMsg = document.getElementById('galNoTestimonials');
+
+            if (!galleryId) {
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+            list.innerHTML = '<span style="color:#64748b;font-size:0.85rem;">Cargando...</span>';
+            noMsg.style.display = 'none';
+
+            try {
+                const res = await fetch(`/api/gallery?action=list-testimonials&gallery_id=${galleryId}`);
+                const testimonials = await res.json();
+
+                if (!testimonials.length) {
+                    list.innerHTML = '';
+                    noMsg.style.display = 'block';
+                    return;
+                }
+
+                list.innerHTML = testimonials.map(t => {
+                    const statusColor = t.status === 'approved' ? '#22c55e' : t.status === 'rejected' ? '#f87171' : '#f59e0b';
+                    const statusLabel = t.status === 'approved' ? 'Aprobado' : t.status === 'rejected' ? 'Rechazado' : 'Pendiente';
+                    return `<div style="background:rgba(15,23,42,0.4);border:1px solid rgba(71,85,105,0.2);border-radius:8px;padding:10px 12px;">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+                            <div>
+                                <strong style="color:#e2e8f0;font-size:0.9rem;">${escHtml(t.name)}</strong>
+                                ${t.country ? `<span style="color:#64748b;font-size:0.82rem;margin-left:6px;">${escHtml(t.country)}</span>` : ''}
+                                <span style="color:${statusColor};font-size:0.75rem;margin-left:8px;font-weight:600;">${statusLabel}</span>
+                            </div>
+                            <div style="display:flex;gap:4px;">
+                                ${t.status !== 'approved' ? `<button class="btn-secondary" onclick="approveTestimonial(${t.id}, ${galleryId})" style="padding:3px 8px;font-size:0.75rem;color:#22c55e;" title="Aprobar"><i class="fas fa-check"></i></button>` : ''}
+                                ${t.status !== 'rejected' ? `<button class="btn-secondary" onclick="rejectTestimonial(${t.id}, ${galleryId})" style="padding:3px 8px;font-size:0.75rem;color:#f59e0b;" title="Rechazar"><i class="fas fa-ban"></i></button>` : ''}
+                                <button class="btn-secondary" onclick="deleteTestimonial(${t.id}, ${galleryId})" style="padding:3px 8px;font-size:0.75rem;color:#f87171;" title="Eliminar"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <p style="color:#94a3b8;font-size:0.85rem;font-style:italic;margin:0;line-height:1.5;">"${escHtml(t.quote)}"</p>
+                    </div>`;
+                }).join('');
+            } catch (err) {
+                console.error('Error loading testimonials:', err);
+                list.innerHTML = '<span style="color:#f87171;font-size:0.85rem;">Error al cargar testimonios</span>';
+            }
+        }
+
+        async function approveTestimonial(id, galleryId) {
+            try {
+                await fetch('/api/gallery?action=approve-testimonial', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                });
+                loadTestimonials(galleryId);
+            } catch (err) {
+                console.error('Error approving testimonial:', err);
+            }
+        }
+
+        async function rejectTestimonial(id, galleryId) {
+            try {
+                await fetch('/api/gallery?action=reject-testimonial', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                });
+                loadTestimonials(galleryId);
+            } catch (err) {
+                console.error('Error rejecting testimonial:', err);
+            }
+        }
+
+        async function deleteTestimonial(id, galleryId) {
+            if (!confirm('Eliminar este testimonio?')) return;
+            try {
+                await fetch(`/api/gallery?action=delete-testimonial&id=${id}`, { method: 'DELETE' });
+                loadTestimonials(galleryId);
+            } catch (err) {
+                console.error('Error deleting testimonial:', err);
             }
         }
 

@@ -5,9 +5,11 @@
  *   ?slug=X                    → Render gallery page
  *   ?action=page-index         → Render gallery index
  *   ?action=page-log           → Render observatory log
+ *   ?action=save-testimonial   → Submit guest testimonial (requires valid gallery key)
  *
  * Admin (auth required):
  *   ?action=list|get|create|update|publish|unpublish|delete|upload-url|add-photo|delete-photo|reorder-photos
+ *   ?action=list-testimonials|approve-testimonial|reject-testimonial|delete-testimonial
  */
 
 import crypto from 'crypto';
@@ -63,7 +65,7 @@ function generateSlug(date, tourType) {
 
 // ============ HANDLER ============
 
-const PUBLIC_ACTIONS = new Set(['page-index', 'page-log']);
+const PUBLIC_ACTIONS = new Set(['page-index', 'page-log', 'save-testimonial']);
 
 export default async function handler(req, res) {
   // CORS
@@ -82,6 +84,7 @@ export default async function handler(req, res) {
     if (PUBLIC_ACTIONS.has(action)) {
       if (action === 'page-index') return await renderIndex(res);
       if (action === 'page-log') return await renderObservatoryLog(res);
+      if (action === 'save-testimonial') return await handleSaveTestimonial(req, res);
     }
 
     // Admin routes (auth required)
@@ -113,6 +116,14 @@ export default async function handler(req, res) {
         return await handleDeletePhoto(req, res);
       case 'reorder-photos':
         return await handleReorderPhotos(req, res);
+      case 'list-testimonials':
+        return await handleListTestimonials(req, res);
+      case 'approve-testimonial':
+        return await handleApproveTestimonial(req, res);
+      case 'reject-testimonial':
+        return await handleRejectTestimonial(req, res);
+      case 'delete-testimonial':
+        return await handleDeleteTestimonial(req, res);
       default:
         return res.status(400).json({ error: 'Invalid action' });
     }
@@ -145,10 +156,10 @@ async function renderGallery(slug, req, res) {
   const hasValidKey = req.query.key && req.query.key === gallery.access_token;
   const photosPrivate = gallery.access_token && !isAdmin && !hasValidKey;
 
-  const photosResult = await pool.query(
-    'SELECT * FROM gallery_photos WHERE gallery_id = $1 ORDER BY sort_order ASC',
-    [gallery.id]
-  );
+  const [photosResult, testimonialsResult] = await Promise.all([
+    pool.query('SELECT * FROM gallery_photos WHERE gallery_id = $1 ORDER BY sort_order ASC', [gallery.id]),
+    pool.query("SELECT name, country, quote FROM gallery_testimonials WHERE gallery_id = $1 AND status = 'approved' ORDER BY created_at ASC", [gallery.id])
+  ]);
 
   const [prevResult, nextResult] = await Promise.all([
     pool.query("SELECT slug, title FROM galleries WHERE status = 'published' AND date < $1 ORDER BY date DESC LIMIT 1", [gallery.date]),
@@ -181,6 +192,7 @@ async function renderGallery(slug, req, res) {
     objects: enrichedObjects,
     photos: photosResult.rows,
     guests: parsedGuests,
+    testimonials: testimonialsResult.rows,
     astro,
     prev,
     next,
@@ -284,9 +296,11 @@ async function renderObservatoryLog(res) {
 
 async function handleList(req, res) {
   const result = await pool.query(`
-    SELECT g.*, COUNT(p.id)::int AS photo_count
+    SELECT g.*, COUNT(DISTINCT p.id)::int AS photo_count,
+           COUNT(DISTINCT CASE WHEN t.status = 'pending' THEN t.id END)::int AS pending_testimonials
     FROM galleries g
     LEFT JOIN gallery_photos p ON p.gallery_id = g.id
+    LEFT JOIN gallery_testimonials t ON t.gallery_id = g.id
     GROUP BY g.id
     ORDER BY g.date DESC
   `);
@@ -517,6 +531,87 @@ async function handleReorderPhotos(req, res) {
     client.release();
   }
 
+  return res.json({ success: true });
+}
+
+// ================================================================
+// TESTIMONIALS
+// ================================================================
+
+async function handleSaveTestimonial(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+  const { slug, key, name, country, quote } = req.body;
+  if (!slug || !key || !name || !quote) {
+    return res.status(400).json({ error: 'Missing required fields: slug, key, name, quote' });
+  }
+
+  if (quote.length > 500) {
+    return res.status(400).json({ error: 'Quote must be 500 characters or less' });
+  }
+
+  // Verify slug + key match a published gallery
+  const galleryResult = await pool.query(
+    "SELECT id FROM galleries WHERE slug = $1 AND access_token = $2 AND status = 'published'",
+    [slug, key]
+  );
+  if (!galleryResult.rows.length) {
+    return res.status(403).json({ error: 'Invalid gallery or access key' });
+  }
+
+  const galleryId = galleryResult.rows[0].id;
+
+  // Insert (unique constraint prevents duplicates per name+gallery)
+  try {
+    await pool.query(
+      'INSERT INTO gallery_testimonials (gallery_id, name, country, quote) VALUES ($1, $2, $3, $4)',
+      [galleryId, name.trim().slice(0, 255), (country || '').trim().slice(0, 100) || null, quote.trim()]
+    );
+  } catch (err) {
+    if (err.code === '23505') { // unique_violation
+      return res.status(409).json({ error: 'You have already submitted a testimonial for this gallery' });
+    }
+    throw err;
+  }
+
+  return res.json({ success: true });
+}
+
+async function handleListTestimonials(req, res) {
+  const { gallery_id } = req.query;
+  if (!gallery_id) return res.status(400).json({ error: 'Missing gallery_id' });
+
+  const result = await pool.query(
+    'SELECT id, name, country, quote, status, created_at FROM gallery_testimonials WHERE gallery_id = $1 ORDER BY created_at DESC',
+    [gallery_id]
+  );
+  return res.json(result.rows);
+}
+
+async function handleApproveTestimonial(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  const { id } = req.body;
+  if (!id) return res.status(400).json({ error: 'Missing id' });
+
+  await pool.query("UPDATE gallery_testimonials SET status = 'approved' WHERE id = $1", [id]);
+  return res.json({ success: true });
+}
+
+async function handleRejectTestimonial(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  const { id } = req.body;
+  if (!id) return res.status(400).json({ error: 'Missing id' });
+
+  await pool.query("UPDATE gallery_testimonials SET status = 'rejected' WHERE id = $1", [id]);
+  return res.json({ success: true });
+}
+
+async function handleDeleteTestimonial(req, res) {
+  if (req.method !== 'DELETE') return res.status(405).json({ error: 'Method not allowed' });
+  const { id } = req.query;
+  if (!id) return res.status(400).json({ error: 'Missing id' });
+
+  await pool.query('DELETE FROM gallery_testimonials WHERE id = $1', [id]);
   return res.json({ success: true });
 }
 
