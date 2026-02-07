@@ -140,8 +140,9 @@ async function renderGallery(slug, req, res) {
   const gallery = galleryResult.rows[0];
   const dateStr = gallery.date.toISOString().split('T')[0];
 
-  // Token validation: if gallery has an access_token, require ?key= match
-  if (gallery.access_token) {
+  // Token validation: if gallery has an access_token, require ?key= match (admin bypasses)
+  const isAdmin = !!verifySession(req);
+  if (gallery.access_token && !isAdmin) {
     const key = req.query.key;
     if (!key || key !== gallery.access_token) {
       const rawGuests = Array.isArray(gallery.guests) ? gallery.guests : [];
