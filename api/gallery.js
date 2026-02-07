@@ -13,7 +13,7 @@
 import crypto from 'crypto';
 import { Pool } from 'pg';
 import { createClient } from '@supabase/supabase-js';
-import { generateGalleryHTML, generatePrivateGalleryHTML } from '../lib/gallery/html-generator.js';
+import { generateGalleryHTML } from '../lib/gallery/html-generator.js';
 import { enrichObjects } from '../lib/gallery/astronomical-catalog.js';
 import { getAstroSummary } from '../lib/gallery/astro-calculator.js';
 import { parseGuests } from '../lib/gallery/gallery-data.js';
@@ -140,28 +140,10 @@ async function renderGallery(slug, req, res) {
   const gallery = galleryResult.rows[0];
   const dateStr = gallery.date.toISOString().split('T')[0];
 
-  // Token validation: if gallery has an access_token, require ?key= match (admin bypasses)
+  // Determine if photos should be hidden (token required, admin bypasses)
   const isAdmin = !!verifySession(req);
-  if (gallery.access_token && !isAdmin) {
-    const key = req.query.key;
-    if (!key || key !== gallery.access_token) {
-      const rawGuests = Array.isArray(gallery.guests) ? gallery.guests : [];
-      const objectNames = Array.isArray(gallery.objects) ? gallery.objects : [];
-      const html = generatePrivateGalleryHTML({
-        slug: gallery.slug,
-        date: dateStr,
-        tourType: gallery.tour_type,
-        title: gallery.title,
-        subtitle: gallery.subtitle || '',
-        bortle: gallery.bortle,
-        objects: objectNames,
-        guests: rawGuests
-      });
-      res.setHeader('Content-Type', 'text/html; charset=utf-8');
-      res.setHeader('Cache-Control', 'public, s-maxage=60');
-      return res.send(html);
-    }
-  }
+  const hasValidKey = req.query.key && req.query.key === gallery.access_token;
+  const photosPrivate = gallery.access_token && !isAdmin && !hasValidKey;
 
   const photosResult = await pool.query(
     'SELECT * FROM gallery_photos WHERE gallery_id = $1 ORDER BY sort_order ASC',
@@ -201,7 +183,8 @@ async function renderGallery(slug, req, res) {
     guests: parsedGuests,
     astro,
     prev,
-    next
+    next,
+    photosPrivate
   });
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -582,7 +565,7 @@ function generateIndexHTML(galleries, stats) {
     const objectNames = objects.slice(0, 5).map(o => typeof o === 'string' ? o : o.name || o).join(', ');
     const moreObjects = objects.length > 5 ? ` +${objects.length - 5} more` : '';
 
-    return `<div class="gallery-card no-link">
+    return `<a href="/gallery/${esc(g.slug)}/" class="gallery-card">
       <div class="card-body">
         <div class="card-date">${formatDateShort(dateStr)}</div>
         <div class="card-title">${esc(g.title)}</div>
@@ -593,9 +576,8 @@ function generateIndexHTML(galleries, stats) {
           <span>Bortle ${g.bortle}</span>
         </div>
         ${objectNames ? `<div class="card-objects">&#128301; ${esc(objectNames)}${esc(moreObjects)}</div>` : ''}
-        <div class="card-private">&#128274; Private gallery</div>
       </div>
-    </div>`;
+    </a>`;
   }).join('\n') : '';
 
   const statsStrip = stats.totalGalleries > 0 ? `
@@ -638,13 +620,13 @@ function generateIndexHTML(galleries, stats) {
     .stats-strip .stat{text-align:center}.stats-strip .stat-number{font-size:1.8rem;font-weight:700;color:var(--primary-color)}
     .stats-strip .stat-label{font-size:.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
     .gallery-cards{max-width:1200px;margin:0 auto;padding:0 1.5rem 3rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:1.5rem}
-    .gallery-card{background:var(--bg-secondary);border:1px solid rgba(255,255,255,.06);border-radius:var(--border-radius-lg);overflow:hidden;text-decoration:none;color:inherit;display:block}
-    .gallery-card.no-link{cursor:default}.gallery-card .card-body{padding:1.25rem}
+    .gallery-card{background:var(--bg-secondary);border:1px solid rgba(255,255,255,.06);border-radius:var(--border-radius-lg);overflow:hidden;text-decoration:none;color:inherit;display:block;transition:border-color .3s,transform .3s}
+    .gallery-card:hover{border-color:rgba(0,212,255,.2);transform:translateY(-3px);color:inherit}
+    .gallery-card .card-body{padding:1.25rem}
     .gallery-card .card-date{font-size:.8rem;color:var(--primary-color);margin-bottom:.25rem}
     .gallery-card .card-title{font-size:1.15rem;font-weight:600;margin-bottom:.5rem}
     .gallery-card .card-meta{display:flex;gap:1rem;font-size:.82rem;color:var(--text-muted);flex-wrap:wrap}
     .gallery-card .card-objects{font-size:.82rem;color:var(--text-secondary);margin-top:.5rem}
-    .gallery-card .card-private{font-size:.78rem;color:var(--text-muted);margin-top:.5rem;opacity:.6}
     .empty-state{text-align:center;padding:4rem 1.5rem;color:var(--text-muted)}.empty-state h2{color:var(--text-secondary);margin-bottom:.5rem}
     @media(max-width:768px){.index-hero{padding:6rem 1rem 2rem}.index-hero h1{font-size:1.75rem}.gallery-cards{grid-template-columns:1fr}}
   </style>
