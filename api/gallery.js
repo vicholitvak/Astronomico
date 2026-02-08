@@ -351,22 +351,24 @@ async function handleCreate(req, res) {
 async function handleUpdate(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { id, title, subtitle, bortle, conditions, highlights, guests, objects } = req.body;
+  const { id, date, tour_type, title, subtitle, bortle, conditions, highlights, guests, objects } = req.body;
   if (!id) return res.status(400).json({ error: 'Missing id' });
 
   const result = await pool.query(`
     UPDATE galleries SET
-      title = COALESCE($2, title),
-      subtitle = $3,
-      bortle = COALESCE($4, bortle),
-      conditions = $5,
-      highlights = $6,
-      guests = COALESCE($7, guests),
-      objects = COALESCE($8, objects),
+      date = COALESCE($2, date),
+      tour_type = COALESCE($3, tour_type),
+      title = COALESCE($4, title),
+      subtitle = $5,
+      bortle = COALESCE($6, bortle),
+      conditions = $7,
+      highlights = $8,
+      guests = COALESCE($9, guests),
+      objects = COALESCE($10, objects),
       updated_at = NOW()
     WHERE id = $1
     RETURNING *
-  `, [id, title, subtitle, bortle, conditions, highlights,
+  `, [id, date || null, tour_type || null, title, subtitle, bortle, conditions, highlights,
       guests ? JSON.stringify(guests) : null, objects ? JSON.stringify(objects) : null]);
 
   if (!result.rows.length) return res.status(404).json({ error: 'Gallery not found' });

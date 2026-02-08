@@ -2568,10 +2568,6 @@
                         <label for="galTitle">Titulo</label>
                         <input type="text" id="galTitle" placeholder="Ej: Stargazing Night — Orion Nebula & Milky Way">
                     </div>
-                    <div class="gallery-form-full">
-                        <label for="galSubtitle">Subtitulo</label>
-                        <input type="text" id="galSubtitle" placeholder="Ej: A stunning night under Bortle 1 skies...">
-                    </div>
                     <div>
                         <label for="galBortle">Bortle</label>
                         <select id="galBortle">
@@ -5160,13 +5156,19 @@
 
         // ---- Gallery Editor ----
 
+        function formatGalleryDate(dateStr) {
+            const d = new Date(dateStr + 'T12:00:00');
+            return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
         function openGalleryEditor(data) {
             document.getElementById('galEditId').value = data ? data.id : '';
             document.getElementById('galEditSlug').value = data ? data.slug : '';
-            document.getElementById('galDate').value = data ? data.date.split('T')[0] : new Date().toISOString().split('T')[0];
+            const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+            const dateVal = data ? data.date.split('T')[0] : yesterday;
+            document.getElementById('galDate').value = dateVal;
             document.getElementById('galTourType').value = data ? data.tour_type : 'regular';
-            document.getElementById('galTitle').value = data ? data.title : '';
-            document.getElementById('galSubtitle').value = data ? (data.subtitle || '') : '';
+            document.getElementById('galTitle').value = data ? data.title : formatGalleryDate(dateVal);
             document.getElementById('galBortle').value = data ? data.bortle : '1';
             document.getElementById('galConditions').value = data ? (data.conditions || '') : '';
             document.getElementById('galHighlights').value = data ? (data.highlights || '') : '';
@@ -5205,6 +5207,14 @@
             // Load testimonials for existing gallery
             loadTestimonials(data ? data.id : null);
 
+            // Auto-update title from date for new galleries
+            const dateInput = document.getElementById('galDate');
+            dateInput.onchange = function() {
+                if (!document.getElementById('galEditId').value) {
+                    document.getElementById('galTitle').value = formatGalleryDate(this.value);
+                }
+            };
+
             document.getElementById('galleryModal').classList.add('active');
             document.getElementById('galSaveStatus').textContent = '';
         }
@@ -5239,7 +5249,6 @@
                 date: document.getElementById('galDate').value,
                 tour_type: document.getElementById('galTourType').value,
                 title: document.getElementById('galTitle').value,
-                subtitle: document.getElementById('galSubtitle').value,
                 bortle: parseInt(document.getElementById('galBortle').value),
                 conditions: document.getElementById('galConditions').value,
                 highlights: document.getElementById('galHighlights').value,
@@ -5290,6 +5299,7 @@
                 if (result.error) throw new Error(result.error);
                 statusEl.textContent = 'Guardado';
                 statusEl.style.color = '#22c55e';
+                loadGalleryList();
             } catch (err) {
                 console.error('Error saving gallery:', err);
                 statusEl.textContent = 'Error al guardar';
