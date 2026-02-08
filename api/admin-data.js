@@ -16,6 +16,13 @@ const GYG_API_URL = 'https://supplier-api.getyourguide.com';
 const GYG_OUTBOUND_USERNAME = process.env.GYG_OUTBOUND_USERNAME || 'AtacamaDarkSky';
 const GYG_OUTBOUND_PASSWORD = process.env.GYG_OUTBOUND_PASSWORD;
 
+// ============ VIATOR NOTIFICATION HELPERS ============
+const VIATOR_PRODUCTS = {
+  'ADS-REGULAR': { tourType: 'regular', name: 'Tour Regular' },
+  'ADS-PRIVATE': { tourType: 'private', name: 'Tour Privado' },
+  '5624520P1': { tourType: 'private', name: 'Tour Semi-Privado (Viator portal)' }
+};
+
 // GYG Products configuration
 const GYG_PRODUCTS = {
   regular: {
@@ -172,6 +179,103 @@ async function notifyGygDateUnblocked(date) {
   }
 }
 
+// Notify Viator of blocked date via admin email reminder
+// Viator Supplier API is pull-only (no push endpoint like GYG).
+// When the Supplier API is connected, Viator will check our /availability
+// endpoint and blocked dates will be enforced at booking time automatically.
+// This function sends an admin email reminder to also block in Viator's portal.
+async function notifyViatorDateBlocked(date, blockType) {
+  const resendApiKey = process.env.RESEND_API_KEY;
+  const adminEmail = process.env.ADMIN_EMAIL || 'vicente.litvak@gmail.com';
+
+  console.log(`[Admin] Viator notification: date ${date} blocked (${blockType})`);
+
+  if (!resendApiKey) {
+    console.log('[Admin] Skipping Viator notification - RESEND_API_KEY not configured');
+    return;
+  }
+
+  try {
+    const dateObj = new Date(date + 'T00:00:00');
+    const formattedDate = dateObj.toLocaleDateString('es-CL', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+
+    const blockLabel = blockType === 'full'
+      ? 'Bloqueo total (todos los tours)'
+      : 'Solo tours regulares bloqueados (privados disponibles)';
+
+    const affectedProducts = Object.entries(VIATOR_PRODUCTS)
+      .filter(([, p]) => blockType === 'full' || p.tourType === 'regular')
+      .map(([code, p]) => `${code}: ${p.name}`)
+      .join(', ');
+
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'Atacama Dark Sky <reservas@atacamadarksky.cl>',
+        to: [adminEmail],
+        subject: `Viator: Bloquear fecha ${date} en portal`,
+        html: `
+          <h2>Accion requerida: Bloquear fecha en Viator</h2>
+          <p>Se bloqueo la fecha <strong>${formattedDate}</strong> en el sistema.</p>
+          <p><strong>Tipo de bloqueo:</strong> ${blockLabel}</p>
+          <p><strong>Productos afectados:</strong> ${affectedProducts}</p>
+          <hr>
+          <p><strong>Viator no tiene API push</strong>, por lo que debes bloquear esta fecha manualmente en el portal de proveedor de Viator.</p>
+          <p>Si el Supplier API esta conectado, las reservas nuevas seran rechazadas automaticamente, pero el calendario de Viator puede mostrar disponibilidad hasta que lo actualices manualmente.</p>
+          <hr>
+          <p style="color: #666; font-size: 12px;">GYG ya fue notificado automaticamente.</p>
+        `
+      })
+    });
+    console.log(`[Admin] Viator block reminder email sent for ${date}`);
+  } catch (error) {
+    console.error(`[Admin] Failed to send Viator notification: ${error.message}`);
+  }
+}
+
+// Notify admin to unblock date on Viator portal
+async function notifyViatorDateUnblocked(date) {
+  const resendApiKey = process.env.RESEND_API_KEY;
+  const adminEmail = process.env.ADMIN_EMAIL || 'vicente.litvak@gmail.com';
+
+  console.log(`[Admin] Viator notification: date ${date} unblocked`);
+
+  if (!resendApiKey) {
+    console.log('[Admin] Skipping Viator unblock notification - RESEND_API_KEY not configured');
+    return;
+  }
+
+  try {
+    const dateObj = new Date(date + 'T00:00:00');
+    const formattedDate = dateObj.toLocaleDateString('es-CL', {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'Atacama Dark Sky <reservas@atacamadarksky.cl>',
+        to: [adminEmail],
+        subject: `Viator: Desbloquear fecha ${date} en portal`,
+        html: `
+          <h2>Accion requerida: Desbloquear fecha en Viator</h2>
+          <p>Se desbloqueo la fecha <strong>${formattedDate}</strong> en el sistema.</p>
+          <p>Recuerda desbloquear esta fecha tambien en el portal de proveedor de Viator.</p>
+          <hr>
+          <p style="color: #666; font-size: 12px;">GYG ya fue notificado automaticamente.</p>
+        `
+      })
+    });
+    console.log(`[Admin] Viator unblock reminder email sent for ${date}`);
+  } catch (error) {
+    console.error(`[Admin] Failed to send Viator unblock notification: ${error.message}`);
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
@@ -257,6 +361,9 @@ export default async function handler(req, res) {
         // Notify GYG of the blocked date (async, don't wait)
         notifyGygDateBlocked(dateToBlock, finalBlockType);
 
+        // Notify admin to also block on Viator portal (async, don't wait)
+        notifyViatorDateBlocked(dateToBlock, finalBlockType);
+
         return res.status(200).json({ success: true, data: result.rows[0] });
       }
 
@@ -269,6 +376,9 @@ export default async function handler(req, res) {
 
         // Notify GYG to restore availability (async, don't wait)
         notifyGygDateUnblocked(dateToUnblock);
+
+        // Notify admin to also unblock on Viator portal (async, don't wait)
+        notifyViatorDateUnblocked(dateToUnblock);
 
         return res.status(200).json({ success: true, message: 'Deleted' });
       }
@@ -998,12 +1108,16 @@ export default async function handler(req, res) {
 
         // Ejecutar todas las queries en paralelo
         const [channelResult, nationalitiesResult, hotelsResult, groupSizeResult, advanceResult, timesResult, weeklyResult, financialResult, trendResult] = await Promise.all([
-          // 1. Comparativa de canales - Separamos por fuente (GYG vs Direct) y tipo de tour
+          // 1. Comparativa de canales - Separamos por fuente (GYG, Viator, Klook, Direct) y tipo de tour
           pool.query(`
             SELECT
               CASE
                 WHEN b.source = 'gyg' AND b.tour_type = 'private' THEN 'gyg_private'
                 WHEN b.source = 'gyg' THEN 'gyg_regular'
+                WHEN b.source = 'viator' AND b.tour_type = 'private' THEN 'viator_private'
+                WHEN b.source = 'viator' THEN 'viator_regular'
+                WHEN b.source = 'klook' AND b.tour_type = 'private' THEN 'klook_private'
+                WHEN b.source = 'klook' THEN 'klook_regular'
                 WHEN b.tour_type = 'private' THEN 'direct_private'
                 ELSE 'direct_regular'
               END as source,
@@ -1012,6 +1126,8 @@ export default async function handler(req, res) {
               SUM(CASE
                   WHEN b.source = 'gyg' AND b.payment_amount IS NULL THEN
                     CASE WHEN b.tour_type = 'private' THEN b.persons * 142855 ELSE b.persons * 53600 END
+                  WHEN b.source IN ('viator', 'klook') AND b.payment_amount IS NULL THEN
+                    CASE WHEN b.tour_type = 'private' THEN b.persons * 105300 ELSE b.persons * 45000 END
                   WHEN b.payment_amount IS NULL THEN
                     CASE WHEN b.tour_type = 'private' THEN b.persons * 150000 ELSE b.persons * 42000 END
                   ELSE COALESCE(b.payment_amount, 0)
@@ -1025,6 +1141,10 @@ export default async function handler(req, res) {
             GROUP BY CASE
                 WHEN b.source = 'gyg' AND b.tour_type = 'private' THEN 'gyg_private'
                 WHEN b.source = 'gyg' THEN 'gyg_regular'
+                WHEN b.source = 'viator' AND b.tour_type = 'private' THEN 'viator_private'
+                WHEN b.source = 'viator' THEN 'viator_regular'
+                WHEN b.source = 'klook' AND b.tour_type = 'private' THEN 'klook_private'
+                WHEN b.source = 'klook' THEN 'klook_regular'
                 WHEN b.tour_type = 'private' THEN 'direct_private'
                 ELSE 'direct_regular'
               END
@@ -1069,8 +1189,7 @@ export default async function handler(req, res) {
                   ELSE 'Otro'
                 END as country
               FROM bookings
-              WHERE COALESCE(source, 'website') = 'gyg'
-                AND date >= $1 AND date <= $2
+              WHERE date >= $1 AND date <= $2
                 AND status IN ('confirmed', 'completed')
             ) sub
             GROUP BY country
@@ -1085,8 +1204,7 @@ export default async function handler(req, res) {
               COUNT(*) as bookings,
               COALESCE(SUM(persons), 0) as guests
             FROM bookings
-            WHERE COALESCE(source, 'website') = 'gyg'
-              AND date >= $1 AND date <= $2
+            WHERE date >= $1 AND date <= $2
               AND status IN ('confirmed', 'completed')
             GROUP BY COALESCE(NULLIF(TRIM(accommodation), ''), 'No especificado')
             ORDER BY bookings DESC
@@ -1098,6 +1216,8 @@ export default async function handler(req, res) {
             SELECT
               CASE
                 WHEN b.source = 'gyg' THEN 'gyg'
+                WHEN b.source = 'viator' THEN 'viator'
+                WHEN b.source = 'klook' THEN 'klook'
                 ELSE 'direct'
               END as source,
               ROUND(AVG(b.persons)::numeric, 2) as avg_group_size,
@@ -1107,7 +1227,7 @@ export default async function handler(req, res) {
             FROM bookings b
             WHERE b.date >= $1 AND b.date <= $2
               AND b.status IN ('confirmed', 'completed')
-            GROUP BY CASE WHEN b.source = 'gyg' THEN 'gyg' ELSE 'direct' END
+            GROUP BY CASE WHEN b.source = 'gyg' THEN 'gyg' WHEN b.source = 'viator' THEN 'viator' WHEN b.source = 'klook' THEN 'klook' ELSE 'direct' END
           `, [startDate, endDate]),
 
           // 5. Días de anticipación - Consolidado
@@ -1115,6 +1235,8 @@ export default async function handler(req, res) {
             SELECT
               CASE
                 WHEN b.source = 'gyg' THEN 'gyg'
+                WHEN b.source = 'viator' THEN 'viator'
+                WHEN b.source = 'klook' THEN 'klook'
                 ELSE 'direct'
               END as source,
               ROUND(AVG(b.date - b.created_at::date)::numeric, 1) as avg_days_advance,
@@ -1124,7 +1246,7 @@ export default async function handler(req, res) {
             FROM bookings b
             WHERE b.date >= $1 AND b.date <= $2
               AND b.status IN ('confirmed', 'completed')
-            GROUP BY CASE WHEN b.source = 'gyg' THEN 'gyg' ELSE 'direct' END
+            GROUP BY CASE WHEN b.source = 'gyg' THEN 'gyg' WHEN b.source = 'viator' THEN 'viator' WHEN b.source = 'klook' THEN 'klook' ELSE 'direct' END
           `, [startDate, endDate]),
 
           // 6. Horarios populares - Consolidado
@@ -1133,6 +1255,8 @@ export default async function handler(req, res) {
               b.time,
               CASE
                 WHEN b.source = 'gyg' THEN 'gyg'
+                WHEN b.source = 'viator' THEN 'viator'
+                WHEN b.source = 'klook' THEN 'klook'
                 ELSE 'direct'
               END as source,
               COUNT(*) as bookings,
@@ -1140,7 +1264,7 @@ export default async function handler(req, res) {
             FROM bookings b
             WHERE b.date >= $1 AND b.date <= $2
               AND b.status IN ('confirmed', 'completed')
-            GROUP BY b.time, CASE WHEN b.source = 'gyg' THEN 'gyg' ELSE 'direct' END
+            GROUP BY b.time, CASE WHEN b.source = 'gyg' THEN 'gyg' WHEN b.source = 'viator' THEN 'viator' WHEN b.source = 'klook' THEN 'klook' ELSE 'direct' END
             ORDER BY bookings DESC
           `, [startDate, endDate]),
 
@@ -1151,6 +1275,8 @@ export default async function handler(req, res) {
               EXTRACT(DOW FROM b.date) as day_number,
               CASE
                 WHEN b.source = 'gyg' THEN 'gyg'
+                WHEN b.source = 'viator' THEN 'viator'
+                WHEN b.source = 'klook' THEN 'klook'
                 ELSE 'direct'
               END as source,
               COUNT(*) as bookings,
@@ -1158,25 +1284,29 @@ export default async function handler(req, res) {
             FROM bookings b
             WHERE b.date >= $1 AND b.date <= $2
               AND b.status IN ('confirmed', 'completed')
-            GROUP BY TO_CHAR(b.date, 'Day'), EXTRACT(DOW FROM b.date), CASE WHEN b.source = 'gyg' THEN 'gyg' ELSE 'direct' END
+            GROUP BY TO_CHAR(b.date, 'Day'), EXTRACT(DOW FROM b.date), CASE WHEN b.source = 'gyg' THEN 'gyg' WHEN b.source = 'viator' THEN 'viator' WHEN b.source = 'klook' THEN 'klook' ELSE 'direct' END
             ORDER BY day_number
           `, [startDate, endDate]),
 
-          // 8. Análisis financiero - Separado por tipo de tour
+          // 8. Análisis financiero - Separado por tipo de tour y canal
           pool.query(`
             SELECT
               channel as source,
               COUNT(*) as total_bookings,
               COALESCE(SUM(persons), 0) as total_persons,
               SUM(gross) as gross_revenue,
-              CASE WHEN channel LIKE 'gyg%' THEN SUM(gross) * 0.70 ELSE SUM(gross) END as net_revenue,
-              CASE WHEN channel LIKE 'gyg%' THEN SUM(gross) * 0.30 ELSE 0 END as commission_paid,
+              CASE WHEN channel LIKE 'gyg%' OR channel LIKE 'viator%' OR channel LIKE 'klook%' THEN SUM(gross) * 0.70 ELSE SUM(gross) END as net_revenue,
+              CASE WHEN channel LIKE 'gyg%' OR channel LIKE 'viator%' OR channel LIKE 'klook%' THEN SUM(gross) * 0.30 ELSE 0 END as commission_paid,
               ROUND(AVG(gross)::numeric, 0) as avg_ticket
             FROM (
               SELECT
                 CASE
                   WHEN source = 'gyg' AND tour_type = 'private' THEN 'gyg_private'
                   WHEN source = 'gyg' THEN 'gyg_regular'
+                  WHEN source = 'viator' AND tour_type = 'private' THEN 'viator_private'
+                  WHEN source = 'viator' THEN 'viator_regular'
+                  WHEN source = 'klook' AND tour_type = 'private' THEN 'klook_private'
+                  WHEN source = 'klook' THEN 'klook_regular'
                   WHEN tour_type = 'private' THEN 'direct_private'
                   ELSE 'direct_regular'
                 END as channel,
@@ -1184,6 +1314,8 @@ export default async function handler(req, res) {
                 CASE
                   WHEN source = 'gyg' AND payment_amount IS NULL THEN
                     CASE WHEN tour_type = 'private' THEN persons * 142855 ELSE persons * 53600 END
+                  WHEN source IN ('viator', 'klook') AND payment_amount IS NULL THEN
+                    CASE WHEN tour_type = 'private' THEN persons * 105300 ELSE persons * 45000 END
                   WHEN payment_amount IS NULL THEN
                     CASE WHEN tour_type = 'private' THEN persons * 150000 ELSE persons * 42000 END
                   ELSE COALESCE(payment_amount, 0)
@@ -1201,6 +1333,8 @@ export default async function handler(req, res) {
               DATE_TRUNC('week', b.date)::date as week_start,
               CASE
                 WHEN b.source = 'gyg' THEN 'gyg'
+                WHEN b.source = 'viator' THEN 'viator'
+                WHEN b.source = 'klook' THEN 'klook'
                 ELSE 'direct'
               END as source,
               COUNT(*) as bookings,
@@ -1208,12 +1342,14 @@ export default async function handler(req, res) {
               SUM(CASE
                   WHEN b.source = 'gyg' AND b.payment_amount IS NULL THEN
                     CASE WHEN b.tour_type = 'private' THEN b.persons * 142855 ELSE b.persons * 53600 END
+                  WHEN b.source IN ('viator', 'klook') AND b.payment_amount IS NULL THEN
+                    CASE WHEN b.tour_type = 'private' THEN b.persons * 105300 ELSE b.persons * 45000 END
                   ELSE COALESCE(b.payment_amount, 0)
                 END) as revenue
             FROM bookings b
             WHERE b.date >= $1 AND b.date <= $2
               AND b.status IN ('confirmed', 'completed')
-            GROUP BY DATE_TRUNC('week', b.date), CASE WHEN b.source = 'gyg' THEN 'gyg' ELSE 'direct' END
+            GROUP BY DATE_TRUNC('week', b.date), CASE WHEN b.source = 'gyg' THEN 'gyg' WHEN b.source = 'viator' THEN 'viator' WHEN b.source = 'klook' THEN 'klook' ELSE 'direct' END
             ORDER BY week_start
           `, [startDate, endDate])
         ]);
@@ -1226,7 +1362,7 @@ export default async function handler(req, res) {
             bookings,
             gross_revenue,
             CASE
-              WHEN source = 'gyg' THEN gross_revenue * 0.70
+              WHEN source IN ('gyg', 'viator', 'klook') THEN gross_revenue * 0.70
               ELSE gross_revenue
             END as net_revenue
           FROM (
@@ -1234,20 +1370,24 @@ export default async function handler(req, res) {
               DATE_TRUNC('month', b.date)::date as month,
               CASE
                 WHEN b.source = 'gyg' THEN 'gyg'
+                WHEN b.source = 'viator' THEN 'viator'
+                WHEN b.source = 'klook' THEN 'klook'
                 ELSE 'direct'
               END as source,
               COUNT(*) as bookings,
               SUM(CASE
                     WHEN b.source = 'gyg' AND b.payment_amount IS NULL THEN
                       CASE WHEN b.tour_type = 'private' THEN b.persons * 142855 ELSE b.persons * 53600 END
-                    WHEN b.source != 'gyg' AND b.payment_amount IS NULL THEN
+                    WHEN b.source IN ('viator', 'klook') AND b.payment_amount IS NULL THEN
+                      CASE WHEN b.tour_type = 'private' THEN b.persons * 105300 ELSE b.persons * 45000 END
+                    WHEN b.payment_amount IS NULL THEN
                       CASE WHEN b.tour_type = 'private' THEN b.persons * 150000 ELSE b.persons * 42000 END
                     ELSE COALESCE(b.payment_amount, 0)
                   END) as gross_revenue
             FROM bookings b
             WHERE b.date >= $1 AND b.date <= $2
               AND b.status IN ('confirmed', 'completed')
-            GROUP BY DATE_TRUNC('month', b.date), CASE WHEN b.source = 'gyg' THEN 'gyg' ELSE 'direct' END
+            GROUP BY DATE_TRUNC('month', b.date), CASE WHEN b.source = 'gyg' THEN 'gyg' WHEN b.source = 'viator' THEN 'viator' WHEN b.source = 'klook' THEN 'klook' ELSE 'direct' END
           ) sub
           ORDER BY month
         `, [startDate, endDate]);

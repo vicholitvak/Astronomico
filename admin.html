@@ -2137,6 +2137,11 @@
                     <div class="stat-value" id="kpiViatorBookings" style="color: #3b82f6;">-</div>
                     <div style="font-size: 0.85rem; color: #94a3b8;" id="kpiViatorPercent">-% del total</div>
                 </div>
+                <div class="stat-card" style="border-color: rgba(245, 158, 11, 0.5); background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);">
+                    <div class="stat-label">Reservas Klook</div>
+                    <div class="stat-value" id="kpiKlookBookings" style="color: #f59e0b;">-</div>
+                    <div style="font-size: 0.85rem; color: #94a3b8;" id="kpiKlookPercent">-% del total</div>
+                </div>
                 <div class="stat-card" style="border-color: rgba(16, 185, 129, 0.5); background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);">
                     <div class="stat-label">Reservas Directas</div>
                     <div class="stat-value" id="kpiDirectBookings" style="color: #10b981;">-</div>
@@ -2151,6 +2156,11 @@
                     <div class="stat-label">Ingresos Netos Viator</div>
                     <div class="stat-value" id="kpiViatorNetRevenue" style="color: #3b82f6;">-</div>
                     <div style="font-size: 0.85rem; color: #ef4444;" id="kpiViatorCommission">-$0 comisión</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Ingresos Netos Klook</div>
+                    <div class="stat-value" id="kpiKlookNetRevenue" style="color: #f59e0b;">-</div>
+                    <div style="font-size: 0.85rem; color: #ef4444;" id="kpiKlookCommission">-$0 comisión</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Ingresos Directos</div>
@@ -2174,7 +2184,7 @@
 
             <!-- Customer Analysis Section -->
             <div class="analytics-section">
-                <h3><i class="fas fa-globe"></i> Análisis de Clientes GyG</h3>
+                <h3><i class="fas fa-globe"></i> Análisis de Clientes</h3>
                 <div class="analytics-grid three-cols">
                     <div class="breakdown-section">
                         <h4>Nacionalidades</h4>
@@ -2234,6 +2244,18 @@
                     <div class="stat-card">
                         <div class="stat-label">Ingresos Netos Viator</div>
                         <div class="stat-value" id="finNetViator" style="color: #3b82f6;">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Ingresos Brutos Klook</div>
+                        <div class="stat-value" id="finGrossKlook" style="color: #f59e0b;">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Comisión Klook (30%)</div>
+                        <div class="stat-value" id="finCommissionKlook" style="color: #ef4444;">-</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Ingresos Netos Klook</div>
+                        <div class="stat-value" id="finNetKlook" style="color: #f59e0b;">-</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Ingresos Directos</div>
@@ -5779,6 +5801,14 @@
                 total_persons: parseInt(viatorRegular.total_persons || 0) + parseInt(viatorPrivate.total_persons || 0)
             };
 
+            // Sumar todas las fuentes Klook (regular + private)
+            const klookRegular = summary.find(s => s.source === 'klook_regular') || { total_bookings: 0, total_persons: 0 };
+            const klookPrivate = summary.find(s => s.source === 'klook_private') || { total_bookings: 0, total_persons: 0 };
+            const klookData = {
+                total_bookings: parseInt(klookRegular.total_bookings || 0) + parseInt(klookPrivate.total_bookings || 0),
+                total_persons: parseInt(klookRegular.total_persons || 0) + parseInt(klookPrivate.total_persons || 0)
+            };
+
             // Sumar todas las fuentes Directas (regular + private)
             const directRegular = summary.find(s => s.source === 'direct_regular') || { total_bookings: 0, total_persons: 0 };
             const directPrivate = summary.find(s => s.source === 'direct_private') || { total_bookings: 0, total_persons: 0 };
@@ -5787,9 +5817,10 @@
                 total_persons: parseInt(directRegular.total_persons || 0) + parseInt(directPrivate.total_persons || 0)
             };
 
-            const totalBookings = gygData.total_bookings + viatorData.total_bookings + directData.total_bookings;
+            const totalBookings = gygData.total_bookings + viatorData.total_bookings + klookData.total_bookings + directData.total_bookings;
             const gygPercent = totalBookings > 0 ? ((gygData.total_bookings / totalBookings) * 100).toFixed(1) : 0;
             const viatorPercent = totalBookings > 0 ? ((viatorData.total_bookings / totalBookings) * 100).toFixed(1) : 0;
+            const klookPercent = totalBookings > 0 ? ((klookData.total_bookings / totalBookings) * 100).toFixed(1) : 0;
 
             // Sumar financiero GYG
             const gygFinRegular = financial.find(s => s.source === 'gyg_regular') || { net_revenue: 0, commission_paid: 0 };
@@ -5807,6 +5838,14 @@
                 commission_paid: parseFloat(viatorFinRegular.commission_paid || 0) + parseFloat(viatorFinPrivate.commission_paid || 0)
             };
 
+            // Sumar financiero Klook
+            const klookFinRegular = financial.find(s => s.source === 'klook_regular') || { net_revenue: 0, commission_paid: 0 };
+            const klookFinPrivate = financial.find(s => s.source === 'klook_private') || { net_revenue: 0, commission_paid: 0 };
+            const klookFin = {
+                net_revenue: parseFloat(klookFinRegular.net_revenue || 0) + parseFloat(klookFinPrivate.net_revenue || 0),
+                commission_paid: parseFloat(klookFinRegular.commission_paid || 0) + parseFloat(klookFinPrivate.commission_paid || 0)
+            };
+
             // Sumar financiero Directo
             const directFinRegular = financial.find(s => s.source === 'direct_regular') || { net_revenue: 0 };
             const directFinPrivate = financial.find(s => s.source === 'direct_private') || { net_revenue: 0 };
@@ -5818,12 +5857,16 @@
             document.getElementById('kpiGygPercent').textContent = `${gygPercent}% del total`;
             document.getElementById('kpiViatorBookings').textContent = viatorData.total_bookings || 0;
             document.getElementById('kpiViatorPercent').textContent = `${viatorPercent}% del total`;
+            document.getElementById('kpiKlookBookings').textContent = klookData.total_bookings || 0;
+            document.getElementById('kpiKlookPercent').textContent = `${klookPercent}% del total`;
             document.getElementById('kpiDirectBookings').textContent = directData.total_bookings || 0;
             document.getElementById('kpiDirectPersons').textContent = `${directData.total_persons || 0} personas`;
             document.getElementById('kpiGygNetRevenue').textContent = formatCLP(gygFin.net_revenue || 0);
             document.getElementById('kpiGygCommission').textContent = `-${formatCLP(gygFin.commission_paid || 0)} comision`;
             document.getElementById('kpiViatorNetRevenue').textContent = formatCLP(viatorFin.net_revenue || 0);
             document.getElementById('kpiViatorCommission').textContent = `-${formatCLP(viatorFin.commission_paid || 0)} comision`;
+            document.getElementById('kpiKlookNetRevenue').textContent = formatCLP(klookFin.net_revenue || 0);
+            document.getElementById('kpiKlookCommission').textContent = `-${formatCLP(klookFin.commission_paid || 0)} comision`;
             document.getElementById('kpiDirectRevenue').textContent = formatCLP(directFin.net_revenue || 0);
         }
 
@@ -5839,19 +5882,22 @@
             const gygPrivate = data.summary.find(s => s.source === 'gyg_private') || { total_persons: 0 };
             const viatorRegular = data.summary.find(s => s.source === 'viator_regular') || { total_persons: 0 };
             const viatorPrivate = data.summary.find(s => s.source === 'viator_private') || { total_persons: 0 };
+            const klookRegular = data.summary.find(s => s.source === 'klook_regular') || { total_persons: 0 };
+            const klookPrivate = data.summary.find(s => s.source === 'klook_private') || { total_persons: 0 };
 
             const directPersons = parseInt(directRegular.total_persons || 0) + parseInt(directPrivate.total_persons || 0);
             const gygPersons = parseInt(gygRegular.total_persons || 0) + parseInt(gygPrivate.total_persons || 0);
             const viatorPersons = parseInt(viatorRegular.total_persons || 0) + parseInt(viatorPrivate.total_persons || 0);
+            const klookPersons = parseInt(klookRegular.total_persons || 0) + parseInt(klookPrivate.total_persons || 0);
 
             analyticsCharts.channelComparison = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Venta Directa', 'GetYourGuide', 'Viator'],
+                    labels: ['Venta Directa', 'GetYourGuide', 'Viator', 'Klook'],
                     datasets: [{
                         label: 'Personas',
-                        data: [directPersons, gygPersons, viatorPersons],
-                        backgroundColor: ['#10b981', '#FF5A5F', '#3b82f6'],
+                        data: [directPersons, gygPersons, viatorPersons, klookPersons],
+                        backgroundColor: ['#10b981', '#FF5A5F', '#3b82f6', '#f59e0b'],
                         borderRadius: 6,
                         barThickness: 50
                     }]
@@ -5883,6 +5929,10 @@
                 const item = data.trend.find(t => t.week_start === w && t.source === 'viator');
                 return item ? parseInt(item.bookings) : 0;
             });
+            const klookTrend = weeks.map(w => {
+                const item = data.trend.find(t => t.week_start === w && t.source === 'klook');
+                return item ? parseInt(item.bookings) : 0;
+            });
             const directTrend = weeks.map(w => {
                 const item = data.trend.find(t => t.week_start === w && t.source === 'direct');
                 return item ? parseInt(item.bookings) : 0;
@@ -5895,6 +5945,7 @@
                     datasets: [
                         { label: 'GetYourGuide', data: gygTrend, borderColor: '#FF5A5F', backgroundColor: 'rgba(255, 90, 95, 0.1)', fill: true, tension: 0.3 },
                         { label: 'Viator', data: viatorTrend, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.3 },
+                        { label: 'Klook', data: klookTrend, borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)', fill: true, tension: 0.3 },
                         { label: 'Venta Directa', data: directTrend, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.3 }
                     ]
                 },
@@ -5935,8 +5986,8 @@
             const ctx = document.getElementById('groupSizeChart').getContext('2d');
             if (analyticsCharts.groupSize) analyticsCharts.groupSize.destroy();
 
-            const sourceNames = { 'gyg': 'GetYourGuide', 'viator': 'Viator', 'direct': 'Venta Directa' };
-            const sourceColors = { 'gyg': '#FF5A5F', 'viator': '#3b82f6', 'direct': '#10b981' };
+            const sourceNames = { 'gyg': 'GetYourGuide', 'viator': 'Viator', 'klook': 'Klook', 'direct': 'Venta Directa' };
+            const sourceColors = { 'gyg': '#FF5A5F', 'viator': '#3b82f6', 'klook': '#f59e0b', 'direct': '#10b981' };
             analyticsCharts.groupSize = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -5962,8 +6013,8 @@
             const ctx = document.getElementById('advanceBookingChart').getContext('2d');
             if (analyticsCharts.advanceBooking) analyticsCharts.advanceBooking.destroy();
 
-            const sourceNames = { 'gyg': 'GetYourGuide', 'viator': 'Viator', 'direct': 'Venta Directa' };
-            const sourceColors = { 'gyg': '#FF5A5F', 'viator': '#3b82f6', 'direct': '#10b981' };
+            const sourceNames = { 'gyg': 'GetYourGuide', 'viator': 'Viator', 'klook': 'Klook', 'direct': 'Venta Directa' };
+            const sourceColors = { 'gyg': '#FF5A5F', 'viator': '#3b82f6', 'klook': '#f59e0b', 'direct': '#10b981' };
             analyticsCharts.advanceBooking = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -5998,6 +6049,10 @@
                 const item = data.weeklyDistribution.find(w => parseInt(w.day_number) === i && w.source === 'viator');
                 return item ? parseInt(item.bookings) : 0;
             });
+            const klookWeekly = days.map((_, i) => {
+                const item = data.weeklyDistribution.find(w => parseInt(w.day_number) === i && w.source === 'klook');
+                return item ? parseInt(item.bookings) : 0;
+            });
             const directWeekly = days.map((_, i) => {
                 const item = data.weeklyDistribution.find(w => parseInt(w.day_number) === i && w.source === 'direct');
                 return item ? parseInt(item.bookings) : 0;
@@ -6010,6 +6065,7 @@
                     datasets: [
                         { label: 'GetYourGuide', data: gygWeekly, borderColor: '#FF5A5F', backgroundColor: 'rgba(255, 90, 95, 0.2)' },
                         { label: 'Viator', data: viatorWeekly, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.2)' },
+                        { label: 'Klook', data: klookWeekly, borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.2)' },
                         { label: 'Venta Directa', data: directWeekly, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.2)' }
                     ]
                 },
@@ -6043,6 +6099,15 @@
                 net_revenue: parseFloat(viatorRegular.net_revenue || 0) + parseFloat(viatorPrivate.net_revenue || 0)
             };
 
+            // Sumar Klook regular + private
+            const klookRegular = data.summary.find(s => getChannel(s) === 'klook_regular') || {};
+            const klookPrivate = data.summary.find(s => getChannel(s) === 'klook_private') || {};
+            const klookFin = {
+                gross_revenue: parseFloat(klookRegular.gross_revenue || 0) + parseFloat(klookPrivate.gross_revenue || 0),
+                commission_paid: parseFloat(klookRegular.commission_paid || 0) + parseFloat(klookPrivate.commission_paid || 0),
+                net_revenue: parseFloat(klookRegular.net_revenue || 0) + parseFloat(klookPrivate.net_revenue || 0)
+            };
+
             const directFin = data.summary.find(s => getChannel(s) === 'direct') || {};
 
             document.getElementById('finGrossGyg').textContent = formatCLP(gygFin.gross_revenue || 0);
@@ -6051,6 +6116,9 @@
             document.getElementById('finGrossViator').textContent = formatCLP(viatorFin.gross_revenue || 0);
             document.getElementById('finCommissionViator').textContent = '-' + formatCLP(viatorFin.commission_paid || 0);
             document.getElementById('finNetViator').textContent = formatCLP(viatorFin.net_revenue || 0);
+            document.getElementById('finGrossKlook').textContent = formatCLP(klookFin.gross_revenue || 0);
+            document.getElementById('finCommissionKlook').textContent = '-' + formatCLP(klookFin.commission_paid || 0);
+            document.getElementById('finNetKlook').textContent = formatCLP(klookFin.net_revenue || 0);
             document.getElementById('finNetDirect').textContent = formatCLP(directFin.net_revenue || 0);
 
             // Revenue comparison chart (consolidado)
@@ -6066,6 +6134,10 @@
                 const item = data.monthlyTrend.find(t => t.month === m && t.source === 'viator');
                 return item ? parseFloat(item.net_revenue) : 0;
             });
+            const klookNet = months.map(m => {
+                const item = data.monthlyTrend.find(t => t.month === m && t.source === 'klook');
+                return item ? parseFloat(item.net_revenue) : 0;
+            });
             const directNet = months.map(m => {
                 const item = data.monthlyTrend.find(t => t.month === m && t.source === 'direct');
                 return item ? parseFloat(item.net_revenue) : 0;
@@ -6078,6 +6150,7 @@
                     datasets: [
                         { label: 'GetYourGuide (Neto)', data: gygNet, backgroundColor: 'rgba(255, 90, 95, 0.7)', borderColor: '#FF5A5F', borderWidth: 1 },
                         { label: 'Viator (Neto)', data: viatorNet, backgroundColor: 'rgba(59, 130, 246, 0.7)', borderColor: '#3b82f6', borderWidth: 1 },
+                        { label: 'Klook (Neto)', data: klookNet, backgroundColor: 'rgba(245, 158, 11, 0.7)', borderColor: '#f59e0b', borderWidth: 1 },
                         { label: 'Venta Directa', data: directNet, backgroundColor: 'rgba(16, 185, 129, 0.7)', borderColor: '#10b981', borderWidth: 1 }
                     ]
                 },
@@ -6102,14 +6175,17 @@
                 'gyg_private': 'GYG Tour Privado',
                 'viator_regular': 'Viator Tour Regular',
                 'viator_private': 'Viator Tour Privado',
-                'direct': 'Venta Directa'
+                'klook_regular': 'Klook Tour Regular',
+                'klook_private': 'Klook Tour Privado',
+                'direct_regular': 'Directa Tour Regular',
+                'direct_private': 'Directa Tour Privado'
             };
-            const isOTA = (ch) => ch === 'gyg_regular' || ch === 'gyg_private' || ch === 'viator_regular' || ch === 'viator_private';
+            const isOTA = (ch) => ch.startsWith('gyg') || ch.startsWith('viator') || ch.startsWith('klook');
 
-            // Ordenar: GYG, Viator, luego directo
+            // Ordenar: GYG, Viator, Klook, luego directo
             const sortedSummary = [...data.summary].sort((a, b) => {
-                const order = { 'gyg_private': 0, 'gyg_regular': 1, 'viator_private': 2, 'viator_regular': 3, 'direct': 4 };
-                return (order[getChannel(a)] || 3) - (order[getChannel(b)] || 3);
+                const order = { 'gyg_private': 0, 'gyg_regular': 1, 'viator_private': 2, 'viator_regular': 3, 'klook_private': 4, 'klook_regular': 5, 'direct_private': 6, 'direct_regular': 7 };
+                return (order[getChannel(a)] ?? 8) - (order[getChannel(b)] ?? 8);
             });
 
             document.getElementById('financialTableBody').innerHTML = sortedSummary.map(s => {
