@@ -340,7 +340,7 @@ async function listBookings(req, res) {
   const total = parseInt(countResult.rows[0].total, 10);
 
   const bookingsResult = await query(`
-    SELECT id, booking_id, date, persons, tour_type, time, name, email, phone, message, accommodation, status, source, payment_method, reminder_sent, reminder_sent_at, created_at, updated_at, participant_names, gyg_reference
+    SELECT id, booking_id, date, persons, tour_type, time, name, email, phone, message, accommodation, status, source, payment_method, payment_status, payment_amount, reminder_sent, reminder_sent_at, created_at, updated_at, participant_names, gyg_reference
     FROM bookings ${whereClause}
     ORDER BY ${orderBy}
     LIMIT $${paramCount} OFFSET $${paramCount + 1}
