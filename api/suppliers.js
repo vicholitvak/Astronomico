@@ -33,3 +33,6 @@ export {
   pushAvailabilityToGYG,
   reactivateProductOnGYG
 } from '../lib/gyg-handler.js';
+
+// Re-export Viator push notification
+export { pushAvailabilityNotificationToViator } from '../lib/viator-handler.js';
