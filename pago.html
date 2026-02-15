@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirmar Reserva - Atacama Dark Sky</title>
-    <link rel="icon" type="image/webp" href="images/Nightskylogo.webp">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -336,6 +336,14 @@
                     <span class="detail-label">Email</span>
                     <span class="detail-value" id="customer-email">-</span>
                 </div>
+                <div class="detail-row" id="subtotal-row">
+                    <span class="detail-label">Subtotal</span>
+                    <span class="detail-value" id="subtotal-price">-</span>
+                </div>
+                <div class="detail-row" id="fee-row">
+                    <span class="detail-label">Cargo procesamiento pago</span>
+                    <span class="detail-value" id="fee-price" style="color: #f59e0b;">-</span>
+                </div>
                 <div class="total-row">
                     <span class="total-label">Total a pagar</span>
                     <span class="total-value" id="total-price">$0</span>
@@ -518,8 +526,14 @@
             document.getElementById('customer-name').textContent = bookingData.name || '-';
             document.getElementById('customer-email').textContent = bookingData.email || '-';
 
-            const total = calculatePrice();
-            document.getElementById('total-price').textContent = '$' + total.toLocaleString('es-CL') + ' CLP';
+            const subtotal = calculatePrice();
+            const MP_FEE_RATE = 0.0464;
+            const totalWithFee = Math.round(subtotal / (1 - MP_FEE_RATE));
+            const fee = totalWithFee - subtotal;
+
+            document.getElementById('subtotal-price').textContent = '$' + subtotal.toLocaleString('es-CL');
+            document.getElementById('fee-price').textContent = '+$' + fee.toLocaleString('es-CL');
+            document.getElementById('total-price').textContent = '$' + totalWithFee.toLocaleString('es-CL') + ' CLP';
         }
 
         // Procesar pago
