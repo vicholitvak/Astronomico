@@ -109,15 +109,7 @@ export default async function handler(req, res) {
                 phone: phone ? {
                     area_code: phone.replace(/\D/g, '').substring(0, 2) || "56",
                     number: phone.replace(/\D/g, '').substring(2) || phone.replace(/\D/g, '')
-                } : undefined,
-                identification: {
-                    type: "RUT",
-                    number: ""  // Opcional por ahora, mejora la aprobación si se proporciona
-                },
-                address: {
-                    zip_code: "1410000",
-                    street_name: accommodation || "San Pedro de Atacama"
-                }
+                } : undefined
             },
             back_urls: {
                 success: 'https://atacamadarksky.cl/payment-success.html',
@@ -125,7 +117,7 @@ export default async function handler(req, res) {
                 pending: 'https://atacamadarksky.cl/payment-pending.html'
             },
             auto_return: 'approved',
-            binary_mode: true,  // Solo aprobado o rechazado, no "pendiente"
+            binary_mode: false,  // Allow pending review for international payments instead of straight rejection
             notification_url: 'https://atacamadarksky.cl/api/mercadopago-webhook',
             metadata: {
                 tour_type: tourType,
@@ -150,15 +142,6 @@ export default async function handler(req, res) {
             },
             statement_descriptor: 'ATACAMA TOUR',  // Máx 11 caracteres, aparece en el estado de cuenta
             external_reference: booking_id || `ATK-${Date.now()}`,
-            shipments: {
-                receiver_address: {
-                    zip_code: "1410000",
-                    state_name: "Antofagasta",
-                    city_name: "San Pedro de Atacama",
-                    street_name: accommodation || "Centro",
-                    street_number: ""
-                }
-            },
             additional_info: {
                 ip_address: req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.socket?.remoteAddress || "unknown",
                 items: [
@@ -179,19 +162,7 @@ export default async function handler(req, res) {
                         area_code: phone.replace(/\D/g, '').substring(0, 2) || "56",
                         number: phone.replace(/\D/g, '').substring(2) || phone.replace(/\D/g, '')
                     } : undefined,
-                    address: {
-                        zip_code: "1410000",
-                        street_name: accommodation || "San Pedro de Atacama"
-                    },
                     registration_date: new Date().toISOString()
-                },
-                shipments: {
-                    receiver_address: {
-                        zip_code: "1410000",
-                        state_name: "Antofagasta",
-                        city_name: "San Pedro de Atacama",
-                        street_name: accommodation || "Centro"
-                    }
                 }
             },
             expires: true,
