@@ -11,7 +11,7 @@
 
 import { Pool } from 'pg';
 import { addToGoogleCalendar } from '../lib/google-calendar.js';
-import { syncDateAvailabilityToGYG } from './suppliers.js';
+import { syncDateAvailabilityToGYG, pushAvailabilityNotificationToViator } from './suppliers.js';
 
 // Viator Affiliate API config
 const VIATOR_AFFILIATE_ENV = process.env.VIATOR_AFFILIATE_ENV || 'sandbox';
@@ -82,6 +82,9 @@ export default async function handler(req, res) {
     for (const date of cancelledDates) {
       try {
         await syncDateAvailabilityToGYG(date);
+        pushAvailabilityNotificationToViator(date).catch(err => {
+          console.error(`[CRON] Viator push failed for ${date}:`, err.message);
+        });
         results.availability_synced.push(date);
       } catch (err) {
         console.error(`[CRON] Failed to sync availability for ${date}:`, err.message);

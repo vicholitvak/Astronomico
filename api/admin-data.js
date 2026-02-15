@@ -5,6 +5,7 @@
 
 import { Pool } from 'pg';
 import { google } from 'googleapis';
+import { pushAvailabilityNotificationToViator } from '../lib/viator-handler.js';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -18,18 +19,12 @@ const GYG_OUTBOUND_PASSWORD = process.env.GYG_OUTBOUND_PASSWORD;
 
 // ============ VIATOR NOTIFICATION HELPERS ============
 const VIATOR_PRODUCTS = {
-  'ADS-REGULAR': { tourType: 'regular', name: 'Tour Regular' },
   'ADS-PRIVATE': { tourType: 'private', name: 'Tour Privado' },
   '5624520P1': { tourType: 'private', name: 'Tour Semi-Privado (Viator portal)' }
 };
 
-// GYG Products configuration
+// GYG Products configuration (only private tour active)
 const GYG_PRODUCTS = {
-  regular: {
-    productId: '1152147',
-    availableTimes: ['21:00'],
-    maxCapacity: 16
-  },
   private: {
     productId: '1163787',
     availableTimes: ['20:00', '20:30', '21:00'],
@@ -69,16 +64,13 @@ async function notifyGygDateBlocked(date, blockType) {
   const tzOffset = getChileTimezoneOffset(date);
 
   try {
-    // Determine which products to block based on block_type
+    // Block private tour (only active product)
     const productsToNotify = [];
 
     if (blockType === 'full') {
-      // Block both regular and private tours
-      productsToNotify.push(GYG_PRODUCTS.regular, GYG_PRODUCTS.private);
-    } else if (blockType === 'private_only') {
-      // Only block regular tours (private still available)
-      productsToNotify.push(GYG_PRODUCTS.regular);
+      productsToNotify.push(GYG_PRODUCTS.private);
     }
+    // private_only block type: private tours still available, nothing to block on GYG
 
     for (const product of productsToNotify) {
       const availabilities = product.availableTimes.map(time => ({
@@ -190,8 +182,11 @@ async function notifyViatorDateBlocked(date, blockType) {
 
   console.log(`[Admin] Viator notification: date ${date} blocked (${blockType})`);
 
+  // Push availability notification to Viator (they'll re-query our /availability endpoint)
+  await pushAvailabilityNotificationToViator(date);
+
   if (!resendApiKey) {
-    console.log('[Admin] Skipping Viator notification - RESEND_API_KEY not configured');
+    console.log('[Admin] Skipping Viator notification email - RESEND_API_KEY not configured');
     return;
   }
 
@@ -243,8 +238,11 @@ async function notifyViatorDateUnblocked(date) {
 
   console.log(`[Admin] Viator notification: date ${date} unblocked`);
 
+  // Push availability notification to Viator (they'll re-query our /availability endpoint)
+  await pushAvailabilityNotificationToViator(date);
+
   if (!resendApiKey) {
-    console.log('[Admin] Skipping Viator unblock notification - RESEND_API_KEY not configured');
+    console.log('[Admin] Skipping Viator unblock notification email - RESEND_API_KEY not configured');
     return;
   }
 
