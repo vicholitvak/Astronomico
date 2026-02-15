@@ -2701,9 +2701,9 @@
                 window.location.href = '/admin-login.html';
                 return;
             }
-            loadBookings();
+            await loadBookings();
             loadBlockedDates();
-            loadCalendarBookings(); // Load all bookings for calendar view
+            await loadCalendarBookings(); // Load all bookings for calendar view
             loadReviewStats(); // Load review badge count
         });
 
@@ -2753,7 +2753,6 @@
                 renderStats(data.data.stats);
                 renderBookings(data.data.bookings);
                 renderPagination(data.data.pagination);
-                updateCalendarWithBookings(data.data.bookings);
 
                 try {
                     renderUpcomingAndPastBookings(data.data.bookings);
@@ -2947,6 +2946,7 @@
         }
 
         // Load bookings specifically for the calendar view (all bookings for current month + buffer)
+        // This is the SOLE source of truth for bookingsByDate — always resets before filling
         async function loadCalendarBookings() {
             try {
                 const year = currentCalendarMonth.getFullYear();
@@ -2966,20 +2966,14 @@
                 const data = await response.json();
 
                 if (data.success && data.data.bookings) {
-                    // Merge with existing bookings (don't lose current page data)
-                    const calendarBookings = data.data.bookings;
-
-                    // Update bookingsByDate with calendar-specific data
-                    calendarBookings.forEach(booking => {
+                    // Reset and rebuild — single source of truth for calendar
+                    bookingsByDate = {};
+                    data.data.bookings.forEach(booking => {
                         if (booking.date) {
                             if (!bookingsByDate[booking.date]) {
                                 bookingsByDate[booking.date] = [];
                             }
-                            // Check if booking already exists
-                            const exists = bookingsByDate[booking.date].some(b => b.id === booking.id);
-                            if (!exists) {
-                                bookingsByDate[booking.date].push(booking);
-                            }
+                            bookingsByDate[booking.date].push(booking);
                         }
                     });
                 }
@@ -3473,8 +3467,8 @@
                 if (data.success) {
                     alert('Reserva eliminada');
                     closeDayModal();
-                    loadBookings();
-                    renderCalendar();
+                    await loadBookings();
+                    await loadCalendarBookings();
                 } else {
                     alert('Error: ' + data.error);
                 }
@@ -3680,10 +3674,19 @@
 
             document.getElementById('modalBookingsList').innerHTML += formHTML;
 
-            // Add form submit handler
+            // Add form submit handler with double-submit prevention
             document.getElementById('manualBookingForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                await createManualBooking(new FormData(e.target));
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                if (submitBtn.disabled) return;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+                try {
+                    await createManualBooking(new FormData(e.target));
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Reserva';
+                }
             });
         }
 
@@ -3742,7 +3745,7 @@
 
                     alert(`Reserva creada: ${result.bookingId}${persons >= 16 ? '\n\n✓ Fecha bloqueada automáticamente (grupo grande)\n✓ Solo 2do turno disponible (00:00)' : ''}`);
                     await loadBookings();
-                    renderCalendar();
+                    await loadCalendarBookings();
                     showDayModal(data.date);
                 } else {
                     alert('Error: ' + result.error);
@@ -3763,7 +3766,7 @@
                 if (data.success) {
                     // Recargar datos y refrescar modal
                     await loadBookings();
-                    renderCalendar();
+                    await loadCalendarBookings();
                     // Buscar la fecha del booking para reabrir el modal
                     const booking = allBookings.find(b => b.id === bookingId);
                     if (booking) {
