@@ -5495,17 +5495,23 @@
             }
 
             try {
-                await fetch('/api/admin-data?type=expenses', {
+                const resp = await fetch('/api/admin-data?type=expenses', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id: id ? parseInt(id) : null, date, amount, category, description })
                 });
+                const result = await resp.json();
+                if (!resp.ok || !result.success) {
+                    alert('Error al guardar: ' + (result.error || resp.statusText));
+                    return;
+                }
                 cancelExpenseEdit();
                 document.getElementById('expAmount').value = '';
                 document.getElementById('expCategory').value = '';
                 document.getElementById('expDesc').value = '';
                 loadIncomeData();
             } catch (err) {
+                alert('Error de conexion: ' + err.message);
                 console.error('Error saving expense:', err);
             }
         }
