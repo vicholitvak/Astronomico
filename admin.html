@@ -2057,10 +2057,10 @@
             </div>
         </div>
 
-        <!-- Upcoming Bookings Section -->
+        <!-- Month Bookings Section -->
         <div class="filters-section" style="margin-bottom: 20px;">
-            <h3 style="color: #60a5fa; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-clock"></i> Próximas Reservas
+            <h3 style="color: #60a5fa; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;" id="monthBookingsTitle">
+                <i class="fas fa-calendar-alt"></i> Reservas del Mes
             </h3>
             <div id="upcomingBookings" style="display: grid; gap: 15px;">
                 <!-- Will be populated by JS -->
@@ -3216,9 +3216,11 @@
                 }
 
                 renderCalendar();
+                renderMonthBookings();
             } catch (error) {
                 console.error('Error loading calendar bookings:', error);
                 renderCalendar(); // Still render with existing data
+                renderMonthBookings();
             }
         }
 
@@ -3535,6 +3537,15 @@
                         <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(71, 85, 105, 0.5);">
                             <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 8px;">
                                 Creado: ${formatDateTime(booking.created_at)} | Fuente: ${booking.source || 'web'} | Pago: ${getPaymentMethodDisplay(booking.payment_method || 'pending')}
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 0.85rem;">
+                                <i class="fas fa-dollar-sign" style="color: #34d399; width: 20px;"></i>
+                                <span style="color: #cbd5e1;" id="paymentDisplay_${booking.id}">
+                                    ${booking.payment_amount ? formatCLP(parseFloat(booking.payment_amount)) : '<span style="color:#fbbf24;">Sin monto</span>'}
+                                </span>
+                                <button onclick="editPaymentAmount(${booking.id}, ${booking.payment_amount || 0}, '${dateStr}')" style="background:none;border:none;color:#60a5fa;cursor:pointer;font-size:0.75rem;padding:2px 6px;" title="Editar monto">
+                                    <i class="fas fa-edit"></i>
+                                </button>
                             </div>
                             ${booking.payment_method === 'mercadopago' ? `
                                 <div style="padding: 8px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 4px; margin-bottom: 8px; font-size: 0.75rem; color: #fca5a5;">
@@ -3886,6 +3897,10 @@
                             </div>
                         </div>
                         <div>
+                            <label style="color: #94a3b8; font-size: 0.85rem;">Monto Cobrado (CLP)</label>
+                            <input type="number" name="payment_amount" min="0" placeholder="Ej: 150000 (dejar vacío si pendiente)" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
+                        </div>
+                        <div>
                             <label style="color: #94a3b8; font-size: 0.85rem;">Fuente</label>
                             <select name="source" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #475569; background: #0f172a; color: white;">
                                 <option value="manual">Manual (Admin)</option>
@@ -3943,6 +3958,10 @@
                 source: formData.get('source'),
                 payment_method: formData.get('payment_method')
             };
+            const paymentAmt = formData.get('payment_amount');
+            if (paymentAmt && parseFloat(paymentAmt) > 0) {
+                data.payment_amount = parseFloat(paymentAmt);
+            }
 
             try {
                 const response = await fetch('/api/booking-api', {
@@ -4017,6 +4036,30 @@
             }
         }
 
+        async function editPaymentAmount(bookingId, currentAmount, dateStr) {
+            const input = prompt('Monto cobrado (CLP):', currentAmount || '');
+            if (input === null) return;
+            const amount = parseFloat(input);
+            if (isNaN(amount) || amount < 0) { alert('Monto invalido'); return; }
+            try {
+                const response = await fetch(`/api/booking-api?id=${bookingId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ payment_amount: amount, payment_status: amount > 0 ? 'paid' : 'pending' })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    await loadBookings();
+                    await loadCalendarBookings();
+                    showDayModal(dateStr);
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
         function renderBookings(bookings) {
             const tbody = document.getElementById('bookingsTableBody');
 
@@ -4080,32 +4123,53 @@
                            String(now.getMonth() + 1).padStart(2, '0') + '-' +
                            String(now.getDate()).padStart(2, '0');
 
-            // Separar upcoming y past
-            const upcoming = bookings.filter(b => {
-                return b.date >= todayStr;
-            }).sort((a, b) => a.date.localeCompare(b.date));
-
             const past = bookings.filter(b => {
                 return b.date < todayStr;
             }).sort((a, b) => b.date.localeCompare(a.date));
 
             pastBookingsFiltered = past;
 
-            // Render upcoming
+            // Update past count
+            document.getElementById('pastBookingsCount').textContent = past.length;
+
+            // Render month bookings from calendar data
+            renderMonthBookings();
+        }
+
+        function renderMonthBookings() {
             const upcomingContainer = document.getElementById('upcomingBookings');
             const noUpcoming = document.getElementById('noUpcomingBookings');
 
-            if (upcoming.length === 0) {
+            // Get current calendar month range
+            const year = currentCalendarMonth.getFullYear();
+            const month = currentCalendarMonth.getMonth();
+            const monthStart = year + '-' + String(month + 1).padStart(2, '0') + '-01';
+            const lastDay = new Date(year, month + 1, 0).getDate();
+            const monthEnd = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(lastDay).padStart(2, '0');
+
+            // Update title
+            const monthLabel = currentCalendarMonth.toLocaleDateString('es-CL', { month: 'long', year: 'numeric' });
+            document.getElementById('monthBookingsTitle').innerHTML =
+                '<i class="fas fa-calendar-alt"></i> Reservas de ' + monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1);
+
+            // Collect bookings for this month from bookingsByDate
+            const monthBookings = [];
+            Object.keys(bookingsByDate).forEach(dateStr => {
+                if (dateStr >= monthStart && dateStr <= monthEnd) {
+                    bookingsByDate[dateStr].forEach(b => monthBookings.push(b));
+                }
+            });
+            monthBookings.sort((a, b) => a.date.localeCompare(b.date));
+
+            if (monthBookings.length === 0) {
                 upcomingContainer.style.display = 'none';
                 noUpcoming.style.display = 'block';
+                noUpcoming.querySelector('p').textContent = 'No hay reservas en este mes';
             } else {
                 upcomingContainer.style.display = 'grid';
                 noUpcoming.style.display = 'none';
-                upcomingContainer.innerHTML = upcoming.slice(0, 5).map(booking => renderBookingCard(booking)).join('');
+                upcomingContainer.innerHTML = monthBookings.map(booking => renderBookingCard(booking)).join('');
             }
-
-            // Update past count
-            document.getElementById('pastBookingsCount').textContent = past.length;
         }
 
         function renderBookingCard(booking) {

@@ -47,7 +47,7 @@ export default async function handler(req, res) {
 // ============ UPDATE BOOKING (PATCH) ============
 async function updateBooking(req, res) {
   const { id } = req.query;
-  const { status, tour_type, persons, time, date } = req.body;
+  const { status, tour_type, persons, time, date, payment_amount, source, payment_method, payment_status } = req.body;
 
   if (!id) {
     return res.status(400).json({ success: false, error: 'Booking ID is required' });
@@ -62,6 +62,10 @@ async function updateBooking(req, res) {
   if (persons) { updates.push(`persons = $${paramCount++}`); values.push(parseInt(persons)); }
   if (time) { updates.push(`time = $${paramCount++}`); values.push(time); }
   if (date) { updates.push(`date = $${paramCount++}`); values.push(date); }
+  if (payment_amount !== undefined && payment_amount !== null) { updates.push(`payment_amount = $${paramCount++}`); values.push(parseFloat(payment_amount)); }
+  if (source) { updates.push(`source = $${paramCount++}`); values.push(source); }
+  if (payment_method) { updates.push(`payment_method = $${paramCount++}`); values.push(payment_method); }
+  if (payment_status) { updates.push(`payment_status = $${paramCount++}`); values.push(payment_status); }
 
   if (updates.length === 0) {
     return res.status(400).json({ success: false, error: 'No fields to update' });
@@ -193,7 +197,7 @@ async function createBooking(req, res) {
   console.log('Received booking request:', req.body);
 
   const {
-    date, persons, tourType, time, name, email, phone, message, source = 'web', accommodation, status = 'pending', payment_method = 'pending'
+    date, persons, tourType, time, name, email, phone, message, source = 'web', accommodation, status = 'pending', payment_method = 'pending', payment_amount
   } = req.body;
 
   if (!date || !persons || !tourType || !name || !phone) {
@@ -243,7 +247,7 @@ async function createBooking(req, res) {
     console.error('Error checking existing bookings:', e);
   }
 
-  const booking = await insert('bookings', {
+  const bookingData = {
     booking_id: bookingId,
     date,
     persons: parseInt(persons),
@@ -258,7 +262,13 @@ async function createBooking(req, res) {
     source,
     payment_method: payment_method || 'pending',
     created_at: new Date().toISOString()
-  });
+  };
+  if (payment_amount) {
+    bookingData.payment_amount = parseFloat(payment_amount);
+    bookingData.payment_status = 'paid';
+  }
+
+  const booking = await insert('bookings', bookingData);
 
   // Send emails (non-blocking) - skip if email is placeholder
   const shouldSendEmail = finalEmail !== 'pendiente@completar.com';

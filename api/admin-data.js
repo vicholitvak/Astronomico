@@ -403,20 +403,25 @@ export default async function handler(req, res) {
           ORDER BY date DESC
         `, [startDate, endDate]);
 
+        // Normalize direct sources to 'web'
+        const DIRECT_SOURCES = new Set(['web', 'manual', 'whatsapp', 'email', 'phone', '']);
+
         // Estimate gross per booking (same logic as gyg-analytics)
         const bookings = bookingsResult.rows.map(b => {
+          const normalizedSource = DIRECT_SOURCES.has(b.source || '') ? 'web' : b.source;
+
           let gross;
           if (b.payment_amount) {
             gross = parseFloat(b.payment_amount);
-          } else if (b.source === 'gyg') {
+          } else if (normalizedSource === 'gyg') {
             gross = b.tour_type === 'private' ? b.num_people * 142855 : b.num_people * 53600;
-          } else if (b.source === 'viator' || b.source === 'klook') {
+          } else if (normalizedSource === 'viator' || normalizedSource === 'klook') {
             gross = b.tour_type === 'private' ? b.num_people * 105300 : b.num_people * 45000;
           } else {
             gross = b.tour_type === 'private' ? b.num_people * 150000 : b.num_people * 42000;
           }
 
-          const rate = COMMISSION_RATE[b.source] || 0;
+          const rate = COMMISSION_RATE[normalizedSource] || 0;
           const commission = Math.round(gross * rate);
           const net = gross - commission;
 
@@ -425,7 +430,7 @@ export default async function handler(req, res) {
             gross,
             commission,
             net,
-            source: b.source || 'web'
+            source: normalizedSource
           };
         });
 
