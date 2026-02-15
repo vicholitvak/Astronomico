@@ -1733,6 +1733,182 @@
         .income-table tr:hover {
             background: #374151;
         }
+        /* Income sub-tabs */
+        .income-subtabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #374151;
+        }
+        .income-subtab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 14px;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+        .income-subtab.active {
+            color: #60a5fa;
+            border-bottom-color: #60a5fa;
+        }
+        .income-subtab:hover:not(.active) {
+            color: #f3f4f6;
+        }
+        .income-subcontent { display: none; }
+        .income-subcontent.active { display: block; }
+        /* KPI row */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .kpi-card {
+            background: #1f2937;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+        .kpi-card .kpi-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #f3f4f6;
+        }
+        .kpi-card .kpi-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+        .kpi-card.negative .kpi-value { color: #f87171; }
+        .kpi-card.profit .kpi-value { color: #34d399; }
+        /* Platform cards */
+        .platform-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .platform-card {
+            background: #1f2937;
+            border-radius: 10px;
+            padding: 16px;
+            border-left: 4px solid #374151;
+        }
+        .platform-card.gyg { border-left-color: #f97316; }
+        .platform-card.viator { border-left-color: #8b5cf6; }
+        .platform-card.klook { border-left-color: #f43f5e; }
+        .platform-card.web { border-left-color: #60a5fa; }
+        .platform-card .plat-name {
+            font-weight: 600;
+            color: #f3f4f6;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .platform-card .plat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            padding: 2px 0;
+        }
+        .platform-card .plat-row .plat-val { color: #f3f4f6; }
+        /* Monthly accordion */
+        .month-accordion {
+            background: #1f2937;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        .month-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .month-header:hover { background: #273549; }
+        .month-header .month-title { font-weight: 600; color: #f3f4f6; }
+        .month-header .month-summary { color: #94a3b8; font-size: 0.85rem; }
+        .month-header .chevron {
+            color: #94a3b8;
+            transition: transform 0.2s;
+        }
+        .month-accordion.open .chevron { transform: rotate(180deg); }
+        .month-body {
+            display: none;
+            padding: 0 16px 14px;
+        }
+        .month-accordion.open .month-body { display: block; }
+        .week-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #374151;
+            font-size: 0.85rem;
+            color: #d1d5db;
+        }
+        .week-row:last-child { border-bottom: none; }
+        /* Expense form */
+        .expense-form {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            background: #1f2937;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .expense-form .field { display: flex; flex-direction: column; gap: 4px; }
+        .expense-form .field label { font-size: 0.75rem; color: #94a3b8; }
+        .expense-form .field input,
+        .expense-form .field textarea {
+            padding: 8px 10px;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            background: #111827;
+            color: #f3f4f6;
+            font-size: 0.85rem;
+        }
+        .expense-form .field textarea { resize: none; height: 36px; }
+        .expense-donut-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+            background: #1f2937;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        /* Month nav */
+        .month-nav {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .month-nav button {
+            background: #374151;
+            border: none;
+            color: #f3f4f6;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .month-nav button:hover { background: #4b5563; }
+        @media (max-width: 768px) {
+            .kpi-row { grid-template-columns: repeat(3, 1fr); }
+            .expense-donut-container { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -2022,84 +2198,93 @@
                     <input type="date" id="incomeEndDate" onchange="loadIncomeData()">
                     <button onclick="setIncomePeriod('week')">Semana</button>
                     <button onclick="setIncomePeriod('month')">Mes</button>
-                    <button onclick="setIncomePeriod('year')">Año</button>
-                    <span style="margin-left: 15px;">|</span>
-                    <select id="incomePaymentFilter" onchange="loadIncomeData()" style="padding: 8px 12px; border: 1px solid #374151; border-radius: 8px; background: #1f2937; color: #f3f4f6;">
-                        <option value="all">Todos los pagos</option>
-                        <option value="mercadopago">MercadoPago</option>
-                        <option value="cash">Efectivo</option>
-                        <option value="transfer">Transferencia</option>
-                        <option value="pending">Pendiente</option>
-                    </select>
+                    <button onclick="setIncomePeriod('year')">Ano</button>
+                    <div class="month-nav" id="incomeMonthNav" style="display:none;">
+                        <button onclick="incomeNavMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                        <span id="incomeMonthLabel" style="color:#f3f4f6;font-size:0.85rem;min-width:90px;text-align:center;"></span>
+                        <button onclick="incomeNavMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <button onclick="exportIncomeCSV()" style="margin-left:10px;background:#374151;" title="Exportar CSV"><i class="fas fa-file-csv"></i> CSV</button>
                 </div>
             </div>
 
-            <div class="income-stats">
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
-                    <div class="stat-info">
-                        <span class="stat-value" id="totalIncome">$0</span>
-                        <span class="stat-label">Total Ingresos</span>
-                    </div>
+            <!-- Sub-tabs -->
+            <div class="income-subtabs">
+                <button class="income-subtab active" onclick="switchIncomeSubtab('summary')"><i class="fas fa-chart-pie"></i> Resumen</button>
+                <button class="income-subtab" onclick="switchIncomeSubtab('expenses')"><i class="fas fa-receipt"></i> Gastos</button>
+                <button class="income-subtab" onclick="switchIncomeSubtab('detail')"><i class="fas fa-list"></i> Detalle</button>
+            </div>
+
+            <!-- SUB-TAB: Resumen -->
+            <div id="incomeSubSummary" class="income-subcontent active">
+                <div class="kpi-row">
+                    <div class="kpi-card"><div class="kpi-value" id="kpiBruto">$0</div><div class="kpi-label">Bruto</div></div>
+                    <div class="kpi-card negative"><div class="kpi-value" id="kpiComisiones">-$0</div><div class="kpi-label">Comisiones</div></div>
+                    <div class="kpi-card"><div class="kpi-value" id="kpiNeto">$0</div><div class="kpi-label">Neto</div></div>
+                    <div class="kpi-card negative"><div class="kpi-value" id="kpiGastos">-$0</div><div class="kpi-label">Gastos</div></div>
+                    <div class="kpi-card profit"><div class="kpi-value" id="kpiGanancia">$0</div><div class="kpi-label">Ganancia</div></div>
+                    <div class="kpi-card"><div class="kpi-value" id="kpiPersonas">0</div><div class="kpi-label">Personas</div></div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-receipt"></i></div>
-                    <div class="stat-info">
-                        <span class="stat-value" id="totalBookingsIncome">0</span>
-                        <span class="stat-label">Reservas Pagadas</span>
-                    </div>
+
+                <div class="platform-cards" id="platformCards"></div>
+
+                <div style="background:#1f2937;border-radius:10px;padding:20px;margin-bottom:20px;">
+                    <h3 style="margin-bottom:15px;color:#f3f4f6;"><i class="fas fa-chart-bar"></i> Ingresos Netos por Mes</h3>
+                    <div style="height:300px;"><canvas id="incomeChart"></canvas></div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
-                    <div class="stat-info">
-                        <span class="stat-value" id="avgBookingValue">$0</span>
-                        <span class="stat-label">Promedio por Reserva</span>
-                    </div>
+
+                <div id="monthlyAccordion"></div>
+            </div>
+
+            <!-- SUB-TAB: Gastos -->
+            <div id="incomeSubExpenses" class="income-subcontent">
+                <div class="expense-form" id="expenseForm">
+                    <div class="field"><label>Fecha</label><input type="date" id="expDate"></div>
+                    <div class="field"><label>Monto (CLP)</label><input type="number" id="expAmount" placeholder="50000" min="0"></div>
+                    <div class="field"><label>Categoria</label><input type="text" id="expCategory" list="expCatList" placeholder="Combustible"><datalist id="expCatList"></datalist></div>
+                    <div class="field" style="flex:1;"><label>Descripcion</label><input type="text" id="expDesc" placeholder="Opcional"></div>
+                    <input type="hidden" id="expEditId">
+                    <button onclick="saveExpense()" class="btn" style="height:36px;padding:0 16px;align-self:flex-end;"><i class="fas fa-plus"></i> <span id="expBtnText">Agregar</span></button>
+                    <button onclick="cancelExpenseEdit()" id="expCancelBtn" class="btn" style="height:36px;padding:0 12px;align-self:flex-end;background:#374151;display:none;">Cancelar</button>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-users"></i></div>
-                    <div class="stat-info">
-                        <span class="stat-value" id="totalPersonsIncome">0</span>
-                        <span class="stat-label">Total Personas</span>
-                    </div>
+
+                <div class="expense-donut-container" id="expenseDonutContainer" style="display:none;">
+                    <div style="height:220px;"><canvas id="expenseDonutChart"></canvas></div>
+                    <div id="expenseCategoryBreakdown"></div>
+                </div>
+
+                <div class="income-table-container" style="margin-top:0;">
+                    <h3><i class="fas fa-list"></i> Gastos del Periodo</h3>
+                    <table class="income-table">
+                        <thead><tr><th>Fecha</th><th>Categoria</th><th>Descripcion</th><th style="text-align:right;">Monto</th><th style="width:90px;"></th></tr></thead>
+                        <tbody id="expenseTableBody"></tbody>
+                    </table>
+                    <p id="noExpenseData" style="display:none;text-align:center;color:#94a3b8;padding:40px;">No hay gastos en este periodo.</p>
                 </div>
             </div>
 
-            <!-- Gráfico de ingresos -->
-            <div class="income-chart-container" style="background: #1f2937; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-                <h3 style="margin-bottom: 15px; color: #f3f4f6;"><i class="fas fa-chart-bar"></i> Ingresos por Día</h3>
-                <div style="height: 300px;">
-                    <canvas id="incomeChart"></canvas>
+            <!-- SUB-TAB: Detalle -->
+            <div id="incomeSubDetail" class="income-subcontent">
+                <div class="income-table-container" style="margin-top:0;">
+                    <h3><i class="fas fa-list"></i> Detalle de Reservas</h3>
+                    <table class="income-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Tour</th>
+                                <th>Pers.</th>
+                                <th>Fuente</th>
+                                <th>Metodo</th>
+                                <th style="text-align:right;">Bruto</th>
+                                <th style="text-align:right;">Comision</th>
+                                <th style="text-align:right;">Neto</th>
+                            </tr>
+                        </thead>
+                        <tbody id="incomeTableBody"></tbody>
+                    </table>
+                    <p id="noIncomeData" style="display:none;text-align:center;color:#94a3b8;padding:40px;">No hay ingresos en este periodo.</p>
                 </div>
-            </div>
-
-            <div class="income-breakdown">
-                <div class="breakdown-section">
-                    <h3><i class="fas fa-credit-card"></i> Por Método de Pago</h3>
-                    <div id="paymentMethodBreakdown"></div>
-                </div>
-                <div class="breakdown-section">
-                    <h3><i class="fas fa-star"></i> Por Tipo de Tour</h3>
-                    <div id="tourTypeBreakdown"></div>
-                </div>
-            </div>
-
-            <div class="income-table-container">
-                <h3><i class="fas fa-list"></i> Detalle de Reservas</h3>
-                <table class="income-table">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Cliente</th>
-                            <th>Tour</th>
-                            <th>Personas</th>
-                            <th>Método</th>
-                            <th>Monto</th>
-                        </tr>
-                    </thead>
-                    <tbody id="incomeTableBody"></tbody>
-                </table>
-                <p id="noIncomeData" style="display: none; text-align: center; color: #94a3b8; padding: 40px;">No hay ingresos en este período.</p>
             </div>
         </div>
 
@@ -4852,16 +5037,33 @@
         }
 
         // ============ INCOME FUNCTIONS ============
+        let incomeCurrentPeriod = 'month';
+        let incomeMonthOffset = 0; // 0 = current month
+        let incomeChart = null;
+        let expenseDonutChart = null;
+        let lastIncomeData = null;
+
         function setIncomePeriod(period) {
-            const endDate = new Date();
-            let startDate = new Date();
+            incomeCurrentPeriod = period;
+            incomeMonthOffset = 0;
+            const nav = document.getElementById('incomeMonthNav');
+            const now = new Date();
+            let startDate, endDate;
 
             if (period === 'week') {
+                nav.style.display = 'none';
+                endDate = new Date();
+                startDate = new Date();
                 startDate.setDate(endDate.getDate() - 7);
             } else if (period === 'month') {
-                startDate.setMonth(endDate.getMonth() - 1);
+                nav.style.display = 'flex';
+                startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                updateMonthLabel(startDate);
             } else if (period === 'year') {
-                startDate.setFullYear(endDate.getFullYear() - 1);
+                nav.style.display = 'none';
+                startDate = new Date(now.getFullYear(), 0, 1);
+                endDate = new Date(now.getFullYear(), 11, 31);
             }
 
             document.getElementById('incomeStartDate').value = startDate.toISOString().split('T')[0];
@@ -4869,187 +5071,340 @@
             loadIncomeData();
         }
 
+        function incomeNavMonth(dir) {
+            incomeMonthOffset += dir;
+            const now = new Date();
+            const target = new Date(now.getFullYear(), now.getMonth() + incomeMonthOffset, 1);
+            const startDate = new Date(target.getFullYear(), target.getMonth(), 1);
+            const endDate = new Date(target.getFullYear(), target.getMonth() + 1, 0);
+            updateMonthLabel(startDate);
+            document.getElementById('incomeStartDate').value = startDate.toISOString().split('T')[0];
+            document.getElementById('incomeEndDate').value = endDate.toISOString().split('T')[0];
+            loadIncomeData();
+        }
+
+        function updateMonthLabel(d) {
+            document.getElementById('incomeMonthLabel').textContent =
+                d.toLocaleDateString('es-CL', { month: 'long', year: 'numeric' });
+        }
+
+        function switchIncomeSubtab(tab) {
+            document.querySelectorAll('.income-subtab').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.income-subcontent').forEach(c => c.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            const mapping = { summary: 'incomeSubSummary', expenses: 'incomeSubExpenses', detail: 'incomeSubDetail' };
+            document.getElementById(mapping[tab]).classList.add('active');
+            if (tab === 'expenses' && lastIncomeData) renderExpenses(lastIncomeData);
+        }
+
         async function loadIncomeData() {
             const startDate = document.getElementById('incomeStartDate').value;
             const endDate = document.getElementById('incomeEndDate').value;
-            const paymentFilter = document.getElementById('incomePaymentFilter').value;
-
             if (!startDate || !endDate) return;
 
             try {
-                let url = `/api/admin-data?type=income&start_date=${startDate}&end_date=${endDate}`;
-                if (paymentFilter && paymentFilter !== 'all') {
-                    url += `&payment_method=${paymentFilter}`;
-                }
-                const response = await fetch(url);
-                const data = await response.json();
+                const [incomeRes, expenseRes, catRes] = await Promise.all([
+                    fetch(`/api/admin-data?type=income&start_date=${startDate}&end_date=${endDate}`),
+                    fetch(`/api/admin-data?type=expenses&start_date=${startDate}&end_date=${endDate}`),
+                    fetch(`/api/admin-data?type=expenses&action=categories`)
+                ]);
+                const incomeData = await incomeRes.json();
+                const expenseData = await expenseRes.json();
+                const catData = await catRes.json();
 
-                if (data.error) {
-                    console.error('Error loading income:', data.error);
-                    return;
-                }
-
-                renderIncomeData(data);
+                lastIncomeData = { ...incomeData, expenseRows: expenseData.expenses || [], expCategories: catData.categories || [] };
+                renderIncomeData(lastIncomeData);
             } catch (error) {
                 console.error('Error loading income data:', error);
             }
         }
 
-        let incomeChart = null;
-
         function renderIncomeData(data) {
-            const { bookings, totals, byTourType } = data;
+            const { bookings, summary, platforms, monthly } = data;
+            const sourceNames = { gyg: 'GetYourGuide', viator: 'Viator', klook: 'Klook', web: 'Directa' };
+            const sourceColors = { gyg: '#f97316', viator: '#8b5cf6', klook: '#f43f5e', web: '#60a5fa' };
+            const tourNames = { regular: 'Regular', private: 'Privado', astrophoto: 'Astrofoto' };
+            const methodNames = { mercadopago: 'MercadoPago', getyourguide: 'GYG', cash: 'Efectivo', transfer: 'Transfer', viator: 'Viator', klook: 'Klook' };
 
-            // Calculate totals
-            const totalIncome = bookings.reduce((sum, b) => sum + (parseFloat(b.total_paid) || 0), 0);
-            const totalPersons = bookings.reduce((sum, b) => sum + (parseInt(b.num_people) || 0), 0);
-            const avgValue = bookings.length > 0 ? totalIncome / bookings.length : 0;
+            // KPIs
+            document.getElementById('kpiBruto').textContent = formatCLP(summary.totalGross);
+            document.getElementById('kpiComisiones').textContent = '-' + formatCLP(summary.totalCommission);
+            document.getElementById('kpiNeto').textContent = formatCLP(summary.totalNet);
+            document.getElementById('kpiGastos').textContent = '-' + formatCLP(summary.totalExpenses);
+            document.getElementById('kpiGanancia').textContent = formatCLP(summary.profit);
+            document.getElementById('kpiPersonas').textContent = summary.totalPersons;
 
-            document.getElementById('totalIncome').textContent = formatCLP(totalIncome);
-            document.getElementById('totalBookingsIncome').textContent = bookings.length;
-            document.getElementById('avgBookingValue').textContent = formatCLP(avgValue);
-            document.getElementById('totalPersonsIncome').textContent = totalPersons;
+            // Platform cards
+            const platContainer = document.getElementById('platformCards');
+            const allSources = ['gyg', 'viator', 'klook', 'web'];
+            platContainer.innerHTML = allSources.map(src => {
+                const p = (platforms || []).find(x => x.source === src) || { gross: 0, commission: 0, net: 0, count: 0, persons: 0 };
+                return `<div class="platform-card ${src}">
+                    <div class="plat-name">${sourceNames[src]} (${p.count})</div>
+                    <div class="plat-row"><span>Bruto</span><span class="plat-val">${formatCLP(p.gross)}</span></div>
+                    <div class="plat-row"><span>Comision</span><span class="plat-val" style="color:#f87171;">-${formatCLP(p.commission)}</span></div>
+                    <div class="plat-row"><span>Neto</span><span class="plat-val" style="color:#34d399;">${formatCLP(p.net)}</span></div>
+                    <div class="plat-row"><span>Personas</span><span class="plat-val">${p.persons}</span></div>
+                </div>`;
+            }).join('');
 
-            // Agrupar por día para el gráfico
-            const dailyData = {};
-            bookings.forEach(b => {
-                // Extraer solo YYYY-MM-DD de la fecha ISO
-                const date = b.tour_date.split('T')[0];
-                if (!dailyData[date]) {
-                    dailyData[date] = { income: 0, bookings: 0, persons: 0 };
-                }
-                dailyData[date].income += parseFloat(b.total_paid) || 0;
-                dailyData[date].bookings++;
-                dailyData[date].persons += parseInt(b.num_people) || 0;
-            });
-
-            // Ordenar fechas
-            const sortedDates = Object.keys(dailyData).sort();
-            const chartLabels = sortedDates.map(d => {
-                const [year, month, day] = d.split('-');
-                const date = new Date(year, month - 1, day);
-                return date.toLocaleDateString('es-CL', { day: '2-digit', month: 'short' });
-            });
-            const chartIncomeData = sortedDates.map(d => dailyData[d].income);
-            const chartPersonsData = sortedDates.map(d => dailyData[d].persons);
-
-            // Crear/actualizar gráfico
+            // Chart: stacked bars by platform per month
             const ctx = document.getElementById('incomeChart').getContext('2d');
-            if (incomeChart) {
-                incomeChart.destroy();
-            }
+            if (incomeChart) incomeChart.destroy();
+
+            const months = (monthly || []).map(m => m.month);
+            const monthLabels = months.map(m => {
+                const [y, mo] = m.split('-');
+                return new Date(y, mo - 1).toLocaleDateString('es-CL', { month: 'short', year: '2-digit' });
+            });
+
+            const datasets = allSources.map(src => ({
+                label: sourceNames[src],
+                data: (monthly || []).map(m => (m.bySrc && m.bySrc[src]) || 0),
+                backgroundColor: sourceColors[src] + 'BB',
+                borderColor: sourceColors[src],
+                borderWidth: 1
+            }));
+
             incomeChart = new Chart(ctx, {
                 type: 'bar',
-                data: {
-                    labels: chartLabels,
-                    datasets: [
-                        {
-                            label: 'Ingresos (CLP)',
-                            data: chartIncomeData,
-                            backgroundColor: 'rgba(96, 165, 250, 0.7)',
-                            borderColor: 'rgba(96, 165, 250, 1)',
-                            borderWidth: 1,
-                            yAxisID: 'y'
-                        },
-                        {
-                            label: 'Personas',
-                            data: chartPersonsData,
-                            type: 'line',
-                            borderColor: 'rgba(16, 185, 129, 1)',
-                            backgroundColor: 'rgba(16, 185, 129, 0.2)',
-                            borderWidth: 2,
-                            fill: true,
-                            tension: 0.3,
-                            yAxisID: 'y1'
-                        }
-                    ]
-                },
+                data: { labels: monthLabels, datasets },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
                     plugins: {
                         legend: { labels: { color: '#94a3b8' } },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    if (context.dataset.label === 'Ingresos (CLP)') {
-                                        return 'Ingresos: ' + formatCLP(context.raw);
-                                    }
-                                    return context.dataset.label + ': ' + context.raw;
-                                }
-                            }
-                        }
+                        tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + formatCLP(ctx.raw) } }
                     },
                     scales: {
-                        x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148, 163, 184, 0.1)' } },
-                        y: {
-                            type: 'linear',
-                            position: 'left',
-                            ticks: {
-                                color: '#60a5fa',
-                                callback: function(value) { return formatCLP(value); }
-                            },
-                            grid: { color: 'rgba(148, 163, 184, 0.1)' }
-                        },
-                        y1: {
-                            type: 'linear',
-                            position: 'right',
-                            ticks: { color: '#10b981' },
-                            grid: { drawOnChartArea: false }
-                        }
+                        x: { stacked: true, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.1)' } },
+                        y: { stacked: true, ticks: { color: '#60a5fa', callback: v => formatCLP(v) }, grid: { color: 'rgba(148,163,184,0.1)' } }
                     }
                 }
             });
 
-            // Payment method breakdown con nombres legibles
-            const methodNames = { mercadopago: 'MercadoPago', cash: 'Efectivo', transfer: 'Transferencia', pending: 'Pendiente' };
-            const paymentBreakdown = document.getElementById('paymentMethodBreakdown');
-            if (totals && totals.length > 0) {
-                paymentBreakdown.innerHTML = totals.map(t => `
-                    <div class="breakdown-item">
-                        <span>${methodNames[t.payment_method] || t.payment_method || 'Sin método'}</span>
-                        <span>${formatCLP(t.total)}</span>
-                    </div>
-                `).join('');
+            // Monthly accordion
+            const accContainer = document.getElementById('monthlyAccordion');
+            if (monthly && monthly.length > 0) {
+                accContainer.innerHTML = monthly.map(m => {
+                    const [y, mo] = m.month.split('-');
+                    const label = new Date(y, mo - 1).toLocaleDateString('es-CL', { month: 'long', year: 'numeric' });
+                    const weeksHtml = Object.keys(m.weeks).sort((a, b) => a - b).map(w =>
+                        `<div class="week-row"><span>Semana ${w}</span><span>${formatCLP(m.weeks[w].net)} &middot; ${m.weeks[w].persons} pers. &middot; ${m.weeks[w].count} reservas</span></div>`
+                    ).join('');
+                    return `<div class="month-accordion">
+                        <div class="month-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="month-title">${label}</span>
+                            <span class="month-summary">${formatCLP(m.net)} &middot; ${m.persons} pers. &middot; ${m.count} reservas</span>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="month-body">${weeksHtml}</div>
+                    </div>`;
+                }).join('');
             } else {
-                paymentBreakdown.innerHTML = '<p style="color: #94a3b8;">Sin datos</p>';
+                accContainer.innerHTML = '';
             }
 
-            // Tour type breakdown con nombres legibles
-            const tourNames = { regular: 'Tour Regular', private: 'Tour Privado', astrophoto: 'Astrofotografía' };
-            const tourBreakdown = document.getElementById('tourTypeBreakdown');
-            if (byTourType && byTourType.length > 0) {
-                tourBreakdown.innerHTML = byTourType.map(t => `
-                    <div class="breakdown-item">
-                        <span>${tourNames[t.tour_type] || t.tour_type}</span>
-                        <span>${formatCLP(t.total)} (${t.count} reservas)</span>
-                    </div>
-                `).join('');
-            } else {
-                tourBreakdown.innerHTML = '<p style="color: #94a3b8;">Sin datos</p>';
-            }
-
-            // Income table
+            // Detail table
             const tableBody = document.getElementById('incomeTableBody');
             const noDataMsg = document.getElementById('noIncomeData');
-
             if (bookings && bookings.length > 0) {
-                tableBody.innerHTML = bookings.map(b => `
-                    <tr>
-                        <td>${formatDate(b.tour_date)}</td>
-                        <td>${b.customer_name}</td>
-                        <td>${tourNames[b.tour_type] || b.tour_type}</td>
-                        <td>${b.num_people}</td>
-                        <td>${methodNames[b.payment_method] || b.payment_method || '-'}</td>
-                        <td>${formatCLP(b.total_paid || 0)}</td>
-                    </tr>
-                `).join('');
+                tableBody.innerHTML = bookings.map(b => `<tr>
+                    <td>${formatDate(b.tour_date)}</td>
+                    <td>${b.customer_name || '-'}</td>
+                    <td>${tourNames[b.tour_type] || b.tour_type}</td>
+                    <td>${b.num_people}</td>
+                    <td>${sourceNames[b.source] || b.source || '-'}</td>
+                    <td>${methodNames[b.payment_method] || b.payment_method || '-'}</td>
+                    <td style="text-align:right;">${formatCLP(b.gross)}</td>
+                    <td style="text-align:right;color:#f87171;">-${formatCLP(b.commission)}</td>
+                    <td style="text-align:right;color:#34d399;">${formatCLP(b.net)}</td>
+                </tr>`).join('');
                 noDataMsg.style.display = 'none';
             } else {
                 tableBody.innerHTML = '';
                 noDataMsg.style.display = 'block';
             }
+
+            // Expense autocomplete
+            const datalist = document.getElementById('expCatList');
+            datalist.innerHTML = (data.expCategories || []).map(c => `<option value="${c}">`).join('');
+
+            // Set default expense date to today
+            if (!document.getElementById('expDate').value) {
+                document.getElementById('expDate').value = new Date().toISOString().split('T')[0];
+            }
+
+            // Render expenses sub-tab if it's active
+            if (document.getElementById('incomeSubExpenses').classList.contains('active')) {
+                renderExpenses(data);
+            }
+        }
+
+        // ============ EXPENSE FUNCTIONS ============
+        function renderExpenses(data) {
+            const rows = data.expenseRows || [];
+            const byCategory = data.expensesByCategory || [];
+            const tbody = document.getElementById('expenseTableBody');
+            const noData = document.getElementById('noExpenseData');
+            const donutContainer = document.getElementById('expenseDonutContainer');
+
+            if (rows.length > 0) {
+                tbody.innerHTML = rows.map(e => `<tr>
+                    <td>${formatDate(e.date)}</td>
+                    <td>${e.category}</td>
+                    <td>${e.description || '-'}</td>
+                    <td style="text-align:right;">${formatCLP(parseFloat(e.amount))}</td>
+                    <td>
+                        <button onclick="editExpense(${e.id},'${e.date.split('T')[0]}',${e.amount},'${e.category}','${(e.description || '').replace(/'/g, "\\'")}')" style="background:none;border:none;color:#60a5fa;cursor:pointer;" title="Editar"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteExpense(${e.id})" style="background:none;border:none;color:#f87171;cursor:pointer;" title="Eliminar"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`).join('');
+                noData.style.display = 'none';
+            } else {
+                tbody.innerHTML = '';
+                noData.style.display = 'block';
+            }
+
+            // Donut chart
+            if (byCategory.length > 0) {
+                donutContainer.style.display = 'grid';
+                const catColors = ['#f97316', '#8b5cf6', '#60a5fa', '#f43f5e', '#34d399', '#fbbf24', '#ec4899', '#06b6d4'];
+                const catLabels = byCategory.map(c => c.category);
+                const catValues = byCategory.map(c => parseFloat(c.total));
+                const totalExp = catValues.reduce((s, v) => s + v, 0);
+
+                const dCtx = document.getElementById('expenseDonutChart').getContext('2d');
+                if (expenseDonutChart) expenseDonutChart.destroy();
+                expenseDonutChart = new Chart(dCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: catLabels,
+                        datasets: [{ data: catValues, backgroundColor: catColors.slice(0, catLabels.length), borderWidth: 0 }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { callbacks: { label: ctx => ctx.label + ': ' + formatCLP(ctx.raw) } }
+                        }
+                    }
+                });
+
+                document.getElementById('expenseCategoryBreakdown').innerHTML = byCategory.map((c, i) => {
+                    const pct = totalExp > 0 ? ((parseFloat(c.total) / totalExp) * 100).toFixed(1) : 0;
+                    return `<div class="breakdown-item">
+                        <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${catColors[i % catColors.length]};margin-right:8px;"></span>${c.category}</span>
+                        <span>${formatCLP(parseFloat(c.total))} (${pct}%)</span>
+                    </div>`;
+                }).join('');
+            } else {
+                donutContainer.style.display = 'none';
+            }
+        }
+
+        async function saveExpense() {
+            const id = document.getElementById('expEditId').value || null;
+            const date = document.getElementById('expDate').value;
+            const amount = parseFloat(document.getElementById('expAmount').value);
+            const category = document.getElementById('expCategory').value.trim();
+            const description = document.getElementById('expDesc').value.trim();
+
+            if (!date || !amount || !category) {
+                alert('Fecha, monto y categoria son requeridos');
+                return;
+            }
+
+            try {
+                await fetch('/api/admin-data?type=expenses', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id ? parseInt(id) : null, date, amount, category, description })
+                });
+                cancelExpenseEdit();
+                document.getElementById('expAmount').value = '';
+                document.getElementById('expCategory').value = '';
+                document.getElementById('expDesc').value = '';
+                loadIncomeData();
+            } catch (err) {
+                console.error('Error saving expense:', err);
+            }
+        }
+
+        function editExpense(id, date, amount, category, description) {
+            document.getElementById('expEditId').value = id;
+            document.getElementById('expDate').value = date;
+            document.getElementById('expAmount').value = amount;
+            document.getElementById('expCategory').value = category;
+            document.getElementById('expDesc').value = description;
+            document.getElementById('expBtnText').textContent = 'Guardar';
+            document.getElementById('expCancelBtn').style.display = 'inline-block';
+        }
+
+        function cancelExpenseEdit() {
+            document.getElementById('expEditId').value = '';
+            document.getElementById('expBtnText').textContent = 'Agregar';
+            document.getElementById('expCancelBtn').style.display = 'none';
+        }
+
+        async function deleteExpense(id) {
+            if (!confirm('Eliminar este gasto?')) return;
+            try {
+                await fetch(`/api/admin-data?type=expenses&id=${id}`, { method: 'DELETE' });
+                loadIncomeData();
+            } catch (err) {
+                console.error('Error deleting expense:', err);
+            }
+        }
+
+        // ============ CSV EXPORT ============
+        function exportIncomeCSV() {
+            if (!lastIncomeData) return;
+            const { bookings, summary, expensesByCategory } = lastIncomeData;
+            const sourceNames = { gyg: 'GetYourGuide', viator: 'Viator', klook: 'Klook', web: 'Directa' };
+            const tourNames = { regular: 'Regular', private: 'Privado', astrophoto: 'Astrofoto' };
+            const lines = [];
+
+            // BOM for UTF-8
+            const BOM = '\uFEFF';
+
+            // Summary section
+            lines.push('RESUMEN');
+            lines.push('Concepto,Monto CLP');
+            lines.push(`Ingreso Bruto,${summary.totalGross}`);
+            lines.push(`Comisiones,-${summary.totalCommission}`);
+            lines.push(`Ingreso Neto,${summary.totalNet}`);
+            lines.push(`Gastos,-${summary.totalExpenses}`);
+            lines.push(`Ganancia,${summary.profit}`);
+            lines.push('');
+
+            // Booking detail
+            lines.push('DETALLE INGRESOS');
+            lines.push('Fecha,Cliente,Tour,Personas,Fuente,Metodo,Bruto,Comision,Neto');
+            (bookings || []).forEach(b => {
+                const date = b.tour_date.split('T')[0];
+                const name = (b.customer_name || '').replace(/,/g, ' ');
+                lines.push(`${date},${name},${tourNames[b.tour_type] || b.tour_type},${b.num_people},${sourceNames[b.source] || b.source},${b.payment_method || ''},${b.gross},-${b.commission},${b.net}`);
+            });
+            lines.push('');
+
+            // Expenses by category
+            if (expensesByCategory && expensesByCategory.length > 0) {
+                lines.push('GASTOS POR CATEGORIA');
+                lines.push('Categoria,Total CLP');
+                expensesByCategory.forEach(c => lines.push(`${c.category},${c.total}`));
+            }
+
+            const blob = new Blob([BOM + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const startDate = document.getElementById('incomeStartDate').value;
+            const endDate = document.getElementById('incomeEndDate').value;
+            a.href = url;
+            a.download = `ingresos_${startDate}_${endDate}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
         }
 
         function formatCLP(amount) {

@@ -1,6 +1,6 @@
 /**
  * Admin Data API - Combined endpoint for photo-links, blocked-dates, and calendar status
- * Routes: ?type=photos, ?type=blocked, ?type=income, ?type=conversion, ?type=calendar
+ * Routes: ?type=photos, ?type=blocked, ?type=income, ?type=conversion, ?type=calendar, ?type=expenses, ?type=migrate-expenses
  */
 
 import { Pool } from 'pg';
@@ -382,79 +382,129 @@ export default async function handler(req, res) {
       }
     }
 
-    // ============ INCOME DATA ============
+    // ============ INCOME DATA (Enhanced with commissions + monthly) ============
     if (type === 'income') {
       if (req.method === 'GET') {
-        const { start_date, end_date, payment_method } = req.query;
+        const { start_date, end_date } = req.query;
 
         const endDate = end_date || new Date().toISOString().split('T')[0];
         const startDate = start_date || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
-        // Precios por persona según tipo de tour (para cuando no hay payment_amount)
-        const TOUR_PRICES = { regular: 42000, private: 150000, astrophoto: 120000 };
-        // All tours are now per-person pricing (private tour matches GYG at 145k/person)
+        // Commission rates by source
+        const COMMISSION_RATE = { gyg: 0.30, viator: 0.30, klook: 0.30 };
 
-        // Construir query con filtro opcional de método de pago
-        let query = `
-          SELECT id, booking_id, date AS tour_date, name AS customer_name, persons AS num_people, tour_type,
-            payment_method, payment_amount, status, created_at
+        const bookingsResult = await pool.query(`
+          SELECT id, booking_id, date AS tour_date, name AS customer_name, persons AS num_people,
+            tour_type, payment_method, payment_amount, status, source, created_at,
+            TO_CHAR(date, 'YYYY-MM') AS month_key,
+            CEIL(EXTRACT(DAY FROM date) / 7.0) AS week_of_month
           FROM bookings
           WHERE date >= $1 AND date <= $2 AND status IN ('confirmed', 'completed')
-        `;
-        const params = [startDate, endDate];
+          ORDER BY date DESC
+        `, [startDate, endDate]);
 
-        if (payment_method) {
-          query += ` AND payment_method = $3`;
-          params.push(payment_method);
-        }
-
-        query += ` ORDER BY date DESC`;
-
-        const bookingsResult = await pool.query(query, params);
-
-        // Usar payment_amount real si existe, sino calcular estimado
+        // Estimate gross per booking (same logic as gyg-analytics)
         const bookings = bookingsResult.rows.map(b => {
-          let total;
+          let gross;
           if (b.payment_amount) {
-            total = parseFloat(b.payment_amount);
-          } else if (b.tour_type === 'private') {
-            total = TOUR_PRICES.private; // Precio fijo para privado
+            gross = parseFloat(b.payment_amount);
+          } else if (b.source === 'gyg') {
+            gross = b.tour_type === 'private' ? b.num_people * 142855 : b.num_people * 53600;
+          } else if (b.source === 'viator' || b.source === 'klook') {
+            gross = b.tour_type === 'private' ? b.num_people * 105300 : b.num_people * 45000;
           } else {
-            total = b.num_people * (TOUR_PRICES[b.tour_type] || TOUR_PRICES.regular);
+            gross = b.tour_type === 'private' ? b.num_people * 150000 : b.num_people * 42000;
           }
+
+          const rate = COMMISSION_RATE[b.source] || 0;
+          const commission = Math.round(gross * rate);
+          const net = gross - commission;
+
           return {
             ...b,
-            total_paid: total
+            gross,
+            commission,
+            net,
+            source: b.source || 'web'
           };
         });
 
-        // Agrupar por método de pago
-        const byPaymentMethod = {};
+        // Summary totals
+        let totalGross = 0, totalCommission = 0, totalNet = 0, totalPersons = 0;
         bookings.forEach(b => {
-          const method = b.payment_method || 'pending';
-          if (!byPaymentMethod[method]) {
-            byPaymentMethod[method] = { payment_method: method, count: 0, total: 0 };
-          }
-          byPaymentMethod[method].count++;
-          byPaymentMethod[method].total += b.total_paid;
+          totalGross += b.gross;
+          totalCommission += b.commission;
+          totalNet += b.net;
+          totalPersons += parseInt(b.num_people) || 0;
         });
 
-        // Agrupar por tipo de tour
-        const byTourType = {};
+        // Platform breakdown
+        const platformMap = {};
         bookings.forEach(b => {
-          const type = b.tour_type || 'regular';
-          if (!byTourType[type]) {
-            byTourType[type] = { tour_type: type, count: 0, total: 0 };
-          }
-          byTourType[type].count++;
-          byTourType[type].total += b.total_paid;
+          const src = b.source || 'web';
+          if (!platformMap[src]) platformMap[src] = { source: src, gross: 0, commission: 0, net: 0, count: 0, persons: 0 };
+          platformMap[src].gross += b.gross;
+          platformMap[src].commission += b.commission;
+          platformMap[src].net += b.net;
+          platformMap[src].count++;
+          platformMap[src].persons += parseInt(b.num_people) || 0;
         });
+
+        // Monthly + weekly aggregation
+        const monthlyMap = {};
+        bookings.forEach(b => {
+          const mk = b.month_key;
+          const wk = parseInt(b.week_of_month) || 1;
+          if (!monthlyMap[mk]) monthlyMap[mk] = { month: mk, gross: 0, net: 0, persons: 0, count: 0, weeks: {}, bySrc: {} };
+          monthlyMap[mk].gross += b.gross;
+          monthlyMap[mk].net += b.net;
+          monthlyMap[mk].persons += parseInt(b.num_people) || 0;
+          monthlyMap[mk].count++;
+
+          // Weekly within month
+          if (!monthlyMap[mk].weeks[wk]) monthlyMap[mk].weeks[wk] = { net: 0, persons: 0, count: 0 };
+          monthlyMap[mk].weeks[wk].net += b.net;
+          monthlyMap[mk].weeks[wk].persons += parseInt(b.num_people) || 0;
+          monthlyMap[mk].weeks[wk].count++;
+
+          // By source within month (for stacked chart)
+          const src = b.source || 'web';
+          if (!monthlyMap[mk].bySrc[src]) monthlyMap[mk].bySrc[src] = 0;
+          monthlyMap[mk].bySrc[src] += b.net;
+        });
+
+        // Sort monthly keys
+        const monthly = Object.keys(monthlyMap).sort().map(k => monthlyMap[k]);
+
+        // Get expenses total for the same period
+        let totalExpenses = 0;
+        let expensesByCategory = [];
+        try {
+          const expResult = await pool.query(
+            'SELECT category, SUM(amount) as total FROM expenses WHERE date >= $1 AND date <= $2 GROUP BY category ORDER BY total DESC',
+            [startDate, endDate]
+          );
+          expensesByCategory = expResult.rows;
+          totalExpenses = expResult.rows.reduce((s, r) => s + parseFloat(r.total), 0);
+        } catch (e) {
+          // expenses table might not exist yet
+        }
 
         return res.status(200).json({
           success: true,
           bookings,
-          totals: Object.values(byPaymentMethod),
-          byTourType: Object.values(byTourType),
+          summary: {
+            totalGross,
+            totalCommission,
+            totalNet,
+            totalExpenses,
+            profit: totalNet - totalExpenses,
+            totalPersons,
+            totalBookings: bookings.length
+          },
+          platforms: Object.values(platformMap),
+          monthly,
+          expensesByCategory,
           dateRange: { start: startDate, end: endDate }
         });
       }
@@ -1456,6 +1506,105 @@ export default async function handler(req, res) {
           success: true,
           message: 'AI tables created successfully',
           tables: ['ai_memory', 'whatsapp_messages']
+        });
+      } catch (error) {
+        return res.status(500).json({ success: false, error: error.message });
+      }
+    }
+
+    // ============ EXPENSES CRUD ============
+    if (type === 'expenses') {
+      if (req.method === 'GET') {
+        const { start_date, end_date, action } = req.query;
+
+        // Return distinct categories for autocomplete
+        if (action === 'categories') {
+          const result = await pool.query(
+            'SELECT DISTINCT category FROM expenses ORDER BY category ASC'
+          );
+          return res.status(200).json({ success: true, categories: result.rows.map(r => r.category) });
+        }
+
+        const endDate = end_date || new Date().toISOString().split('T')[0];
+        const startDate = start_date || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+        const expenses = await pool.query(
+          'SELECT * FROM expenses WHERE date >= $1 AND date <= $2 ORDER BY date DESC',
+          [startDate, endDate]
+        );
+
+        const totals = await pool.query(
+          'SELECT category, SUM(amount) as total, COUNT(*) as count FROM expenses WHERE date >= $1 AND date <= $2 GROUP BY category ORDER BY total DESC',
+          [startDate, endDate]
+        );
+
+        return res.status(200).json({
+          success: true,
+          expenses: expenses.rows,
+          byCategory: totals.rows,
+          dateRange: { start: startDate, end: endDate }
+        });
+      }
+
+      if (req.method === 'POST') {
+        const { id, date, amount, category, description } = req.body;
+
+        if (!date || !amount || !category) {
+          return res.status(400).json({ success: false, error: 'date, amount, and category are required' });
+        }
+
+        if (id) {
+          // Update existing
+          const result = await pool.query(
+            `UPDATE expenses SET date = $1, amount = $2, category = $3, description = $4, updated_at = NOW()
+             WHERE id = $5 RETURNING *`,
+            [date, amount, category, description || null, id]
+          );
+          if (result.rows.length === 0) {
+            return res.status(404).json({ success: false, error: 'Expense not found' });
+          }
+          return res.status(200).json({ success: true, data: result.rows[0] });
+        } else {
+          // Create new
+          const result = await pool.query(
+            `INSERT INTO expenses (date, amount, category, description) VALUES ($1, $2, $3, $4) RETURNING *`,
+            [date, amount, category, description || null]
+          );
+          return res.status(200).json({ success: true, data: result.rows[0] });
+        }
+      }
+
+      if (req.method === 'DELETE') {
+        const { id } = req.query;
+        if (!id) return res.status(400).json({ success: false, error: 'id is required' });
+
+        await pool.query('DELETE FROM expenses WHERE id = $1', [id]);
+        return res.status(200).json({ success: true, message: 'Deleted' });
+      }
+    }
+
+    // ============ MIGRATE EXPENSES TABLE ============
+    if (type === 'migrate-expenses') {
+      try {
+        await pool.query(`
+          CREATE TABLE IF NOT EXISTS expenses (
+            id SERIAL PRIMARY KEY,
+            date DATE NOT NULL,
+            amount DECIMAL(12,2) NOT NULL,
+            category VARCHAR(100) NOT NULL,
+            description TEXT,
+            created_at TIMESTAMPTZ DEFAULT NOW(),
+            updated_at TIMESTAMPTZ DEFAULT NOW()
+          )
+        `);
+
+        await pool.query(`CREATE INDEX IF NOT EXISTS idx_expenses_date ON expenses(date)`);
+        await pool.query(`CREATE INDEX IF NOT EXISTS idx_expenses_category ON expenses(category)`);
+
+        return res.status(200).json({
+          success: true,
+          message: 'Expenses table created successfully',
+          tables: ['expenses']
         });
       } catch (error) {
         return res.status(500).json({ success: false, error: error.message });
