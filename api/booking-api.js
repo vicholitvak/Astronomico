@@ -4,7 +4,7 @@
 
 import { insert, query } from '../lib/db.js';
 import { addToGoogleCalendar, refreshCalendarAfterCancellation } from '../lib/google-calendar.js';
-import { syncDateAvailabilityToGYG } from './suppliers.js';
+import { syncDateAvailabilityToGYG, pushAvailabilityNotificationToViator } from './suppliers.js';
 import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
@@ -109,6 +109,9 @@ async function updateBooking(req, res) {
       syncDateAvailabilityToGYG(dateStr).catch(err => {
         console.error(`[BOOKING] GYG sync failed:`, err.message);
       });
+      pushAvailabilityNotificationToViator(dateStr).catch(err => {
+        console.error(`[BOOKING] Viator push failed:`, err.message);
+      });
     } catch (calendarError) {
       console.error(`[BOOKING] Calendar sync failed:`, calendarError.message);
     }
@@ -128,13 +131,16 @@ async function updateBooking(req, res) {
     syncDateAvailabilityToGYG(dateStr).catch(err => {
       console.error(`[BOOKING] GYG sync failed on cancellation:`, err.message);
     });
+    pushAvailabilityNotificationToViator(dateStr).catch(err => {
+      console.error(`[BOOKING] Viator push failed on cancellation:`, err.message);
+    });
 
     // Refresh Google Calendar (remove or recalculate event)
     refreshCalendarAfterCancellation(dateStr, tourType).catch(err => {
       console.error(`[BOOKING] Calendar refresh failed on cancellation:`, err.message);
     });
 
-    console.log(`[BOOKING] Cancellation synced - GYG and Calendar updated for ${dateStr}/${tourType}`);
+    console.log(`[BOOKING] Cancellation synced - GYG, Viator and Calendar updated for ${dateStr}/${tourType}`);
   }
 
   return res.status(200).json({ success: true, data: updatedBooking });
@@ -168,12 +174,15 @@ async function deleteBooking(req, res) {
     syncDateAvailabilityToGYG(dateStr).catch(err => {
       console.error('[BOOKING] GYG sync failed on delete:', err.message);
     });
+    pushAvailabilityNotificationToViator(dateStr).catch(err => {
+      console.error('[BOOKING] Viator push failed on delete:', err.message);
+    });
 
     refreshCalendarAfterCancellation(dateStr, tourType).catch(err => {
       console.error('[BOOKING] Calendar refresh failed on delete:', err.message);
     });
 
-    console.log(`[BOOKING] Deletion synced - GYG and Calendar updated for ${dateStr}/${tourType}`);
+    console.log(`[BOOKING] Deletion synced - GYG, Viator and Calendar updated for ${dateStr}/${tourType}`);
   }
 
   return res.status(200).json({ success: true, message: 'Booking deleted' });
@@ -269,9 +278,12 @@ async function createBooking(req, res) {
     await addToGoogleCalendar({ bookingId, date, time: assignedTime, persons, tourType, name, email, phone, message });
   } catch (e) { console.error('Google Calendar failed:', e); }
 
-  // Sync availability to GYG (non-blocking)
+  // Sync availability to GYG + Viator (non-blocking)
   syncDateAvailabilityToGYG(date).catch(err => {
     console.error('[BOOKING] GYG sync failed:', err.message);
+  });
+  pushAvailabilityNotificationToViator(date).catch(err => {
+    console.error('[BOOKING] Viator push failed:', err.message);
   });
 
   return res.status(200).json({ success: true, bookingId, message: 'Booking created successfully' });
@@ -394,12 +406,11 @@ async function getDateAvailability(req, res) {
   // Calculate what GYG should show
   const gygAvailability = {
     regular: {
-      productId: '1152147',
       time: '21:00',
       capacity: REGULAR_CAPACITY,
       booked: regularPersons,
       available: Math.max(0, REGULAR_CAPACITY - regularPersons),
-      blocked: blockInfo?.block_type === 'full' || blockInfo?.block_type === 'private_only'
+      blocked: blockInfo?.block_type === 'full'
     },
     private: {
       productId: '1163787',
