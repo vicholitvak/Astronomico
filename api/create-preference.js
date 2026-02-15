@@ -28,23 +28,28 @@ export default async function handler(req, res) {
             });
         }
 
-        const {
-            tourType,
-            persons,
-            date,
-            name,
-            email,
-            phone,
-            accommodation,
-            message,
-            tourName,
-            price,
-            participant_names,
-            total_participants
-        } = req.body;
+        const body = req.body;
+
+        // Accept both field name conventions (backward compat with older pago.html)
+        const tourType = body.tourType;
+        const persons = body.persons;
+        const date = body.date;
+        const name = body.name || body.customerName;
+        const email = body.email || body.customerEmail;
+        const phone = body.phone || body.customerPhone;
+        const accommodation = body.accommodation;
+        const message = body.message;
+        const tourName = body.tourName;
+        const participant_names = body.participant_names || body.participantNames;
+        const total_participants = body.total_participants;
+        const booking_id = body.booking_id;
+
+        // Default prices per person (CLP)
+        const DEFAULT_PRICES = { regular: 42000, private: 150000, astrophoto: 120000 };
+        const price = body.price || DEFAULT_PRICES[tourType] || DEFAULT_PRICES.private;
 
         // Validate required fields
-        if (!tourType || !persons || !date || !name || !email || !phone || !price) {
+        if (!tourType || !persons || !date || !name || !email) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
@@ -101,10 +106,10 @@ export default async function handler(req, res) {
                 name: name.split(' ')[0] || name,
                 surname: name.split(' ').slice(1).join(' ') || name,
                 email: email,
-                phone: {
+                phone: phone ? {
                     area_code: phone.replace(/\D/g, '').substring(0, 2) || "56",
                     number: phone.replace(/\D/g, '').substring(2) || phone.replace(/\D/g, '')
-                },
+                } : undefined,
                 identification: {
                     type: "RUT",
                     number: ""  // Opcional por ahora, mejora la aprobación si se proporciona
@@ -140,10 +145,11 @@ export default async function handler(req, res) {
                 business_type: 'tourism',
                 service_date: date,
                 advance_days: Math.floor((new Date(date) - new Date()) / (1000 * 60 * 60 * 24)),
+                booking_id: booking_id || '',
                 booking_timestamp: new Date().toISOString()
             },
             statement_descriptor: 'ATACAMA TOUR',  // Máx 11 caracteres, aparece en el estado de cuenta
-            external_reference: `ATK-${Date.now()}`,
+            external_reference: booking_id || `ATK-${Date.now()}`,
             shipments: {
                 receiver_address: {
                     zip_code: "1410000",
@@ -169,10 +175,10 @@ export default async function handler(req, res) {
                 payer: {
                     first_name: name.split(' ')[0] || name,
                     last_name: name.split(' ').slice(1).join(' ') || name,
-                    phone: {
+                    phone: phone ? {
                         area_code: phone.replace(/\D/g, '').substring(0, 2) || "56",
                         number: phone.replace(/\D/g, '').substring(2) || phone.replace(/\D/g, '')
-                    },
+                    } : undefined,
                     address: {
                         zip_code: "1410000",
                         street_name: accommodation || "San Pedro de Atacama"
