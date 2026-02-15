@@ -1876,6 +1876,51 @@
             font-size: 0.85rem;
         }
         .expense-form .field textarea { resize: none; height: 36px; }
+        .expense-form .field select {
+            padding: 8px 10px;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            background: #111827;
+            color: #f3f4f6;
+            font-size: 0.85rem;
+            min-width: 260px;
+        }
+        .tour-group-header {
+            background: linear-gradient(135deg, #1e293b 0%, #1f2937 100%);
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 16px;
+            margin-bottom: 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .tour-group-header .tour-info { color: #f3f4f6; font-weight: 600; font-size: 0.9rem; }
+        .tour-group-header .tour-net { color: #34d399; font-size: 0.85rem; }
+        .tour-group-header .tour-add-btn {
+            background: none; border: 1px solid #374151; border-radius: 6px; color: #60a5fa;
+            cursor: pointer; padding: 4px 10px; font-size: 0.75rem; transition: all 0.2s;
+        }
+        .tour-group-header .tour-add-btn:hover { background: #374151; }
+        .tour-group-subtotal {
+            text-align: right; padding: 6px 16px; color: #fbbf24; font-size: 0.8rem; font-weight: 600;
+            border-bottom: 1px solid #374151;
+        }
+        .tour-pnl-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .tour-pnl-table th {
+            text-align: left; padding: 8px 12px; color: #94a3b8; font-size: 0.75rem;
+            text-transform: uppercase; border-bottom: 1px solid #374151;
+        }
+        .tour-pnl-table th:nth-child(n+3) { text-align: right; }
+        .tour-pnl-table td { padding: 8px 12px; color: #e2e8f0; font-size: 0.85rem; border-bottom: 1px solid rgba(55,65,81,0.5); }
+        .tour-pnl-table td:nth-child(n+3) { text-align: right; }
+        .tour-pnl-table tr:hover { background: rgba(96,165,250,0.05); }
+        .margin-positive { color: #34d399; font-weight: 600; }
+        .margin-negative { color: #f87171; font-weight: 600; }
+        .no-expenses-warn { color: #fbbf24; font-size: 0.75rem; }
         .expense-donut-container {
             display: grid;
             grid-template-columns: 250px 1fr;
@@ -2234,12 +2279,19 @@
                 </div>
 
                 <div id="monthlyAccordion"></div>
+
+                <div style="background:#1f2937;border-radius:10px;padding:20px;margin-top:20px;">
+                    <h3 style="margin-bottom:15px;color:#f3f4f6;"><i class="fas fa-balance-scale"></i> Rentabilidad por Tour</h3>
+                    <div id="tourPnlContainer">
+                        <p style="text-align:center;color:#94a3b8;padding:20px;">Sin datos</p>
+                    </div>
+                </div>
             </div>
 
             <!-- SUB-TAB: Gastos -->
             <div id="incomeSubExpenses" class="income-subcontent">
                 <div class="expense-form" id="expenseForm">
-                    <div class="field"><label>Fecha</label><input type="date" id="expDate"></div>
+                    <div class="field"><label>Noche de Tour</label><select id="expDate"><option value="">Cargando...</option></select></div>
                     <div class="field"><label>Monto (CLP)</label><input type="number" id="expAmount" placeholder="50000" min="0"></div>
                     <div class="field"><label>Categoria</label><input type="text" id="expCategory" list="expCatList" placeholder="Combustible"><datalist id="expCatList"></datalist></div>
                     <div class="field" style="flex:1;"><label>Descripcion</label><input type="text" id="expDesc" placeholder="Opcional"></div>
@@ -2254,7 +2306,7 @@
                 </div>
 
                 <div class="income-table-container" style="margin-top:0;">
-                    <h3><i class="fas fa-list"></i> Gastos del Periodo</h3>
+                    <h3><i class="fas fa-list"></i> Gastos por Tour</h3>
                     <table class="income-table">
                         <thead><tr><th>Fecha</th><th>Categoria</th><th>Descripcion</th><th style="text-align:right;">Monto</th><th style="width:90px;"></th></tr></thead>
                         <tbody id="expenseTableBody"></tbody>
@@ -5103,16 +5155,23 @@
             if (!startDate || !endDate) return;
 
             try {
-                const [incomeRes, expenseRes, catRes] = await Promise.all([
+                const [incomeRes, expenseRes, catRes, tourDatesRes] = await Promise.all([
                     fetch(`/api/admin-data?type=income&start_date=${startDate}&end_date=${endDate}`),
                     fetch(`/api/admin-data?type=expenses&start_date=${startDate}&end_date=${endDate}`),
-                    fetch(`/api/admin-data?type=expenses&action=categories`)
+                    fetch(`/api/admin-data?type=expenses&action=categories`),
+                    fetch(`/api/admin-data?type=expenses&action=tour-dates&start_date=${startDate}&end_date=${endDate}`)
                 ]);
                 const incomeData = await incomeRes.json();
                 const expenseData = await expenseRes.json();
                 const catData = await catRes.json();
+                const tourDatesData = await tourDatesRes.json();
 
-                lastIncomeData = { ...incomeData, expenseRows: expenseData.expenses || [], expCategories: catData.categories || [] };
+                lastIncomeData = {
+                    ...incomeData,
+                    expenseRows: expenseData.expenses || [],
+                    expCategories: catData.categories || [],
+                    tourDates: tourDatesData.tourDates || []
+                };
                 renderIncomeData(lastIncomeData);
             } catch (error) {
                 console.error('Error loading income data:', error);
@@ -5230,10 +5289,22 @@
             const datalist = document.getElementById('expCatList');
             datalist.innerHTML = (data.expCategories || []).map(c => `<option value="${c}">`).join('');
 
-            // Set default expense date to today
-            if (!document.getElementById('expDate').value) {
-                document.getElementById('expDate').value = new Date().toISOString().split('T')[0];
-            }
+            // Populate tour-date dropdown
+            const expDateSelect = document.getElementById('expDate');
+            const currentVal = expDateSelect.value;
+            const tourNames2 = { regular: 'Regular', private: 'Privado', astrophoto: 'Astrofoto' };
+            expDateSelect.innerHTML = '<option value="">-- Seleccionar noche --</option>' +
+                (data.tourDates || []).map(td => {
+                    const d = (typeof td.date === 'string' ? td.date : td.date.toISOString()).split('T')[0];
+                    const dateObj = new Date(d + 'T12:00:00');
+                    const label = dateObj.toLocaleDateString('es-CL', { weekday: 'short', day: 'numeric', month: 'short' });
+                    const types = td.tour_types.split(', ').map(t => tourNames2[t] || t).join(', ');
+                    return `<option value="${d}">${label} — ${types} (${td.persons} pers.)</option>`;
+                }).join('');
+            if (currentVal) expDateSelect.value = currentVal;
+
+            // Render P&L by tour in Resumen
+            renderTourPnl(data.byTourDate || []);
 
             // Render expenses sub-tab if it's active
             if (document.getElementById('incomeSubExpenses').classList.contains('active')) {
@@ -5245,21 +5316,92 @@
         function renderExpenses(data) {
             const rows = data.expenseRows || [];
             const byCategory = data.expensesByCategory || [];
+            const tourDates = data.tourDates || [];
+            const byTourDate = data.byTourDate || [];
             const tbody = document.getElementById('expenseTableBody');
             const noData = document.getElementById('noExpenseData');
             const donutContainer = document.getElementById('expenseDonutContainer');
+            const tourNames4 = { regular: 'Regular', private: 'Privado', astrophoto: 'Astrofoto' };
 
             if (rows.length > 0) {
-                tbody.innerHTML = rows.map(e => `<tr>
-                    <td>${formatDate(e.date)}</td>
-                    <td>${e.category}</td>
-                    <td>${e.description || '-'}</td>
-                    <td style="text-align:right;">${formatCLP(parseFloat(e.amount))}</td>
-                    <td>
-                        <button onclick="editExpense(${e.id},'${e.date.split('T')[0]}',${e.amount},'${e.category}','${(e.description || '').replace(/'/g, "\\'")}')" style="background:none;border:none;color:#60a5fa;cursor:pointer;" title="Editar"><i class="fas fa-edit"></i></button>
-                        <button onclick="deleteExpense(${e.id})" style="background:none;border:none;color:#f87171;cursor:pointer;" title="Eliminar"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>`).join('');
+                // Group expenses by tour date
+                const tourDateInfo = {};
+                tourDates.forEach(td => {
+                    const d = (typeof td.date === 'string' ? td.date : td.date.toISOString()).split('T')[0];
+                    tourDateInfo[d] = td;
+                });
+                byTourDate.forEach(td => {
+                    const d = td.date.split('T')[0];
+                    if (tourDateInfo[d]) tourDateInfo[d].estimated_net = td.net;
+                });
+
+                const grouped = {};
+                const orphan = [];
+                rows.forEach(e => {
+                    const d = (typeof e.date === 'string' ? e.date : e.date.toISOString()).split('T')[0];
+                    if (tourDateInfo[d]) {
+                        if (!grouped[d]) grouped[d] = [];
+                        grouped[d].push(e);
+                    } else {
+                        orphan.push(e);
+                    }
+                });
+
+                let html = '';
+                // Tour-grouped expenses
+                const sortedDates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
+                sortedDates.forEach(d => {
+                    const td = tourDateInfo[d];
+                    const dateObj = new Date(d + 'T12:00:00');
+                    const label = dateObj.toLocaleDateString('es-CL', { weekday: 'short', day: 'numeric', month: 'short' });
+                    const types = td.tour_types.split(', ').map(t => tourNames4[t] || t).join(' + ');
+                    const net = td.estimated_net || 0;
+                    const subtotal = grouped[d].reduce((s, e) => s + parseFloat(e.amount), 0);
+
+                    html += `<tr><td colspan="5" style="padding:0;">
+                        <div class="tour-group-header">
+                            <span class="tour-info"><i class="fas fa-moon"></i> ${label} — ${types} (${td.persons} pers.)</span>
+                            <span class="tour-net">Neto: ${formatCLP(net)}</span>
+                            <button class="tour-add-btn" onclick="prefillExpenseDate('${d}')"><i class="fas fa-plus"></i> Agregar</button>
+                        </div>
+                    </td></tr>`;
+                    grouped[d].forEach(e => {
+                        html += `<tr>
+                            <td style="padding-left:32px;">${formatDate(e.date)}</td>
+                            <td>${e.category}</td>
+                            <td>${e.description || '-'}</td>
+                            <td style="text-align:right;">${formatCLP(parseFloat(e.amount))}</td>
+                            <td>
+                                <button onclick="editExpense(${e.id},'${(typeof e.date === 'string' ? e.date : e.date.toISOString()).split('T')[0]}',${e.amount},'${e.category}','${(e.description || '').replace(/'/g, "\\'")}')" style="background:none;border:none;color:#60a5fa;cursor:pointer;" title="Editar"><i class="fas fa-edit"></i></button>
+                                <button onclick="deleteExpense(${e.id})" style="background:none;border:none;color:#f87171;cursor:pointer;" title="Eliminar"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>`;
+                    });
+                    html += `<tr><td colspan="5"><div class="tour-group-subtotal">Subtotal: ${formatCLP(subtotal)}</div></td></tr>`;
+                });
+
+                // Orphan expenses (not linked to any tour date)
+                if (orphan.length > 0) {
+                    html += `<tr><td colspan="5" style="padding:0;">
+                        <div class="tour-group-header" style="border-color:#6b7280;">
+                            <span class="tour-info" style="color:#94a3b8;"><i class="fas fa-question-circle"></i> Sin tour asociado</span>
+                        </div>
+                    </td></tr>`;
+                    orphan.forEach(e => {
+                        html += `<tr>
+                            <td style="padding-left:32px;">${formatDate(e.date)}</td>
+                            <td>${e.category}</td>
+                            <td>${e.description || '-'}</td>
+                            <td style="text-align:right;">${formatCLP(parseFloat(e.amount))}</td>
+                            <td>
+                                <button onclick="editExpense(${e.id},'${(typeof e.date === 'string' ? e.date : e.date.toISOString()).split('T')[0]}',${e.amount},'${e.category}','${(e.description || '').replace(/'/g, "\\'")}')" style="background:none;border:none;color:#60a5fa;cursor:pointer;" title="Editar"><i class="fas fa-edit"></i></button>
+                                <button onclick="deleteExpense(${e.id})" style="background:none;border:none;color:#f87171;cursor:pointer;" title="Eliminar"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>`;
+                    });
+                }
+
+                tbody.innerHTML = html;
                 noData.style.display = 'none';
             } else {
                 tbody.innerHTML = '';
@@ -5302,6 +5444,42 @@
             } else {
                 donutContainer.style.display = 'none';
             }
+        }
+
+        function prefillExpenseDate(dateStr) {
+            document.getElementById('expDate').value = dateStr;
+            document.getElementById('expAmount').focus();
+        }
+
+        function renderTourPnl(byTourDate) {
+            const container = document.getElementById('tourPnlContainer');
+            if (!byTourDate || byTourDate.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:#94a3b8;padding:20px;">Sin datos de tours en este periodo.</p>';
+                return;
+            }
+            const tourNames3 = { regular: 'Regular', private: 'Privado', astrophoto: 'Astrofoto' };
+            let html = `<table class="tour-pnl-table">
+                <thead><tr><th>Fecha</th><th>Tours</th><th>Pers.</th><th>Neto</th><th>Gastos</th><th>Margen</th></tr></thead><tbody>`;
+            byTourDate.forEach(t => {
+                const dateObj = new Date(t.date + 'T12:00:00');
+                const label = dateObj.toLocaleDateString('es-CL', { weekday: 'short', day: 'numeric', month: 'short' });
+                const types = t.tour_types.split(', ').map(x => tourNames3[x] || x).join(', ');
+                const marginClass = t.margin >= 0 ? 'margin-positive' : 'margin-negative';
+                const expenseCell = t.expenses > 0
+                    ? formatCLP(t.expenses)
+                    : '<span class="no-expenses-warn"><i class="fas fa-exclamation-triangle"></i> -</span>';
+                const marginDisplay = t.expenses > 0 ? formatCLP(t.margin) : '-';
+                html += `<tr>
+                    <td>${label}</td>
+                    <td>${t.count} (${types})</td>
+                    <td>${t.persons}</td>
+                    <td style="color:#34d399;">${formatCLP(t.net)}</td>
+                    <td style="color:#f87171;">${expenseCell}</td>
+                    <td class="${t.expenses > 0 ? marginClass : 'no-expenses-warn'}">${marginDisplay}</td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
         }
 
         async function saveExpense() {
@@ -5361,7 +5539,7 @@
         // ============ CSV EXPORT ============
         function exportIncomeCSV() {
             if (!lastIncomeData) return;
-            const { bookings, summary, expensesByCategory } = lastIncomeData;
+            const { bookings, summary, expensesByCategory, byTourDate } = lastIncomeData;
             const sourceNames = { gyg: 'GetYourGuide', viator: 'Viator', klook: 'Klook', web: 'Directa' };
             const tourNames = { regular: 'Regular', private: 'Privado', astrophoto: 'Astrofoto' };
             const lines = [];
@@ -5394,6 +5572,16 @@
                 lines.push('GASTOS POR CATEGORIA');
                 lines.push('Categoria,Total CLP');
                 expensesByCategory.forEach(c => lines.push(`${c.category},${c.total}`));
+                lines.push('');
+            }
+
+            // Profitability by tour date
+            if (byTourDate && byTourDate.length > 0) {
+                lines.push('RENTABILIDAD POR TOUR');
+                lines.push('Fecha,Reservas,Personas,Neto,Gastos,Margen');
+                byTourDate.forEach(t => {
+                    lines.push(`${t.date},${t.count},${t.persons},${t.net},${t.expenses},${t.margin}`);
+                });
             }
 
             const blob = new Blob([BOM + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });

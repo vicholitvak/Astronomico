@@ -479,6 +479,7 @@ export default async function handler(req, res) {
         // Get expenses total for the same period
         let totalExpenses = 0;
         let expensesByCategory = [];
+        let expenseRows = [];
         try {
           const expResult = await pool.query(
             'SELECT category, SUM(amount) as total FROM expenses WHERE date >= $1 AND date <= $2 GROUP BY category ORDER BY total DESC',
@@ -486,9 +487,48 @@ export default async function handler(req, res) {
           );
           expensesByCategory = expResult.rows;
           totalExpenses = expResult.rows.reduce((s, r) => s + parseFloat(r.total), 0);
+
+          const expRowsResult = await pool.query(
+            'SELECT * FROM expenses WHERE date >= $1 AND date <= $2 ORDER BY date DESC',
+            [startDate, endDate]
+          );
+          expenseRows = expRowsResult.rows;
         } catch (e) {
           // expenses table might not exist yet
         }
+
+        // Aggregate by tour date: income + expenses per night
+        const tourDateMap = {};
+        bookings.forEach(b => {
+          const d = b.tour_date.split('T')[0];
+          if (!tourDateMap[d]) tourDateMap[d] = { date: d, gross: 0, commission: 0, net: 0, expenses: 0, persons: 0, count: 0, tour_types: new Set() };
+          tourDateMap[d].gross += b.gross;
+          tourDateMap[d].commission += b.commission;
+          tourDateMap[d].net += b.net;
+          tourDateMap[d].persons += parseInt(b.num_people) || 0;
+          tourDateMap[d].count++;
+          tourDateMap[d].tour_types.add(b.tour_type);
+        });
+        expenseRows.forEach(e => {
+          const d = (typeof e.date === 'string' ? e.date : e.date.toISOString()).split('T')[0];
+          if (tourDateMap[d]) {
+            tourDateMap[d].expenses += parseFloat(e.amount);
+          }
+        });
+
+        const byTourDate = Object.values(tourDateMap)
+          .map(t => ({
+            date: t.date,
+            gross: t.gross,
+            commission: t.commission,
+            net: t.net,
+            expenses: t.expenses,
+            margin: t.net - t.expenses,
+            persons: t.persons,
+            count: t.count,
+            tour_types: Array.from(t.tour_types).join(', ')
+          }))
+          .sort((a, b) => b.date.localeCompare(a.date));
 
         return res.status(200).json({
           success: true,
@@ -505,6 +545,7 @@ export default async function handler(req, res) {
           platforms: Object.values(platformMap),
           monthly,
           expensesByCategory,
+          byTourDate,
           dateRange: { start: startDate, end: endDate }
         });
       }
@@ -1523,6 +1564,53 @@ export default async function handler(req, res) {
             'SELECT DISTINCT category FROM expenses ORDER BY category ASC'
           );
           return res.status(200).json({ success: true, categories: result.rows.map(r => r.category) });
+        }
+
+        // Return dates with confirmed tours for the dropdown
+        if (action === 'tour-dates') {
+          const endDate = end_date || new Date().toISOString().split('T')[0];
+          const startDate = start_date || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+          const COMMISSION_RATE = { gyg: 0.30, viator: 0.30, klook: 0.30 };
+
+          const result = await pool.query(`
+            SELECT date,
+              COUNT(*) as bookings,
+              COALESCE(SUM(persons), 0) as persons,
+              STRING_AGG(DISTINCT tour_type, ', ') as tour_types,
+              json_agg(json_build_object('source', source, 'tour_type', tour_type, 'persons', persons, 'payment_amount', payment_amount)) as booking_details
+            FROM bookings
+            WHERE date >= $1 AND date <= $2 AND status IN ('confirmed', 'completed')
+            GROUP BY date ORDER BY date DESC
+          `, [startDate, endDate]);
+
+          const tourDates = result.rows.map(row => {
+            let estimatedNet = 0;
+            for (const b of row.booking_details) {
+              let gross;
+              if (b.payment_amount) {
+                gross = parseFloat(b.payment_amount);
+              } else if (b.source === 'gyg') {
+                gross = b.tour_type === 'private' ? b.persons * 142855 : b.persons * 53600;
+              } else if (b.source === 'viator' || b.source === 'klook') {
+                gross = b.tour_type === 'private' ? b.persons * 105300 : b.persons * 45000;
+              } else {
+                gross = b.tour_type === 'private' ? b.persons * 150000 : b.persons * 42000;
+              }
+              const rate = COMMISSION_RATE[b.source] || 0;
+              estimatedNet += gross - Math.round(gross * rate);
+            }
+
+            return {
+              date: row.date,
+              bookings: parseInt(row.bookings),
+              persons: parseInt(row.persons),
+              tour_types: row.tour_types,
+              estimated_net: estimatedNet
+            };
+          });
+
+          return res.status(200).json({ success: true, tourDates });
         }
 
         const endDate = end_date || new Date().toISOString().split('T')[0];
