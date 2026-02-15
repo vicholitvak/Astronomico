@@ -262,7 +262,9 @@
             name: params.get('name') || '',
             email: params.get('email') || '',
             phone: params.get('phone') || '',
-            bookingId: params.get('booking_id') || ''
+            bookingId: params.get('booking_id') || '',
+            customPrice: params.get('price') ? parseInt(params.get('price')) : null,
+            tourName: params.get('tourName') || ''
         };
 
         // Validar datos mínimos
@@ -290,9 +292,12 @@
         }
 
         // Calcular precio (todos los tours cobran por persona)
+        function getPricePerPerson() {
+            return bookingData.customPrice || TOUR_PRICES[bookingData.tour] || TOUR_PRICES.private;
+        }
+
         function calculatePrice() {
-            const basePrice = TOUR_PRICES[bookingData.tour] || TOUR_PRICES.private;
-            return basePrice * bookingData.persons;
+            return getPricePerPerson() * bookingData.persons;
         }
 
         // Formatear fecha
@@ -309,7 +314,7 @@
 
         // Mostrar datos en la página
         function displayBookingData() {
-            document.getElementById('tour-name').textContent = TOUR_NAMES[bookingData.tour] || 'Tour Astronómico';
+            document.getElementById('tour-name').textContent = bookingData.tourName || TOUR_NAMES[bookingData.tour] || 'Tour Astronómico';
             document.getElementById('tour-date').textContent = formatDate(bookingData.date);
             document.getElementById('tour-persons').textContent = bookingData.persons + (bookingData.persons === 1 ? ' persona' : ' personas');
             document.getElementById('customer-name').textContent = bookingData.name || '-';
@@ -335,12 +340,15 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         tourType: bookingData.tour,
+                        tourName: bookingData.tourName || undefined,
                         date: bookingData.date,
                         persons: bookingData.persons,
-                        customerName: bookingData.name,
-                        customerEmail: bookingData.email,
-                        customerPhone: bookingData.phone,
-                        participantNames: [bookingData.name], // Al menos el nombre principal
+                        price: getPricePerPerson(),
+                        name: bookingData.name,
+                        email: bookingData.email,
+                        phone: bookingData.phone,
+                        booking_id: bookingData.bookingId || undefined,
+                        participant_names: [bookingData.name],
                         source: 'direct_payment_link'
                     })
                 });
