@@ -43,19 +43,31 @@ const translationsV2 = {
 
     // Experience
     exp: {
-      title: 'Expedicion Privada a Vallecito',
-      subtitle: 'Un viaje de 4 horas hacia la oscuridad absoluta',
-      timeline_pickup: 'Recogida en tu hotel',
-      timeline_arrive: 'Llegada a la Cordillera de la Sal',
-      timeline_setup: 'Montaje: sillas, mantas, vino',
-      timeline_skytour: 'Comienza el recorrido del cielo',
-      timeline_deepsky: 'Observacion con telescopio',
-      timeline_astro: 'Sesion de astrofotografia',
-      timeline_return: 'Regreso a tu hotel',
+      title: 'Donde el silencio tiene estrellas',
+      subtitle: 'Una expedicion privada al corazon del desierto mas oscuro del planeta',
+      timeline_pickup: 'El viaje comienza',
+      timeline_pickup_desc: 'Te buscamos al atardecer. El desierto ya empieza a cambiar de color.',
+      timeline_arrive: 'Donde termina el mundo conocido',
+      timeline_arrive_desc: 'En 4x4 dejamos atras las luces. El paisaje se vuelve lunar, marciano, de otro planeta.',
+      timeline_setup: 'Tu campamento bajo la Via Lactea',
+      timeline_setup_desc: 'Sillas reclinables, mantas, vino tinto. Todo listo mientras el cielo se enciende sobre nosotros.',
+      timeline_skytour: 'El cielo se abre',
+      timeline_skytour_desc: 'Con laser verde recorremos constelaciones, planetas y satelites. Cada punto de luz tiene una historia.',
+      timeline_deepsky: 'Lo que el ojo no puede ver',
+      timeline_deepsky_desc: 'El telescopio inteligente revela nebulosas, galaxias y cumulos estelares — a todo color, en tiempo real.',
+      timeline_astro: 'Tu foto del universo',
+      timeline_astro_desc: 'Te llevas imagenes reales de objetos a millones de anos luz. Capturadas esa noche, desde ese lugar.',
+      timeline_return: 'De vuelta, con otra perspectiva',
+      timeline_return_desc: 'El silencio del desierto te acompana en el regreso. Algo cambio.',
       includes_transport: 'Transporte 4x4 ida y vuelta',
+      includes_transport_sub: 'Sin preocuparte por nada',
       includes_equipment: 'Telescopio Unistellar eVscope + laser',
+      includes_equipment_sub: 'Nebulosas y galaxias a todo color',
       includes_drinks: 'Vino, te, cafe y snacks',
+      includes_drinks_sub: 'Mientras el universo gira sobre tu cabeza',
       includes_photos: 'Astrofotografias para llevar',
+      includes_photos_sub: 'Imagenes reales que te llevas para siempre',
+      pre_booking: '330 noches despejadas al ano. Esta noche puede ser la tuya.',
       price_label: 'por persona',
       price_guests: '1-6 personas por experiencia',
       other_semiprivate: 'Experiencias Semi-Privadas',
@@ -63,6 +75,11 @@ const translationsV2 = {
       other_study: 'Viajes de Estudio',
       other_corporate: 'Eventos Corporativos',
       other_cta: 'Contactanos'
+    },
+
+    // Reviews
+    reviews: {
+      title: 'Lo que dicen nuestros viajeros'
     },
 
     // Booking
@@ -170,19 +187,31 @@ const translationsV2 = {
     },
 
     exp: {
-      title: 'Private Expedition to Vallecito',
-      subtitle: 'A 4-hour journey into absolute darkness',
-      timeline_pickup: 'Hotel pickup',
-      timeline_arrive: 'Arrive at Cordillera de la Sal',
-      timeline_setup: 'Setup: chairs, blankets, wine',
-      timeline_skytour: 'Sky tour begins',
-      timeline_deepsky: 'Deep sky telescope observation',
-      timeline_astro: 'Astrophotography session',
-      timeline_return: 'Return to hotel',
+      title: 'Where silence has stars',
+      subtitle: 'A private expedition to the heart of the darkest desert on Earth',
+      timeline_pickup: 'The journey begins',
+      timeline_pickup_desc: 'We pick you up at sunset. The desert is already changing color.',
+      timeline_arrive: 'Where the known world ends',
+      timeline_arrive_desc: 'By 4x4 we leave the lights behind. The landscape turns lunar, Martian, otherworldly.',
+      timeline_setup: 'Your camp under the Milky Way',
+      timeline_setup_desc: 'Reclining chairs, blankets, red wine. Everything ready as the sky ignites above us.',
+      timeline_skytour: 'The sky opens up',
+      timeline_skytour_desc: 'With a green laser we trace constellations, planets and satellites. Every point of light has a story.',
+      timeline_deepsky: 'What the eye cannot see',
+      timeline_deepsky_desc: 'The smart telescope reveals nebulae, galaxies and star clusters — in full color, in real time.',
+      timeline_astro: 'Your photo of the universe',
+      timeline_astro_desc: 'You take home real images of objects millions of light-years away. Captured that night, from that place.',
+      timeline_return: 'Back, with a new perspective',
+      timeline_return_desc: 'The silence of the desert stays with you on the way back. Something changed.',
       includes_transport: '4x4 round-trip transport',
+      includes_transport_sub: 'Without a worry in the world',
       includes_equipment: 'Unistellar eVscope telescope + laser',
+      includes_equipment_sub: 'Nebulae and galaxies in full color',
       includes_drinks: 'Wine, tea, coffee and snacks',
+      includes_drinks_sub: 'While the universe spins above your head',
       includes_photos: 'Deep sky photos to take home',
+      includes_photos_sub: 'Real images you keep forever',
+      pre_booking: '330 clear nights a year. Tonight could be yours.',
       price_label: 'per person',
       price_guests: '1-6 guests per experience',
       other_semiprivate: 'Semi-Private Experiences',
@@ -190,6 +219,10 @@ const translationsV2 = {
       other_study: 'Study Trips',
       other_corporate: 'Corporate Events',
       other_cta: 'Contact us'
+    },
+
+    reviews: {
+      title: 'What our travelers say'
     },
 
     booking: {
@@ -292,19 +325,31 @@ const translationsV2 = {
     },
 
     exp: {
-      title: 'Expedicao Privada a Vallecito',
-      subtitle: 'Uma viagem de 4 horas na escuridao absoluta',
-      timeline_pickup: 'Busca no hotel',
-      timeline_arrive: 'Chegada a Cordilheira do Sal',
-      timeline_setup: 'Montagem: cadeiras, cobertores, vinho',
-      timeline_skytour: 'Tour pelo ceu comeca',
-      timeline_deepsky: 'Observacao com telescopio',
-      timeline_astro: 'Sessao de astrofotografia',
-      timeline_return: 'Retorno ao hotel',
+      title: 'Onde o silencio tem estrelas',
+      subtitle: 'Uma expedicao privada ao coracao do deserto mais escuro do planeta',
+      timeline_pickup: 'A viagem comeca',
+      timeline_pickup_desc: 'Buscamos voce ao por do sol. O deserto ja comeca a mudar de cor.',
+      timeline_arrive: 'Onde o mundo conhecido termina',
+      timeline_arrive_desc: 'De 4x4 deixamos as luzes para tras. A paisagem se torna lunar, marciana, de outro planeta.',
+      timeline_setup: 'Seu acampamento sob a Via Lactea',
+      timeline_setup_desc: 'Cadeiras reclinaveis, cobertores, vinho tinto. Tudo pronto enquanto o ceu se acende sobre nos.',
+      timeline_skytour: 'O ceu se abre',
+      timeline_skytour_desc: 'Com laser verde percorremos constelacoes, planetas e satelites. Cada ponto de luz tem uma historia.',
+      timeline_deepsky: 'O que o olho nao pode ver',
+      timeline_deepsky_desc: 'O telescopio inteligente revela nebulosas, galaxias e aglomerados estelares — em cores, em tempo real.',
+      timeline_astro: 'Sua foto do universo',
+      timeline_astro_desc: 'Voce leva imagens reais de objetos a milhoes de anos-luz. Capturadas naquela noite, daquele lugar.',
+      timeline_return: 'De volta, com outra perspectiva',
+      timeline_return_desc: 'O silencio do deserto te acompanha na volta. Algo mudou.',
       includes_transport: 'Transporte 4x4 ida e volta',
+      includes_transport_sub: 'Sem se preocupar com nada',
       includes_equipment: 'Telescopio Unistellar eVscope + laser',
+      includes_equipment_sub: 'Nebulosas e galaxias em cores',
       includes_drinks: 'Vinho, cha, cafe e lanches',
+      includes_drinks_sub: 'Enquanto o universo gira sobre sua cabeca',
       includes_photos: 'Astrofotografias para levar',
+      includes_photos_sub: 'Imagens reais que voce leva para sempre',
+      pre_booking: '330 noites claras por ano. Esta noite pode ser a sua.',
       price_label: 'por pessoa',
       price_guests: '1-6 pessoas por experiencia',
       other_semiprivate: 'Experiencias Semi-Privadas',
@@ -312,6 +357,10 @@ const translationsV2 = {
       other_study: 'Viagens de Estudo',
       other_corporate: 'Eventos Corporativos',
       other_cta: 'Fale conosco'
+    },
+
+    reviews: {
+      title: 'O que dizem nossos viajantes'
     },
 
     booking: {

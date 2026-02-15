@@ -2,11 +2,11 @@
    ATACAMA DARK SKY — Experience Page Styles
    ============================================ */
 
-/* ---- Hero (shorter) ---- */
+/* ---- Hero ---- */
 .exp-hero {
   position: relative;
-  height: 60vh;
-  min-height: 400px;
+  height: 80vh;
+  min-height: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -17,9 +17,10 @@
 .exp-hero-bg {
   position: absolute;
   inset: 0;
-  background-image: url('../images/regular.webp');
+  background-image: url('../images/fotografico.webp');
   background-size: cover;
   background-position: center;
+  background-attachment: fixed;
 }
 
 .exp-hero-bg::after {
@@ -47,6 +48,18 @@
   font-weight: 400;
   margin-bottom: var(--space-sm);
   color: var(--color-white);
+  background: linear-gradient(135deg, #ffffff 0%, var(--color-accent) 50%, #ffffff 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientMove 6s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .exp-hero-content p {
@@ -63,7 +76,7 @@
 
 .timeline {
   position: relative;
-  max-width: 700px;
+  max-width: 800px;
   margin: 0 auto;
   padding-left: 60px;
 }
@@ -118,6 +131,35 @@
   font-size: 0.9rem;
   color: var(--color-text-secondary);
   margin: 0;
+}
+
+/* Timeline items with images */
+.timeline-item.has-image {
+  display: grid;
+  grid-template-columns: 1fr 140px;
+  gap: var(--space-lg);
+  align-items: center;
+}
+
+.timeline-item.has-image .timeline-content {
+  position: relative;
+  min-width: 0;
+}
+
+.timeline-img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--color-accent);
+  box-shadow: 0 0 20px var(--color-accent-glow), 0 0 40px rgba(0, 212, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.timeline-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* ---- Photo Break ---- */
@@ -183,6 +225,132 @@
   font-size: 0.85rem;
   color: var(--color-text-muted);
   margin: 0;
+}
+
+/* ---- Reviews ---- */
+.reviews-section {
+  padding: var(--space-3xl) 0;
+  background: var(--color-bg-primary);
+}
+
+.reviews-summary {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.reviews-summary .stars {
+  color: #f59e0b;
+  font-size: 1.25rem;
+  letter-spacing: 2px;
+}
+
+.reviews-summary .rating-text {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  color: var(--color-text-primary);
+  margin: 0 var(--space-sm);
+}
+
+.reviews-summary .review-count {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-lg);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.reviews-loading {
+  text-align: center;
+  padding: var(--space-xl);
+  color: var(--color-text-muted);
+  font-size: 1.5rem;
+  grid-column: 1 / -1;
+}
+
+.review-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: var(--space-xl);
+  transition: border-color var(--duration-med);
+}
+
+.review-card:hover {
+  border-color: var(--color-accent);
+}
+
+.review-card .review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.review-card .review-stars {
+  color: #f59e0b;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+.review-card .review-date {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.review-card .review-text {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-md);
+}
+
+.review-card .review-author {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.review-card .review-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-accent-glow);
+  border: 1px solid var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  color: var(--color-accent);
+}
+
+.review-card .review-name {
+  font-size: 0.85rem;
+  color: var(--color-text-primary);
+}
+
+.review-card .review-country {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.review-card .review-source {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  margin-top: var(--space-sm);
+  font-style: italic;
+}
+
+@media (max-width: 600px) {
+  .reviews-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ---- Pricing + Booking ---- */
@@ -346,6 +514,56 @@
   color: #ef4444;
 }
 
+/* ---- Pre-booking header ---- */
+.pre-booking-header {
+  text-align: center;
+  padding: var(--space-3xl) 0 var(--space-xl);
+}
+
+.pre-booking-header p {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  color: var(--color-accent);
+  letter-spacing: 0.02em;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.4;
+}
+
+/* ---- Stats (experience page) ---- */
+.exp-stats-section {
+  padding: var(--space-2xl) 0 var(--space-xl);
+  border-top: 1px solid var(--color-border);
+}
+
+.exp-stats-grid {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3xl);
+  flex-wrap: wrap;
+}
+
+.exp-stat-item {
+  text-align: center;
+  min-width: 140px;
+}
+
+.exp-stat-number {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  color: var(--color-accent);
+  line-height: 1;
+  margin-bottom: var(--space-xs);
+}
+
+.exp-stat-label {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.03em;
+}
+
 /* ---- Other Services ---- */
 .other-services {
   padding: var(--space-3xl) 0;
@@ -393,7 +611,11 @@
 
 @media (max-width: 767px) {
   .exp-hero {
-    height: 50vh;
+    height: 60vh;
+  }
+
+  .exp-hero-bg {
+    background-attachment: scroll;
   }
 
   .includes-grid {
@@ -419,5 +641,24 @@
 
   .timeline-dot {
     left: -36px;
+  }
+
+  .timeline-item.has-image {
+    grid-template-columns: 1fr;
+  }
+
+  .timeline-img {
+    width: 100%;
+    height: 200px;
+    border-radius: 8px;
+    margin-bottom: var(--space-md);
+  }
+
+  .exp-stats-grid {
+    gap: var(--space-xl);
+  }
+
+  .exp-stat-item {
+    min-width: 120px;
   }
 }
