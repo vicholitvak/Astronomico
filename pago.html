@@ -170,10 +170,132 @@
             font-size: 13px;
             color: #ccc;
         }
+        .divider-or {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            gap: 15px;
+            color: #888;
+            font-size: 14px;
+        }
+        .divider-or::before,
+        .divider-or::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.15);
+        }
+        .transfer-section {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .transfer-section h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .transfer-section h3 img {
+            height: 20px;
+        }
+        .currency-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .currency-tab {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: transparent;
+            color: #aaa;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .currency-tab.active {
+            background: rgba(0, 212, 255, 0.15);
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+        .converted-amount {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #00d4ff;
+        }
+        .converted-amount small {
+            display: block;
+            font-size: 11px;
+            color: #888;
+            font-weight: 400;
+            margin-top: 3px;
+        }
+        .bank-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            font-size: 13px;
+        }
+        .bank-detail:last-child {
+            border-bottom: none;
+        }
+        .bank-detail-label {
+            color: #888;
+        }
+        .bank-detail-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .bank-detail-value {
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        .copy-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+        }
+        .copy-btn.copied {
+            background: rgba(0, 200, 83, 0.2);
+            color: #00c853;
+        }
+        .transfer-note {
+            margin-top: 12px;
+            font-size: 12px;
+            color: #888;
+            line-height: 1.4;
+        }
+        .transfer-note a {
+            color: #25D366;
+            text-decoration: none;
+        }
         @media (max-width: 480px) {
             .card { padding: 20px; }
             .total-value { font-size: 24px; }
             .pay-button { font-size: 18px; padding: 16px; }
+            .bank-detail { flex-direction: column; align-items: flex-start; gap: 4px; }
+            .bank-detail-right { width: 100%; justify-content: space-between; }
         }
     </style>
 </head>
@@ -227,6 +349,82 @@
             <p class="secure-note">
                 🔒 Pago 100% seguro con MercadoPago
             </p>
+
+            <div class="divider-or">o paga por transferencia</div>
+
+            <div class="transfer-section" id="transfer-section">
+                <h3>🏦 Transferencia Bancaria (Wise)</h3>
+
+                <div class="currency-tabs">
+                    <button class="currency-tab active" onclick="showCurrency('EUR', this)">EUR (Europa)</button>
+                    <button class="currency-tab" onclick="showCurrency('USD', this)">USD (EEUU)</button>
+                </div>
+
+                <div class="converted-amount" id="converted-amount">
+                    Calculando...
+                </div>
+
+                <div id="bank-details-eur">
+                    <div class="bank-detail">
+                        <span class="bank-detail-label">Nombre</span>
+                        <div class="bank-detail-right">
+                            <span class="bank-detail-value">Vicente Litvak Montero</span>
+                            <button class="copy-btn" onclick="copyToClipboard('Vicente Litvak Montero', this)">Copiar</button>
+                        </div>
+                    </div>
+                    <div class="bank-detail">
+                        <span class="bank-detail-label">IBAN</span>
+                        <div class="bank-detail-right">
+                            <span class="bank-detail-value">BE43 9057 7072 2601</span>
+                            <button class="copy-btn" onclick="copyToClipboard('BE43905770722601', this)">Copiar</button>
+                        </div>
+                    </div>
+                    <div class="bank-detail">
+                        <span class="bank-detail-label">BIC</span>
+                        <div class="bank-detail-right">
+                            <span class="bank-detail-value">TRWIBEB1XXX</span>
+                            <button class="copy-btn" onclick="copyToClipboard('TRWIBEB1XXX', this)">Copiar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="bank-details-usd" style="display:none;">
+                    <div class="bank-detail">
+                        <span class="bank-detail-label">Nombre</span>
+                        <div class="bank-detail-right">
+                            <span class="bank-detail-value">Vicente Litvak Montero</span>
+                            <button class="copy-btn" onclick="copyToClipboard('Vicente Litvak Montero', this)">Copiar</button>
+                        </div>
+                    </div>
+                    <div class="bank-detail">
+                        <span class="bank-detail-label">Account</span>
+                        <div class="bank-detail-right">
+                            <span class="bank-detail-value">211551414378</span>
+                            <button class="copy-btn" onclick="copyToClipboard('211551414378', this)">Copiar</button>
+                        </div>
+                    </div>
+                    <div class="bank-detail">
+                        <span class="bank-detail-label">Routing</span>
+                        <div class="bank-detail-right">
+                            <span class="bank-detail-value">101019628</span>
+                            <button class="copy-btn" onclick="copyToClipboard('101019628', this)">Copiar</button>
+                        </div>
+                    </div>
+                    <div class="bank-detail">
+                        <span class="bank-detail-label">BIC</span>
+                        <div class="bank-detail-right">
+                            <span class="bank-detail-value">TRWIUS35XXX</span>
+                            <button class="copy-btn" onclick="copyToClipboard('TRWIUS35XXX', this)">Copiar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="transfer-note">
+                    Después de transferir, envíanos el comprobante por
+                    <a href="https://wa.me/56935134669" target="_blank">WhatsApp</a>
+                    para confirmar tu reserva más rápido.
+                </p>
+            </div>
 
             <div class="edit-link">
                 <a href="/#tours">¿Datos incorrectos? Modificar reserva</a>
@@ -370,10 +568,62 @@
             }
         }
 
+        // Exchange rates
+        let exchangeRates = { EUR: null, USD: null };
+        let currentCurrency = 'EUR';
+
+        async function fetchExchangeRates() {
+            try {
+                const resp = await fetch('https://open.er-api.com/v6/latest/CLP');
+                const data = await resp.json();
+                if (data.result === 'success') {
+                    exchangeRates.EUR = data.rates.EUR;
+                    exchangeRates.USD = data.rates.USD;
+                }
+            } catch (e) {
+                console.warn('Exchange rate API failed, using fallback rates');
+            }
+            // Fallback rates if API failed
+            if (!exchangeRates.EUR) exchangeRates.EUR = 0.00097;
+            if (!exchangeRates.USD) exchangeRates.USD = 0.00105;
+            updateConvertedAmount();
+        }
+
+        function updateConvertedAmount() {
+            const totalCLP = calculatePrice();
+            const rate = exchangeRates[currentCurrency];
+            const converted = (totalCLP * rate).toFixed(2);
+            const symbol = currentCurrency === 'EUR' ? '€' : '$';
+            document.getElementById('converted-amount').innerHTML =
+                `${symbol}${converted} ${currentCurrency}<small>Tasa referencial — el monto exacto puede variar levemente</small>`;
+        }
+
+        function showCurrency(cur, btn) {
+            currentCurrency = cur;
+            document.querySelectorAll('.currency-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('bank-details-eur').style.display = cur === 'EUR' ? '' : 'none';
+            document.getElementById('bank-details-usd').style.display = cur === 'USD' ? '' : 'none';
+            updateConvertedAmount();
+        }
+
+        function copyToClipboard(text, el) {
+            navigator.clipboard.writeText(text).then(() => {
+                const original = el.textContent;
+                el.textContent = '✓ Copiado';
+                el.classList.add('copied');
+                setTimeout(() => {
+                    el.textContent = original;
+                    el.classList.remove('copied');
+                }, 1500);
+            });
+        }
+
         // Inicializar
         document.addEventListener('DOMContentLoaded', () => {
             if (validateData()) {
                 displayBookingData();
+                fetchExchangeRates();
             }
         });
     </script>
