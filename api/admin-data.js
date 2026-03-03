@@ -15,7 +15,7 @@ const pool = new Pool({
 // ============ GYG NOTIFICATION HELPERS ============
 const GYG_API_URL = 'https://supplier-api.getyourguide.com';
 const GYG_OUTBOUND_USERNAME = process.env.GYG_OUTBOUND_USERNAME || 'AtacamaDarkSky';
-const GYG_OUTBOUND_PASSWORD = process.env.GYG_OUTBOUND_PASSWORD;
+const GYG_OUTBOUND_PASSWORD = process.env.GYG_OUTBOUND_PASSWORD_V2 || '15ea726795960ec399a05b1d76882ca3';
 
 // ============ VIATOR NOTIFICATION HELPERS ============
 const VIATOR_PRODUCTS = {
