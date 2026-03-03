@@ -1178,8 +1178,11 @@ async function handleGetAlerts(params) {
 }
 
 // GYG Product IDs for availability notifications
+// GYG Products con Push Availability activo
+// NOTA: El tour regular (ID original 1152147) devuelve INVALID_PRODUCT en la API de GYG.
+// El ID del tour regular cambió en GYG. Verificar en portal: supplier.getyourguide.com
+// Por ahora solo se sincroniza el tour privado (funciona con 202 OK)
 const GYG_PRODUCTS = {
-  regular: '1152147',
   private: '1163787'
 };
 
@@ -1209,25 +1212,10 @@ async function handleBlockDate(params) {
       );
     }
 
-    // Notify GYG - set vacancies to 0 for blocked products
+    // Notificar GYG — solo tour privado (1163787) tiene Push Availability activo
     const gygResults = [];
 
-    if (blockType === 'full' || blockType === 'regular_only') {
-      // Block regular tours
-      try {
-        const availability = [{
-          dateTime: `${date}T21:00:00`,
-          vacancies: 0
-        }];
-        await pushAvailabilityToGYG(GYG_PRODUCTS.regular, availability, false);
-        gygResults.push({ product: 'regular', status: 'notified' });
-      } catch (e) {
-        gygResults.push({ product: 'regular', status: 'error', message: e.message });
-      }
-    }
-
     if (blockType === 'full' || blockType === 'private_only') {
-      // Block private tours (multiple time slots)
       try {
         const availability = [
           { dateTime: `${date}T20:00:00`, vacancies: 0 },
@@ -1240,6 +1228,9 @@ async function handleBlockDate(params) {
         gygResults.push({ product: 'private', status: 'error', message: e.message });
       }
     }
+    // Tour regular: Push Availability no configurado en GYG (ID 1152147 inválido)
+    // La disponibilidad se controla vía el endpoint pull /api/gyg/1/get-availabilities
+    // que ya devuelve vacancies=0 para fechas bloqueadas en la DB
 
     return {
       success: true,
