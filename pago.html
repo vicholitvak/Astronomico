@@ -336,11 +336,11 @@
                     <span class="detail-label">Email</span>
                     <span class="detail-value" id="customer-email">-</span>
                 </div>
-                <div class="detail-row" id="subtotal-row">
+                <div class="detail-row" id="subtotal-row" style="display:none;">
                     <span class="detail-label">Subtotal</span>
                     <span class="detail-value" id="subtotal-price">-</span>
                 </div>
-                <div class="detail-row" id="fee-row">
+                <div class="detail-row" id="fee-row" style="display:none;">
                     <span class="detail-label">Cargo procesamiento pago</span>
                     <span class="detail-value" id="fee-price" style="color: #f59e0b;">-</span>
                 </div>
@@ -527,13 +527,10 @@
             document.getElementById('customer-email').textContent = bookingData.email || '-';
 
             const subtotal = calculatePrice();
-            const MP_FEE_RATE = 0.0464;
-            const totalWithFee = Math.round(subtotal / (1 - MP_FEE_RATE));
-            const fee = totalWithFee - subtotal;
 
             document.getElementById('subtotal-price').textContent = '$' + subtotal.toLocaleString('es-CL');
-            document.getElementById('fee-price').textContent = '+$' + fee.toLocaleString('es-CL');
-            document.getElementById('total-price').textContent = '$' + totalWithFee.toLocaleString('es-CL') + ' CLP';
+            document.getElementById('fee-price').textContent = '';
+            document.getElementById('total-price').textContent = '$' + subtotal.toLocaleString('es-CL') + ' CLP';
         }
 
         // Procesar pago
