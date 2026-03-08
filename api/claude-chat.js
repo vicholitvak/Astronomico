@@ -1449,7 +1449,7 @@ CONTEXTO DEL NEGOCIO:
 - Hacemos pickup desde los hoteles de San Pedro
 - Tours disponibles:
   • Regular: Tour grupal, máx 16 personas, 21:00, CLP 42,000/persona
-  • Privado: Tour exclusivo, máx 4 personas, horario flexible, CLP 150,000/persona
+  • Privado: Tour exclusivo, máx 4 personas, horario flexible, CLP 130,000/persona
   • Astrofotografía: Tour especializado, 21:00, CLP 120,000/persona
 
 FLUJO TÍPICO PARA ENVIAR MENSAJES:

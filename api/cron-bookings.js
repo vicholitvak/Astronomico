@@ -235,7 +235,7 @@ async function sendPaymentReminderEmail(booking) {
     'astrophoto': 'Tour Astrofotográfico'
   };
 
-  const tourPrices = { 'regular': 42000, 'private': 150000, 'astrophoto': 120000 };
+  const tourPrices = { 'regular': 42000, 'private': 130000, 'astrophoto': 120000 };
   const basePrice = tourPrices[booking.tour_type] || 42000;
   const totalPrice = basePrice * booking.persons;
 
@@ -337,7 +337,7 @@ async function sendCancellationEmail(booking) {
     'astrophoto': 'Tour Astrofotográfico'
   };
 
-  const tourPrices = { 'regular': 42000, 'private': 150000, 'astrophoto': 120000 };
+  const tourPrices = { 'regular': 42000, 'private': 130000, 'astrophoto': 120000 };
   const basePrice = tourPrices[booking.tour_type] || 42000;
   const totalPrice = basePrice * booking.persons;
 

@@ -44,7 +44,7 @@ async function sendConfirmationDirect() {
         // Calculate price
         const prices = {
             'regular': 42000,
-            'private': 150000,
+            'private': 130000,
             'astrophoto': 120000
         };
         const pricePerPerson = prices[booking.tour_type] || 42000;

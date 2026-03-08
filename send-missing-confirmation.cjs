@@ -36,7 +36,7 @@ async function sendMissingConfirmation() {
         // Get price (need to estimate based on tour type and persons)
         const prices = {
             'regular': 42000,
-            'private': 150000,
+            'private': 130000,
             'astrophoto': 120000
         };
         const pricePerPerson = prices[booking.tour_type] || 42000;

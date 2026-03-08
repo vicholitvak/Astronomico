@@ -529,7 +529,7 @@ async function sendConfirmationEmail(booking) {
     'astrophoto': 'Astrophotography Tour'
   };
 
-  const tourPrices = { 'regular': 42000, 'private': 150000, 'astrophoto': 120000 };
+  const tourPrices = { 'regular': 42000, 'private': 130000, 'astrophoto': 120000 };
 
   // Get price and calculate total (all tours now use per-person pricing)
   const basePrice = tourPrices[booking.tourType] || 42000;

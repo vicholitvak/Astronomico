@@ -45,7 +45,7 @@ export default async function handler(req, res) {
         const booking_id = body.booking_id;
 
         // Default prices per person (CLP)
-        const DEFAULT_PRICES = { regular: 42000, private: 150000, astrophoto: 120000 };
+        const DEFAULT_PRICES = { regular: 42000, private: 130000, astrophoto: 120000 };
         const price = body.price || DEFAULT_PRICES[tourType] || DEFAULT_PRICES.private;
 
         // Validate required fields

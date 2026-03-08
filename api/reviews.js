@@ -596,7 +596,7 @@ async function generateSchema(req, res) {
         "name": "Tours Astronómicos",
         "itemListElement": [
           { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Tour Astronómico Regular" }, "price": "42000", "priceCurrency": "CLP" },
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Expedición Privada a Vallecito" }, "price": "150000", "priceCurrency": "CLP" },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Expedición Privada a Vallecito" }, "price": "130000", "priceCurrency": "CLP" },
           { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Tour de Astrofotografía" }, "price": "120000", "priceCurrency": "CLP" }
         ]
       }

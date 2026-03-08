@@ -418,7 +418,7 @@ export default async function handler(req, res) {
           } else if (normalizedSource === 'viator' || normalizedSource === 'klook') {
             gross = b.tour_type === 'private' ? b.num_people * 105300 : b.num_people * 45000;
           } else {
-            gross = b.tour_type === 'private' ? b.num_people * 150000 : b.num_people * 42000;
+            gross = b.tour_type === 'private' ? b.num_people * 130000 : b.num_people * 42000;
           }
 
           const rate = COMMISSION_RATE[normalizedSource] || 0;
@@ -1223,7 +1223,7 @@ export default async function handler(req, res) {
                   WHEN b.source IN ('viator', 'klook') AND b.payment_amount IS NULL THEN
                     CASE WHEN b.tour_type = 'private' THEN b.persons * 105300 ELSE b.persons * 45000 END
                   WHEN b.payment_amount IS NULL THEN
-                    CASE WHEN b.tour_type = 'private' THEN b.persons * 150000 ELSE b.persons * 42000 END
+                    CASE WHEN b.tour_type = 'private' THEN b.persons * 130000 ELSE b.persons * 42000 END
                   ELSE COALESCE(b.payment_amount, 0)
                 END) as total_revenue,
               ROUND(AVG(b.persons)::numeric, 2) as avg_group_size,
@@ -1411,7 +1411,7 @@ export default async function handler(req, res) {
                   WHEN source IN ('viator', 'klook') AND payment_amount IS NULL THEN
                     CASE WHEN tour_type = 'private' THEN persons * 105300 ELSE persons * 45000 END
                   WHEN payment_amount IS NULL THEN
-                    CASE WHEN tour_type = 'private' THEN persons * 150000 ELSE persons * 42000 END
+                    CASE WHEN tour_type = 'private' THEN persons * 130000 ELSE persons * 42000 END
                   ELSE COALESCE(payment_amount, 0)
                 END as gross
               FROM bookings
@@ -1475,7 +1475,7 @@ export default async function handler(req, res) {
                     WHEN b.source IN ('viator', 'klook') AND b.payment_amount IS NULL THEN
                       CASE WHEN b.tour_type = 'private' THEN b.persons * 105300 ELSE b.persons * 45000 END
                     WHEN b.payment_amount IS NULL THEN
-                      CASE WHEN b.tour_type = 'private' THEN b.persons * 150000 ELSE b.persons * 42000 END
+                      CASE WHEN b.tour_type = 'private' THEN b.persons * 130000 ELSE b.persons * 42000 END
                     ELSE COALESCE(b.payment_amount, 0)
                   END) as gross_revenue
             FROM bookings b
@@ -1600,7 +1600,7 @@ export default async function handler(req, res) {
               } else if (b.source === 'viator' || b.source === 'klook') {
                 gross = b.tour_type === 'private' ? b.persons * 105300 : b.persons * 45000;
               } else {
-                gross = b.tour_type === 'private' ? b.persons * 150000 : b.persons * 42000;
+                gross = b.tour_type === 'private' ? b.persons * 130000 : b.persons * 42000;
               }
               const rate = COMMISSION_RATE[b.source] || 0;
               estimatedNet += gross - Math.round(gross * rate);
